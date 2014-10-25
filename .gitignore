@@ -1,3 +1,4 @@
 vendor
 composer.phar
-Tests/secrets.php
+Tests/config/parameters.yml
+Tests/cache

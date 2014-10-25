@@ -1,0 +1,39 @@
+<?php
+
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Debug\Debug;
+use Doctrine\Common\Annotations\AnnotationRegistry;
+use Doctrine\DBAL\DriverManager;
+use Symfony\Component\Yaml\Parser as Yaml;
+
+$loader = require __DIR__ . '/../vendor/autoload.php';
+
+AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
+
+// might be useful: http://php-and-symfony.matthiasnoback.nl/2011/10/symfony2-use-a-bootstrap-file-for-your-phpunit-tests-and-run-some-console-commands/
+
+require_once __DIR__.'/AppKernel.php';
+
+$parameters = (new Yaml())->parse(file_get_contents(__DIR__.'/config/parameters.yml'))['parameters'];
+
+$dbParams = [
+    'driver'   => $parameters['database_driver'],
+    'user'     => $parameters['database_user'],
+    'password' => $parameters['database_password']
+];
+
+$conn = DriverManager::getConnection($dbParams);
+$sm = $conn->getSchemaManager();
+try {
+    $sm->createDatabase($parameters['database_name']);
+} catch (\Exception $e) {
+	if (strpos($e->getMessage(), 'database exists') === false) {
+		throw $e;
+	}
+} finally {
+	$conn->close();
+}
+
+global $kernel;
+$kernel = new AppKernel('dev', true);
+$kernel->boot();

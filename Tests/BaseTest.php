@@ -16,6 +16,8 @@ use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Tests\Indexer\Indexer;
 
 class BaseTest extends \PHPUnit_Framework_TestCase
 {
+    protected $backupGlobalsBlacklist = ['kernel'];
+
     protected static $em = null;
     protected static $indexer = null;
 
@@ -26,18 +28,6 @@ class BaseTest extends \PHPUnit_Framework_TestCase
      * This is used to test the Doctrine/Symfony side of things in isolation.
      */
     protected static $isolateFromAlgolia = true;
-
-    protected static function getDbParams()
-    {
-        $params = require __DIR__.DIRECTORY_SEPARATOR.'secrets.php';
-        return $params['db'];
-    }
-
-    protected static function getApiSettings()
-    {
-        $params = require __DIR__.DIRECTORY_SEPARATOR.'secrets.php';
-        return $params['api'];
-    }
 
     protected static function getNeededEntities()
     {
@@ -58,55 +48,19 @@ class BaseTest extends \PHPUnit_Framework_TestCase
 
     protected static function setupDatabase($noAlgolia = false)
     {
-        $tmpParams = static::getDbParams();
-        $dbname = $tmpParams['dbname'];
-        unset($tmpParams['dbname']);
-
-        $tmpConnection = DriverManager::getConnection($tmpParams);
-        $sm = $tmpConnection->getSchemaManager();
-
-        if (in_array($dbname, $sm->listDatabases())) {
-            $sm->dropDatabase($dbname);
-        }
-
-        $sm->createDatabase($dbname);
-
-        $tmpConnection->close();
-
-        $paths = array(__DIR__.DIRECTORY_SEPARATOR.'Entity');
-
-        $dbParams = static::getDbParams();
-
-        $config = DoctrineSetup::createConfiguration($isDevMode = true);
-        $driver = new AnnotationDriver(new AnnotationReader(), $paths);
-        $config->setMetadataDriverImpl($driver);
-
-        $evm = new EventManager();
-        
-        $indexer = new Indexer();
-
-        // Setting the 2 values below is automagically handled
-        // by symfony in the real world.
-        $indexer->setEnvironment('dev');
-        $indexer->setApiSettings(static::getApiSettings());
-        
-        $indexer->isolateFromAlgolia(static::$isolateFromAlgolia);
-
-        if (!$noAlgolia) {
-            $evm->addEventSubscriber(new AlgoliaSearchDoctrineEventSubscriber($indexer));
-        }
-
-        $em     = EntityManager::create($dbParams, $config, $evm);
+        global $kernel;
+        $conn = $kernel->getContainer()->get('database_connection');
+        $dbname = $kernel->getContainer()->getParameter('database_name');
+        $em = $kernel->getContainer()->get('doctrine.orm.entity_manager');
+        $sm = $conn->getSchemaManager();
 
         $schema = array_map(function ($class) use ($em) {
             return $em->getClassMetadata($class);
         }, static::getNeededEntities());
 
         $schemaTool = new SchemaTool($em);
+        $schemaTool->dropSchema($schema);
         $schemaTool->createSchema($schema);
-
-        static::$em = $em;
-        static::$indexer = $indexer;
     }
 
     public static function setupBeforeClass($noAlgolia = false)
@@ -116,17 +70,18 @@ class BaseTest extends \PHPUnit_Framework_TestCase
 
     public static function tearDownAfterClass()
     {
-        static::$em->close();
     }
 
     public function getEntityManager()
     {
-        return static::$em;
+        global $kernel;
+        return $kernel->getContainer()->get('doctrine.orm.entity_manager');
     }
 
     public function getIndexer()
     {
-        return static::$indexer;
+        global $kernel;
+        return $kernel->getContainer()->get('algolia.indexer');
     }
 
     public function persistAndFlush($entity)

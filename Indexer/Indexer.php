@@ -64,9 +64,12 @@ class Indexer
         return $this;
     }
 
-    public function setApiSettings(array $apiSettings)
+    public function setApiSettings($application_id, $api_key)
     {
-        $this->apiSettings = $apiSettings;
+        $this->apiSettings = [
+            'application_id' => $application_id,
+            'api_key' => $api_key
+        ];
 
         return $this;
     }
@@ -641,7 +644,7 @@ class Indexer
 
         $indexName = $this->getAlgoliaIndexName($entityClass);
 
-        // get results from algolia
+        // get results from Algolia
         $results = $this->search($indexName, $queryString, $options);
 
         // hydrate them as Doctrine entities

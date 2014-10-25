@@ -1,9 +1,9 @@
-<phpunit bootstrap="./bootstrap.php">
+<phpunit bootstrap="./app.php">
 	<testsuites>
 		<testsuite name="AlgoliaSearchSymfonyDoctrine">
-			<file>./AlgoliaSearchSymfonyDoctrine/CallbacksTest.php</file>
+			<!--file>./AlgoliaSearchSymfonyDoctrine/CallbacksTest.php</file>
 			<file>./AlgoliaSearchSymfonyDoctrine/ChangeDetectionTest.php</file>
-			<file>./AlgoliaSearchSymfonyDoctrine/ConditionalIndexingTest.php</file>
+			<file>./AlgoliaSearchSymfonyDoctrine/ConditionalIndexingTest.php</file-->
 			<file>./AlgoliaSearchSymfonyDoctrine/AlgoliaIntegrationTest.php</file>
 			<!--file>./AlgoliaSearchSymfonyDoctrine/PerformanceTest.php</file-->
 		</testsuite>
