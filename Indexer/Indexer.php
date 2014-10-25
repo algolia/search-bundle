@@ -92,9 +92,15 @@ class Indexer
      * @return bool
      * @internal
      */
-    public function interestedIn($entity, $em)
+    public function discoverEntity($entity_or_class, $em)
     {
-        $class = get_class($entity);
+        if (is_object($entity_or_class)) {
+            $entity = $entity_or_class;
+            $class = get_class($entity);
+        } else {
+            $class = $entity_or_class;
+            $entity = new $entity_or_class();
+        }
 
         // check if we already saw this type of entity
         // to avoid some expensive work
@@ -111,7 +117,7 @@ class Indexer
      */
     public function autoIndex($entity, $em)
     {
-        if (!$this->interestedIn($entity, $em)) {
+        if (!$this->discoverEntity($entity, $em)) {
             return false;
         } else {
             return self::$indexSettings[get_class($entity)]->getIndex()->getAutoIndex();
@@ -335,9 +341,10 @@ class Indexer
     /**
      * @internal
      */
-    public function getAlgoliaIndexName($entity)
+    public function getAlgoliaIndexName($entity_or_class)
     {
-        $class = get_class($entity);
+        $class = is_object($entity_or_class) ? get_class($entity_or_class) : $entity_or_class;
+
         if (!isset(self::$indexSettings[$class])) {
             throw new UnknownEntity("Entity $class is not known to Algolia. This is likely an implementation bug.");
         }
@@ -531,7 +538,7 @@ class Indexer
 
         foreach ($entities as $entity) {
 
-            if (!$indexer->interestedIn($entity, $em)) {
+            if (!$indexer->discoverEntity($entity, $em)) {
                 throw new NotAnAlgoliaEntity(
                     'Tried to index entity of class `'.get_class($entity).'`, which is not recognized as an entity to index.'
                 );
@@ -564,7 +571,7 @@ class Indexer
 
         foreach ($entities as $entity) {
 
-            if (!$this->interestedIn($entity, $em)) {
+            if (!$this->discoverEntity($entity, $em)) {
                 throw new NotAnAlgoliaEntity(
                     'Tried to unIndex entity of class `'.get_class($entity).'`, which is not recognized as an entity to index.'
                 );
@@ -607,14 +614,44 @@ class Indexer
 
         $client = $this->getClient();
 
-        if ($options['perEnvironment']) {
-            $indexName .= '_' . $this->environment;
+        if (isset($options['perEnvironment'])) {
+            if ($options['perEnvironment']) {
+                $indexName .= '_' . $this->environment;
+            }
+            // this is not a real search option:
+            unset($options['perEnvironment']);
         }
 
         // does initIndex cost something? If so, TODO: put $index in cache.
         $index = $client->initIndex($indexName);
 
-        return $index->search($queryString);
+        return $index->search($queryString, $options);
+    }
+
+    public function nativeSearch($em, $entityClass, $queryString, array $options = array())
+    {
+        if (!$this->discoverEntity($entityClass, $em)) {
+            throw new NotAnAlgoliaEntity(
+                'Can\'t search, entity of class `'.$entityClass.'` is not recognized as an Algolia enriched entity.'
+            );
+        }
+
+        // We're already finding the right index ourselves.
+        $options['perEnvironment'] = false;
+
+        $indexName = $this->getAlgoliaIndexName($entityClass);
+
+        // get results from algolia
+        $results = $this->search($indexName, $queryString, $options);
+
+        // hydrate them as Doctrine entities
+        foreach ($results['hits'] as $r => $result) {
+            $id = $this->unserializePrimaryKey($result['objectID']);
+            $entity = $em->find($entityClass, $id);
+            $results['hits'][$r] = $entity;
+        }
+
+        return $results;
     }
 
     public function deleteIndex($indexName, array $options = array())
@@ -631,7 +668,10 @@ class Indexer
             $indexName .= '_' . $this->environment;
         }
 
-        $this->getClient()->deleteIndex($indexName);
+        $this->algoliaTask(
+            $indexName,
+            $this->getClient()->deleteIndex($indexName)
+        );
 
         return $this;
     }
