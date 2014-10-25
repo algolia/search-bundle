@@ -46,7 +46,7 @@ class BaseTest extends \PHPUnit_Framework_TestCase
         return $entities;
     }
 
-    protected static function setupDatabase($noAlgolia = false)
+    protected static function setupDatabase()
     {
         global $kernel;
         $conn = $kernel->getContainer()->get('database_connection');
@@ -63,9 +63,9 @@ class BaseTest extends \PHPUnit_Framework_TestCase
         $schemaTool->createSchema($schema);
     }
 
-    public static function setupBeforeClass($noAlgolia = false)
+    public static function setupBeforeClass()
     {
-        static::setupDatabase($noAlgolia);
+        static::setupDatabase();
     }
 
     public static function tearDownAfterClass()
@@ -101,6 +101,7 @@ class BaseTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->getIndexer()->reset();
+        $this->getIndexer()->isolateFromAlgolia(static::$isolateFromAlgolia);
     }
 
     public function getObjectID(array $primaryKeyData)

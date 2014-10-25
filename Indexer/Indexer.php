@@ -518,7 +518,7 @@ class Indexer
         // forgetting changes coming from autoIndexed entities
         $indexer = new static();
         $indexer->setEnvironment($this->environment);
-        $indexer->setApiSettings($this->apiSettings);
+        $indexer->setApiSettings($this->apiSettings['application_id'], $this->apiSettings['api_key']);
 
         return $indexer;
     }
