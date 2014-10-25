@@ -229,6 +229,9 @@ class Indexer
 
     /**
      * @internal
+     * Returns a pair of json encoded arrays [newPrimaryKey, oldPrimaryKey]
+     * Where oldPrimaryKey is null if the primary key did not change,
+     * which is most of the times!
      */
     public function getPrimaryKeyForAlgolia($entity, array $changeSet = null)
     {
@@ -260,14 +263,34 @@ class Indexer
                 );
             }
 
-            $oldPrimaryKeyValues[] = $old;
-            $newPrimaryKeyValues[] = $new;
+            $oldPrimaryKeyValues[$fieldName] = $old;
+            $newPrimaryKeyValues[$fieldName] = $new;
         }
 
-        $primaryKey = implode(',', $newPrimaryKeyValues);
-        $oldPrimaryKey = $changed ? implode(',', $oldPrimaryKeyValues) : null;
+        $primaryKey = $this->serializePrimaryKey($newPrimaryKeyValues);
+        $oldPrimaryKey = $changed ? $this->serializePrimaryKey($oldPrimaryKeyValues) : null;
 
         return array($primaryKey, $oldPrimaryKey);
+    }
+
+    /**
+     * @todo: This function should be made simpler,
+     * but it seems currently the PHP client library fails
+     * to decode responses from Algolia when we put JSON or
+     * serialized objects in the objectIDs.
+     *
+     * Tests have been adapted to use this function too,
+     * so changing it to something else should not break any test.
+     * 
+     */
+    public function serializePrimaryKey(array $values)
+    {
+        return base64_encode(json_encode($values));
+    }
+
+    public function unserializePrimaryKey($pkey)
+    {
+        return json_decode(base64_decode($pkey), true);
     }
 
     /**

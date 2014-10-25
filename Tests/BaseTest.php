@@ -147,4 +147,9 @@ class BaseTest extends \PHPUnit_Framework_TestCase
     {
         $this->getIndexer()->reset();
     }
+
+    public function getObjectID(array $primaryKeyData)
+    {
+        return $this->getIndexer()->serializePrimaryKey($primaryKeyData);
+    }
 }

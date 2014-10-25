@@ -17,7 +17,7 @@ class ChangeDetectionTest extends BaseTest
             array(
                 'Product_dev' => array(
                     array(
-                        'objectID' => '1',
+                        'objectID' => $this->getObjectID(['id' => 1]),
                         'name' => 'Precision Watch'
                     )
                 )
@@ -41,7 +41,7 @@ class ChangeDetectionTest extends BaseTest
             array(
                 'Product_dev' => array(
                     array(
-                        'objectID' => (string)$product->getId(),
+                        'objectID' => $this->getObjectID(['id' => $product->getId()]),
                         'name' => 'Yet Another Precision Watch'
                     )
                 )
@@ -63,7 +63,7 @@ class ChangeDetectionTest extends BaseTest
             array(
                 'ProductWithIndexedMethod_dev' => array(
                     array(
-                        'objectID' => '1',
+                        'objectID' => $this->getObjectID(['id' => 1]),
                         'name' => 'Precision Watch',
                         'yoName' => 'YO Precision Watch'
                     )
@@ -90,7 +90,7 @@ class ChangeDetectionTest extends BaseTest
             array(
                 'ProductWithIndexedMethod_dev' => array(
                     array(
-                        'objectID' => (string)$product->getId(),
+                        'objectID' => $this->getObjectID(['id' => $product->getId()]),
                         'name' => 'Yet Another Precision Watch',
                         'yoName' => 'YO Yet Another Precision Watch'
                     )
@@ -134,7 +134,7 @@ class ChangeDetectionTest extends BaseTest
         $this->assertEquals(
             array(
                 'Product_dev' => array(
-                    "$id"
+                    $this->getObjectID(['id' => $id])
                 )
             ),
             $indexer->deletions
@@ -176,7 +176,7 @@ class ChangeDetectionTest extends BaseTest
             'ProductWithoutAutoIndex_dev' => array(
                 array(
                     'name' => 'This Product Is Not Auto Indexed, But I\'ll Index It',
-                    'objectID' => $id
+                    'objectID' => $this->getObjectID(['id' => $id])
                 )
             )
         ), $done['creations']);
@@ -184,7 +184,7 @@ class ChangeDetectionTest extends BaseTest
         $done = $indexer->unIndex($this->getEntityManager(), $product);
         $this->assertEquals(array(
             'ProductWithoutAutoIndex_dev' => array(
-                "$id"
+                $this->getObjectID(['id' => $id])
             )
         ), $done['deletions']);
         $this->assertEquals(array(), $done['updates']);

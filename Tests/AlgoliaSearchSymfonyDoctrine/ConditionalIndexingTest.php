@@ -40,7 +40,7 @@ class ConditionalIndexingTest extends BaseTest
                 'ProductWithConditionalIndexing_dev' => array(
                     array(
                         'name' => 'The Ultimate Algolia Userguide',
-                        'objectID' => (string)$product->getId()
+                        'objectID' => $this->getObjectID(['id' => $product->getId()])
                     )
                 )
             ),
@@ -61,7 +61,7 @@ class ConditionalIndexingTest extends BaseTest
         $this->assertEquals(
             array(
                 'ProductWithConditionalIndexing_dev' => array(
-                    (string)$product->getId()
+                    $this->getObjectID(['id' => $product->getId()])
                 )
             ),
             $this->getIndexer()->deletions
@@ -88,7 +88,7 @@ class ConditionalIndexingTest extends BaseTest
             array('ProductWithConditionalIndexing_dev' => array(
                     array(
                         'name' => 'The Ultimate Algolia Userguide',
-                        'objectID' => (string)$product->getId()
+                        'objectID' => $this->getObjectID(['id' => $product->getId()])
                     )
                 )
             ),
@@ -121,7 +121,7 @@ class ConditionalIndexingTest extends BaseTest
 
         $this->getIndexer()->reset();
 
-        $objectID = (string)$product->getId();
+        $objectID = $this->getObjectID(['id' => $product->getId()]);
 
         $this->removeAndFlush($product);
 

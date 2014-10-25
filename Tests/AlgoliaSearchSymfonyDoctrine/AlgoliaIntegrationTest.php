@@ -34,7 +34,7 @@ class AlgoliaIntegrationTest extends BaseTest
 		$results = $this->getIndexer()->search('ProductForAlgoliaIntegrationTest', 'My First Product');
 		
 		$this->assertEquals(1, $results['nbHits']);
-		$this->assertEquals($product->getId(), $results['hits'][0]['objectID']);
+		$this->assertEquals($this->getObjectID(['id' => $product->getId()]), $results['hits'][0]['objectID']);
 	}
 
 	public function testUpdatedProductIsIndexedAndRetrieved()
@@ -58,7 +58,7 @@ class AlgoliaIntegrationTest extends BaseTest
 		$results = $this->getIndexer()->search('ProductForAlgoliaIntegrationTest', 'Totally Different Name.');
 
 		$this->assertEquals(1, $results['nbHits']);
-		$this->assertEquals($product->getId(), $results['hits'][0]['objectID']);
+		$this->assertEquals($this->getObjectID(['id' => $product->getId()]), $results['hits'][0]['objectID']);
 		$this->assertEquals('Totally Different Name.', $results['hits'][0]['name']);
 	}
 
@@ -83,7 +83,7 @@ class AlgoliaIntegrationTest extends BaseTest
 		$this->getIndexer()->waitForAlgoliaTasks();
 		$results = $this->getIndexer()->search('ProductForAlgoliaIntegrationTest', 'My First Product');
 		$this->assertEquals(1, $results['nbHits']);
-		$this->assertEquals($product->getId(), $results['hits'][0]['objectID']);
+		$this->assertEquals($this->getObjectID(['id' => $product->getId()]), $results['hits'][0]['objectID']);
 
 		$this->removeAndFlush($product);
 		$this->getIndexer()->waitForAlgoliaTasks();
