@@ -1,0 +1,25 @@
+{
+    "name": "djfm/algolia-search-symfony-doctrine-bundle",
+    "type": "symfony-bundle",
+    "description": "Seamless integration from Algolia Search into your Symfony with Doctrine project.",
+    "require": {
+        "symfony/framework-bundle": "~2.5",
+        "doctrine/orm": "~2.2,>=2.2.3",
+        "doctrine/doctrine-bundle": "~1.2",
+        "algolia/algoliasearch-client-php": "~1.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4.3"
+    },
+    "authors": [
+        {
+            "name": "François-Marie de Jouvencel",
+            "email": "fm.de.jouvencel@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Algolia\\AlgoliaSearchSymfonyDoctrineBundle\\": ""
+        }
+    }
+}

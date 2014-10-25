@@ -1,0 +1,10 @@
+services:
+    algolia.indexer:
+        class: Algolia\AlgoliaSearchSymfonyDoctrineBundle\Indexer\Indexer
+        calls:
+            - [setEnvironment, ["%kernel.environment%"]]
+    algolia.indexer_subscriber:
+        class: Algolia\AlgoliaSearchSymfonyDoctrineBundle\EventListener\AlgoliaSearchDoctrineEventSubscriber
+        arguments: ["@algolia.indexer"]
+        tags:
+            - {name: doctrine.event_subscriber}

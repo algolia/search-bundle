@@ -1,0 +1,7 @@
+<phpunit bootstrap="./bootstrap.php">
+	<testsuites>
+		<testsuite name="AlgoliaSearchSymfonyDoctrine">
+			<directory suffix="Test.php">./AlgoliaSearchSymfonyDoctrine</directory>
+		</testsuite>
+	</testsuites>
+</phpunit>
