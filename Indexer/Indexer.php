@@ -40,12 +40,33 @@ class Indexer
     private $environment;
 
     /**
+     * The algolia application_id and api_key.
+     * Also injected for us by symfony from the config.
+     */
+    private $apiSettings = array();
+
+    private $client;
+
+    // Used to wait for sync, keys are index names
+    private $latestAlgoliaTaskID = array();
+
+    // Cache index objects from the php client lib
+    private $indices = array();
+
+    /**
      * @internal
      * Used by the depency injection mechanism of Symfony
      */
     public function setEnvironment($environment)
     {
         $this->environment = $environment;
+
+        return $this;
+    }
+
+    public function setApiSettings(array $apiSettings)
+    {
+        $this->apiSettings = $apiSettings;
 
         return $this;
     }
@@ -389,6 +410,17 @@ class Indexer
         );
     }
 
+    private function algoliaTask($indexName, $res)
+    {
+        if (!empty($res['taskID'])) {
+            if (!isset($this->latestAlgoliaTaskID[$indexName]) || $res['taskID'] > $this->latestAlgoliaTaskID[$indexName]) {
+                $this->latestAlgoliaTaskID[$indexName] = $res['taskID'];
+            }
+        }
+
+        return $res;
+    }
+
     /**
      * This function does creations or updates in the HTTP sense
      * of the REST specification, i.e. sends full resources,
@@ -397,8 +429,11 @@ class Indexer
      */
     protected function performBatchCreations(array $creations)
     {
-        if (empty($creations)) {
-            return;
+        foreach ($creations as $indexName => $objects) {
+            $this->algoliaTask(
+                $indexName,
+                $this->getIndex($indexName)->saveObjects($objects)
+            );
         }
     }
 
@@ -409,8 +444,11 @@ class Indexer
      */
     protected function performBatchUpdates(array $updates)
     {
-        if (empty($updates)) {
-            return;
+        foreach ($updates as $indexName => $objects) {
+            $this->algoliaTask(
+                $indexName,
+                $this->getIndex($indexName)->partialUpdateObjects($objects)
+            );
         }
     }
 
@@ -420,8 +458,11 @@ class Indexer
      */
     protected function performBatchDeletions(array $deletions)
     {
-        if (empty($deletions)) {
-            return;
+        foreach ($deletions as $indexName => $objectIDs) {
+            $this->algoliaTask(
+                $indexName,
+                $this->getIndex($indexName)->deleteObjects($objectIDs)
+            );
         }
     }
 
@@ -435,6 +476,18 @@ class Indexer
         $this->entitiesScheduledForDeletion = array();
 
         return $this;
+    }
+
+    protected function newInstance()
+    {
+        // We make a new indexer for manual indexing
+        // because if we use this one, we risk
+        // forgetting changes coming from autoIndexed entities
+        $indexer = new static();
+        $indexer->setEnvironment($this->environment);
+        $indexer->setApiSettings($this->apiSettings);
+
+        return $indexer;
     }
 
     /**
@@ -451,11 +504,7 @@ class Indexer
             $entities = array($entities);
         }
 
-        // We make a new indexer for manual indexing
-        // because if we use this one, we risk
-        // forgetting changes coming from autoIndexed entities
-        $indexer = new static();
-        $indexer->setEnvironment($this->environment);
+        $indexer = $this->newInstance();
 
         foreach ($entities as $entity) {
 
@@ -488,11 +537,7 @@ class Indexer
             $entities = array($entities);
         }
 
-        // We make a new indexer for manual indexing
-        // because if we use this one, we risk
-        // forgetting changes coming from autoIndexed entities
-        $indexer = new static();
-        $indexer->setEnvironment($this->environment);
+        $indexer = $this->newInstance();
 
         foreach ($entities as $entity) {
 
@@ -506,5 +551,75 @@ class Indexer
         }
 
         return $indexer->processScheduledIndexChanges();
+    }
+
+    public function getClient()
+    {
+        if (!$this->client) {
+            $this->client = new \AlgoliaSearch\Client(
+                $this->apiSettings['application_id'],
+                $this->apiSettings['api_key']
+            );
+        }
+
+        return $this->client;
+    }
+
+    public function getIndex($indexName)
+    {
+        if (!isset($this->indices[$indexName])) {
+            $this->indices[$indexName] = $this->getClient()->initIndex($indexName);
+        }
+
+        return $this->indices[$indexName];
+    }
+
+    public function search($indexName, $queryString, array $options = array())
+    {
+        $defaultOptions = [
+            'perEnvironment' => true
+        ];
+
+        $options = array_merge($defaultOptions, $options);
+
+        $client = $this->getClient();
+
+        if ($options['perEnvironment']) {
+            $indexName .= '_' . $this->environment;
+        }
+
+        // does initIndex cost something? If so, TODO: put $index in cache.
+        $index = $client->initIndex($indexName);
+
+        return $index->search($queryString);
+    }
+
+    public function deleteIndex($indexName, array $options = array())
+    {
+        $defaultOptions = [
+            'perEnvironment' => true
+        ];
+
+        $options = array_merge($defaultOptions, $options);
+
+        $client = $this->getClient();
+
+        if ($options['perEnvironment']) {
+            $indexName .= '_' . $this->environment;
+        }
+
+        $this->getClient()->deleteIndex($indexName);
+
+        return $this;
+    }
+
+    public function waitForAlgoliaTasks()
+    {
+        foreach ($this->latestAlgoliaTaskID as $indexName => $taskID) {
+            $this->getIndex($indexName)->waitTask($taskID);
+            unset($this->latestAlgoliaTaskID[$indexName]);
+        }
+
+        return $this;
     }
 }

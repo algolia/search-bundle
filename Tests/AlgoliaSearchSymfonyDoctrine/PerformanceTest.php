@@ -6,14 +6,8 @@ class PerformanceTest extends BaseTest
 {
     public function setUp()
     {
-        if (!getenv('SLOW')) {
-            $this->markTestSkipped(
-                'Skipping long running test unless environment variable SLOW is true.'
-            );
-        } else {
-            static::setupDatabase();
-            parent::setUp();
-        }
+        static::setupDatabase();
+        parent::setUp();
     }
 
     public function makeProduct($i, $class)

@@ -33,6 +33,12 @@ class BaseTest extends \PHPUnit_Framework_TestCase
         return $params['db'];
     }
 
+    protected static function getApiSettings()
+    {
+        $params = require __DIR__.DIRECTORY_SEPARATOR.'secrets.php';
+        return $params['api'];
+    }
+
     protected static function getNeededEntities()
     {
         $entities = array();
@@ -78,7 +84,12 @@ class BaseTest extends \PHPUnit_Framework_TestCase
         $evm = new EventManager();
         
         $indexer = new Indexer();
+
+        // Setting the 2 values below is automagically handled
+        // by symfony in the real world.
         $indexer->setEnvironment('dev');
+        $indexer->setApiSettings(static::getApiSettings());
+        
         $indexer->isolateFromAlgolia(static::$isolateFromAlgolia);
 
         if (!$noAlgolia) {

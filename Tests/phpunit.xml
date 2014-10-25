@@ -1,7 +1,11 @@
 <phpunit bootstrap="./bootstrap.php">
 	<testsuites>
 		<testsuite name="AlgoliaSearchSymfonyDoctrine">
-			<directory suffix="Test.php">./AlgoliaSearchSymfonyDoctrine</directory>
+			<file>./AlgoliaSearchSymfonyDoctrine/CallbacksTest.php</file>
+			<file>./AlgoliaSearchSymfonyDoctrine/ChangeDetectionTest.php</file>
+			<file>./AlgoliaSearchSymfonyDoctrine/ConditionalIndexingTest.php</file>
+			<file>./AlgoliaSearchSymfonyDoctrine/AlgoliaIntegrationTest.php</file>
+			<!--file>./AlgoliaSearchSymfonyDoctrine/PerformanceTest.php</file-->
 		</testsuite>
 	</testsuites>
 </phpunit>
