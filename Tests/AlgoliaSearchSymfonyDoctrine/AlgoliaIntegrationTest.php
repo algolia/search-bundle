@@ -90,4 +90,42 @@ class AlgoliaIntegrationTest extends BaseTest
 		$results = $this->getIndexer()->search('ProductForAlgoliaIntegrationTest', 'My First Product');
 		$this->assertEquals(0, $results['nbHits']);
 	}
+
+	public function testMultipleInserts()
+	{
+		$results = $this->getIndexer()->search('ProductForAlgoliaIntegrationTest', 'Product Number');
+		$this->assertEquals(0, $results['nbHits']);
+
+		$names = [];
+
+		$n = 10;
+		for ($i = 0; $i < $n; $i += 1) {
+			$product = new Entity\ProductForAlgoliaIntegrationTest();
+
+			$name = 'Product Number '.$i;
+			$names[] = $name;
+
+			$product
+			->setName($name)
+			->setPrice(1 + $i)
+			->setRating($i);
+
+			$this->getEntityManager()->persist($product);
+		}
+
+		$this->getEntityManager()->flush();
+		$this->getIndexer()->waitForAlgoliaTasks();
+
+		$results = $this->getIndexer()->search('ProductForAlgoliaIntegrationTest', 'Product Number');
+		$this->assertEquals($n, $results['nbHits']);
+
+		$namesReturned = array_map(function ($p) {
+			return $p['name'];
+		}, $results['hits']);
+
+		sort($namesReturned);
+		sort($names);
+
+		$this->assertEquals($names, $namesReturned);
+	}
 }
