@@ -53,6 +53,11 @@ class Indexer
     // Cache index objects from the php client lib
     protected $indices = array();
 
+    public function getIndexSettings()
+    {
+        return self::$indexSettings;
+    }
+
     /**
      * @internal
      * Used by the depency injection mechanism of Symfony

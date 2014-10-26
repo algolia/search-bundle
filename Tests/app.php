@@ -2,9 +2,10 @@
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Debug\Debug;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Component\Yaml\Parser as Yaml;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\DBAL\DriverManager;
-use Symfony\Component\Yaml\Parser as Yaml;
 
 $loader = require __DIR__ . '/../vendor/autoload.php';
 
@@ -27,10 +28,10 @@ $sm = $conn->getSchemaManager();
 try {
     $sm->createDatabase($parameters['database_name']);
 } catch (\Exception $e) {
-	if (strpos($e->getMessage(), 'database exists') === false) {
-		$conn->close();
-		throw $e;
-	}
+    if (strpos($e->getMessage(), 'database exists') === false) {
+        $conn->close();
+        throw $e;
+    }
 }
 $conn->close();
 
@@ -47,7 +48,17 @@ $kernel->boot();
  */
 function metaenv($env)
 {
-	return $env.getenv('TRAVIS_JOB_ID');
+    return $env.getenv('TRAVIS_JOB_ID');
+}
+
+function getCLIApp()
+{
+    global $kernel;
+    $application = new Application($kernel);
+    $application->add(
+        new Algolia\AlgoliaSearchSymfonyDoctrineBundle\Command\SettingsCommand()
+    );
+    return $application;
 }
 
 /**
@@ -55,20 +66,19 @@ function metaenv($env)
  */
 register_shutdown_function(function () use ($dbParams, $parameters) {
 
-	echo "\n\nPost PHPUnit cleanup:\n";
-	global $kernel;
-	echo "Deleting remaining indexes and waiting for pending Algolia tasks to finish...\n";
-	
-	$kernel
-	->getContainer()
-	->get('algolia.indexer')
-	->deleteAllIndices()
-	->waitForAlgoliaTasks();
+    echo "\n\nPost PHPUnit cleanup:\n";
+    global $kernel;
+    echo "Waiting for pending Algolia tasks to finish...\n";
+    
+    $kernel
+    ->getContainer()
+    ->get('algolia.indexer')
+    ->waitForAlgoliaTasks();
 
-	$conn = DriverManager::getConnection($dbParams);
-	$sm = $conn->getSchemaManager();
-	echo "Dropping database {$parameters['database_name']}...\n";
-	$sm->dropDatabase($parameters['database_name']);
-	$conn->close();
-	echo "kthxbai!\n";
+    $conn = DriverManager::getConnection($dbParams);
+    $sm = $conn->getSchemaManager();
+    echo "Dropping database {$parameters['database_name']}...\n";
+    $sm->dropDatabase($parameters['database_name']);
+    $conn->close();
+    echo "kthxbai!\n";
 });

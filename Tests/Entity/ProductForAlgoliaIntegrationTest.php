@@ -9,6 +9,13 @@ use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping\Annotation as Algolia;
  * Product
  *
  * @ORM\Entity
+ *
+ * @Algolia\Index(
+ *     attributesToIndex = {"name", "price", "shortDescription", "description", "rating"},
+ *     highlightPreTag = "<strong>",
+ *     highlightPostTag = "</strong>",
+ *     slaves = {"test"}
+ * )
  * 
  */
 class ProductForAlgoliaIntegrationTest extends BaseTestAwareEntity

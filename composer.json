@@ -4,6 +4,7 @@
     "description": "Seamless integration from Algolia Search into your Symfony with Doctrine project.",
     "require": {
         "symfony/framework-bundle": "~2.5",
+        "symfony/finder": "2.3.*",
         "doctrine/orm": "~2.2,>=2.2.3",
         "doctrine/doctrine-bundle": "~1.2",
         "algolia/algoliasearch-client-php": "~1.4"
