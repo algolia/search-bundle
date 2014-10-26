@@ -67,7 +67,7 @@ class Indexer extends \Algolia\AlgoliaSearchSymfonyDoctrineBundle\Indexer\Indexe
             }
             
         } catch (\Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException $e) {
-            // ingore this, it means we're just not running on Travis
+            // ignore this, it means we're just not running on Travis
         }
 
         parent::setApiSettings($application_id, $api_key);
