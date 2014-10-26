@@ -1,0 +1,1 @@
+[![Build Status](https://travis-ci.org/djfm/AlgoliaSearchSymfonyDoctrineBundle.svg?branch=master)](https://travis-ci.org/djfm/AlgoliaSearchSymfonyDoctrineBundle)
