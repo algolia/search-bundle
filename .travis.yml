@@ -1,0 +1,8 @@
+languague: php
+php:
+	- 5.5
+    - 5.4
+    - hhvm
+before_script: curl -sS https://getcomposer.org/installer | php
+install: php composer.phar install
+script: vendor/bin/phpunit -c Tests
