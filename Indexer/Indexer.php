@@ -468,9 +468,8 @@ class Indexer
     }
 
     /**
-     * This function does creations or updates in the HTTP sense
-     * of the REST specification, i.e. sends full resources,
-     * be them new or updated.
+     * This function does creations or updates - it sends full resources,
+     * whether new or updated.
      * @internal
      */
     protected function performBatchCreations(array $creations)
