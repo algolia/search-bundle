@@ -70,10 +70,7 @@ class Indexer extends \Algolia\AlgoliaSearchSymfonyDoctrineBundle\Indexer\Indexe
             // ingore this, it means we're just not running on Travis
         }
 
-        $this->apiSettings = [
-            'application_id' => $application_id,
-            'api_key' => $api_key
-        ];
+        parent::setApiSettings($application_id, $api_key);
 
         return $this;
     }
