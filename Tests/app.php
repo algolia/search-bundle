@@ -28,11 +28,12 @@ try {
     $sm->createDatabase($parameters['database_name']);
 } catch (\Exception $e) {
 	if (strpos($e->getMessage(), 'database exists') === false) {
+		$conn->close();
 		throw $e;
 	}
-} finally {
-	$conn->close();
 }
+$conn->close();
+
 
 global $kernel;
 $kernel = new AppKernel('dev', true);
