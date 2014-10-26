@@ -182,7 +182,7 @@ class Indexer
      */
     public function scheduleEntityCreation($entity, $checkShouldIndex = true)
     {
-        if ($checkShouldIndex && !$this->shouldIndex($entity)) {
+        if ($checkShouldIndex && !$this->shouldIndex(is_object($entity) ? $entity : $entity['entity'])) {
             return;
         }
 
@@ -378,7 +378,12 @@ class Indexer
 
         foreach ($this->entitiesScheduledForCreation as $entity) {
             
-            $index = $this->getAlgoliaIndexName($entity);
+            if (is_object($entity)) {
+                $index = $this->getAlgoliaIndexName($entity);
+            } else {
+                $index = $entity['indexName'];
+                $entity = $entity['entity'];
+            }
             
             list($primaryKey, $unusedOldPrimaryKey) = $this->getPrimaryKeyForAlgolia($entity);
             $fields = $this->getFieldsForAlgolia($entity);
@@ -448,7 +453,7 @@ class Indexer
         );
     }
 
-    private function algoliaTask($indexName, $res)
+    public function algoliaTask($indexName, $res)
     {
         if (!empty($res['taskID'])) {
             if (!isset($this->latestAlgoliaTaskID[$indexName]) || $res['taskID'] > $this->latestAlgoliaTaskID[$indexName]['taskID']) {
@@ -539,7 +544,7 @@ class Indexer
      * have a primary key.
      * A NoPrimaryKey exception will be raised if that's not the case.
      */
-    public function index($em, $entities)
+    public function index($em, $entities, array $options = array())
     {
         if (!is_array($entities)) {
             $entities = array($entities);
@@ -555,10 +560,21 @@ class Indexer
                 );
             }
 
-            $indexer->scheduleEntityCreation($entity);
+            if (isset($options['indexName'])) {
+                $indexer->scheduleEntityCreation([
+                    'indexName' => $options['indexName'],
+                    'entity' => $entity
+                ]);
+            } else {
+                $indexer->scheduleEntityCreation($entity);
+            }
         }
 
-        return $indexer->processScheduledIndexChanges();
+        $res = $indexer->processScheduledIndexChanges();
+
+        $this->mergePendingTasks($indexer);
+
+        return $res;
     }
 
     /**
@@ -591,7 +607,22 @@ class Indexer
             $indexer->scheduleEntityDeletion($entity);
         }
 
-        return $indexer->processScheduledIndexChanges();
+        $res = $indexer->processScheduledIndexChanges();
+
+        $this->mergePendingTasks($indexer);
+
+        return $res;
+    }
+
+    public function mergePendingTasks(Indexer $indexer)
+    {
+        foreach ($indexer->latestAlgoliaTaskID as $index => $data) {
+            if (!isset($this->latestAlgoliaTaskID[$index])) {
+                $this->latestAlgoliaTaskID[$index] = $data;
+            } else if ($data['taskID'] > $this->latestAlgoliaTaskID[$index]['taskID']) {
+                $this->latestAlgoliaTaskID[$index]['taskID'] = $data['taskID'];
+            }
+        }
     }
 
     public function getClient()

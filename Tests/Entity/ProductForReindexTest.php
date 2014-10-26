@@ -9,9 +9,13 @@ use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping\Annotation as Algolia;
  * Product
  *
  * @ORM\Entity
+ *
+ * @Algolia\Index(
+ *    autoIndex = false
+ * )
  * 
  */
-class ProductForPerformanceTest extends BaseTestAwareEntity
+class ProductForReindexTest extends BaseTestAwareEntity
 {
     /**
      * @var integer

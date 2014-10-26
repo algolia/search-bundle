@@ -2,7 +2,6 @@
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Debug\Debug;
-use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Yaml\Parser as Yaml;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\DBAL\DriverManager;
@@ -49,16 +48,6 @@ $kernel->boot();
 function metaenv($env)
 {
     return $env.getenv('TRAVIS_JOB_ID');
-}
-
-function getCLIApp()
-{
-    global $kernel;
-    $application = new Application($kernel);
-    $application->add(
-        new Algolia\AlgoliaSearchSymfonyDoctrineBundle\Command\SettingsCommand()
-    );
-    return $application;
 }
 
 /**

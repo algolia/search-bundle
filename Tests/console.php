@@ -2,6 +2,9 @@
 
 require __DIR__ . '/app.php';
 
-$app = getCLIApp();
+use Symfony\Bundle\FrameworkBundle\Console\Application;
 
-$app->run();
+global $kernel;
+$application = new Application($kernel);
+
+$application->run();

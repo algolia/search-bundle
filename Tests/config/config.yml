@@ -38,5 +38,5 @@ doctrine:
                 mappings:
                     AlgoliaSearchSymfonyDoctrineBundle:
                         type: annotation
-                        prefix: Algolia\AlgoliaSearchSymfonyDoctrineBundle\Tests\
-                        dir: "%kernel.root_dir%/"
+                        prefix: Algolia\AlgoliaSearchSymfonyDoctrineBundle\Tests\Entity\
+                        dir: "%kernel.root_dir%/Entity"
