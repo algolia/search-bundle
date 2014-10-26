@@ -55,4 +55,26 @@ class Indexer extends \Algolia\AlgoliaSearchSymfonyDoctrineBundle\Indexer\Indexe
 
         return $indexer;
     }
+
+    public function setApiSettings($application_id, $api_key)
+    {
+        global $kernel;
+
+        try {
+            if ($kernel->getContainer()->getParameter('algolia.get_secrets_from_travis')) {
+                $application_id = getenv('ALGOLIA_APPLICATION_ID');
+                $api_key = getenv('ALGOLIA_API_KEY');
+            }
+            
+        } catch (\Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException $e) {
+            // ingore this, it means we're just not running on Travis
+        }
+
+        $this->apiSettings = [
+            'application_id' => $application_id,
+            'api_key' => $api_key
+        ];
+
+        return $this;
+    }
 }

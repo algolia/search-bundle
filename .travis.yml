@@ -1,8 +1,13 @@
 languague: php
 php:
-	- 5.5
-    - 5.4
-    - hhvm
-before_script: curl -sS https://getcomposer.org/installer | php
+- 5.5
+- 5.4
+- hhvm
+before_install: curl -sS https://getcomposer.org/installer | php
 install: php composer.phar install
-script: vendor/bin/phpunit -c Tests
+before_script: mv Tests/config/parameters.yml.travis Tests/config/parameters.yml
+script: php vendor/bin/phpunit -c Tests
+env:
+  global:
+  - secure: Jzng8W9kHHmDDV65sn7OtsTR3XGKEjBdtSJMuQl3yjIMzxbnXbkb3YrXSbQG7C4jIlLCNGtaTg2hjATtTPwjteOJEds2W7X+RXqttBH8KWPzjMYhpg9FwAZ1PxFPbuweCgoieSRaelouw9TMcPgJla6x7iNkm2t/1gisZCIPkCM=
+  - secure: EZnGYh2dJcV0j3pryidiGJlLnT5SLNHrjUR+fI73KrYWw3FlPI4vEUXPM/Zm+qjS7XwS/udPNxM6I2Z2UmX3M0DXbjzdPWYKyT+53qTiUg7DbuOowRfznv2zICHfA3m0o6ZnGA6jvfzFJpWUv4MhejH+lj/7H+q1KWqu4RvXnx8=

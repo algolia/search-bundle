@@ -1,0 +1,15 @@
+# This file is auto-generated during the composer install
+parameters:
+    database_driver: pdo_mysql
+    database_host: 127.0.0.1
+    database_port: null
+    database_name: test_algoliasearch_symfony_doctrine_bundle_tests
+    database_user: root
+    database_password: ''
+    locale: en
+    secret: somesecretstringthatwedontuseherebutitmakessymfonyhappy
+    algolia.get_secrets_from_travis: true
+    algolia.application_id: YOUR_APPLICATION_ID
+    algolia.api_key: YOUR_API_KEY
+    algolia.indexer.class: Algolia\AlgoliaSearchSymfonyDoctrineBundle\Tests\Indexer\Indexer
+    algolia.indexer_subscriber.class: Algolia\AlgoliaSearchSymfonyDoctrineBundle\Tests\EventListener\AlgoliaSearchDoctrineEventSubscriber
