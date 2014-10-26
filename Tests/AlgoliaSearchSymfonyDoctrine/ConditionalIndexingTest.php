@@ -37,7 +37,7 @@ class ConditionalIndexingTest extends BaseTest
         $this->persistAndFlush($product);
         $this->assertEquals(
             array(
-                'ProductWithConditionalIndexing_dev' => array(
+                metaenv('ProductWithConditionalIndexing_dev') => array(
                     array(
                         'name' => 'The Ultimate Algolia Userguide',
                         'objectID' => $this->getObjectID(['id' => $product->getId()])
@@ -60,7 +60,7 @@ class ConditionalIndexingTest extends BaseTest
 
         $this->assertEquals(
             array(
-                'ProductWithConditionalIndexing_dev' => array(
+                metaenv('ProductWithConditionalIndexing_dev') => array(
                     $this->getObjectID(['id' => $product->getId()])
                 )
             ),
@@ -85,7 +85,7 @@ class ConditionalIndexingTest extends BaseTest
         $this->persistAndFlush($product);
 
         $this->assertEquals(
-            array('ProductWithConditionalIndexing_dev' => array(
+            array(metaenv('ProductWithConditionalIndexing_dev') => array(
                     array(
                         'name' => 'The Ultimate Algolia Userguide',
                         'objectID' => $this->getObjectID(['id' => $product->getId()])
@@ -131,7 +131,7 @@ class ConditionalIndexingTest extends BaseTest
         // so it will unindex it.
 
         $this->assertEquals(
-            array('ProductWithConditionalIndexing_dev' => array($objectID)),
+            array(metaenv('ProductWithConditionalIndexing_dev') => array($objectID)),
             $this->getIndexer()->deletions
         );
     }

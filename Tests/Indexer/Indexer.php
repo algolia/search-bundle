@@ -66,12 +66,24 @@ class Indexer extends \Algolia\AlgoliaSearchSymfonyDoctrineBundle\Indexer\Indexe
                 $api_key = getenv('ALGOLIA_API_KEY');
             }
             
-        } catch (\Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException $e) {
+        } catch (\Symfony\Component\DependencyInjection\Exception\InvalidArgumentException $e) {
             // ignore this, it means we're just not running on Travis
         }
 
         parent::setApiSettings($application_id, $api_key);
 
         return $this;
+    }
+
+    public function getAlgoliaIndexName($entity_or_class)
+    {
+        // add a second layer of "environment" when running on Travis
+        // so that concurrent tests don't step on each other's toes trying to query the same index
+        return metaenv(parent::getAlgoliaIndexName($entity_or_class));
+    }
+
+    public function makeEnvIndexName($indexName, $perEnvironment)
+    {
+        return metaenv(parent::makeEnvIndexName($indexName, $perEnvironment));
     }
 }

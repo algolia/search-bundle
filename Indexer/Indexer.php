@@ -607,26 +607,35 @@ class Indexer
         return $this->indices[$indexName];
     }
 
+    public function makeEnvIndexName($indexName, $perEnvironment)
+    {
+        if ($perEnvironment) {
+            return $indexName . '_' . $this->environment;
+        } else {
+            return $indexName;
+        }
+    }
+
     public function search($indexName, $queryString, array $options = array())
     {
         $defaultOptions = [
-            'perEnvironment' => true
+            'perEnvironment' => true,
+            'adaptIndexName' => true
         ];
 
         $options = array_merge($defaultOptions, $options);
 
         $client = $this->getClient();
 
-        if (isset($options['perEnvironment'])) {
-            if ($options['perEnvironment']) {
-                $indexName .= '_' . $this->environment;
-            }
-            // this is not a real search option:
-            unset($options['perEnvironment']);
+        if ($options['adaptIndexName']) {
+            $indexName = $this->makeEnvIndexName($indexName, $options['perEnvironment']);
         }
 
-        // does initIndex cost something? If so, TODO: put $index in cache.
-        $index = $client->initIndex($indexName);
+        // these are not a real search option:
+        unset($options['perEnvironment']);
+        unset($options['adaptIndexName']);
+
+        $index = $this->getIndex($indexName);
 
         return $index->search($queryString, $options);
     }
@@ -640,7 +649,7 @@ class Indexer
         }
 
         // We're already finding the right index ourselves.
-        $options['perEnvironment'] = false;
+        $options['adaptIndexName'] = false;
 
         $indexName = $this->getAlgoliaIndexName($entityClass);
 
@@ -667,9 +676,7 @@ class Indexer
 
         $client = $this->getClient();
 
-        if ($options['perEnvironment']) {
-            $indexName .= '_' . $this->environment;
-        }
+        $indexName = $this->makeEnvIndexName($indexName, $options['perEnvironment']);
 
         $this->algoliaTask(
             $indexName,

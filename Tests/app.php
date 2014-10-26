@@ -37,3 +37,14 @@ try {
 global $kernel;
 $kernel = new AppKernel('dev', true);
 $kernel->boot();
+
+/**
+ * This is ONLY used in tests.
+ * We do some work to change all index names
+ * when running on travis so that they incorporate
+ * the travis job id and thus can run in parallel.
+ */
+function metaenv($env)
+{
+	return $env.getenv('TRAVIS_JOB_ID');
+}

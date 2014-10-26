@@ -15,7 +15,7 @@ class ChangeDetectionTest extends BaseTest
         $this->persistAndFlush($product);
         $this->assertEquals(
             array(
-                'Product_dev' => array(
+                metaenv('Product_dev') => array(
                     array(
                         'objectID' => $this->getObjectID(['id' => 1]),
                         'name' => 'Precision Watch'
@@ -39,7 +39,7 @@ class ChangeDetectionTest extends BaseTest
         $this->persistAndFlush($product);
         $this->assertEquals(
             array(
-                'Product_dev' => array(
+                metaenv('Product_dev') => array(
                     array(
                         'objectID' => $this->getObjectID(['id' => $product->getId()]),
                         'name' => 'Yet Another Precision Watch'
@@ -61,7 +61,7 @@ class ChangeDetectionTest extends BaseTest
         $this->persistAndFlush($product);
         $this->assertEquals(
             array(
-                'ProductWithIndexedMethod_dev' => array(
+                metaenv('ProductWithIndexedMethod_dev') => array(
                     array(
                         'objectID' => $this->getObjectID(['id' => 1]),
                         'name' => 'Precision Watch',
@@ -88,7 +88,7 @@ class ChangeDetectionTest extends BaseTest
         $this->persistAndFlush($product);
         $this->assertEquals(
             array(
-                'ProductWithIndexedMethod_dev' => array(
+                metaenv('ProductWithIndexedMethod_dev') => array(
                     array(
                         'objectID' => $this->getObjectID(['id' => $product->getId()]),
                         'name' => 'Yet Another Precision Watch',
@@ -133,7 +133,7 @@ class ChangeDetectionTest extends BaseTest
         $this->removeAndFlush($product);
         $this->assertEquals(
             array(
-                'Product_dev' => array(
+                metaenv('Product_dev') => array(
                     $this->getObjectID(['id' => $id])
                 )
             ),
@@ -173,7 +173,7 @@ class ChangeDetectionTest extends BaseTest
         $this->assertEquals(array(), $done['deletions']);
         $this->assertEquals(array(), $done['updates']);
         $this->assertEquals(array(
-            'ProductWithoutAutoIndex_dev' => array(
+            metaenv('ProductWithoutAutoIndex_dev') => array(
                 array(
                     'name' => 'This Product Is Not Auto Indexed, But I\'ll Index It',
                     'objectID' => $this->getObjectID(['id' => $id])
@@ -183,7 +183,7 @@ class ChangeDetectionTest extends BaseTest
 
         $done = $indexer->unIndex($this->getEntityManager(), $product);
         $this->assertEquals(array(
-            'ProductWithoutAutoIndex_dev' => array(
+            metaenv('ProductWithoutAutoIndex_dev') => array(
                 $this->getObjectID(['id' => $id])
             )
         ), $done['deletions']);
