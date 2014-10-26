@@ -86,4 +86,19 @@ class Indexer extends \Algolia\AlgoliaSearchSymfonyDoctrineBundle\Indexer\Indexe
     {
         return metaenv(parent::makeEnvIndexName($indexName, $perEnvironment));
     }
+
+    public function deleteAllIndices()
+    {
+
+        if (count($this->indices) === 0) {
+            echo "No remaining Algolia index to delete!\n";
+        }
+
+        foreach ($this->indices as $indexName => $unused) {
+            echo "Deleting remaining index $indexName...\n";
+            $this->deleteIndex($indexName, ['adaptIndexName' => false]);
+        }
+
+        return $this;
+    }
 }

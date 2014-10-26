@@ -51,7 +51,7 @@ class Indexer
     private $latestAlgoliaTaskID = array();
 
     // Cache index objects from the php client lib
-    private $indices = array();
+    protected $indices = array();
 
     /**
      * @internal
@@ -446,8 +446,11 @@ class Indexer
     private function algoliaTask($indexName, $res)
     {
         if (!empty($res['taskID'])) {
-            if (!isset($this->latestAlgoliaTaskID[$indexName]) || $res['taskID'] > $this->latestAlgoliaTaskID[$indexName]) {
-                $this->latestAlgoliaTaskID[$indexName] = $res['taskID'];
+            if (!isset($this->latestAlgoliaTaskID[$indexName]) || $res['taskID'] > $this->latestAlgoliaTaskID[$indexName]['taskID']) {
+                $this->latestAlgoliaTaskID[$indexName] = [
+                    'index' => $this->getIndex($indexName),
+                    'taskID' => $res['taskID']
+                ];
             }
         }
 
@@ -669,27 +672,34 @@ class Indexer
     public function deleteIndex($indexName, array $options = array())
     {
         $defaultOptions = [
-            'perEnvironment' => true
+            'perEnvironment' => true,
+            'adaptIndexName' => true
         ];
 
         $options = array_merge($defaultOptions, $options);
 
         $client = $this->getClient();
 
-        $indexName = $this->makeEnvIndexName($indexName, $options['perEnvironment']);
+        if ($options['adaptIndexName']) {
+            $indexName = $this->makeEnvIndexName($indexName, $options['perEnvironment']);
+        }
 
         $this->algoliaTask(
             $indexName,
             $this->getClient()->deleteIndex($indexName)
         );
 
+        if (isset($this->indices[$indexName])) {
+            unset($this->indices[$indexName]);
+        }
+
         return $this;
     }
 
     public function waitForAlgoliaTasks()
     {
-        foreach ($this->latestAlgoliaTaskID as $indexName => $taskID) {
-            $this->getIndex($indexName)->waitTask($taskID);
+        foreach ($this->latestAlgoliaTaskID as $indexName => $data) {
+            $data['index']->waitTask($data['taskID']);
             unset($this->latestAlgoliaTaskID[$indexName]);
         }
 

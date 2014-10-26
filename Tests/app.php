@@ -49,3 +49,26 @@ function metaenv($env)
 {
 	return $env.getenv('TRAVIS_JOB_ID');
 }
+
+/**
+ * Clean up our mess.
+ */
+register_shutdown_function(function () use ($dbParams, $parameters) {
+
+	echo "\n\nPost PHPUnit cleanup:\n";
+	global $kernel;
+	echo "Deleting remaining indexes and waiting for pending Algolia tasks to finish...\n";
+	
+	$kernel
+	->getContainer()
+	->get('algolia.indexer')
+	->deleteAllIndices()
+	->waitForAlgoliaTasks();
+
+	$conn = DriverManager::getConnection($dbParams);
+	$sm = $conn->getSchemaManager();
+	echo "Dropping database {$parameters['database_name']}...\n";
+	$sm->dropDatabase($parameters['database_name']);
+	$conn->close();
+	echo "kthxbai!\n";
+});
