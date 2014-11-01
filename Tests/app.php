@@ -69,5 +69,4 @@ register_shutdown_function(function () use ($dbParams, $parameters) {
     echo "Dropping database {$parameters['database_name']}...\n";
     $sm->dropDatabase($parameters['database_name']);
     $conn->close();
-    echo "kthxbai!\n";
 });
