@@ -131,7 +131,7 @@ With autoindexing enabled, it would have been indexed by the `$em->flush()` call
 The `ManualIndexer` class also provides the `unIndex` method to manually un-index entities and the `reIndex` method to re-index a whole collection.
 Please see [the methods' comments](Indexer/ManualIndexer.php) for more info.
 
-## Indexing per environment
+## Per environment indexing
 
 By default, Algolia index names are suffixed with the name of the current application environment.
 
@@ -157,7 +157,7 @@ It is often useful to skip indexing an entity based on some condition.
 
 To this end, we provide the `IndexIf` annotation. This annotation can only be used on methods, and the methods should only depend on fields the ORM is aware of. Example:
 
-```
+```php
 /**
  * Product
  *
@@ -178,3 +178,16 @@ class Product
 ```
 
 You can have several `IndexIf` conditions, in which case the record is indexed if they *all* return true. It may be better for readability to keep only one such annotation though.
+
+## Advanced index settings
+
+You can optionally specify most of your index settings directly in the `Index` annotation. Most options supported by Algolia can be set this way.
+
+Please see the [`Index` annotation class](Mapping/Annotation/Index.php) for more details.
+
+The advanced settings are not automatically synchronized with Algolia, but we provide a command line command to do it:
+
+```bash
+php app/console algolia:settings # show the local settings that are not applied to the Algolia indexes
+php app/console algolia:settings --push # push the configuration changes to Algolia servers
+```
