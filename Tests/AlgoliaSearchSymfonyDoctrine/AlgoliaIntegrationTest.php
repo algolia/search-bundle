@@ -36,10 +36,10 @@ class AlgoliaIntegrationTest extends BaseTest
 
         $this->getIndexer()->waitForAlgoliaTasks();
         
-        $results = $this->getIndexer()->search('ProductForAlgoliaIntegrationTest', 'My First Product');
+        $results = $this->getIndexer()->rawSearch('ProductForAlgoliaIntegrationTest', 'My First Product');
         
-        $this->assertEquals(1, $results['nbHits']);
-        $this->assertEquals($this->getObjectID(['id' => $product->getId()]), $results['hits'][0]['objectID']);
+        $this->assertEquals(1, $results->getNbHits());
+        $this->assertEquals($this->getObjectID(['id' => $product->getId()]), $results->getHits()[0]['objectID']);
     }
 
     public function testUpdatedProductIsIndexedAndRetrieved()
@@ -60,11 +60,11 @@ class AlgoliaIntegrationTest extends BaseTest
 
         $this->getIndexer()->waitForAlgoliaTasks();
 
-        $results = $this->getIndexer()->search('ProductForAlgoliaIntegrationTest', 'Totally Different Name.');
+        $results = $this->getIndexer()->rawSearch('ProductForAlgoliaIntegrationTest', 'Totally Different Name.');
 
-        $this->assertEquals(1, $results['nbHits']);
-        $this->assertEquals($this->getObjectID(['id' => $product->getId()]), $results['hits'][0]['objectID']);
-        $this->assertEquals('Totally Different Name.', $results['hits'][0]['name']);
+        $this->assertEquals(1, $results->getNbHits());
+        $this->assertEquals($this->getObjectID(['id' => $product->getId()]), $results->getHits()[0]['objectID']);
+        $this->assertEquals('Totally Different Name.', $results->getHits()[0]['name']);
     }
 
     public function testProductIsUnindexed()
@@ -82,14 +82,14 @@ class AlgoliaIntegrationTest extends BaseTest
 
         // Check that the product is indexed!
         $this->getIndexer()->waitForAlgoliaTasks();
-        $results = $this->getIndexer()->search('ProductForAlgoliaIntegrationTest', 'My First Product');
-        $this->assertEquals(1, $results['nbHits']);
-        $this->assertEquals($this->getObjectID(['id' => $product->getId()]), $results['hits'][0]['objectID']);
+        $results = $this->getIndexer()->rawSearch('ProductForAlgoliaIntegrationTest', 'My First Product');
+        $this->assertEquals(1, $results->getNbHits());
+        $this->assertEquals($this->getObjectID(['id' => $product->getId()]), $results->getHits()[0]['objectID']);
 
         $this->removeAndFlush($product);
         $this->getIndexer()->waitForAlgoliaTasks();
-        $results = $this->getIndexer()->search('ProductForAlgoliaIntegrationTest', 'My First Product');
-        $this->assertEquals(0, $results['nbHits']);
+        $results = $this->getIndexer()->rawSearch('ProductForAlgoliaIntegrationTest', 'My First Product');
+        $this->assertEquals(0, $results->getNbHits());
     }
 
     public function testMultipleInserts()
@@ -114,12 +114,12 @@ class AlgoliaIntegrationTest extends BaseTest
         $this->getEntityManager()->flush();
         $this->getIndexer()->waitForAlgoliaTasks();
 
-        $results = $this->getIndexer()->search('ProductForAlgoliaIntegrationTest', 'Product Number');
-        $this->assertEquals($n, $results['nbHits']);
+        $results = $this->getIndexer()->rawSearch('ProductForAlgoliaIntegrationTest', 'Product Number');
+        $this->assertEquals($n, $results->getNbHits());
 
         $namesReturned = array_map(function ($p) {
             return $p['name'];
-        }, $results['hits']);
+        }, $results->getHits());
 
         sort($namesReturned);
         sort($names);
@@ -127,7 +127,7 @@ class AlgoliaIntegrationTest extends BaseTest
         $this->assertEquals($names, $namesReturned);
     }
 
-    public function testNativeSearch()
+    public function testSearch()
     {
         $product = new Entity\ProductForAlgoliaIntegrationTest();
 
@@ -142,20 +142,20 @@ class AlgoliaIntegrationTest extends BaseTest
 
         $this->getIndexer()->waitForAlgoliaTasks();
 
-        $results = $this->getIndexer()->nativeSearch(
+        $results = $this->getIndexer()->search(
             $this->getEntityManager(),
             'Algolia\AlgoliaSearchSymfonyDoctrineBundle\Tests\Entity\ProductForAlgoliaIntegrationTest',
             'My First Product'
         );
 
-        $this->assertEquals(1, $results['nbHits']);
+        $this->assertEquals(1, $results->getNbHits());
         $this->assertEquals(
             'Algolia\AlgoliaSearchSymfonyDoctrineBundle\Tests\Entity\ProductForAlgoliaIntegrationTest',
-            get_class($results['hits'][0])
+            get_class($results->getHit(0))
         );
         $this->assertEquals(
             'My First Product',
-            $results['hits'][0]->getName()
+            $results->getHit(0)->getName()
         );
     }
 }

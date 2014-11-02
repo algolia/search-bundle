@@ -2,12 +2,15 @@
 
 namespace Algolia\AlgoliaSearchSymfonyDoctrineBundle\Indexer;
 
+use Doctrine\ORM\EntityManager;
+
 use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Exception\UnknownEntity;
 use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Exception\MissingGetter;
 use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Exception\NotCallable;
 use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Exception\NoPrimaryKey;
 use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Exception\NotAnAlgoliaEntity;
 use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping\Loader\AnnotationLoader;
+use Algolia\AlgoliaSearchSymfonyDoctrineBundle\SearchResult\SearchResult;
 
 class Indexer
 {
@@ -100,7 +103,7 @@ class Indexer
      * @return bool
      * @internal
      */
-    public function discoverEntity($entity_or_class, $em)
+    public function discoverEntity($entity_or_class, EntityManager $em)
     {
         if (is_object($entity_or_class)) {
             $entity = $entity_or_class;
@@ -123,7 +126,7 @@ class Indexer
      * Tells us whether we need to autoindex this entity.
      * @internal
      */
-    public function autoIndex($entity, $em)
+    public function autoIndex($entity, EntityManager $em)
     {
         if (!$this->discoverEntity($entity, $em)) {
             return false;
@@ -517,7 +520,7 @@ class Indexer
         return $this;
     }
 
-    public function getManualIndexer($em)
+    public function getManualIndexer(EntityManager $em)
     {
         return new ManualIndexer($this, $em);
     }
@@ -552,7 +555,7 @@ class Indexer
         }
     }
 
-    public function search($indexName, $queryString, array $options = array())
+    public function rawSearch($indexName, $queryString, array $options = array())
     {
         $defaultOptions = [
             'perEnvironment' => true,
@@ -573,10 +576,10 @@ class Indexer
 
         $index = $this->getIndex($indexName);
 
-        return $index->search($queryString, $options);
+        return new SearchResult($index->search($queryString, $options));
     }
 
-    public function nativeSearch($em, $entityName, $queryString, array $options = array())
+    public function search(EntityManager $em, $entityName, $queryString, array $options = array())
     {
         $entityClass = $em->getRepository($entityName)->getClassName();
 
@@ -592,16 +595,18 @@ class Indexer
         $indexName = $this->getAlgoliaIndexName($entityClass);
 
         // get results from Algolia
-        $results = $this->search($indexName, $queryString, $options);
+        $results = $this->rawSearch($indexName, $queryString, $options);
+
+        $hydratedHits = [];
 
         // hydrate them as Doctrine entities
-        foreach ($results['hits'] as $r => $result) {
+        foreach ($results->getHits() as $result) {
             $id = $this->unserializePrimaryKey($result['objectID']);
             $entity = $em->find($entityClass, $id);
-            $results['hits'][$r] = $entity;
+            $hydratedHits[] = $entity;
         }
 
-        return $results;
+        return new SearchResult($results->getOriginalResult(), $hydratedHits);
     }
 
     public function deleteIndex($indexName, array $options = array())

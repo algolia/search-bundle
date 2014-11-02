@@ -86,8 +86,8 @@ class ReindexCommandTest extends BaseTest
 
         $this->command->run($input, new ConsoleOutput());
 
-        $resuts = $this->getIndexer()->search('ProductForReindexTest', 'Product');
-        $this->assertEquals(static::$nProducts, $resuts['nbHits']);
+        $result = $this->getIndexer()->rawSearch('ProductForReindexTest', 'Product');
+        $this->assertEquals(static::$nProducts, $result->getNbHits());
     }
 
     public function testSafeReindex()

@@ -166,11 +166,11 @@ class ManualIndexingTest extends BaseTest
 
         $this->getIndexer()->waitForAlgoliaTasks();
 
-        $results = $this->getIndexer()->search('ProductWithoutAutoIndex', 'Product');
+        $results = $this->getIndexer()->rawSearch('ProductWithoutAutoIndex', 'Product');
 
         $this->getIndexer()->deleteIndex('ProductWithoutAutoIndex')->waitForAlgoliaTasks();
 
         $this->assertEquals(10, $nProcessed);
-        $this->assertEquals(10, $results['nbHits']);
+        $this->assertEquals(10, $results->getNbHits());
     }
 }

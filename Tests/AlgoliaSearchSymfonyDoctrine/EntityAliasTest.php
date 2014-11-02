@@ -28,7 +28,7 @@ class EntityAliasTest extends BaseTest
         $this->getIndexer()->waitForAlgoliaTasks();
     }
 
-    public function testNativeSearchByEntityAlias()
+    public function testSearchByEntityAlias()
     {
         $product = new Entity\ProductForAlgoliaIntegrationTest();
 
@@ -41,19 +41,14 @@ class EntityAliasTest extends BaseTest
 
         $this->persistAndFlush($product);
 
-        $this
-        ->getEntityManager()
-        ->getRepository('AlgoliaSearchSymfonyDoctrineBundle:ProductForAlgoliaIntegrationTest')
-        ->findOneBy(['name' => 'My First Produdct']);
-
         $this->getIndexer()->waitForAlgoliaTasks();
 
-        $results = $this->getIndexer()->nativeSearch(
+        $result = $this->getIndexer()->search(
             $this->getEntityManager(),
             'AlgoliaSearchSymfonyDoctrineBundle:ProductForAlgoliaIntegrationTest',
             'My First Product'
         );
 
-        $this->assertEquals(1, $results['nbHits']);
+        $this->assertEquals(1, $result->getNbHits());
     }
 }
