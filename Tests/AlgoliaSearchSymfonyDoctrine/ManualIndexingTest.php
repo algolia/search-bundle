@@ -8,6 +8,31 @@ class ManualIndexingTest extends BaseTest
         'ProductWithoutAutoIndex'
     ];
 
+    static $nProducts = 100;
+
+    public function cleanDatabaseAndMakeProducts()
+    {
+        parent::setupDatabase();
+
+        $em = $this->getEntityManager();
+
+        for ($i = 0; $i < static::$nProducts; $i += 1) {
+            $product = new Entity\ProductWithoutAutoIndex();
+
+            $product
+            ->setName("Product $i")
+            ->setShortDescription("Product n°$i is cool.")
+            ->setDescription("Product n°$i is right before n°".($i+1)." unless it is the last one.")
+            ->setPrice(1 + $i % 100) // ensure price is > 0 else IndexIf prevents indexing and it messes up the assertions
+            ->setRating($i % 10);
+
+            $em->persist($product);
+        }
+
+        $em->flush();
+        $em->clear();
+    }
+
     public function testNonAutoIndexedProductIsNotAutomaticallyIndexed()
     {
         $indexer = $this->getIndexer();
@@ -58,5 +83,71 @@ class ManualIndexingTest extends BaseTest
             )
         ), $indexer->deletions);
         $this->assertEquals(array(), $indexer->updates);
+    }
+
+    public function testManualIndexByEntityName()
+    {
+        $this->cleanDatabaseAndMakeProducts();
+
+        $nIndexed = $this->getIndexer()->getManualIndexer($this->getEntityManager())->index(
+            'AlgoliaSearchSymfonyDoctrineBundle:ProductWithoutAutoIndex',
+            ['batchSize' => 27]
+        );
+
+        $this->assertEquals(
+            static::$nProducts,
+            $nIndexed
+        );
+    }
+
+    public function testManualUnIndexByEntityName()
+    {
+        $this->cleanDatabaseAndMakeProducts();
+
+        $nIndexed = $this->getIndexer()->getManualIndexer($this->getEntityManager())->unIndex(
+            'AlgoliaSearchSymfonyDoctrineBundle:ProductWithoutAutoIndex',
+            ['batchSize' => 27]
+        );
+
+        $this->assertEquals(
+            static::$nProducts,
+            $nIndexed
+        );
+    }
+
+    public function testManualIndexByQuery()
+    {
+        $this->cleanDatabaseAndMakeProducts();
+
+        $nIndexed = $this->getIndexer()->getManualIndexer($this->getEntityManager())->index(
+            'AlgoliaSearchSymfonyDoctrineBundle:ProductWithoutAutoIndex',
+            [
+                'batchSize' => 27,
+                'query' => $this->getEntityManager()->createQuery('SELECT p FROM AlgoliaSearchSymfonyDoctrineBundle:ProductWithoutAutoIndex p WHERE p.rating = 9')
+            ]
+        );
+
+        $this->assertEquals(
+            10,
+            $nIndexed
+        );
+    }
+
+    public function testManualUnIndexByQuery()
+    {
+        $this->cleanDatabaseAndMakeProducts();
+
+        $nUnIndexed = $this->getIndexer()->getManualIndexer($this->getEntityManager())->unIndex(
+            'AlgoliaSearchSymfonyDoctrineBundle:ProductWithoutAutoIndex',
+            [
+                'batchSize' => 27,
+                'query' => $this->getEntityManager()->createQuery('SELECT p FROM AlgoliaSearchSymfonyDoctrineBundle:ProductWithoutAutoIndex p WHERE p.rating = 9')
+            ]
+        );
+
+        $this->assertEquals(
+            10,
+            $nUnIndexed
+        );
     }
 }

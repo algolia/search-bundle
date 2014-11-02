@@ -80,6 +80,11 @@ class BaseTest extends \PHPUnit_Framework_TestCase
 
     public function getEntityManager()
     {
+        return self::staticGetEntityManager();
+    }
+
+    public static function staticGetEntityManager()
+    {
         global $kernel;
         return $kernel->getContainer()->get('doctrine.orm.entity_manager');
     }

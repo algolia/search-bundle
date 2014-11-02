@@ -20,9 +20,34 @@ class ReindexCommandTest extends BaseTest
         'ProductForReindexTest'
     ];
 
+    public static $nProducts = 30;
+
+    public static function setUpBeforeClass()
+    {
+        parent::setUpBeforeClass();
+
+        $em = static::staticGetEntityManager();
+
+        // Setup our fixtures
+        for ($i = 0; $i < static::$nProducts; $i += 1) {
+            $product = new Entity\ProductForReindexTest();
+
+            $product
+            ->setName("Product $i")
+            ->setShortDescription("Product n°$i is cool.")
+            ->setDescription("Product n°$i is right before n°".($i+1)." unless it is the last one.")
+            ->setPrice(1 + $i % 100) // ensure price is > 0 else IndexIf prevents indexing and it messes up the assertions
+            ->setRating($i % 10);
+
+            $em->persist($product);
+        }
+
+        $em->flush();
+        $em->clear();
+    }
+
     public function setUp()
     {
-        static::setupDatabase();
         parent::setUp();
 
         global $kernel;
@@ -40,92 +65,43 @@ class ReindexCommandTest extends BaseTest
         $this->getIndexer()->waitForAlgoliaTasks();
     }
 
-    public function safeReindex($use_entity_alias)
+    public function reIndex($use_entity_alias, $safe = true)
     {
-        $n = 100;
-        for ($i = 0; $i < $n; $i += 1) {
-            $product = new Entity\ProductForReindexTest();
-
-            $product
-            ->setName("Product $i")
-            ->setShortDescription("Product n°$i is cool.")
-            ->setDescription("Product n°$i is right before n°".($i+1)." unless it is the last one.")
-            ->setPrice(1 + $i % 100) // ensure price is > 0 else IndexIf prevents indexing and it messes up the assertions
-            ->setRating($i % 10);
-
-            $this->getEntityManager()->persist($product);
-        }
-
-        $this->getEntityManager()->flush();
-        $this->getEntityManager()->clear();
-
         $entityName = $use_entity_alias ?
             'AlgoliaSearchSymfonyDoctrineBundle:ProductForReindexTest' :
             'Algolia\AlgoliaSearchSymfonyDoctrineBundle\Tests\Entity\ProductForReindexTest'
         ;
 
-        $input = new ArrayInput(array(
+        $options = [
             'entityName' => $entityName,
-            '--batch-size' => 10,
+            '--batch-size' => 8, // not a divisor of static::$nProducts, on purpose
             '--sync' => ' '
-        ));
+        ];
+
+        if (!$safe) {
+            $options['--unsafe'] = ' ';
+        }
+
+        $input = new ArrayInput($options);
 
         $this->command->run($input, new ConsoleOutput());
 
         $resuts = $this->getIndexer()->search('ProductForReindexTest', 'Product');
-        $this->assertEquals($n, $resuts['nbHits']);
+        $this->assertEquals(static::$nProducts, $resuts['nbHits']);
     }
 
     public function testSafeReindex()
     {
-        $this->safeReindex($use_entity_alias = false);
+        $this->reIndex($use_entity_alias = false, $safe = true);
     }
 
     public function testReindexCommandUnderstandsEntityAliases()
     {
-        $this->safeReindex($use_entity_alias = true);
+        $this->reIndex($use_entity_alias = true, $safe = true);
     }
 
     public function testUnSafeReindex()
     {
-        $n = 100;
-        for ($i = 0; $i < $n; $i += 1) {
-            $product = new Entity\ProductForReindexTest();
-
-            $product
-            ->setName("Product $i")
-            ->setShortDescription("Product n°$i is cool.")
-            ->setDescription("Product n°$i is right before n°".($i+1)." unless it is the last one.")
-            ->setPrice(1 + $i % 100) // ensure price is > 0 else IndexIf prevents indexing and it messes up the assertions
-            ->setRating($i % 10);
-
-            $this->getEntityManager()->persist($product);
-        }
-
-        $this->assertEquals($n, $this->getEntityManager()->getUnitOfWork()->size(), 'Size of unit of work is not correct.');
-
-        $this->getEntityManager()->flush();
-        $this->getEntityManager()->clear();
-
-        $nInDB = $this->getEntityManager()->createQueryBuilder()
-        ->select('count(e)')->from('Algolia\AlgoliaSearchSymfonyDoctrineBundle\Tests\Entity\ProductForReindexTest', 'e')
-        ->getQuery()
-        ->getSingleScalarResult();
-
-        $this->assertEquals($n, $nInDB, 'Number of items in the db is not correct.');
-
-        $input = new ArrayInput(array(
-            'entityName' => 'Algolia\AlgoliaSearchSymfonyDoctrineBundle\Tests\Entity\ProductForReindexTest',
-            '--batch-size' => 10,
-            '--sync' => ' ',
-            '--unsafe' => ' '
-        ));
-
-        $nIndexed = $this->command->run($input, new ConsoleOutput());
-
-        $this->assertEquals($n, $nIndexed, 'Indexer did not reindex the expected number of items.');
-
-        $resuts = $this->getIndexer()->search('ProductForReindexTest', 'Product');
-        $this->assertEquals($n, $resuts['nbHits']);
+        $this->reIndex($use_entity_alias = false, $safe = false);
     }
 }
