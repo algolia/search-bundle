@@ -150,4 +150,27 @@ class ManualIndexingTest extends BaseTest
             $nUnIndexed
         );
     }
+
+    public function testReIndexByQuery()
+    {
+        $this->getIndexer()->isolateFromAlgolia(false);
+        $this->getIndexer()->deleteIndex('ProductWithoutAutoIndex')->waitForAlgoliaTasks();
+
+        $nProcessed = $this->getIndexer()->getManualIndexer($this->getEntityManager())->reIndex(
+            'AlgoliaSearchSymfonyDoctrineBundle:ProductWithoutAutoIndex',
+            [
+                'batchSize' => 27,
+                'query' => $this->getEntityManager()->createQuery('SELECT p FROM AlgoliaSearchSymfonyDoctrineBundle:ProductWithoutAutoIndex p WHERE p.rating = 9')
+            ]
+        );
+
+        $this->getIndexer()->waitForAlgoliaTasks();
+
+        $results = $this->getIndexer()->search('ProductWithoutAutoIndex', 'Product');
+
+        $this->getIndexer()->deleteIndex('ProductWithoutAutoIndex')->waitForAlgoliaTasks();
+
+        $this->assertEquals(10, $nProcessed);
+        $this->assertEquals(10, $results['nbHits']);
+    }
 }
