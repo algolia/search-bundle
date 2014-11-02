@@ -24,11 +24,16 @@ class ReindexCommand extends ContainerAwareCommand
         ;
     }
 
+    protected function getEntityManager()
+    {
+        return $this
+        ->getContainer()
+        ->get('doctrine.orm.entity_manager');
+    }
+
     protected function getEntityClasses()
     {
-        $metaData = $this
-        ->getContainer()
-        ->get('doctrine.orm.entity_manager')
+        $metaData = $this->getEntityManager()
         ->getMetadataFactory()
         ->getAllMetaData();
 
@@ -41,7 +46,11 @@ class ReindexCommand extends ContainerAwareCommand
     {
         $toReindex = [];
 
-        $filter = $input->getArgument('entityName');
+        if ($input->hasArgument('entityName')) {
+            $filter = $this->getEntityManager()->getRepository($input->getArgument('entityName'))->getClassName();
+        } else {
+            $filter = null;
+        }
 
         foreach ($this->getEntityClasses() as $class) {
             if (!$filter || $class === $filter) {
@@ -57,19 +66,22 @@ class ReindexCommand extends ContainerAwareCommand
 
         $safe = !$input->getOption('unsafe');
 
+        $nIndexed = 0;
         foreach ($toReindex as $className) {
-            $this->reIndex($className, $batchSize, $safe);
+            $nIndexed += $this->reIndex($className, $batchSize, $safe);
         }
 
         if ($input->getOption('sync')) {
             $this->getContainer()->get('algolia.indexer')->waitForAlgoliaTasks();
         }
+
+        return $nIndexed;
     }
 
     public function reIndex($className, $batchSize = 1000, $safe = true)
     {
         $indexer = $this->getContainer()->get('algolia.indexer');
-        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
+        $em = $this->getEntityManager();
 
         $query = $em->createQueryBuilder()->select('e')->from($className, 'e')->getQuery();
 
@@ -109,7 +121,7 @@ class ReindexCommand extends ContainerAwareCommand
                 break;
             } else {
                 $nIndexed += count($batch);
-                $tmp = $indexer->index($em, $batch, ['indexName' => $indexName]);
+                $indexer->index($em, $batch, ['indexName' => $indexName]);
             }
         }
 
@@ -119,6 +131,7 @@ class ReindexCommand extends ContainerAwareCommand
                 $indexer->getClient()->moveIndex($indexName, $finalIndexName)
             );
         }
-        
+
+        return $nIndexed;
     }
 }

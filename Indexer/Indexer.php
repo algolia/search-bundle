@@ -106,8 +106,8 @@ class Indexer
             $entity = $entity_or_class;
             $class = get_class($entity);
         } else {
-            $class = $entity_or_class;
-            $entity = new $entity_or_class();
+            $class = $em->getRepository($entity_or_class)->getClassName();
+            $entity = new $class();
         }
 
         // check if we already saw this type of entity
@@ -678,8 +678,10 @@ class Indexer
         return $index->search($queryString, $options);
     }
 
-    public function nativeSearch($em, $entityClass, $queryString, array $options = array())
+    public function nativeSearch($em, $entityName, $queryString, array $options = array())
     {
+        $entityClass = $em->getRepository($entityName)->getClassName();
+
         if (!$this->discoverEntity($entityClass, $em)) {
             throw new NotAnAlgoliaEntity(
                 'Can\'t search, entity of class `'.$entityClass.'` is not recognized as an Algolia enriched entity.'

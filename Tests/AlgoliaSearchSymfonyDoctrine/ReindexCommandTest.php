@@ -36,7 +36,7 @@ class ReindexCommandTest extends BaseTest
         $this->getIndexer()->waitForAlgoliaTasks();
     }
 
-    public function testSafeReindex()
+    public function safeReindex($use_entity_alias)
     {
         $n = 100;
         for ($i = 0; $i < $n; $i += 1) {
@@ -53,10 +53,15 @@ class ReindexCommandTest extends BaseTest
         }
 
         $this->getEntityManager()->flush();
+        $this->getEntityManager()->clear();
 
+        $entityName = $use_entity_alias ?
+            'AlgoliaSearchSymfonyDoctrineBundle:ProductForReindexTest' :
+            'Algolia\AlgoliaSearchSymfonyDoctrineBundle\Tests\Entity\ProductForReindexTest'
+        ;
 
         $input = new ArrayInput(array(
-            'entityName' => 'Algolia\AlgoliaSearchSymfonyDoctrineBundle\Tests\Entity\ProductForReindexTest',
+            'entityName' => $entityName,
             '--batch-size' => 10,
             '--sync' => ' '
         ));
@@ -65,6 +70,16 @@ class ReindexCommandTest extends BaseTest
 
         $resuts = $this->getIndexer()->search('ProductForReindexTest', 'Product');
         $this->assertEquals($n, $resuts['nbHits']);
+    }
+
+    public function testSafeReindex()
+    {
+        $this->safeReindex($use_entity_alias = false);
+    }
+
+    public function testReindexCommandUnderstandsEntityAliases()
+    {
+        $this->safeReindex($use_entity_alias = true);
     }
 
     public function testUnSafeReindex()
@@ -83,8 +98,17 @@ class ReindexCommandTest extends BaseTest
             $this->getEntityManager()->persist($product);
         }
 
-        $this->getEntityManager()->flush();
+        $this->assertEquals($n, $this->getEntityManager()->getUnitOfWork()->size(), 'Size of unit of work is not correct.');
 
+        $this->getEntityManager()->flush();
+        $this->getEntityManager()->clear();
+
+        $nInDB = $this->getEntityManager()->createQueryBuilder()
+        ->select('count(e)')->from('Algolia\AlgoliaSearchSymfonyDoctrineBundle\Tests\Entity\ProductForReindexTest', 'e')
+        ->getQuery()
+        ->getSingleScalarResult();
+
+        $this->assertEquals($n, $nInDB, 'Number of items in the db is not correct.');
 
         $input = new ArrayInput(array(
             'entityName' => 'Algolia\AlgoliaSearchSymfonyDoctrineBundle\Tests\Entity\ProductForReindexTest',
@@ -93,7 +117,10 @@ class ReindexCommandTest extends BaseTest
             '--unsafe' => ' '
         ));
 
-        $this->command->run($input, new ConsoleOutput());
+        $nIndexed = $this->command->run($input, new ConsoleOutput());
+
+        $this->assertEquals($n, $nIndexed, 'Indexer did not reindex the expected number of items.');
+
         $resuts = $this->getIndexer()->search('ProductForReindexTest', 'Product');
         $this->assertEquals($n, $resuts['nbHits']);
     }
