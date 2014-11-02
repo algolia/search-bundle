@@ -450,6 +450,15 @@ class Indexer
         $this->removeScheduledIndexChanges();
     }
 
+    /**
+     * Keep track of a remote task to be able to wait for it later.
+     * Since it is enough to check that the task with the higher taskID is complete to
+     * conclude that tasks with lower taskID's are done, we only store the latest one.
+     *
+     * We also store the index object itself, that way, when we call waitForAlgoliaTasks,
+     * we don't have to call getIndex, which would otherwise create the index in some cases.
+     * This makes sure we don't accidentally create an index when just waiting for its deletion.
+     */
     public function algoliaTask($indexName, $res)
     {
         if (!empty($res['taskID'])) {
@@ -555,6 +564,19 @@ class Indexer
         }
     }
 
+    /**
+     * Performs a raw search in the Algolia indexes, i.e. will not involve
+     * the local DB at all, and only return what's indexed on Algolia's servers.
+     * 
+     * @param  string $indexName   The name of the index to search from.
+     * @param  string $queryString The query string.
+     * @param  array  $options     Any search option understood by https://github.com/algolia/algoliasearch-client-php, plus:
+     *                             - perEnvironment: automatically suffix the index name with the environment, defaults to true
+     *                             - adaptIndexName: transform the index name as needed (e.g. add environment suffix), defaults to true.
+     *                               This option is here because sometimes we already have the suffixed index name, so calling rawSearch with
+     *                               adaptIndexName = false ensures we end up with the correct Algolia index name.
+     * @return SearchResult The results returned by Algolia. The `isHydrated` method of the result will return false.
+     */
     public function rawSearch($indexName, $queryString, array $options = array())
     {
         $defaultOptions = [
@@ -579,6 +601,17 @@ class Indexer
         return new SearchResult($index->search($queryString, $options));
     }
 
+    /**
+     * Perform a 'native' search on the Algolia servers.
+     * By native, it means that once the results are retrieved, they will be fetched from the local DB
+     * and replaced with native ORM entities.
+     * 
+     * @param  EntityManager $em   The Doctrine Entity Manager to use to fetch entities when hydrating the results.
+     * @param  string $indexName   The name of the index to search from.
+     * @param  string $queryString The query string.
+     * @param  array  $options     Any search option understood by https://github.com/algolia/algoliasearch-client-php 
+     * @return SearchResult        The results returned by Algolia. The `isHydrated` method of the result will return true.
+     */
     public function search(EntityManager $em, $entityName, $queryString, array $options = array())
     {
         $entityClass = $em->getRepository($entityName)->getClassName();
@@ -636,6 +669,9 @@ class Indexer
         return $this;
     }
 
+    /**
+     * Wait for all Algolia tasks recorded by `algoliaTask` to complete.
+     */
     public function waitForAlgoliaTasks()
     {
         foreach ($this->latestAlgoliaTaskID as $indexName => $data) {
