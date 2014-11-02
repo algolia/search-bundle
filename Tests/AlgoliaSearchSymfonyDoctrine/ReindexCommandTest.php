@@ -16,6 +16,10 @@ class ReindexCommandTest extends BaseTest
      */
     public static $isolateFromAlgolia = false;
 
+    public static $neededEntityTypes = [
+        'ProductForReindexTest'
+    ];
+
     public function setUp()
     {
         static::setupDatabase();

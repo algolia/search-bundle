@@ -20,6 +20,7 @@ class BaseTest extends \PHPUnit_Framework_TestCase
 
     protected static $em = null;
     protected static $indexer = null;
+    protected static $neededEntityTypes = [];
 
     /**
      * When set to true, all tests will be ran locally,
@@ -40,6 +41,11 @@ class BaseTest extends \PHPUnit_Framework_TestCase
             }
 
             if (preg_match('/\.php$/', $entry)) {
+
+                if (!empty(static::$neededEntityTypes) && !in_array(basename($entry, '.php'), static::$neededEntityTypes)) {
+                    continue;
+                }
+
                 $entities[] = $namespace.$base.'\\'.basename($entry, '.php');
             }
         }

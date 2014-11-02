@@ -10,6 +10,10 @@ class AlgoliaIntegrationTest extends BaseTest
      */
     public static $isolateFromAlgolia = false;
 
+    public static $neededEntityTypes = [
+        'ProductForAlgoliaIntegrationTest'
+    ];
+
     public function tearDown()
     {
         parent::tearDown();

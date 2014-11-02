@@ -4,6 +4,10 @@ namespace Algolia\AlgoliaSearchSymfonyDoctrineBundle\Tests;
 
 class ConditionalIndexingTest extends BaseTest
 {
+    public static $neededEntityTypes = [
+        'ProductWithConditionalIndexing'
+    ];
+
     public function beforeEach()
     {
         $this->getIndexer()->reset();

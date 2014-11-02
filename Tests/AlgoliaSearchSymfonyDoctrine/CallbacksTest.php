@@ -4,6 +4,11 @@ namespace Algolia\AlgoliaSearchSymfonyDoctrineBundle\Tests;
 
 class CallbacksTest extends BaseTest
 {
+	public static $neededEntityTypes = [
+        'Product',
+        'Supplier'
+    ];
+
 	// Just to be sure we did not mess something up in our namespaces
 	public function testOurEntitiesExist()
 	{

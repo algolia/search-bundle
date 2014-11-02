@@ -10,6 +10,10 @@ class EntityAliasTest extends BaseTest
      */
     public static $isolateFromAlgolia = false;
 
+    public static $neededEntityTypes = [
+        'ProductForAlgoliaIntegrationTest'
+    ];
+
     public function setUp()
     {
         parent::setUp();

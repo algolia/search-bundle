@@ -4,6 +4,12 @@ namespace Algolia\AlgoliaSearchSymfonyDoctrineBundle\Tests;
 
 class ChangeDetectionTest extends BaseTest
 {
+    public static $neededEntityTypes = [
+        'Product',
+        'ProductWithIndexedMethod',
+        'ProductWithoutAutoIndex'
+    ];
+
     public function testNewProductWouldBeInserted()
     {
         $indexer = $this->getIndexer();
