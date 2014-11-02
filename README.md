@@ -5,6 +5,27 @@ This Symfony bundle provides an easy way to integrate Algolia Search into your S
 
 [![Build Status](https://travis-ci.org/djfm/AlgoliaSearchSymfonyDoctrineBundle.svg?branch=master)](https://travis-ci.org/djfm/AlgoliaSearchSymfonyDoctrineBundle)
 
+<!-- MarkdownTOC -->
+
+- Setup
+    - Setup composer
+    - Register the bundle
+    - Fill in your Algolia credentials
+- Mapping entities to Algolia indexes
+    - Indexing entity properties or methods
+    - Autoindexing vs Manual Indexing
+    - Per environment indexing
+    - Conditional indexing
+    - Advanced index settings
+- Retrieving entities
+    - Performing a raw search
+    - Performing a native search
+- Re-indexing whole collections
+- Running the tests
+
+<!-- /MarkdownTOC -->
+
+
 # Setup
 
 It's easy, I promise.
@@ -35,7 +56,7 @@ $bundles = array(
 
 ## Fill in your Algolia credentials
 
-Add your Algolia application ID and API key in your `parameters.yml` file:
+Add your Algolia application ID and API key to your `parameters.yml` file:
 
 ```yaml
 parameters:
@@ -56,7 +77,7 @@ Currently, mapping is only possible with annotations.
 
 ## Indexing entity properties or methods
 
-The `Field` annotation marks a field or method for indexing by algolia.
+The `Field` annotation marks a field or method for indexing by Algolia.
 
 All annotations are defined in the `Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping\Annotation` namespace.
 
@@ -120,13 +141,13 @@ For optimal performance, please note that:
 Abiding by the two rules above ensures that no useless update operations on Algolia servers are performed, and that all useful updates are performed.
 If you map something that is not known to Doctrine to an Algolia field, then the engine has no way to know when it changed, which may lead to useless updates and/or unexpected results.
 
-We can't enforce the 2 conditions above automatically, it is the programmer's responsibility to verify them.
+Since we can't enforce the 2 conditions above automatically it is the programmer's responsibility to verify them.
 
-The names of the fields to be used on Algolia's servers are deduced automatically form the names of the fields or properties being indexed:
+The names of the fields to be used on Algolia's servers are deduced automatically from the names of the fields or properties being indexed:
 - for indexed properties, the Algolia name is the name of the property
-- for indexed methods, the Algolia name is the name of the method, minus the leading "get" if the method starts with "get" then an uppercase letter, with the first letter is converted to lower case.
+- for indexed methods, the Algolia name is the name of the method, minus the leading "get" if the method starts with "get" then an uppercase letter. The first letter of the resulting name is converted to lower case.
 
-You can override the Algolia name by setting the algoliaName argument in the annotation declaration, like this:
+You can override the Algolia name by setting the `algoliaName` argument in the annotation declaration, like this:
 
 ```php
     /**
@@ -169,7 +190,7 @@ $em->flush();
 $this->get('algolia.indexer')->getManualIndexer($em)->index($product);
 ```
 
-With autoindexing enabled, it would have been indexed by the `$em->flush()` call.
+(With autoindexing enabled, the product would have been indexed by the `$em->flush()` call)
 
 The `ManualIndexer` class also provides the `unIndex` method to manually un-index entities and the `reIndex` method to re-index a whole collection.
 Please see [the methods' comments](Indexer/ManualIndexer.php) for more info.
@@ -266,7 +287,7 @@ Hits will be instance of the `Product` class, fetched from the local database.
 Please note that since we need to access the local database here contrary to the `rawSearch` call you need to pass the `EntityManager`, which adds an argument.
 
 # Re-indexing whole collections
-You can re-index collections programmatically using the `reIndex` method of the `ManualIndexer` class (`$this->get('algolia.indexer')->getManualIndexer($this->getEntityManager())->reIndex('SomeBundle:EntityName')`), but you can also very easily do it using a simple command line argument:
+You can re-index collections programmatically using the `reIndex` method of the `ManualIndexer` class (`$this->get('algolia.indexer')->getManualIndexer($this->getEntityManager())->reIndex('SomeBundle:EntityName')`), but you can also very easily do it using a simple console command:
 
 ```bash
 php app/console algolia:reindex SomeBundle:EntityName
