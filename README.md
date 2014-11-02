@@ -5,6 +5,48 @@ This Symfony bundle provides an easy way to integrate Algolia Search into your S
 
 [![Build Status](https://travis-ci.org/djfm/AlgoliaSearchSymfonyDoctrineBundle.svg?branch=master)](https://travis-ci.org/djfm/AlgoliaSearchSymfonyDoctrineBundle)
 
+# Setup
+
+It's easy, I promise.
+
+## Setup composer
+
+Add this line to your composer.json file:
+```json
+"require": {
+    ...
+    "djfm/algolia-search-symfony-doctrine-bundle": "dev-master",
+    ...
+}
+```
+
+Then run `composer update`.
+
+## Register the bundle
+
+Add `Algolia\AlgoliaSearchSymfonyDoctrineBundle\AlgoliaAlgoliaSearchSymfonyDoctrineBundle()` to your application Kernel:
+```php
+$bundles = array(
+    new Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
+    new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
+    new Algolia\AlgoliaSearchSymfonyDoctrineBundle\AlgoliaAlgoliaSearchSymfonyDoctrineBundle(),
+);
+
+## Fill in your Algolia credentials
+
+Add your Algolia application ID and API key in your `parameters.yml` file:
+
+```yaml
+parameters:
+    database_driver: pdo_mysql
+    database_host: 127.0.0.1
+    # ...
+    algolia.application_id: YOUR_APP_ID
+    algolia.api_key: YOUR_API_KEY
+```
+
+That's it!
+
 # Mapping entities to Algolia indexes
 
 Mapping an entity type to an Algolia index allows you to keep it in sync with Algolia, i.e. the operations involving mapped entities on your local database are mirrored on the Algolia indexes. Indexation is automatic by default, but can be made manual if needed.
@@ -223,7 +265,6 @@ Hits will be instance of the `Product` class, fetched from the local database.
 Please note that since we need to access the local database here contrary to the `rawSearch` call you need to pass the `EntityManager`, which adds an argument.
 
 # Re-indexing whole collections
-
 You can re-index collections programmatically using the `reIndex` method of the `ManualIndexer` class (`$this->get('algolia.indexer')->getManualIndexer($this->getEntityManager())->reIndex('SomeBundle:EntityName')`), but you can also very easily do it using a simple command line argument:
 
 ```bash
@@ -233,3 +274,9 @@ php app/console algolia:reindex SomeBundle:EntityName
 By default, a temporary index is created, the indexation is performed on the temporary index, and then the index is moved atomically to the target index.
 
 You can re-index in place by passing the `--unsafe` option. Please note that in unsafe mode outdated entities will not be un-indexed.
+
+# Running the tests
+Rename the test [parameters.yml.dist](Tests/config/parameters.yml.dist) file to `parameters.yml`, customize the settings with the correct database settings and Algolia API settings, then run:
+```bash
+php vendor/bin/phpunit -c Tests
+```
