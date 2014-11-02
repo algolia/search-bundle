@@ -191,3 +191,45 @@ The advanced settings are not automatically synchronized with Algolia, but we pr
 php app/console algolia:settings # show the local settings that are not applied to the Algolia indexes
 php app/console algolia:settings --push # push the configuration changes to Algolia servers
 ```
+# Retrieving entities
+
+## Performing a raw search
+
+You can retrieve raw results from Algolia indexes using the `rawSearch` method of the indexer:
+
+```php
+$this->get('algolia.indexer')->rawSearch('SomeIndexName', 'a query string');
+```
+
+This will return an array of hits, wrapped inside of a [SearchResult](SearchResult/SearchResult.php) instance.
+
+This will not connect to the local database.
+
+## Performing a native search 
+
+You can retrieve Doctrine entities from Algolia indexes using the `search` method of the indexer:
+
+```php
+$this->get('algolia.indexer')->search(
+    $this->getEntityManager(),
+    'MyCoolBundle:Product',
+    'a query string'
+);
+```
+
+This will return an array of hits, wrapped inside of a [SearchResult](SearchResult/SearchResult.php) instance.
+Hits will be instance of the `Product` class, fetched from the local database.
+
+Please note that since we need to access the local database here contrary to the `rawSearch` call you need to pass the `EntityManager`, which adds an argument.
+
+# Re-indexing whole collections
+
+You can re-index collections programmatically using the `reIndex` method of the `ManualIndexer` class (`$this->get('algolia.indexer')->getManualIndexer($this->getEntityManager())->reIndex('SomeBundle:EntityName')`), but you can also very easily do it using a simple command line argument:
+
+```bash
+php app/console algolia:reindex SomeBundle:EntityName
+```
+
+By default, a temporary index is created, the indexation is performed on the temporary index, and then the index is moved atomically to the target index.
+
+You can re-index in place by passing the `--unsafe` option. Please note that in unsafe mode outdated entities will not be un-indexed.
