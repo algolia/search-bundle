@@ -87,7 +87,7 @@ class AnnotationLoader implements LoaderInterface
                     if ($annotation->algoliaName) {
                         $field->setAlgoliaName($annotation->algoliaName);
                     } else {
-                        $field->setAlgoliaName(lcfirst(preg_replace('/^get/', '', $field->getName())));
+                        $field->setAlgoliaName(lcfirst(preg_replace('/^get([A-Z])/', '$1', $field->getName())));
                     }
 
                     $description->addMethod($field);
