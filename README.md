@@ -31,6 +31,7 @@ $bundles = array(
     new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
     new Algolia\AlgoliaSearchSymfonyDoctrineBundle\AlgoliaAlgoliaSearchSymfonyDoctrineBundle(),
 );
+```
 
 ## Fill in your Algolia credentials
 
