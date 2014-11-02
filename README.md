@@ -99,6 +99,7 @@ By default, mapped entities are automatically indexed on Algolia's servers using
 
 You can change this behaviour with the `Index` annotation and the `autoIndex` parameter, like this:
 
+```php
 /**
  * Product
  *
@@ -136,6 +137,7 @@ By default, Algolia index names are suffixed with the name of the current applic
 
 To disable this feature, use the `perEnvironment` option of the `Index` annotation:
 
+```php
 /**
  * Product
  *
@@ -155,6 +157,7 @@ It is often useful to skip indexing an entity based on some condition.
 
 To this end, we provide the `IndexIf` annotation. This annotation can only be used on methods, and the methods should only depend on fields the ORM is aware of. Example:
 
+```
 /**
  * Product
  *
