@@ -48,7 +48,7 @@ class Indexer extends \Algolia\AlgoliaSearchSymfonyDoctrineBundle\Indexer\Indexe
         $this->deletions = array();
     }
 
-    protected function newInstance()
+    public function newInstance()
     {
         $indexer = parent::newInstance();
         $indexer->isolateFromAlgolia($this->isolated_from_algolia);

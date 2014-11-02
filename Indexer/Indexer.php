@@ -523,7 +523,7 @@ class Indexer
         return $this;
     }
 
-    protected function newInstance()
+    public function newInstance()
     {
         // We make a new indexer for manual indexing
         // because if we use this one, we risk
@@ -535,82 +535,9 @@ class Indexer
         return $indexer;
     }
 
-    /**
-     * Manually index entities.
-     *
-     * Entities must be either an array of entities or a single entity.
-     * Entities are expected to be already saved in the local DB and to
-     * have a primary key.
-     * A NoPrimaryKey exception will be raised if that's not the case.
-     */
-    public function index($em, $entities, array $options = array())
+    public function getManualIndexer($em)
     {
-        if (!is_array($entities)) {
-            $entities = array($entities);
-        }
-
-        $indexer = $this->newInstance();
-
-        foreach ($entities as $entity) {
-
-            if (!$indexer->discoverEntity($entity, $em)) {
-                throw new NotAnAlgoliaEntity(
-                    'Tried to index entity of class `'.get_class($entity).'`, which is not recognized as an entity to index.'
-                );
-            }
-
-            if (isset($options['indexName'])) {
-                $indexer->scheduleEntityCreation([
-                    'indexName' => $options['indexName'],
-                    'entity' => $entity
-                ]);
-            } else {
-                $indexer->scheduleEntityCreation($entity);
-            }
-        }
-
-        $res = $indexer->processScheduledIndexChanges();
-
-        $this->mergePendingTasks($indexer);
-
-        return $res;
-    }
-
-    /**
-     * Manually unIndex entities.
-     *
-     * Entities must be either an array of entities or a single entity.
-     * Entities are expected to be already saved in the local DB and to
-     * have a primary key.
-     * A NoPrimaryKey exception will be raised if that's not the case.
-     *
-     * Please note that you need to unIndex entities before removing them
-     * from the local DB, otherwise their primary keys will be lost.
-     */
-    public function unIndex($em, $entities)
-    {
-        if (!is_array($entities)) {
-            $entities = array($entities);
-        }
-
-        $indexer = $this->newInstance();
-
-        foreach ($entities as $entity) {
-
-            if (!$this->discoverEntity($entity, $em)) {
-                throw new NotAnAlgoliaEntity(
-                    'Tried to unIndex entity of class `'.get_class($entity).'`, which is not recognized as an entity to index.'
-                );
-            }
-
-            $indexer->scheduleEntityDeletion($entity);
-        }
-
-        $res = $indexer->processScheduledIndexChanges();
-
-        $this->mergePendingTasks($indexer);
-
-        return $res;
+        return new ManualIndexer($this, $em);
     }
 
     public function mergePendingTasks(Indexer $indexer)

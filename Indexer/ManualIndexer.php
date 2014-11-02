@@ -1,0 +1,243 @@
+<?php
+
+namespace Algolia\AlgoliaSearchSymfonyDoctrineBundle\Indexer;
+
+use Doctrine\ORM\Tools\Pagination\Paginator;
+use Doctrine\ORM\Query;
+
+use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Exception\NotAnAlgoliaEntity;
+
+class ManualIndexer
+{
+    private $indexer;
+    private $entityManager;
+
+    public function __construct(Indexer $indexer, $entityManager)
+    {
+        $this->indexer = $indexer;
+        $this->entityManager = $entityManager;
+    }
+
+    private function doIndex(array $entities, $indexName = null)
+    {
+        $indexer = $this->indexer->newInstance();
+
+        foreach ($entities as $entity) {
+
+            if (!$indexer->discoverEntity($entity, $this->entityManager)) {
+                throw new NotAnAlgoliaEntity(
+                    'Tried to index entity of class `'.get_class($entity).'`, which is not recognized as an entity to index.'
+                );
+            }
+
+            if ($indexName) {
+                $indexer->scheduleEntityCreation([
+                    'indexName' => $indexName,
+                    'entity' => $entity
+                ]);
+            } else {
+                $indexer->scheduleEntityCreation($entity);
+            }
+        }
+
+        $res = $indexer->processScheduledIndexChanges();
+
+        $this->indexer->mergePendingTasks($indexer);
+
+        return $res;
+    }
+
+    private function doUnIndex($entities)
+    {
+        $indexer = $this->indexer->newInstance();
+
+        foreach ($entities as $entity) {
+
+            if (!$indexer->discoverEntity($entity, $this->entityManager)) {
+                throw new NotAnAlgoliaEntity(
+                    'Tried to unIndex entity of class `'.get_class($entity).'`, which is not recognized as an entity to index.'
+                );
+            }
+
+            $indexer->scheduleEntityDeletion($entity);
+        }
+
+        $res = $indexer->processScheduledIndexChanges();
+
+        $this->indexer->mergePendingTasks($indexer);
+
+        return $res;
+    }
+
+    private function batchArray(array $entities, $batchSize, $callback)
+    {
+        array_map($callback, array_chunk($entities, $batchSize));
+        return count($entities);
+    }
+
+    private function batchQuery($entityName, $query, $batchSize, $callback)
+    {
+        if (!$query) {
+            $query = $this->entityManager->createQueryBuilder()->select('e')->from($entityName, 'e')->getQuery();
+        }
+
+        $nEntities = 0;
+
+        for ($page = 0;; $page += 1) {
+            $query
+            ->setFirstResult($batchSize * $page)
+            ->setMaxResults($batchSize);
+
+            $paginator = new Paginator($query);
+            
+            $batch = [];
+            foreach ($paginator as $entity) {
+                $batch[] = $entity;
+            }
+
+            if (empty($batch)) {
+                break;
+            } else {
+                $nEntities += count($batch);
+                $callback($batch);
+            }
+        }
+
+        return $nEntities;
+    }
+
+    /**
+     * Manually index the provided entities.
+     *
+     * Please note that the entities need to have a primary key, hence be already saved in the DB.
+     *
+     * When passing an entity name as $entities, if no query is provided in the $options array, then all entities are indexed.
+     * Otherwise, the query provided is used to fetch the entities. This allows the use of
+     * any kind of DQL conditions to determine what to re-index (objects created after a certain date, with a specific status...).
+     * When providing a query, it is the programmers responsibility to make sure it will return entities of $entityName class.
+     *
+     * @param  mixed $entities Either a single entity, an array of entities, or an entity name.
+     * @param  array  $options  An array of options that MAY contain `batchSize` (int), `query` (a Doctrine Query)
+     * @return int The number of entities processed
+     */
+    public function index($entities, array $options = array())
+    {
+        $defaults = [
+            'batchSize' => 1000,
+            'query' => null,
+            'indexName' => null // default is to let the engine guess
+        ];
+
+        $options = array_merge($defaults, $options);
+
+        if (is_array($entities)) {
+            return $this->batchArray($entities, $options['batchSize'], function ($batch) use ($options) {
+                $this->doIndex($batch, $options['indexName']);
+            });
+        } elseif (is_string($entities)) {
+            return $this->batchQuery($entities, $options['query'], $options['batchSize'], function ($batch) use ($options) {
+                $this->doIndex($batch, $options['indexName']);
+            });
+        } elseif (is_object($entities)) {
+            return $this->doIndex([$entities], $options['indexName']);
+        }
+    }
+
+    /**
+     * Manually un-index the provided entities.
+     *
+     * Please note that the entities need to have a primary key, so manual un-indexing must be done BEFORE deleting
+     * the objects from the local DB.
+     *
+     * When passing an entity name as $entities, if no query is provided in the $options array, then all entities are un-indexed.
+     * Otherwise, the query provided is used to fetch the entities. This allows the use of
+     * any kind of DQL conditions to determine what to re-index (objects created after a certain date, with a specific status...).
+     * When providing a query, it is the programmers responsibility to make sure it will return entities of $entityName class.
+     *
+     * @param  mixed $entities Either a single entity, an array of entities, or an entity name.
+     * @param  array  $options  An array of options that MAY contain `batchSize` (int), `query` (a Doctrine Query)
+     * @return int The number of entities processed
+     */
+    public function unIndex($entities, array $options = array())
+    {
+        $defaults = [
+            'batchSize' => 1000,
+            'query' => null
+        ];
+
+        $options = array_merge($defaults, $options);
+
+        if (is_array($entities)) {
+            return $this->batchArray($entities, $options['batchSize'], function ($batch) {
+                $this->doUnIndex($batch);
+            });
+        } elseif (is_string($entities)) {
+            return $this->batchQuery($entities, $options['query'], $options['batchSize'], function ($batch) {
+                $this->doUnIndex($batch);
+            });
+        } elseif (is_object($entities)) {
+            return $this->doUnIndex([$entities]);
+        }
+    }
+
+    /**
+     * Re-index entities from a collection.
+     *
+     * If no query is provided in the $options array, then all entities are re-indexed.
+     * Otherwise, the query provided is used to fetch the entities. This allows the use of
+     * any kind of DQL conditions to determine what to re-index (objects created after a certain date, with a specific status...).
+     * When providing a query, it is the programmers responsibility to make sure it will return entities of $entityName class.
+     *
+     * If the `safe` option is provided, re-indexing will be done on a brand new index (with the same settings as the target one),
+     * which will be moved atomically to the target index when indexing is complete.
+     * 
+     * @param  string $entityName The name of the entities to reindex, may be either a class name or a Doctrine class alias
+     * @param  array  $options    An array of options, that may contain `batchSize` (int), `safe` (bool), `query` (Doctrine\ORM\Query)
+     * @return int  The number of processed entities.
+     */
+    public function reIndex($entityName, array $options = array())
+    {
+        $defaults = [
+            'safe' => true,
+            'batchSize' => 1000,
+            'query' => null
+        ];
+
+        $options = array_merge($defaults, $options);
+
+        $targetIndexName = $this->indexer->getAlgoliaIndexName(
+            $this->entityManager->getRepository($entityName)->getClassName()
+        );
+
+        $indexTo = $targetIndexName;
+
+        if ($options['safe']) {
+            $indexTo .= '__TEMPORARY__INDEX__'.microtime(true);
+            try {
+                // Copy settings from master index to temporary index
+                $masterSettings = $this->indexer->getIndex($targetIndexName)->getSettings();
+                $this->indexer->getIndex($indexTo)->setSettings($masterSettings);
+            } catch (\AlgoliaSearch\AlgoliaException $e) {
+                // It's OK if the master index did not exist! No settings to set.
+                if ($e->getMessage() !== 'Index does not exist') {
+                    throw $e;
+                }
+            }
+        }
+
+        $nIndexed = $this->index($entityName, [
+            'batchSize' => $options['batchSize'],
+            'query' => $options['query'],
+            'indexName' => $indexTo
+        ]);
+
+        if ($options['safe']) {
+            $this->indexer->algoliaTask(
+                $targetIndexName,
+                $this->indexer->getClient()->moveIndex($indexTo, $targetIndexName)
+            );
+        }
+
+        return $nIndexed;
+    }
+}

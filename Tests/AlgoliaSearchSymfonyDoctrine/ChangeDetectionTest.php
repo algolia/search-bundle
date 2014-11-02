@@ -175,7 +175,7 @@ class ChangeDetectionTest extends BaseTest
 
         $id = $product->getId();
 
-        $done = $indexer->index($this->getEntityManager(), $product);
+        $done = $indexer->getManualIndexer($this->getEntityManager())->index($product);
         $this->assertEquals(array(), $done['deletions']);
         $this->assertEquals(array(), $done['updates']);
         $this->assertEquals(array(
@@ -187,7 +187,7 @@ class ChangeDetectionTest extends BaseTest
             )
         ), $done['creations']);
 
-        $done = $indexer->unIndex($this->getEntityManager(), $product);
+        $done = $indexer->getManualIndexer($this->getEntityManager())->unIndex($product);
         $this->assertEquals(array(
             metaenv('ProductWithoutAutoIndex_dev') => array(
                 $this->getObjectID(['id' => $id])

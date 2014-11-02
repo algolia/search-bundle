@@ -8,7 +8,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
-use Doctrine\ORM\Tools\Pagination\Paginator;
 
 class ReindexCommand extends ContainerAwareCommand
 {
@@ -80,58 +79,10 @@ class ReindexCommand extends ContainerAwareCommand
 
     public function reIndex($className, $batchSize = 1000, $safe = true)
     {
-        $indexer = $this->getContainer()->get('algolia.indexer');
-        $em = $this->getEntityManager();
-
-        $query = $em->createQueryBuilder()->select('e')->from($className, 'e')->getQuery();
-
-        $finalIndexName = $indexName = $masterIndexName = $indexer->getAlgoliaIndexName($className);
-        if ($safe) {
-
-            $indexName .= '__TEMPORARY__INDEX__';
-
-            try {
-                // Copy settings from master index to temporary index
-                $masterSettings = $indexer->getIndex($masterIndexName)->getSettings();
-                $indexer->getIndex($indexName)->setSettings($masterSettings);
-            } catch (\AlgoliaSearch\AlgoliaException $e) {
-                // It's OK if the master index did not exist! No settings to set.
-                if ($e->getMessage() !== 'Index does not exist') {
-                    throw $e;
-                }
-            }
-        }
-
-        $nIndexed = 0;
-
-        for ($page = 0;; $page += 1) {
-
-            $query
-            ->setFirstResult($batchSize * $page)
-            ->setMaxResults($batchSize);
-
-            $paginator = new Paginator($query);
-            
-            $batch = [];
-            foreach ($paginator as $entity) {
-                $batch[] = $entity;
-            }
-
-            if (empty($batch)) {
-                break;
-            } else {
-                $nIndexed += count($batch);
-                $indexer->index($em, $batch, ['indexName' => $indexName]);
-            }
-        }
-
-        if ($safe) {
-            $indexer->algoliaTask(
-                $finalIndexName,
-                $indexer->getClient()->moveIndex($indexName, $finalIndexName)
-            );
-        }
-
-        return $nIndexed;
+        $reIndexer = $this->getContainer()->get('algolia.indexer')->getManualIndexer($this->getEntityManager());
+        return $reIndexer->reIndex($className, [
+            'batchSize' => $batchSize,
+            'safe' => $safe
+        ]);
     }
 }
