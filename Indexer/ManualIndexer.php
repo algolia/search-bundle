@@ -18,55 +18,49 @@ class ManualIndexer
         $this->entityManager = $entityManager;
     }
 
+    /**
+     * Indexes the entities provided.
+     * 
+     * If $indexName is specified, it will override the name of the index
+     * that the engine would normally pick.
+     */
     private function doIndex(array $entities, $indexName = null)
     {
-        $indexer = $this->indexer->newInstance();
-
         foreach ($entities as $entity) {
 
-            if (!$indexer->discoverEntity($entity, $this->entityManager)) {
+            if (!$this->indexer->discoverEntity($entity, $this->entityManager)) {
                 throw new NotAnAlgoliaEntity(
                     'Tried to index entity of class `'.get_class($entity).'`, which is not recognized as an entity to index.'
                 );
             }
 
             if ($indexName) {
-                $indexer->scheduleEntityCreation([
+                $this->indexer->scheduleEntityCreation([
                     'indexName' => $indexName,
                     'entity' => $entity
                 ]);
             } else {
-                $indexer->scheduleEntityCreation($entity);
+                $this->indexer->scheduleEntityCreation($entity);
             }
         }
 
-        $res = $indexer->processScheduledIndexChanges();
-
-        $this->indexer->mergePendingTasks($indexer);
-
-        return $res;
+        $this->indexer->processScheduledIndexChanges();
     }
 
     private function doUnIndex($entities)
     {
-        $indexer = $this->indexer->newInstance();
-
         foreach ($entities as $entity) {
 
-            if (!$indexer->discoverEntity($entity, $this->entityManager)) {
+            if (!$this->indexer->discoverEntity($entity, $this->entityManager)) {
                 throw new NotAnAlgoliaEntity(
                     'Tried to unIndex entity of class `'.get_class($entity).'`, which is not recognized as an entity to index.'
                 );
             }
 
-            $indexer->scheduleEntityDeletion($entity);
+            $this->indexer->scheduleEntityDeletion($entity);
         }
 
-        $res = $indexer->processScheduledIndexChanges();
-
-        $this->indexer->mergePendingTasks($indexer);
-
-        return $res;
+        $this->indexer->processScheduledIndexChanges();
     }
 
     private function batchArray(array $entities, $batchSize, $callback)
@@ -139,7 +133,8 @@ class ManualIndexer
                 $this->doIndex($batch, $options['indexName']);
             });
         } elseif (is_object($entities)) {
-            return $this->doIndex([$entities], $options['indexName']);
+            $this->doIndex([$entities], $options['indexName']);
+            return 1;
         }
     }
 
@@ -176,7 +171,8 @@ class ManualIndexer
                 $this->doUnIndex($batch);
             });
         } elseif (is_object($entities)) {
-            return $this->doUnIndex([$entities]);
+            $this->doUnIndex([$entities]);
+            return 1;
         }
     }
 
@@ -225,7 +221,7 @@ class ManualIndexer
             }
         }
 
-        $nIndexed = $this->index($entityName, [
+        $nProcessed = $this->index($entityName, [
             'batchSize' => $options['batchSize'],
             'query' => $options['query'],
             'indexName' => $indexTo
@@ -238,6 +234,6 @@ class ManualIndexer
             );
         }
 
-        return $nIndexed;
+        return $nProcessed;
     }
 }

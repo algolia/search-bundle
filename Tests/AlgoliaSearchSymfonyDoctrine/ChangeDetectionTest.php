@@ -6,8 +6,7 @@ class ChangeDetectionTest extends BaseTest
 {
     public static $neededEntityTypes = [
         'Product',
-        'ProductWithIndexedMethod',
-        'ProductWithoutAutoIndex'
+        'ProductWithIndexedMethod'
     ];
 
     public function testNewProductWouldBeInserted()
@@ -145,54 +144,5 @@ class ChangeDetectionTest extends BaseTest
             ),
             $indexer->deletions
         );
-    }
-
-    public function testNonAutoIndexedProductIsNotAutomaticallyIndexed()
-    {
-        $indexer = $this->getIndexer();
-
-        $product = new Entity\ProductWithoutAutoIndex();
-        $product->setName('This Product Is Not Auto Indexed');
-        $indexer->reset();
-        $this->persistAndFlush($product);
-        $this->assertEquals(array(), $indexer->creations);
-        $this->assertEquals(array(), $indexer->updates);
-    }
-
-    public function testNonAutoIndexedProductIsManuallyIndexed()
-    {
-        $indexer = $this->getIndexer();
-
-        $product = new Entity\ProductWithoutAutoIndex();
-        $product
-        ->setName('This Product Is Not Auto Indexed, But I\'ll Index It')
-        ->setDescription('Yes, I\'m clever like that.');
-
-        $indexer->reset();
-        $this->assertEquals(array(), $indexer->updates);
-        $this->persistAndFlush($product);
-        $this->assertEquals(array(), $indexer->updates);
-
-        $id = $product->getId();
-
-        $done = $indexer->getManualIndexer($this->getEntityManager())->index($product);
-        $this->assertEquals(array(), $done['deletions']);
-        $this->assertEquals(array(), $done['updates']);
-        $this->assertEquals(array(
-            metaenv('ProductWithoutAutoIndex_dev') => array(
-                array(
-                    'name' => 'This Product Is Not Auto Indexed, But I\'ll Index It',
-                    'objectID' => $this->getObjectID(['id' => $id])
-                )
-            )
-        ), $done['creations']);
-
-        $done = $indexer->getManualIndexer($this->getEntityManager())->unIndex($product);
-        $this->assertEquals(array(
-            metaenv('ProductWithoutAutoIndex_dev') => array(
-                $this->getObjectID(['id' => $id])
-            )
-        ), $done['deletions']);
-        $this->assertEquals(array(), $done['updates']);
     }
 }

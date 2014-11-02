@@ -445,12 +445,6 @@ class Indexer
         $this->performBatchDeletions($deletions);
 
         $this->removeScheduledIndexChanges();
-
-        return array(
-            'creations' => $creations,
-            'updates' => $updates,
-            'deletions' => $deletions
-        );
     }
 
     public function algoliaTask($indexName, $res)
@@ -523,32 +517,9 @@ class Indexer
         return $this;
     }
 
-    public function newInstance()
-    {
-        // We make a new indexer for manual indexing
-        // because if we use this one, we risk
-        // forgetting changes coming from autoIndexed entities
-        $indexer = new static();
-        $indexer->setEnvironment($this->environment);
-        $indexer->setApiSettings($this->apiSettings['application_id'], $this->apiSettings['api_key']);
-
-        return $indexer;
-    }
-
     public function getManualIndexer($em)
     {
         return new ManualIndexer($this, $em);
-    }
-
-    public function mergePendingTasks(Indexer $indexer)
-    {
-        foreach ($indexer->latestAlgoliaTaskID as $index => $data) {
-            if (!isset($this->latestAlgoliaTaskID[$index])) {
-                $this->latestAlgoliaTaskID[$index] = $data;
-            } else if ($data['taskID'] > $this->latestAlgoliaTaskID[$index]['taskID']) {
-                $this->latestAlgoliaTaskID[$index]['taskID'] = $data['taskID'];
-            }
-        }
     }
 
     public function getClient()

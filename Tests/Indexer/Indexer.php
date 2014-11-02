@@ -17,7 +17,7 @@ class Indexer extends \Algolia\AlgoliaSearchSymfonyDoctrineBundle\Indexer\Indexe
 
     public function performBatchCreations(array $creations)
     {
-        $this->creations = $creations;
+        $this->creations = array_merge_recursive($this->creations, $creations);
 
         if (!$this->isolated_from_algolia) {
             return parent::performBatchCreations($creations);
@@ -26,7 +26,7 @@ class Indexer extends \Algolia\AlgoliaSearchSymfonyDoctrineBundle\Indexer\Indexe
 
     public function performBatchUpdates(array $updates)
     {
-        $this->updates = $updates;
+        $this->updates = array_merge_recursive($this->updates, $updates);
 
         if (!$this->isolated_from_algolia) {
             return parent::performBatchUpdates($updates);
@@ -35,7 +35,7 @@ class Indexer extends \Algolia\AlgoliaSearchSymfonyDoctrineBundle\Indexer\Indexe
 
     public function performBatchDeletions(array $deletions)
     {
-        $this->deletions = $deletions;
+        $this->deletions = array_merge_recursive($this->deletions, $deletions);
         if (!$this->isolated_from_algolia) {
             return parent::performBatchDeletions($deletions);
         }
