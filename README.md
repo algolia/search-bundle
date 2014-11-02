@@ -7,21 +7,21 @@ This Symfony bundle provides an easy way to integrate Algolia Search into your S
 
 <!-- MarkdownTOC -->
 
-- Setup
-    - Setup composer
-    - Register the bundle
-    - Fill in your Algolia credentials
-- Mapping entities to Algolia indexes
-    - Indexing entity properties or methods
-    - Autoindexing vs Manual Indexing
-    - Per environment indexing
-    - Conditional indexing
-    - Advanced index settings
-- Retrieving entities
-    - Performing a raw search
-    - Performing a native search
-- Re-indexing whole collections
-- Running the tests
+- [Setup][setup]
+    - [Setup composer][setup-composer]
+    - [Register the bundle][register-the-bundle]
+    - [Fill in your Algolia credentials][fill-in-your-algolia-credentials]
+- [Mapping entities to Algolia indexes][mapping-entities-to-algolia-indexes]
+    - [Indexing entity properties or methods][indexing-entity-properties-or-methods]
+    - [Autoindexing vs Manual Indexing][autoindexing-vs-manual-indexing]
+    - [Per environment indexing][per-environment-indexing]
+    - [Conditional indexing][conditional-indexing]
+    - [Advanced index settings][advanced-index-settings]
+- [Retrieving entities][retrieving-entities]
+    - [Performing a raw search][performing-a-raw-search]
+    - [Performing a native search][performing-a-native-search]
+- [Re-indexing whole collections][re-indexing-whole-collections]
+- [Running the tests][running-the-tests]
 
 <!-- /MarkdownTOC -->
 
