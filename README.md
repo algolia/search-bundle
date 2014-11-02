@@ -9,7 +9,6 @@ This Symfony bundle provides an easy way to integrate Algolia Search into your S
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Content**
 
-- [AlgoliaSearchSymfonyDoctrineBundle](#algoliasearchsymfonydoctrinebundle)
 - [Setup](#setup)
   - [Setup composer](#setup-composer)
   - [Register the bundle](#register-the-bundle)
