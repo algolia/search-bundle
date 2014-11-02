@@ -5,26 +5,28 @@ This Symfony bundle provides an easy way to integrate Algolia Search into your S
 
 [![Build Status](https://travis-ci.org/djfm/AlgoliaSearchSymfonyDoctrineBundle.svg?branch=master)](https://travis-ci.org/djfm/AlgoliaSearchSymfonyDoctrineBundle)
 
-<!-- MarkdownTOC -->
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Content**
 
-- [Setup][setup]
-    - [Setup composer][setup-composer]
-    - [Register the bundle][register-the-bundle]
-    - [Fill in your Algolia credentials][fill-in-your-algolia-credentials]
-- [Mapping entities to Algolia indexes][mapping-entities-to-algolia-indexes]
-    - [Indexing entity properties or methods][indexing-entity-properties-or-methods]
-    - [Autoindexing vs Manual Indexing][autoindexing-vs-manual-indexing]
-    - [Per environment indexing][per-environment-indexing]
-    - [Conditional indexing][conditional-indexing]
-    - [Advanced index settings][advanced-index-settings]
-- [Retrieving entities][retrieving-entities]
-    - [Performing a raw search][performing-a-raw-search]
-    - [Performing a native search][performing-a-native-search]
-- [Re-indexing whole collections][re-indexing-whole-collections]
-- [Running the tests][running-the-tests]
+- [AlgoliaSearchSymfonyDoctrineBundle](#algoliasearchsymfonydoctrinebundle)
+- [Setup](#setup)
+  - [Setup composer](#setup-composer)
+  - [Register the bundle](#register-the-bundle)
+  - [Fill in your Algolia credentials](#fill-in-your-algolia-credentials)
+- [Mapping entities to Algolia indexes](#mapping-entities-to-algolia-indexes)
+  - [Indexing entity properties or methods](#indexing-entity-properties-or-methods)
+  - [Autoindexing vs Manual Indexing](#autoindexing-vs-manual-indexing)
+  - [Per environment indexing](#per-environment-indexing)
+  - [Conditional indexing](#conditional-indexing)
+  - [Advanced index settings](#advanced-index-settings)
+- [Retrieving entities](#retrieving-entities)
+  - [Performing a raw search](#performing-a-raw-search)
+  - [Performing a native search](#performing-a-native-search)
+- [Re-indexing whole collections](#re-indexing-whole-collections)
+- [Running the tests](#running-the-tests)
 
-<!-- /MarkdownTOC -->
-
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 # Setup
 
