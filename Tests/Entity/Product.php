@@ -33,7 +33,7 @@ class Product extends BaseTestAwareEntity
     protected $name;
 
     /**
-     * @var string
+     * @var float
      *
      * @ORM\Column(name="price", type="decimal", nullable=true)
      * 
