@@ -9,7 +9,7 @@ use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping\Annotation as Algolia;
  * Store
  *
  * @ORM\Entity
- * 
+ *
  * @Algolia\Index(
  *  perEnvironment = true
  * )
@@ -29,9 +29,9 @@ class Store extends BaseTestAwareEntity
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
-     * 
+     *
      * @Algolia\Field
-     * 
+     *
      */
     private $name;
 
@@ -39,7 +39,7 @@ class Store extends BaseTestAwareEntity
      * @var string
      *
      * @ORM\Column(name="price", type="decimal")
-     * 
+     *
      */
     private $address;
 
@@ -77,21 +77,25 @@ class Store extends BaseTestAwareEntity
     public function setName($name)
     {
         $this->name = $name;
+
         return $this;
     }
     public function setAddress($address)
     {
         $this->address = $address;
+
         return $this;
     }
     public function setLat($lat)
     {
         $this->lat = $lat;
+
         return $this;
     }
     public function setLng($lng)
     {
         $this->lng = $lng;
+
         return $this;
     }
 }

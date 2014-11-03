@@ -14,7 +14,7 @@ class AppKernel extends Kernel
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
-            
+
         }
 
         return $bundles;

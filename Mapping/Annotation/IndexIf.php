@@ -8,5 +8,5 @@ namespace Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping\Annotation;
  */
 class IndexIf
 {
-	
+
 }

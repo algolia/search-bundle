@@ -5,8 +5,6 @@ namespace Algolia\AlgoliaSearchSymfonyDoctrineBundle\Indexer;
 use Doctrine\ORM\EntityManager;
 
 use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Exception\UnknownEntity;
-use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Exception\MissingGetter;
-use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Exception\NotCallable;
 use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Exception\NoPrimaryKey;
 use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Exception\NotAnAlgoliaEntity;
 use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping\Loader\AnnotationLoader;
@@ -18,10 +16,10 @@ class Indexer
 
     /**
      * Holds index settings for entities we're interested in.
-     * 
+     *
      * Keys are fully qualified class names (i.e. with namespace),
      * values are as returned by the MetaDataLoader.
-     * 
+     *
      * Please see the documentation for MetaDataLoaderInterface::getMetaData
      * for more details.
      */
@@ -159,7 +157,7 @@ class Indexer
                 $wasIndexed = $wasIndexed && $oldValue;
             }
         }
-        
+
         return null === $changeSet ? true : array($needsIndexing, $wasIndexed);
     }
 
@@ -298,7 +296,7 @@ class Indexer
      *
      * Tests have been adapted to use this function too,
      * so changing it to something else should not break any test.
-     * 
+     *
      */
     public function serializePrimaryKey(array $values)
     {
@@ -369,7 +367,7 @@ class Indexer
 
         return $indexName;
     }
-    
+
     /**
      * @internal
      */
@@ -380,14 +378,14 @@ class Indexer
         $deletions = array();
 
         foreach ($this->entitiesScheduledForCreation as $entity) {
-            
+
             if (is_object($entity)) {
                 $index = $this->getAlgoliaIndexName($entity);
             } else {
                 $index = $entity['indexName'];
                 $entity = $entity['entity'];
             }
-            
+
             list($primaryKey, $unusedOldPrimaryKey) = $this->getPrimaryKeyForAlgolia($entity);
             $fields = $this->getFieldsForAlgolia($entity);
 
@@ -401,9 +399,9 @@ class Indexer
         }
 
         foreach ($this->entitiesScheduledForUpdate as $data) {
-            
+
             $index = $this->getAlgoliaIndexName($data['entity']);
-            
+
             list($primaryKey, $oldPrimaryKey) = $this->getPrimaryKeyForAlgolia($data['entity'], $data['changeSet']);
 
             // The very unlikely case where a primary key changed
@@ -434,9 +432,9 @@ class Indexer
         }
 
         foreach ($this->entitiesScheduledForDeletion as $data) {
-            
+
             $index = $data['index'];
-            
+
             if (!isset($deletions[$index])) {
                 $deletions[$index] = array();
             }
@@ -567,14 +565,14 @@ class Indexer
     /**
      * Performs a raw search in the Algolia indexes, i.e. will not involve
      * the local DB at all, and only return what's indexed on Algolia's servers.
-     * 
-     * @param  string $indexName   The name of the index to search from.
-     * @param  string $queryString The query string.
-     * @param  array  $options     Any search option understood by https://github.com/algolia/algoliasearch-client-php, plus:
-     *                             - perEnvironment: automatically suffix the index name with the environment, defaults to true
-     *                             - adaptIndexName: transform the index name as needed (e.g. add environment suffix), defaults to true.
-     *                               This option is here because sometimes we already have the suffixed index name, so calling rawSearch with
-     *                               adaptIndexName = false ensures we end up with the correct Algolia index name.
+     *
+     * @param  string       $indexName   The name of the index to search from.
+     * @param  string       $queryString The query string.
+     * @param  array        $options     Any search option understood by https://github.com/algolia/algoliasearch-client-php, plus:
+     *                                   - perEnvironment: automatically suffix the index name with the environment, defaults to true
+     *                                   - adaptIndexName: transform the index name as needed (e.g. add environment suffix), defaults to true.
+     *                                   This option is here because sometimes we already have the suffixed index name, so calling rawSearch with
+     *                                   adaptIndexName = false ensures we end up with the correct Algolia index name.
      * @return SearchResult The results returned by Algolia. The `isHydrated` method of the result will return false.
      */
     public function rawSearch($indexName, $queryString, array $options = array())
@@ -605,12 +603,12 @@ class Indexer
      * Perform a 'native' search on the Algolia servers.
      * By native, it means that once the results are retrieved, they will be fetched from the local DB
      * and replaced with native ORM entities.
-     * 
-     * @param  EntityManager $em   The Doctrine Entity Manager to use to fetch entities when hydrating the results.
-     * @param  string $indexName   The name of the index to search from.
-     * @param  string $queryString The query string.
-     * @param  array  $options     Any search option understood by https://github.com/algolia/algoliasearch-client-php 
-     * @return SearchResult        The results returned by Algolia. The `isHydrated` method of the result will return true.
+     *
+     * @param  EntityManager $em          The Doctrine Entity Manager to use to fetch entities when hydrating the results.
+     * @param  string        $indexName   The name of the index to search from.
+     * @param  string        $queryString The query string.
+     * @param  array         $options     Any search option understood by https://github.com/algolia/algoliasearch-client-php
+     * @return SearchResult  The results returned by Algolia. The `isHydrated` method of the result will return true.
      */
     public function search(EntityManager $em, $entityName, $queryString, array $options = array())
     {

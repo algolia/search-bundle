@@ -13,7 +13,7 @@ use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping\Annotation as Algolia;
  * @Algolia\Index(
  *    autoIndex = false
  * )
- * 
+ *
  */
 class ProductForReindexTest extends BaseTestAwareEntity
 {
@@ -30,9 +30,9 @@ class ProductForReindexTest extends BaseTestAwareEntity
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
-     * 
+     *
      * @Algolia\Field
-     * 
+     *
      */
     protected $name;
 
@@ -82,7 +82,7 @@ class ProductForReindexTest extends BaseTestAwareEntity
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -92,7 +92,7 @@ class ProductForReindexTest extends BaseTestAwareEntity
     /**
      * Set name
      *
-     * @param string $name
+     * @param  string  $name
      * @return Product
      */
     public function setName($name)
@@ -105,7 +105,7 @@ class ProductForReindexTest extends BaseTestAwareEntity
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -123,7 +123,7 @@ class ProductForReindexTest extends BaseTestAwareEntity
     /**
      * Set price
      *
-     * @param string $price
+     * @param  string  $price
      * @return Product
      */
     public function setPrice($price)
@@ -136,7 +136,7 @@ class ProductForReindexTest extends BaseTestAwareEntity
     /**
      * Get price
      *
-     * @return string 
+     * @return string
      */
     public function getPrice()
     {
@@ -146,7 +146,7 @@ class ProductForReindexTest extends BaseTestAwareEntity
     /**
      * Set shortDescription
      *
-     * @param string $shortDescription
+     * @param  string  $shortDescription
      * @return Product
      */
     public function setShortDescription($shortDescription)
@@ -159,7 +159,7 @@ class ProductForReindexTest extends BaseTestAwareEntity
     /**
      * Get shortDescription
      *
-     * @return string 
+     * @return string
      */
     public function getShortDescription()
     {
@@ -169,7 +169,7 @@ class ProductForReindexTest extends BaseTestAwareEntity
     /**
      * Set description
      *
-     * @param string $description
+     * @param  string  $description
      * @return Product
      */
     public function setDescription($description)
@@ -182,7 +182,7 @@ class ProductForReindexTest extends BaseTestAwareEntity
     /**
      * Get description
      *
-     * @return string 
+     * @return string
      */
     public function getDescription()
     {
@@ -192,7 +192,7 @@ class ProductForReindexTest extends BaseTestAwareEntity
     /**
      * Set rating
      *
-     * @param integer $rating
+     * @param  integer $rating
      * @return Product
      */
     public function setRating($rating)
@@ -205,7 +205,7 @@ class ProductForReindexTest extends BaseTestAwareEntity
     /**
      * Get rating
      *
-     * @return integer 
+     * @return integer
      */
     public function getRating()
     {

@@ -1,7 +1,5 @@
 <?php
 
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Debug\Debug;
 use Symfony\Component\Yaml\Parser as Yaml;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\DBAL\DriverManager;
@@ -34,7 +32,6 @@ try {
 }
 $conn->close();
 
-
 global $kernel;
 $kernel = new AppKernel('dev', true);
 $kernel->boot();
@@ -58,7 +55,7 @@ register_shutdown_function(function () use ($dbParams, $parameters) {
     echo "\n\nPost PHPUnit cleanup:\n";
     global $kernel;
     echo "Waiting for pending Algolia tasks to finish...\n";
-    
+
     $kernel
     ->getContainer()
     ->get('algolia.indexer')

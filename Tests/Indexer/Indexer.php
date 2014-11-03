@@ -65,7 +65,7 @@ class Indexer extends \Algolia\AlgoliaSearchSymfonyDoctrineBundle\Indexer\Indexe
                 $application_id = getenv('ALGOLIA_APPLICATION_ID');
                 $api_key = getenv('ALGOLIA_API_KEY');
             }
-            
+
         } catch (\Symfony\Component\DependencyInjection\Exception\InvalidArgumentException $e) {
             // ignore this, it means we're just not running on Travis
         }

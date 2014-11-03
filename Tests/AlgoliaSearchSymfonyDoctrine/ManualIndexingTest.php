@@ -8,7 +8,7 @@ class ManualIndexingTest extends BaseTest
         'ProductWithoutAutoIndex'
     ];
 
-    static $nProducts = 100;
+    public static $nProducts = 100;
 
     public function cleanDatabaseAndMakeProducts()
     {

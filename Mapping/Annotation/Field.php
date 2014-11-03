@@ -8,8 +8,8 @@ namespace Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping\Annotation;
  */
 class Field
 {
-	/**
+    /**
 	 * @var  string
 	 */
-	public $algoliaName;
+    public $algoliaName;
 }

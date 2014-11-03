@@ -11,7 +11,7 @@ use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping\Annotation as Algolia;
  * Store
  *
  * @ORM\Entity
- * 
+ *
  */
 class Supplier extends BaseTestAwareEntity
 {
@@ -28,9 +28,9 @@ class Supplier extends BaseTestAwareEntity
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
-     * 
+     *
      * @Algolia\Field
-     * 
+     *
      */
     private $name;
 
@@ -55,6 +55,7 @@ class Supplier extends BaseTestAwareEntity
     public function setName($name)
     {
         $this->name = $name;
+
         return $this;
     }
 
@@ -66,6 +67,7 @@ class Supplier extends BaseTestAwareEntity
     public function addProduct($product)
     {
         $this->products->add($product);
+
         return $this;
     }
 }

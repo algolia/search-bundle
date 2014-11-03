@@ -35,9 +35,9 @@ class AlgoliaIntegrationTest extends BaseTest
         $this->persistAndFlush($product);
 
         $this->getIndexer()->waitForAlgoliaTasks();
-        
+
         $results = $this->getIndexer()->rawSearch('ProductForAlgoliaIntegrationTest', 'My First Product');
-        
+
         $this->assertEquals(1, $results->getNbHits());
         $this->assertEquals($this->getObjectID(['id' => $product->getId()]), $results->getHits()[0]['objectID']);
     }

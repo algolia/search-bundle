@@ -34,7 +34,7 @@ class AnnotationLoader implements LoaderInterface
 
         $reader = new AnnotationReader();
         $cachedReader = new CachedReader($reader, new ArrayCache());
-        
+
         self::$annotationReader = $cachedReader;
 
         return self::$annotationReader;
@@ -67,7 +67,7 @@ class AnnotationLoader implements LoaderInterface
                 if ($annotation instanceof IndexedFieldAnnotation) {
                     $field = new Property();
                     $field->setName($property->getName());
-                
+
                     if ($annotation->algoliaName) {
                         $field->setAlgoliaName($annotation->algoliaName);
                     } else {
@@ -83,7 +83,7 @@ class AnnotationLoader implements LoaderInterface
                 if ($annotation instanceof IndexedFieldAnnotation) {
                     $field = new Method();
                     $field->setName($meth->getName());
-                
+
                     if ($annotation->algoliaName) {
                         $field->setAlgoliaName($annotation->algoliaName);
                     } else {
@@ -116,7 +116,6 @@ class AnnotationLoader implements LoaderInterface
             return $description;
 
         } else {
-
             return false;
 
         }

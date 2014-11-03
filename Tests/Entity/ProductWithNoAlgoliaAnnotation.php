@@ -9,7 +9,7 @@ use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping\Annotation as Algolia;
  * Product
  *
  * @ORM\Entity
- * 
+ *
  */
 class ProductWithNoAlgoliaAnnotation extends BaseTestAwareEntity
 {
@@ -26,8 +26,8 @@ class ProductWithNoAlgoliaAnnotation extends BaseTestAwareEntity
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
-     * 
-     * 
+     *
+     *
      */
     protected $name;
 
@@ -35,7 +35,7 @@ class ProductWithNoAlgoliaAnnotation extends BaseTestAwareEntity
      * @var string
      *
      * @ORM\Column(name="price", type="decimal", nullable=true)
-     * 
+     *
      */
     protected $price;
 
@@ -68,7 +68,7 @@ class ProductWithNoAlgoliaAnnotation extends BaseTestAwareEntity
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -78,7 +78,7 @@ class ProductWithNoAlgoliaAnnotation extends BaseTestAwareEntity
     /**
      * Set name
      *
-     * @param string $name
+     * @param  string  $name
      * @return Product
      */
     public function setName($name)
@@ -91,7 +91,7 @@ class ProductWithNoAlgoliaAnnotation extends BaseTestAwareEntity
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -106,7 +106,7 @@ class ProductWithNoAlgoliaAnnotation extends BaseTestAwareEntity
     /**
      * Set price
      *
-     * @param string $price
+     * @param  string  $price
      * @return Product
      */
     public function setPrice($price)
@@ -119,7 +119,7 @@ class ProductWithNoAlgoliaAnnotation extends BaseTestAwareEntity
     /**
      * Get price
      *
-     * @return string 
+     * @return string
      */
     public function getPrice()
     {
@@ -129,7 +129,7 @@ class ProductWithNoAlgoliaAnnotation extends BaseTestAwareEntity
     /**
      * Set shortDescription
      *
-     * @param string $shortDescription
+     * @param  string  $shortDescription
      * @return Product
      */
     public function setShortDescription($shortDescription)
@@ -142,7 +142,7 @@ class ProductWithNoAlgoliaAnnotation extends BaseTestAwareEntity
     /**
      * Get shortDescription
      *
-     * @return string 
+     * @return string
      */
     public function getShortDescription()
     {
@@ -152,7 +152,7 @@ class ProductWithNoAlgoliaAnnotation extends BaseTestAwareEntity
     /**
      * Set description
      *
-     * @param string $description
+     * @param  string  $description
      * @return Product
      */
     public function setDescription($description)
@@ -165,7 +165,7 @@ class ProductWithNoAlgoliaAnnotation extends BaseTestAwareEntity
     /**
      * Get description
      *
-     * @return string 
+     * @return string
      */
     public function getDescription()
     {
@@ -175,7 +175,7 @@ class ProductWithNoAlgoliaAnnotation extends BaseTestAwareEntity
     /**
      * Set rating
      *
-     * @param integer $rating
+     * @param  integer $rating
      * @return Product
      */
     public function setRating($rating)
@@ -188,7 +188,7 @@ class ProductWithNoAlgoliaAnnotation extends BaseTestAwareEntity
     /**
      * Get rating
      *
-     * @return integer 
+     * @return integer
      */
     public function getRating()
     {

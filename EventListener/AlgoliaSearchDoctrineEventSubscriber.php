@@ -2,7 +2,6 @@
 namespace Algolia\AlgoliaSearchSymfonyDoctrineBundle\EventListener;
 
 use Doctrine\Common\EventSubscriber;
-use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 
 use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Indexer\Indexer;
@@ -73,15 +72,15 @@ class AlgoliaSearchDoctrineEventSubscriber implements EventSubscriber
 
         /**
          * There are also:
-         * 
+         *
          * $uow->getScheduledCollectionDeletions();
          * $uow->getScheduledCollectionUpdates();
          *
          * But they're not relevant here, I think.
-         * 
+         *
          * Apparently they're used for internal bookkeeping when
          * doing things with Many-To-Many relationships.
-         * 
+         *
          * Leaving the comment just in case I'm wrong.
          */
     }

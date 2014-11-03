@@ -4,17 +4,17 @@ namespace Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping;
 
 class Method extends Helper\ChangeAwareMethod
 {
-	private $algoliaName;
+    private $algoliaName;
 
-	public function setAlgoliaName($algoliaName)
-	{
-		$this->algoliaName = $algoliaName;
+    public function setAlgoliaName($algoliaName)
+    {
+        $this->algoliaName = $algoliaName;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function getAlgoliaName()
-	{
-		return $this->algoliaName;
-	}
+    public function getAlgoliaName()
+    {
+        return $this->algoliaName;
+    }
 }

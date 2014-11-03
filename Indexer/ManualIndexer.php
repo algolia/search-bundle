@@ -20,7 +20,7 @@ class ManualIndexer
 
     /**
      * Indexes the entities provided.
-     * 
+     *
      * If $indexName is specified, it will override the name of the index
      * that the engine would normally pick.
      */
@@ -66,6 +66,7 @@ class ManualIndexer
     private function batchArray(array $entities, $batchSize, $callback)
     {
         array_map($callback, array_chunk($entities, $batchSize));
+
         return count($entities);
     }
 
@@ -83,7 +84,7 @@ class ManualIndexer
             ->setMaxResults($batchSize);
 
             $paginator = new Paginator($query);
-            
+
             $batch = [];
             foreach ($paginator as $entity) {
                 $batch[] = $entity;
@@ -111,8 +112,8 @@ class ManualIndexer
      * When providing a query, it is the programmers responsibility to make sure it will return entities of $entityName class.
      *
      * @param  mixed $entities Either a single entity, an array of entities, or an entity name.
-     * @param  array  $options  An array of options that MAY contain `batchSize` (int), `query` (a Doctrine Query)
-     * @return int The number of entities processed
+     * @param  array $options  An array of options that MAY contain `batchSize` (int), `query` (a Doctrine Query)
+     * @return int   The number of entities processed
      */
     public function index($entities, array $options = array())
     {
@@ -134,6 +135,7 @@ class ManualIndexer
             });
         } elseif (is_object($entities)) {
             $this->doIndex([$entities], $options['indexName']);
+
             return 1;
         }
     }
@@ -150,8 +152,8 @@ class ManualIndexer
      * When providing a query, it is the programmers responsibility to make sure it will return entities of $entityName class.
      *
      * @param  mixed $entities Either a single entity, an array of entities, or an entity name.
-     * @param  array  $options  An array of options that MAY contain `batchSize` (int), `query` (a Doctrine Query)
-     * @return int The number of entities processed
+     * @param  array $options  An array of options that MAY contain `batchSize` (int), `query` (a Doctrine Query)
+     * @return int   The number of entities processed
      */
     public function unIndex($entities, array $options = array())
     {
@@ -172,6 +174,7 @@ class ManualIndexer
             });
         } elseif (is_object($entities)) {
             $this->doUnIndex([$entities]);
+
             return 1;
         }
     }
@@ -186,10 +189,10 @@ class ManualIndexer
      *
      * If the `safe` option is provided, re-indexing will be done on a brand new index (with the same settings as the target one),
      * which will be moved atomically to the target index when indexing is complete.
-     * 
+     *
      * @param  string $entityName The name of the entities to reindex, may be either a class name or a Doctrine class alias
      * @param  array  $options    An array of options, that may contain `batchSize` (int), `safe` (bool), `query` (Doctrine\ORM\Query)
-     * @return int  The number of processed entities.
+     * @return int    The number of processed entities.
      */
     public function reIndex($entityName, array $options = array())
     {

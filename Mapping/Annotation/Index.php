@@ -8,131 +8,131 @@ namespace Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping\Annotation;
  */
 class Index
 {
-	/**
+    /**
 	 * @var  string
 	 */
-	public $algoliaName;
+    public $algoliaName;
 
-	/**
+    /**
 	 * @var  boolean
 	 */
-	public $perEnvironment = true;
+    public $perEnvironment = true;
 
-	/**
+    /**
 	 * @var  boolean
 	 */
-	public $autoIndex = true;
+    public $autoIndex = true;
 
-	/**
+    /**
 	 * @var  integer
 	 */
-	public $minWordSizefor1Typo;
+    public $minWordSizefor1Typo;
 
-	/**
+    /**
 	 * @var  integer
 	 */
-	public $minWordSizefor2Typos;
+    public $minWordSizefor2Typos;
 
-	/**
+    /**
 	 * @var  integer
 	 */
-	public $hitsPerPage;
+    public $hitsPerPage;
 
-	/**
+    /**
 	 * @var  array<string>
 	 */
-	public $attributesToIndex;
+    public $attributesToIndex;
 
-	/**
+    /**
 	 * @var  array<string>
 	 */
-	public $attributesToRetrieve;
+    public $attributesToRetrieve;
 
-	/**
+    /**
 	 * @var  array<string>
 	 */
-	public $unretrievableAttributes;
+    public $unretrievableAttributes;
 
-	/**
+    /**
 	 * @var  array<string>
 	 */
-	public $optionalWords;
+    public $optionalWords;
 
-	/**
+    /**
 	 * @var  array<string>
 	 */
-	public $attributesForFaceting;
+    public $attributesForFaceting;
 
-	/**
+    /**
 	 * @var  array<string>
 	 */
-	public $attributesToSnippet;
+    public $attributesToSnippet;
 
-	/**
+    /**
 	 * @var  array<string>
 	 */
-	public $attributesToHighlight;
+    public $attributesToHighlight;
 
-	/**
+    /**
 	 * @var  string
 	 */
-	public $attributeForDistinct;
+    public $attributeForDistinct;
 
-	/**
+    /**
 	 * @var  array<string>
 	 */
-	public $ranking;
+    public $ranking;
 
-	/**
+    /**
 	 * @var  array<string>
 	 */
-	public $slaves;
+    public $slaves;
 
-	/**
+    /**
 	 * @var  array<string>
 	 */
-	public $customRanking;
+    public $customRanking;
 
-	/**
+    /**
 	 * @var  string
 	 */
-	public $separatorsToIndex;
+    public $separatorsToIndex;
 
-	/**
+    /**
 	 * @var  string
 	 */
-	public $removeWordsIfNoResults;
+    public $removeWordsIfNoResults;
 
-	/**
+    /**
 	 * @var  string
 	 */
-	public $queryType;
+    public $queryType;
 
-	/**
+    /**
 	 * @var  string
 	 */
-	public $highlightPreTag;
+    public $highlightPreTag;
 
-	/**
+    /**
 	 * @var  string
 	 */
-	public $highlightPostTag;
+    public $highlightPostTag;
 
-	public function toArray()
-	{
-		$settings = [
-			'perEnvironment' => $this->perEnvironment,
-			'autoIndex' => $this->autoIndex
-		];
+    public function toArray()
+    {
+        $settings = [
+            'perEnvironment' => $this->perEnvironment,
+            'autoIndex' => $this->autoIndex
+        ];
 
-		if ($this->algoliaName) {
-			$settings['algoliaName'] = $this->algoliaName;
-		}
+        if ($this->algoliaName) {
+            $settings['algoliaName'] = $this->algoliaName;
+        }
 
-		foreach (\Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping\Index::$algoliaSettingsProps as $field) {
-			$settings[$field] = $this->$field;
-		}
+        foreach (\Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping\Index::$algoliaSettingsProps as $field) {
+            $settings[$field] = $this->$field;
+        }
 
-		return $settings;
-	}
+        return $settings;
+    }
 }

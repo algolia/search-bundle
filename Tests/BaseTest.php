@@ -2,16 +2,9 @@
 
 namespace Algolia\AlgoliaSearchSymfonyDoctrineBundle\Tests;
 
-use Doctrine\ORM\Tools\Setup as DoctrineSetup;
-use Doctrine\ORM\EntityManager;
-use Doctrine\Common\EventManager;
 use Doctrine\ORM\Tools\SchemaTool;
-use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
-use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\DBAL\DriverManager;
 
 // Use lightweight test doubles that can inspect internal state
-use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Tests\EventListener\AlgoliaSearchDoctrineEventSubscriber;
 use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Tests\Indexer\Indexer;
 
 class BaseTest extends \PHPUnit_Framework_TestCase
@@ -49,6 +42,7 @@ class BaseTest extends \PHPUnit_Framework_TestCase
                 $entities[] = $namespace.$base.'\\'.basename($entry, '.php');
             }
         }
+
         return $entities;
     }
 
@@ -86,12 +80,14 @@ class BaseTest extends \PHPUnit_Framework_TestCase
     public static function staticGetEntityManager()
     {
         global $kernel;
+
         return $kernel->getContainer()->get('doctrine.orm.entity_manager');
     }
 
     public function getIndexer()
     {
         global $kernel;
+
         return $kernel->getContainer()->get('algolia.indexer');
     }
 
@@ -99,6 +95,7 @@ class BaseTest extends \PHPUnit_Framework_TestCase
     {
         $this->getEntityManager()->persist($entity);
         $this->getEntityManager()->flush();
+
         return $this;
     }
 
@@ -106,6 +103,7 @@ class BaseTest extends \PHPUnit_Framework_TestCase
     {
         $this->getEntityManager()->remove($entity);
         $this->getEntityManager()->flush();
+
         return $this;
     }
 

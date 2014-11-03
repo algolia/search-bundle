@@ -7,7 +7,6 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 class ReindexCommand extends ContainerAwareCommand
 {
@@ -57,7 +56,7 @@ class ReindexCommand extends ContainerAwareCommand
             }
         }
 
-        $batchSize = (int)$input->getOption('batch-size');
+        $batchSize = (int) $input->getOption('batch-size');
         if ($batchSize === 0) {
             $output->writeln('<comment>Invalid batch size specified, assuming 1000.</comment>');
             $batchSize = 1000;
@@ -80,6 +79,7 @@ class ReindexCommand extends ContainerAwareCommand
     public function reIndex($className, $batchSize = 1000, $safe = true)
     {
         $reIndexer = $this->getContainer()->get('algolia.indexer')->getManualIndexer($this->getEntityManager());
+
         return $reIndexer->reIndex($className, [
             'batchSize' => $batchSize,
             'safe' => $safe
