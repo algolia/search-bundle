@@ -204,9 +204,11 @@ class ManualIndexer
 
         $options = array_merge($defaults, $options);
 
-        $targetIndexName = $this->indexer->getAlgoliaIndexName(
-            $this->entityManager->getRepository($entityName)->getClassName()
-        );
+        $className =  $this->entityManager->getRepository($entityName)->getClassName();
+
+        $this->indexer->discoverEntity($className, $this->entityManager);
+
+        $targetIndexName = $this->indexer->getAlgoliaIndexName($className);
 
         $indexTo = $targetIndexName;
 
