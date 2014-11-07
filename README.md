@@ -78,7 +78,7 @@ Currently, mapping is only possible with annotations.
 
 ## Indexing entity properties or methods
 
-The `Field` annotation marks a field or method for indexing by Algolia.
+The `Attribute` annotation marks a field or method for indexing by Algolia.
 
 All annotations are defined in the `Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping\Annotation` namespace.
 
@@ -112,7 +112,7 @@ class Product
      *
      * @ORM\Column(name="name", type="string", length=255)
      * 
-     * @Algolia\Field
+     * @Algolia\Attribute
      * 
      */
     protected $name;
@@ -126,7 +126,7 @@ class Product
     protected $price;
 
     /**
-     * @Algolia\Field
+     * @Algolia\Attribute
      */
     public function getNameAndPrice()
     {
@@ -152,7 +152,7 @@ You can override the Algolia name by setting the `algoliaName` argument in the a
 
 ```php
     /**
-     * @Algolia\Field(algoliaName="myCustomFieldName")
+     * @Algolia\Attribute(algoliaName="myCustomFieldName")
      */
     public function getNameAndPrice()
     {

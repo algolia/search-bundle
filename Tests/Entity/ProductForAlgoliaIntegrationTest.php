@@ -34,7 +34,7 @@ class ProductForAlgoliaIntegrationTest extends BaseTestAwareEntity
      *
      * @ORM\Column(name="name", type="string", length=255)
      *
-     * @Algolia\Field
+     * @Algolia\Attribute
      *
      */
     protected $name;
@@ -43,7 +43,7 @@ class ProductForAlgoliaIntegrationTest extends BaseTestAwareEntity
      * @var string
      *
      * @ORM\Column(name="price", type="decimal", nullable=true)
-     * @Algolia\Field
+     * @Algolia\Attribute
      */
     protected $price;
 
@@ -51,7 +51,7 @@ class ProductForAlgoliaIntegrationTest extends BaseTestAwareEntity
      * @var string
      *
      * @ORM\Column(name="short_description", type="string", length=255, nullable=true)
-     * @Algolia\Field
+     * @Algolia\Attribute
      */
     protected $shortDescription;
 
@@ -59,7 +59,7 @@ class ProductForAlgoliaIntegrationTest extends BaseTestAwareEntity
      * @var string
      *
      * @ORM\Column(name="description", type="text", nullable=true)
-     * @Algolia\Field
+     * @Algolia\Attribute
      */
     protected $description;
 
@@ -67,7 +67,7 @@ class ProductForAlgoliaIntegrationTest extends BaseTestAwareEntity
      * @var integer
      *
      * @ORM\Column(name="rating", type="integer", nullable=true)
-     * @Algolia\Field
+     * @Algolia\Attribute
      */
     protected $rating;
 
@@ -116,7 +116,7 @@ class ProductForAlgoliaIntegrationTest extends BaseTestAwareEntity
     }
 
     /**
-     * @Algolia\Field
+     * @Algolia\Attribute
      */
     public function getYoName()
     {

@@ -9,7 +9,7 @@ use Doctrine\Common\Annotations\CachedReader;
 use Doctrine\Common\Cache\ArrayCache;
 
 use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping\Annotation\Index as IndexAnnotation;
-use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping\Annotation\Field as IndexedFieldAnnotation;
+use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping\Annotation\Attribute as IndexedAttributeAnnotation;
 use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping\Annotation\IndexIf as IndexIfAnnotation;
 
 use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping\Index;
@@ -64,7 +64,7 @@ class AnnotationLoader implements LoaderInterface
 
         foreach ($refl->getProperties() as $property) {
             foreach ($reader->getPropertyAnnotations($property) as $annotation) {
-                if ($annotation instanceof IndexedFieldAnnotation) {
+                if ($annotation instanceof IndexedAttributeAnnotation) {
                     $field = new Property();
                     $field->setName($property->getName());
 
@@ -80,7 +80,7 @@ class AnnotationLoader implements LoaderInterface
         }
         foreach ($refl->getMethods() as $meth) {
             foreach ($reader->getMethodAnnotations($meth) as $annotation) {
-                if ($annotation instanceof IndexedFieldAnnotation) {
+                if ($annotation instanceof IndexedAttributeAnnotation) {
                     $field = new Method();
                     $field->setName($meth->getName());
 
@@ -104,7 +104,7 @@ class AnnotationLoader implements LoaderInterface
         if (!$description->isEmpty()) {
 
             $meta = $em->getClassMetadata($class);
-            $description->setIdentifierFieldNames($meta->getIdentifierFieldNames());
+            $description->setIdentifierAttributeNames($meta->getIdentifierFieldNames());
 
             // In case the user omitted defining the index, define it for him with default values
             if (null === $description->getIndex()) {

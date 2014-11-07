@@ -6,7 +6,7 @@ namespace Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping\Annotation;
  * @Annotation
  * @Target({"PROPERTY", "METHOD"})
  */
-class Field
+class Attribute
 {
     /**
 	 * @var  string

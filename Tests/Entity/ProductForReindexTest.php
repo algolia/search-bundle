@@ -31,7 +31,7 @@ class ProductForReindexTest extends BaseTestAwareEntity
      *
      * @ORM\Column(name="name", type="string", length=255)
      *
-     * @Algolia\Field
+     * @Algolia\Attribute
      *
      */
     protected $name;
@@ -40,7 +40,7 @@ class ProductForReindexTest extends BaseTestAwareEntity
      * @var string
      *
      * @ORM\Column(name="price", type="decimal", nullable=true)
-     * @Algolia\Field
+     * @Algolia\Attribute
      */
     protected $price;
 
@@ -48,7 +48,7 @@ class ProductForReindexTest extends BaseTestAwareEntity
      * @var string
      *
      * @ORM\Column(name="short_description", type="string", length=255, nullable=true)
-     * @Algolia\Field
+     * @Algolia\Attribute
      */
     protected $shortDescription;
 
@@ -56,7 +56,7 @@ class ProductForReindexTest extends BaseTestAwareEntity
      * @var string
      *
      * @ORM\Column(name="description", type="text", nullable=true)
-     * @Algolia\Field
+     * @Algolia\Attribute
      */
     protected $description;
 
@@ -64,7 +64,7 @@ class ProductForReindexTest extends BaseTestAwareEntity
      * @var integer
      *
      * @ORM\Column(name="rating", type="integer", nullable=true)
-     * @Algolia\Field
+     * @Algolia\Attribute
      */
     protected $rating;
 
@@ -113,7 +113,7 @@ class ProductForReindexTest extends BaseTestAwareEntity
     }
 
     /**
-     * @Algolia\Field
+     * @Algolia\Attribute
      */
     public function getYoName()
     {
