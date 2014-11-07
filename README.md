@@ -29,11 +29,7 @@ This Symfony bundle provides an easy way to integrate Algolia Search into your S
 
 # Setup
 
-It's easy, I promise.
-
-## Setup composer
-
-Add this line to your composer.json file:
+Add this line to your `composer.json` file:
 ```json
 "require": {
     ...
@@ -244,13 +240,11 @@ class Product
 
 You can have several `IndexIf` conditions, in which case the record is indexed if they *all* return true. It may be better for readability to keep only one such annotation though.
 
-## Advanced index settings
+## Index settings
 
-You can optionally specify most of your index settings directly in the `Index` annotation. Most options supported by Algolia can be set this way.
+You can optionally specify your index settings directly in the `Index` annotation.
 
-Please see the [`Index` annotation class](Mapping/Annotation/Index.php) for more details.
-
-The advanced settings are not automatically synchronized with Algolia, but we provide a command line command to do it:
+The index settings are **not** automatically synchronized with Algolia but we provide a command line command to do it:
 
 ```bash
 php app/console algolia:settings # show the local settings that are not applied to the Algolia indexes
