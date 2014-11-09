@@ -29,10 +29,16 @@ class Indexer
      * The arrays below hold the entities we will sync with
      * Algolia on postFlush.
      */
-    // holds naked entities
+    
+    // holds either naked entities or arrays of the form [
+    // 'entity' => $someEntity,
+    // 'indexName' => 'index name to override where the entity should normally go'
+    // ]
     private $entitiesScheduledForCreation = array();
+    
     // holds arrays like ['entity' => $entity, 'changeSet' => $changeSet]
     private $entitiesScheduledForUpdate = array();
+    
     // holds arrays like ['objectID' => 'aStringID', 'index' => 'anIndexName']
     private $entitiesScheduledForDeletion = array();
 
@@ -85,6 +91,7 @@ class Indexer
      * but this abstraction is provided to enable other loaders later.
      * A loader just has to implement the Algolia\AlgoliaSearchSymfonyDoctrineBundle\MetaData\MetaDataLoaderInterface
      * @return see MetaDataLoaderInterface
+     * @internal
      */
     public function getMetaDataLoader()
     {
@@ -296,6 +303,7 @@ class Indexer
      *
      * Tests have been adapted to use this function too,
      * so changing it to something else should not break any test.
+     * @internal
      *
      */
     public function serializePrimaryKey(array $values)
@@ -303,6 +311,9 @@ class Indexer
         return base64_encode(json_encode($values));
     }
 
+    /**
+     * @internal
+     */
     public function unserializePrimaryKey($pkey)
     {
         return json_decode(base64_decode($pkey), true);
@@ -456,6 +467,8 @@ class Indexer
      * We also store the index object itself, that way, when we call waitForAlgoliaTasks,
      * we don't have to call getIndex, which would otherwise create the index in some cases.
      * This makes sure we don't accidentally create an index when just waiting for its deletion.
+     *
+     * @internal
      */
     public function algoliaTask($indexName, $res)
     {
@@ -532,6 +545,10 @@ class Indexer
         return new ManualIndexer($this, $em);
     }
 
+    /**
+     * Return a properly configured instance of the Algolia PHP client library
+     * and caches it.
+     */
     public function getClient()
     {
         if (!$this->client) {
@@ -544,6 +561,11 @@ class Indexer
         return $this->client;
     }
 
+    /**
+     * Returns an object used to communicate with the Algolia indexes
+     * and caches it.
+     * @internal
+     */
     public function getIndex($indexName)
     {
         if (!isset($this->indices[$indexName])) {
@@ -553,6 +575,12 @@ class Indexer
         return $this->indices[$indexName];
     }
 
+    /**
+     * Add the correct environment suffix to an index name,
+     * this is primarily used by rawSearch as in rawSearch we don't want
+     * the user to bother about knowing the environment he's on.
+     * @internal
+     */
     public function makeEnvIndexName($indexName, $perEnvironment)
     {
         if ($perEnvironment) {
@@ -601,7 +629,7 @@ class Indexer
 
     /**
      * Perform a 'native' search on the Algolia servers.
-     * By native, it means that once the results are retrieved, they will be fetched from the local DB
+     * 'Native' means that once the results are retrieved, they will be fetched from the local DB
      * and replaced with native ORM entities.
      *
      * @param  EntityManager $em          The Doctrine Entity Manager to use to fetch entities when hydrating the results.
@@ -640,6 +668,9 @@ class Indexer
         return new SearchResult($results->getOriginalResult(), $hydratedHits);
     }
 
+    /**
+     * @internal
+     */
     public function deleteIndex($indexName, array $options = array())
     {
         $defaultOptions = [
