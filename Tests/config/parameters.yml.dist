@@ -1,6 +1,9 @@
 # This file is auto-generated during the composer install
 parameters:
+    # if you want to use pdo_sqlite, please adapt the `config.yml` file accordingly:
+    # see the comments in `config.yml` about pdo_sqlite.
     database_driver: pdo_mysql
+    #database_path: test.db #uncomment this line if you use pdo_sqlite for tests 
     database_host: 127.0.0.1
     database_port: null
     database_name: test_algoliasearch_symfony_doctrine_bundle_tests

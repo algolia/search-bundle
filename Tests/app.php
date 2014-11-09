@@ -20,6 +20,18 @@ $dbParams = [
     'password' => $parameters['database_password']
 ];
 
+if (array_key_exists('database_path', $parameters)) {
+    $dbParams['path'] = $parameters['database_path'];
+}
+
+if (array_key_exists('database_host', $parameters)) {
+    $dbParams['host'] = $parameters['database_host'];
+}
+
+if (array_key_exists('database_port', $parameters)) {
+    $dbParams['port'] = $parameters['database_port'];
+}
+
 $conn = DriverManager::getConnection($dbParams);
 $sm = $conn->getSchemaManager();
 try {
@@ -66,4 +78,8 @@ register_shutdown_function(function () use ($dbParams, $parameters) {
     echo "Dropping database {$parameters['database_name']}...\n";
     $sm->dropDatabase($parameters['database_name']);
     $conn->close();
+
+    if (isset($dbParams['path']) && file_exists($dbParams['path'])) {
+        unlink($dbParams['path']);
+    }
 });
