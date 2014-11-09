@@ -105,7 +105,7 @@ class ChangeDetectionTest extends BaseTest
         );
     }
 
-    public function testExistingProductWouldNotBeUpdatedWhenUninterestingFieldsAreChanged()
+    public function testExistingProductWouldNotBeUpdatedWhenUninterestingAttributesAreChanged()
     {
         $indexer = $this->getIndexer();
 

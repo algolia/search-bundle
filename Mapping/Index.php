@@ -7,7 +7,7 @@ class Index
     private $algoliaName;
     private $perEnvironment = true;
     private $autoIndex = true;
-    private $identifierFieldNames;
+    private $identifierAttributeNames;
 
     // The names of the settings only we care about (client side)
     private static $internalSettingsProps = [

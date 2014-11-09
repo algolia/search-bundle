@@ -27,7 +27,7 @@ class ProductWithIndexedMethod extends BaseTestAwareEntity
      *
      * @ORM\Column(name="name", type="string", length=255)
      *
-     * @Algolia\Field
+     * @Algolia\Attribute
      *
      */
     protected $name;
@@ -95,7 +95,7 @@ class ProductWithIndexedMethod extends BaseTestAwareEntity
     }
 
     /**
-     * @Algolia\Field
+     * @Algolia\Attribute
      */
     public function getYoName()
     {

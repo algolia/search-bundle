@@ -27,7 +27,7 @@ class ProductWithConditionalIndexing extends BaseTestAwareEntity
      *
      * @ORM\Column(name="name", type="string", length=255)
      *
-     * @Algolia\Field
+     * @Algolia\Attribute
      *
      */
     protected $name;

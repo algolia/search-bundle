@@ -56,16 +56,16 @@ class Description
         return empty($this->properties) && empty($this->methods);
     }
 
-    public function setIdentifierFieldNames(array $fields)
+    public function setIdentifierAttributeNames(array $fields)
     {
-        $this->identifierFieldNames = $fields;
+        $this->identifierAttributeNames = $fields;
 
         return $this;
     }
 
     public function getIdentifierFieldNames()
     {
-        return $this->identifierFieldNames;
+        return $this->identifierAttributeNames;
     }
 
     public function addIndexIf(IndexIf $iif)
