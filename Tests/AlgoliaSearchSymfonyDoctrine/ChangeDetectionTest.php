@@ -6,7 +6,8 @@ class ChangeDetectionTest extends BaseTest
 {
     public static $neededEntityTypes = [
         'Product',
-        'ProductWithIndexedMethod'
+        'ProductWithIndexedMethod',
+        'ProductWithCompositePrimaryKey'
     ];
 
     public function testNewProductWouldBeInserted()
@@ -144,5 +145,88 @@ class ChangeDetectionTest extends BaseTest
             ),
             $indexer->deletions
         );
+    }
+
+    public function testProductWithCompositePrimaryKeyWouldBeInserted()
+    {
+        $product = new Entity\ProductWithCompositePrimaryKey();
+
+        $product
+        ->setName('.the .product')
+        ->setPrice(10)
+        ->setShortDescription('Coolest demo from farbrausch.')
+        ->setDescription('Just watch https://www.youtube.com/watch?v=Y3n3c_8Nn2Y.')
+        ->setRating(10);
+
+        $this->persistAndFlush($product);
+
+        $this->assertEquals(
+            array(
+                metaenv('ProductWithCompositePrimaryKey_dev') => array(
+                    array(
+                        'objectID' => $this->getObjectID(['name' => '.the .product', 'price' => 10]),
+                        'name' => '.the .product',
+                    )
+                )
+            ),
+            $this->getIndexer()->creations
+        );
+
+        return $product;
+    }
+
+    /**
+     * @depends testProductWithCompositePrimaryKeyWouldBeInserted
+     */
+    public function testChangeOfCompositePrimaryKeyLeadsToUndindexAndReindex($product)
+    {
+        /**
+         * This one is a bit special:
+         * 
+         * If a product has a composite primary key, updating a field from the primary key
+         * will actually be equivalent to deleting the product and inserting a new one, which
+         * will have a different objectID.
+         * 
+         * So in this case, what should happen is:
+         * - old product is unindexed from Algolia
+         * - updated product is inserted into Algolia index as a new entity
+         * - no update is performed Algolia side, just one delete and one insert
+         */
+
+
+        $product->setPrice(7);
+        $this->persistAndFlush($product);
+
+        // convince ourselves that doctrine DOES delete the old product
+        $oldProduct = $this->getEntityManager()
+        ->getRepository('AlgoliaSearchSymfonyDoctrineBundle:ProductWithCompositePrimaryKey')
+        ->findOneBy(['name' => '.the .product', 'price' => 10]);
+        $this->assertEquals(null, $oldProduct);
+
+        // check "new" product is indexed
+        $this->assertEquals(
+            array(
+                metaenv('ProductWithCompositePrimaryKey_dev') => array(
+                    array(
+                        'objectID' => $this->getObjectID(['name' => '.the .product', 'price' => 7]),
+                        'name' => '.the .product',
+                    )
+                )
+            ),
+            $this->getIndexer()->creations
+        );
+
+        // check "old" product is unindexed
+        $this->assertEquals(
+            array(
+                metaenv('ProductWithCompositePrimaryKey_dev') => array(
+                    $this->getObjectID(['name' => '.the .product', 'price' => 10])
+                )
+            ),
+            $this->getIndexer()->deletions
+        );
+
+        // check we don't try to update anything
+        $this->assertEquals([], $this->getIndexer()->updates);
     }
 }
