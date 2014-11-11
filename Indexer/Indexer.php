@@ -699,6 +699,32 @@ class Indexer
     }
 
     /**
+     * @internal
+     */
+    public function setIndexSettings($indexName, array $settings, array $options = array())
+    {
+        $defaultOptions = [
+            'perEnvironment' => true,
+            'adaptIndexName' => true
+        ];
+
+        $options = array_merge($defaultOptions, $options);
+
+        $client = $this->getClient();
+
+        if ($options['adaptIndexName']) {
+            $indexName = $this->makeEnvIndexName($indexName, $options['perEnvironment']);
+        }
+
+        $this->algoliaTask(
+            $indexName,
+            $this->getIndex($indexName)->setSettings($settings)
+        );
+
+        return $this;
+    }
+
+    /**
      * Wait for all Algolia tasks recorded by `algoliaTask` to complete.
      */
     public function waitForAlgoliaTasks()

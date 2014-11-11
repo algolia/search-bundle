@@ -8,6 +8,7 @@
 			<file>./AlgoliaSearchSymfonyDoctrine/ConditionalIndexingTest.php</file>
 			<file>./AlgoliaSearchSymfonyDoctrine/AlgoliaIntegrationTest.php</file>
 			<file>./AlgoliaSearchSymfonyDoctrine/ReindexCommandTest.php</file>
+			<file>./AlgoliaSearchSymfonyDoctrine/SettingsCommandTest.php</file>
 		</testsuite>
 	</testsuites>
 </phpunit>

@@ -86,6 +86,11 @@ class BaseTest extends \PHPUnit_Framework_TestCase
 
     public function getIndexer()
     {
+        return self::staticGetIndexer();
+    }
+
+    public static function staticGetIndexer()
+    {
         global $kernel;
 
         return $kernel->getContainer()->get('algolia.indexer');

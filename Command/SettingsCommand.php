@@ -16,6 +16,7 @@ class SettingsCommand extends ContainerAwareCommand
         ->setName('algolia:settings')
         ->setDescription('Push the Algolia index settings defined in your project to the Algolia servers.')
         ->addOption('push', 'p', InputOption::VALUE_NONE, 'Push the local settings to the remote Alogia servers.')
+        ->addOption('force', 'f', InputOption::VALUE_NONE, 'Do not ask for confirmation.')
         ;
     }
 
@@ -113,9 +114,9 @@ class SettingsCommand extends ContainerAwareCommand
                 $output->writeln('');
                 $helper = $this->getHelper('question');
                 $question = new ConfirmationQuestion('Are you sure you want to update the remote Algolia settings? This operation cannot be undone! (y/N)', false);
-                if ($helper->ask($input, $output, $question)) {
+                if ($input->getOption('force') || $helper->ask($input, $output, $question)) {
                     foreach ($dirty as $indexName => $unused) {
-                        $indexer->getIndex($indexName)->setSettings($localIndexSettings[$indexName]);
+                        $indexer->setIndexSettings($indexName, $localIndexSettings[$indexName], ['adaptIndexName' => false]);
                     }
                     $output->writeln("\n<fg=green>Done updating the settings! (but the tasks may not have completed on Algolia's side yet).</fg=green>");
                 } else {
@@ -123,5 +124,7 @@ class SettingsCommand extends ContainerAwareCommand
                 }
             }
         }
+
+        $indexer->waitForAlgoliaTasks();
     }
 }
