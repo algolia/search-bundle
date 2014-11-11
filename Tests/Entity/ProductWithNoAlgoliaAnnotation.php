@@ -98,11 +98,6 @@ class ProductWithNoAlgoliaAnnotation extends BaseTestAwareEntity
         return $this->name;
     }
 
-    public function getYoName()
-    {
-        return 'YO' . $this->getName();
-    }
-
     /**
      * Set price
      *

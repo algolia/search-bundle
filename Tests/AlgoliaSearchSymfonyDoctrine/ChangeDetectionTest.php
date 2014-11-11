@@ -7,7 +7,8 @@ class ChangeDetectionTest extends BaseTest
     public static $neededEntityTypes = [
         'Product',
         'ProductWithIndexedMethod',
-        'ProductWithCompositePrimaryKey'
+        'ProductWithCompositePrimaryKey',
+        'ProductWithNoAlgoliaAnnotation'
     ];
 
     public function testNewProductWouldBeInserted()
@@ -228,5 +229,15 @@ class ChangeDetectionTest extends BaseTest
 
         // check we don't try to update anything
         $this->assertEquals([], $this->getIndexer()->updates);
+    }
+
+    public function testNothingHappensToAProductNotKnownToAlgolia()
+    {
+        $product = new Entity\ProductWithNoAlgoliaAnnotation();
+        $product->setName('a')->setPrice(9.99)->setDescription('b')->setShortDescription('c')->setRating(1);
+        $this->persistAndFlush($product);
+        $this->assertEquals([], $this->getIndexer()->creations);
+        $this->assertEquals([], $this->getIndexer()->updates);
+        $this->assertEquals([], $this->getIndexer()->deletions);
     }
 }
