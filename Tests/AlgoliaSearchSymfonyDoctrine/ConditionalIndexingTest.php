@@ -139,4 +139,26 @@ class ConditionalIndexingTest extends BaseTest
             $this->getIndexer()->deletions
         );
     }
+
+    public function testProductThatWasNotIndexedIsNotUnindexed()
+    {
+        $product = new Entity\ProductWithConditionalIndexing();
+        $product
+        ->setName('I\'m a pathological case.')
+        ->setPrice(0)
+        ->setShortDescription('Aww\'right');
+        $this->persistAndFlush($product);
+
+        $this->assertEquals([], $this->getIndexer()->creations);
+
+        // This would trigger indexing if we saved the product.
+        // But we don't save it. This checks that the engine only takes
+        // into account the data that was stored in the DB before
+        // deciding how to handle an entity.
+        $product->setPrice(15);
+
+        $this->removeAndFlush($product);
+
+        $this->assertEquals([], $this->getIndexer()->deletions);
+    }
 }
