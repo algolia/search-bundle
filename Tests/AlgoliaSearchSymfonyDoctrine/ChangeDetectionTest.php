@@ -8,7 +8,8 @@ class ChangeDetectionTest extends BaseTest
         'Product',
         'ProductWithIndexedMethod',
         'ProductWithCompositePrimaryKey',
-        'ProductWithNoAlgoliaAnnotation'
+        'ProductWithNoAlgoliaAnnotation',
+        'ProductWithCustomAttributeNames'
     ];
 
     public function testNewProductWouldBeInserted()
@@ -239,5 +240,20 @@ class ChangeDetectionTest extends BaseTest
         $this->assertEquals([], $this->getIndexer()->creations);
         $this->assertEquals([], $this->getIndexer()->updates);
         $this->assertEquals([], $this->getIndexer()->deletions);
+    }
+
+    public function testCustomAlgoliaNamesAreTakenIntoAccount()
+    {
+        $product = new Entity\ProductWithCustomAttributeNames();
+        $product->setName('Hello World.');
+        $this->persistAndFlush($product);
+        $this->assertEquals([
+            metaenv('nonDefaultIndexName_dev') => [
+                [
+                    'objectID' => $this->getObjectID(['id' => $product->getId()]),
+                    'nonDefaultAttributeName' => 'Hello World.'
+                ]
+            ]
+        ], $this->getIndexer()->creations);
     }
 }
