@@ -39,6 +39,13 @@ class AlgoliaIntegrationTest extends BaseTest
         $results = $this->getIndexer()->rawSearch('ProductForAlgoliaIntegrationTest', 'My First Product');
 
         $this->assertEquals(1, $results->getNbHits());
+        $this->assertEquals(0, $results->getPage());
+        $this->assertEquals(1, $results->getNbPages());
+        $this->assertEquals(20, $results->getHitsPerPage());
+        $this->assertGreaterThan(0, $results->getProcessingTimeMS());
+        $this->assertGreaterThan(0, $results->getProcessingTimeMS());
+        $this->assertEquals('My First Product', $results->getQuery());
+        $this->assertEquals('query=My+First+Product', $results->getParams());
         $this->assertEquals($this->getObjectID(['id' => $product->getId()]), $results->getHits()[0]['objectID']);
     }
 
