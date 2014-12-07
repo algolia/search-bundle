@@ -52,8 +52,11 @@ class AlgoliaSearchDoctrineDocumentEventSubscriber implements EventSubscriber
         $uow = $dm->getUnitOfWork();
 
         foreach ($uow->getScheduledDocumentInsertions() as $entity) {
+            print_r($entity);
             if ($this->indexer->autoIndex($entity, $dm)) {
                 $this->create($entity);
+            } else {
+                echo "\nNOOOPE!\n";
             }
         }
 
@@ -70,8 +73,6 @@ class AlgoliaSearchDoctrineDocumentEventSubscriber implements EventSubscriber
                 $this->delete($entity, $originalData);
             }
         }
-
-        print_r($uow->getScheduledCollectionUpdates());
     }
 
     /**
