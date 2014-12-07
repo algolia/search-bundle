@@ -70,6 +70,8 @@ class AlgoliaSearchDoctrineDocumentEventSubscriber implements EventSubscriber
                 $this->delete($entity, $originalData);
             }
         }
+
+        print_r($uow->getScheduledCollectionUpdates());
     }
 
     /**
