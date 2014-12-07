@@ -18,6 +18,7 @@ class AlgoliaIntegrationTest extends BaseTest
     {
         parent::tearDown();
         $this->getIndexer()->deleteIndex('ProductForAlgoliaIntegrationTest');
+        $this->getIndexer()->deleteIndex('MongoProduct');
         $this->getIndexer()->waitForAlgoliaTasks();
     }
 
@@ -37,6 +38,34 @@ class AlgoliaIntegrationTest extends BaseTest
         $this->getIndexer()->waitForAlgoliaTasks();
 
         $results = $this->getIndexer()->rawSearch('ProductForAlgoliaIntegrationTest', 'My First Product');
+
+        $this->assertEquals(1, $results->getNbHits());
+        $this->assertEquals(0, $results->getPage());
+        $this->assertEquals(1, $results->getNbPages());
+        $this->assertEquals(20, $results->getHitsPerPage());
+        $this->assertGreaterThan(0, $results->getProcessingTimeMS());
+        $this->assertGreaterThan(0, $results->getProcessingTimeMS());
+        $this->assertEquals('My First Product', $results->getQuery());
+        $this->assertEquals('query=My+First+Product', $results->getParams());
+        $this->assertEquals($this->getObjectID(['id' => $product->getId()]), $results->getHits()[0]['objectID']);
+    }
+
+    public function testNewMongoProductIsIndexedAndRetrieved()
+    {
+        $product = new Entity\MongoProduct();
+
+        $product
+        ->setName('My First Product')
+        ->setShortDescription('Is Awesome.')
+        ->setDescription('Let me index it for you.')
+        ->setPrice(9.99)
+        ->setRating(10);
+
+        $this->persistAndFlush($product);
+
+        $this->getIndexer()->waitForAlgoliaTasks();
+
+        $results = $this->getIndexer()->rawSearch('MongoProduct', 'My First Product');
 
         $this->assertEquals(1, $results->getNbHits());
         $this->assertEquals(0, $results->getPage());
@@ -74,6 +103,31 @@ class AlgoliaIntegrationTest extends BaseTest
         $this->assertEquals('Totally Different Name.', $results->getHits()[0]['name']);
     }
 
+    public function testUpdatedMongoProductIsIndexedAndRetrieved()
+    {
+        $product = new Entity\MongoProduct();
+
+        $product
+        ->setName('My First Product')
+        ->setShortDescription('Is Awesome.')
+        ->setDescription('Let me index it for you.')
+        ->setPrice(9.99)
+        ->setRating(10);
+
+        $this->persistAndFlush($product);
+
+        $product->setName('Totally Different Name.');
+        $this->persistAndFlush($product);
+
+        $this->getIndexer()->waitForAlgoliaTasks();
+
+        $results = $this->getIndexer()->rawSearch('MongoProduct', 'Totally Different Name.');
+
+        $this->assertEquals(1, $results->getNbHits());
+        $this->assertEquals($this->getObjectID(['id' => $product->getId()]), $results->getHits()[0]['objectID']);
+        $this->assertEquals('Totally Different Name.', $results->getHits()[0]['name']);
+    }
+
     public function testProductIsUnindexed()
     {
         $product = new Entity\ProductForAlgoliaIntegrationTest();
@@ -96,6 +150,31 @@ class AlgoliaIntegrationTest extends BaseTest
         $this->removeAndFlush($product);
         $this->getIndexer()->waitForAlgoliaTasks();
         $results = $this->getIndexer()->rawSearch('ProductForAlgoliaIntegrationTest', 'My First Product');
+        $this->assertEquals(0, $results->getNbHits());
+    }
+
+    public function testMongoProductIsUnindexed()
+    {
+        $product = new Entity\MongoProduct();
+
+        $product
+        ->setName('My First Product')
+        ->setShortDescription('Is Awesome.')
+        ->setDescription('Let me index it for you.')
+        ->setPrice(9.99)
+        ->setRating(10);
+
+        $this->persistAndFlush($product);
+
+        // Check that the product is indexed!
+        $this->getIndexer()->waitForAlgoliaTasks();
+        $results = $this->getIndexer()->rawSearch('MongoProduct', 'My First Product');
+        $this->assertEquals(1, $results->getNbHits());
+        $this->assertEquals($this->getObjectID(['id' => $product->getId()]), $results->getHits()[0]['objectID']);
+
+        $this->removeAndFlush($product);
+        $this->getIndexer()->waitForAlgoliaTasks();
+        $results = $this->getIndexer()->rawSearch('MongoProduct', 'My First Product');
         $this->assertEquals(0, $results->getNbHits());
     }
 
