@@ -22,13 +22,6 @@ class CallbacksTest extends BaseTest
 
         if (self::testMongo()) {
             $entities = [new Entity\MongoProduct()];
-
-            if (getenv('TRAVIS_JOB_ID')) {
-                $tmp = new Entity\MongoProduct();
-                $tmp->setName('Dummy Product');
-                $this->persistAndFlush($tmp);
-                echo "\nPersisted a dummy product because first Mongo insertion on Travis is not detected - why?\n";
-            }
         }
 
         foreach ($entities as $product) {
