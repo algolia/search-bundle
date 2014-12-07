@@ -2,7 +2,7 @@
 
 namespace Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping\Loader;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\Common\Persistence\ObjectManager;
 
 interface LoaderInterface
 {
@@ -11,5 +11,5 @@ interface LoaderInterface
 	 *
 	 * @return Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping\Description
 	 */
-    public function getMetaData($entity, EntityManager $em);
+    public function getMetaData($entity, ObjectManager $em);
 }

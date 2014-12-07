@@ -3,10 +3,12 @@
 use Symfony\Component\Yaml\Parser as Yaml;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\DBAL\DriverManager;
+use Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver as MongoAnnotationDriver;
 
 $loader = require __DIR__ . '/../vendor/autoload.php';
 
 AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
+MongoAnnotationDriver::registerAnnotationClasses();
 
 // might be useful: http://php-and-symfony.matthiasnoback.nl/2011/10/symfony2-use-a-bootstrap-file-for-your-phpunit-tests-and-run-some-console-commands/
 

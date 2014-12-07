@@ -77,11 +77,23 @@ class BaseTest extends \PHPUnit_Framework_TestCase
         return self::staticGetEntityManager();
     }
 
+    public function getDocumentManager()
+    {
+        return self::staticGetDocumentManager();
+    }
+
     public static function staticGetEntityManager()
     {
         global $kernel;
 
         return $kernel->getContainer()->get('doctrine.orm.entity_manager');
+    }
+
+    public static function staticGetDocumentManager()
+    {
+        global $kernel;
+
+        return $kernel->getContainer()->get('doctrine_mongodb')->getManager();
     }
 
     public function getIndexer()
@@ -98,16 +110,18 @@ class BaseTest extends \PHPUnit_Framework_TestCase
 
     public function persistAndFlush($entity)
     {
-        $this->getEntityManager()->persist($entity);
-        $this->getEntityManager()->flush();
+        $om = $entity instanceof Entity\MongoEntity ? $this->getDocumentManager() : $this->getEntityManager();
+        $om->persist($entity);
+        $om->flush();
 
         return $this;
     }
 
     public function removeAndFlush($entity)
     {
-        $this->getEntityManager()->remove($entity);
-        $this->getEntityManager()->flush();
+        $om = $entity instanceof Entity\MongoEntity ? $this->getDocumentManager() : $this->getEntityManager();
+        $om->remove($entity);
+        $om->flush();
 
         return $this;
     }
@@ -121,5 +135,10 @@ class BaseTest extends \PHPUnit_Framework_TestCase
     public function getObjectID(array $primaryKeyData)
     {
         return $this->getIndexer()->serializePrimaryKey($primaryKeyData);
+    }
+
+    public static function testMongo()
+    {
+        return true;
     }
 }

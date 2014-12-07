@@ -18,23 +18,29 @@ class CallbacksTest extends BaseTest
 
     public function testCreateUpdateDeleteCallbacksAreCalled()
     {
-        $product = new Entity\Product();
+        $entities = [new Entity\Product()];
 
-        $product
-        ->setName("Hello World");
+        if (self::testMongo()) {
+            $entities = [new Entity\MongoProduct()];
+        }
 
-        $this->assertEquals(null, $product->getTestProp('create_callback'));
-        $this->persistAndFlush($product);
-        $this->assertEquals('called', $product->getTestProp('create_callback'));
+        foreach ($entities as $product) {
+            $product
+            ->setName("Hello World");
 
-        $this->assertEquals(null, $product->getTestProp('update_callback'));
-        $product->setName("Hello World 2014");
-        $this->persistAndFlush($product);
-        $this->assertEquals('called', $product->getTestProp('update_callback'));
+            $this->assertEquals(null, $product->getTestProp('create_callback'));
+            $this->persistAndFlush($product);
+            $this->assertEquals('called', $product->getTestProp('create_callback'));
 
-        $this->assertEquals(null, $product->getTestProp('delete_callback'));
-        $this->removeAndFlush($product);
-        $this->assertEquals('called', $product->getTestProp('delete_callback'));
+            $this->assertEquals(null, $product->getTestProp('update_callback'));
+            $product->setName("Hello World 2014");
+            $this->persistAndFlush($product);
+            $this->assertEquals('called', $product->getTestProp('update_callback'));
+
+            $this->assertEquals(null, $product->getTestProp('delete_callback'));
+            $this->removeAndFlush($product);
+            $this->assertEquals('called', $product->getTestProp('delete_callback'));
+        }
     }
 
     public function testCreateUpdateDeleteCallbacksAreCalledInRelationsToo()

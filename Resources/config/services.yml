@@ -1,6 +1,7 @@
 parameters:
     algolia.indexer.class: Algolia\AlgoliaSearchSymfonyDoctrineBundle\Indexer\Indexer
     algolia.indexer_subscriber.class: Algolia\AlgoliaSearchSymfonyDoctrineBundle\EventListener\AlgoliaSearchDoctrineEventSubscriber
+    algolia.document_indexer_subscriber.class: Algolia\AlgoliaSearchSymfonyDoctrineBundle\EventListener\AlgoliaSearchDoctrineDocumentEventSubscriber
 
 services:
     algolia.indexer:
@@ -13,3 +14,8 @@ services:
         arguments: ["@algolia.indexer"]
         tags:
             - {name: doctrine.event_subscriber}
+    algolia.document_indexer_subscriber:
+        class: %algolia.document_indexer_subscriber.class%
+        arguments: ["@algolia.indexer"]
+        tags:
+            - {name: doctrine_mongodb.odm.event_subscriber}

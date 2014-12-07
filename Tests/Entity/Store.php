@@ -14,7 +14,7 @@ use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping\Annotation as Algolia;
  *  perEnvironment = true
  * )
  */
-class Store extends BaseTestAwareEntity
+class Store extends ORMEntity
 {
     /**
      * @var integer

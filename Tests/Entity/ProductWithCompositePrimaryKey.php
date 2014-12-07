@@ -11,7 +11,7 @@ use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping\Annotation as Algolia;
  * @ORM\Entity
  *
  */
-class ProductWithCompositePrimaryKey extends BaseTestAwareEntity
+class ProductWithCompositePrimaryKey extends ORMEntity
 {
     /**
      * @var string

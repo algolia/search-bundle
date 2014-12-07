@@ -2,7 +2,7 @@
 
 namespace Algolia\AlgoliaSearchSymfonyDoctrineBundle\Indexer;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\Common\Persistence\ObjectManager;
 
 use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Exception\UnknownEntity;
 use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Exception\NoPrimaryKey;
@@ -108,7 +108,7 @@ class Indexer
      * @return bool
      * @internal
      */
-    public function discoverEntity($entity_or_class, EntityManager $em)
+    public function discoverEntity($entity_or_class, ObjectManager $em)
     {
         if (is_object($entity_or_class)) {
             $entity = $entity_or_class;
@@ -131,7 +131,7 @@ class Indexer
      * Tells us whether we need to autoindex this entity.
      * @internal
      */
-    public function autoIndex($entity, EntityManager $em)
+    public function autoIndex($entity, ObjectManager $em)
     {
         if (!$this->discoverEntity($entity, $em)) {
             return false;
@@ -540,7 +540,7 @@ class Indexer
         return $this;
     }
 
-    public function getManualIndexer(EntityManager $em)
+    public function getManualIndexer(ObjectManager $em)
     {
         return new ManualIndexer($this, $em);
     }
@@ -638,7 +638,7 @@ class Indexer
      * @param  array         $options     Any search option understood by https://github.com/algolia/algoliasearch-client-php
      * @return SearchResult  The results returned by Algolia. The `isHydrated` method of the result will return true.
      */
-    public function search(EntityManager $em, $entityName, $queryString, array $options = array())
+    public function search(ObjectManager $em, $entityName, $queryString, array $options = array())
     {
         $entityClass = $em->getRepository($entityName)->getClassName();
 

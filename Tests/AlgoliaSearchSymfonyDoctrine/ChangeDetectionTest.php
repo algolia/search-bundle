@@ -16,46 +16,88 @@ class ChangeDetectionTest extends BaseTest
     {
         $indexer = $this->getIndexer();
 
-        $product = new Entity\Product();
-        $product->setName('Precision Watch');
+        $products = ['Product_dev' => new Entity\Product()];
 
-        $this->assertEquals(array(), $indexer->creations);
-        $this->persistAndFlush($product);
-        $this->assertEquals(
-            array(
-                metaenv('Product_dev') => array(
-                    array(
-                        'objectID' => $this->getObjectID(['id' => 1]),
-                        'name' => 'Precision Watch'
+        if (self::testMongo()) {
+            $products['MongoProduct_dev'] = new Entity\MongoProduct();
+        }
+
+        foreach ($products as $expectedIndexName => $product) {
+            $product->setName('Precision Watch');
+
+            $this->assertEquals(array(), $indexer->creations);
+            $this->persistAndFlush($product);
+            $this->assertEquals(
+                array(
+                    metaenv($expectedIndexName) => array(
+                        array(
+                            'objectID' => $this->getObjectID(['id' => $product->getId()]),
+                            'name' => 'Precision Watch'
+                        )
                     )
-                )
-            ),
-            $indexer->creations
-        );
+                ),
+                $indexer->creations
+            );
 
-        return $product;
+             $indexer->reset();
+        }
+
+        return $products;
     }
 
     /**
      * @depends testNewProductWouldBeInserted
      */
-    public function testExistingProductWouldBeUpdated($product)
+    public function testExistingProductWouldBeUpdated($products)
     {
         $indexer = $this->getIndexer();
 
-        $product->setName('Yet Another Precision Watch');
-        $this->persistAndFlush($product);
-        $this->assertEquals(
-            array(
-                metaenv('Product_dev') => array(
-                    array(
-                        'objectID' => $this->getObjectID(['id' => $product->getId()]),
-                        'name' => 'Yet Another Precision Watch'
+        foreach ($products as $expectedIndexName => $product) {
+            $product->setName('Yet Another Precision Watch');
+            $this->persistAndFlush($product);
+            $this->assertEquals(
+                array(
+                    metaenv($expectedIndexName) => array(
+                        array(
+                            'objectID' => $this->getObjectID(['id' => $product->getId()]),
+                            'name' => 'Yet Another Precision Watch'
+                        )
                     )
-                )
-            ),
-            $indexer->updates
-        );
+                ),
+                $indexer->updates
+            );
+
+            $indexer->reset();
+        }
+
+        return $products;
+    }
+
+    /**
+     * @depends testExistingProductWouldBeUpdated
+     */
+    public function testExistingProductWouldBeDeleted($products)
+    {
+        $indexer = $this->getIndexer();
+
+        foreach ($products as $expectedIndexName => $product) {
+            $this->assertEquals(array(), $indexer->deletions);
+
+            // Need to get ID before removing the entity!
+            $id = $product->getId();
+
+            $this->removeAndFlush($product);
+            $this->assertEquals(
+                array(
+                    metaenv($expectedIndexName) => array(
+                        $this->getObjectID(['id' => $id])
+                    )
+                ),
+                $indexer->deletions
+            );
+
+            $indexer->reset();
+        }
     }
 
     public function testNewProductWithIndexedMethodWouldBeInserted()
@@ -124,28 +166,6 @@ class ChangeDetectionTest extends BaseTest
         $this->assertEquals(
             array(),
             $indexer->updates
-        );
-    }
-
-    public function testExistingProductWouldBeDeleted()
-    {
-        $indexer = $this->getIndexer();
-
-        $product = new Entity\Product();
-        $product->setName('This Product Is Doomed To Die');
-        $this->persistAndFlush($product);
-        $id = $product->getId();
-
-        $indexer->reset();
-        $this->assertEquals(array(), $indexer->deletions);
-        $this->removeAndFlush($product);
-        $this->assertEquals(
-            array(
-                metaenv('Product_dev') => array(
-                    $this->getObjectID(['id' => $id])
-                )
-            ),
-            $indexer->deletions
         );
     }
 

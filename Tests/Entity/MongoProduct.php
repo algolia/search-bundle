@@ -2,33 +2,28 @@
 
 namespace Algolia\AlgoliaSearchSymfonyDoctrineBundle\Tests\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping\Annotation as Algolia;
 
 /**
  * Product
  *
- * @ORM\Entity
+ * @MongoDB\Document
  *
- * @Algolia\Index(
- *  autoIndex = false
- * )
  */
-class ProductWithoutAutoIndex extends ORMEntity
+class MongoProduct extends MongoEntity
 {
     /**
      * @var integer
      *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @MongoDB\Id
      */
     protected $id;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="name", type="string", length=255)
+     * @MongoDB\String
      *
      * @Algolia\Attribute
      *
@@ -36,9 +31,9 @@ class ProductWithoutAutoIndex extends ORMEntity
     protected $name;
 
     /**
-     * @var string
+     * @var float
      *
-     * @ORM\Column(name="price", type="decimal", nullable=true)
+     * @MongoDB\Float
      *
      */
     protected $price;
@@ -46,28 +41,23 @@ class ProductWithoutAutoIndex extends ORMEntity
     /**
      * @var string
      *
-     * @ORM\Column(name="short_description", type="string", length=255, nullable=true)
+     * @MongoDB\String
      */
     protected $shortDescription;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="description", type="text", nullable=true)
+     * @MongoDB\String
      */
     protected $description;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="rating", type="integer", nullable=true)
+     * @MongoDB\Int
      */
     protected $rating;
-
-    /**
-     * @ORM\Column(name="supplier_id", type="integer", nullable=true)
-     */
-    protected $supplier_id;
 
     /**
      * Get id

@@ -7,6 +7,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\CachedReader;
 use Doctrine\Common\Cache\ArrayCache;
+use Doctrine\Common\Persistence\ObjectManager;
 
 use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping\Annotation\Index as IndexAnnotation;
 use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping\Annotation\Attribute as IndexedAttributeAnnotation;
@@ -43,7 +44,7 @@ class AnnotationLoader implements LoaderInterface
     /**
      * @return Description
      */
-    public function getMetaData($entity, EntityManager $em)
+    public function getMetaData($entity, ObjectManager $em)
     {
         $class = get_class($entity);
 

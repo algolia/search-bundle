@@ -15,7 +15,7 @@ use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping\Annotation as Algolia;
  * )
  *
  */
-class ProductForReindexTest extends BaseTestAwareEntity
+class ProductForReindexTest extends ORMEntity
 {
     /**
      * @var integer

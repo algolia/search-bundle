@@ -11,7 +11,7 @@ use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping\Annotation as Algolia;
  * @ORM\Entity
  *
  */
-class Product extends BaseTestAwareEntity
+class Product extends ORMEntity
 {
     /**
      * @var integer

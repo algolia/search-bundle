@@ -36,3 +36,17 @@ doctrine:
                         prefix: Algolia\AlgoliaSearchSymfonyDoctrineBundle\Tests\Entity\
                         alias: AlgoliaSearchSymfonyDoctrineBundle
                         dir: "%kernel.root_dir%/Entity"
+doctrine_mongodb:
+    connections:
+        default:
+            server: mongodb://localhost:27017
+            options: {}
+    default_database: "%database_name%"
+    document_managers:
+        default:
+            mappings:
+                AlgoliaSearchSymfonyDoctrineBundle:
+                    type: annotation
+                    prefix: Algolia\AlgoliaSearchSymfonyDoctrineBundle\Tests\Entity\
+                    alias: AlgoliaSearchSymfonyDoctrineBundle
+                    dir: "%kernel.root_dir%/Entity"
