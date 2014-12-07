@@ -3,7 +3,24 @@ AlgoliaSearchSymfonyDoctrineBundle
 
 This Symfony bundle provides an easy way to integrate Algolia Search into your Symfony2 with Doctrine2 application.
 
-[![Build Status](https://travis-ci.org/djfm/AlgoliaSearchSymfonyDoctrineBundle.svg?branch=master)](https://travis-ci.org/djfm/AlgoliaSearchSymfonyDoctrineBundle)
+[![Build Status](https://travis-ci.org/djfm/AlgoliaSearchSymfonyDoctrineBundle.svg?branch=mongo)](https://travis-ci.org/djfm/AlgoliaSearchSymfonyDoctrineBundle)
+
+# DISCLAIMER: Doctrine With MongoDB and Algolia
+This is the **experimental** mongo branch of `AlgoliaSearchSymfonyDoctrineBundle`.
+
+*What works*: everything should work at this point, except the command line helpers that still only work for the ORM.
+
+*What doesn't work*: both command line helpers are broken right now.
+
+There is just *one* test failing on Travis, so don't panic. But it doesn't fail locally, which makes it pretty hard to debug. I'm still trying to figure out what's happening.
+
+*What's on the TODO*:
+- make the current tests pass on Travis
+- add more tests (only a minimal subset of the functionality is covered right now)
+- make the 2 command line helpers work with the ODM
+- better organize the test harness, because now it unconditionally tries to test both the ODM and the ORM - that's what *I* want, but some people may be interested in the ODM and not want to setup the ORM or conversely.
+
+The examples below are made using the Doctrine ORM, but the annotations should work the same in your ODM models.
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -35,6 +52,14 @@ Add this line to your `composer.json` file:
     ...
     "djfm/algolia-search-symfony-doctrine-bundle": "dev-master",
     ...
+}
+```
+
+Since the doctrine ODM is still in beta, you might also need to add this to your `require` array (they're required by this bundle, but unless your minimum stability is set to dev, you will need to require them manually):
+```json
+{
+    "doctrine/mongodb-odm": "1.0.*@dev",
+    "doctrine/mongodb-odm-bundle": "3.0.*@dev"
 }
 ```
 
