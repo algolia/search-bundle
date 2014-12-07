@@ -46,18 +46,6 @@ try {
 }
 $conn->close();
 
-/**
- * That's dirty and it needs to be removed at some point.
- * There is a weird bug on Travis that I can't reproduce locally
- * upon first insertion into Mongo. So we do a first insertion before the tests.
- * I'd rather understand why it is needed, but so far no idea.
- */
-$m = new MongoClient();
-$db = $m->{$parameters['database_name']};
-$collection = $db->dummy;
-$collection->insert(['dummy' => 'Strangely, this seems to help on Travis']);
-
-
 global $kernel;
 $kernel = new AppKernel('dev', true);
 $kernel->boot();
