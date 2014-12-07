@@ -31,6 +31,7 @@ class CallbacksTest extends BaseTest
             try {
                 $this->assertEquals(null, $product->getTestProp('create_callback'));
                 $this->persistAndFlush($product);
+                $this->assertEquals(null, $product->getTestProp('update_callback'));
                 $this->assertEquals('called', $product->getTestProp('create_callback'));
 
                 $this->assertEquals(null, $product->getTestProp('update_callback'));
