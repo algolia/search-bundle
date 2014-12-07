@@ -50,7 +50,7 @@ Add this line to your `composer.json` file:
 ```json
 "require": {
     ...
-    "djfm/algolia-search-symfony-doctrine-bundle": "dev-master",
+    "djfm/algolia-search-symfony-doctrine-bundle": "dev-mongo",
     ...
 }
 ```
