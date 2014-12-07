@@ -4,7 +4,9 @@ services:
 php:
     - 5.4
     - 5.5
-before_install: curl -sS https://getcomposer.org/installer | php
+before_install:
+    - echo "extension = mongo.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+    - curl -sS https://getcomposer.org/installer | php
 install: php composer.phar install
 before_script: mv Tests/config/parameters.yml.travis Tests/config/parameters.yml
 script: php vendor/bin/phpunit -c Tests
