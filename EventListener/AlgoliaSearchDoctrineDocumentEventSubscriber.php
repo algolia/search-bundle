@@ -52,11 +52,8 @@ class AlgoliaSearchDoctrineDocumentEventSubscriber implements EventSubscriber
         $uow = $dm->getUnitOfWork();
 
         foreach ($uow->getScheduledDocumentInsertions() as $entity) {
-            print_r($entity);
             if ($this->indexer->autoIndex($entity, $dm)) {
                 $this->create($entity);
-            } else {
-                echo "\nNOOOPE!\n";
             }
         }
 
