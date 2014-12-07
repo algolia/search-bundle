@@ -28,18 +28,22 @@ class CallbacksTest extends BaseTest
             $product
             ->setName("Hello World");
 
-            $this->assertEquals(null, $product->getTestProp('create_callback'));
-            $this->persistAndFlush($product);
-            $this->assertEquals('called', $product->getTestProp('create_callback'));
+            try {
+                $this->assertEquals(null, $product->getTestProp('create_callback'));
+                $this->persistAndFlush($product);
+                $this->assertEquals('called', $product->getTestProp('create_callback'));
 
-            $this->assertEquals(null, $product->getTestProp('update_callback'));
-            $product->setName("Hello World 2014");
-            $this->persistAndFlush($product);
-            $this->assertEquals('called', $product->getTestProp('update_callback'));
+                $this->assertEquals(null, $product->getTestProp('update_callback'));
+                $product->setName("Hello World 2014");
+                $this->persistAndFlush($product);
+                $this->assertEquals('called', $product->getTestProp('update_callback'));
 
-            $this->assertEquals(null, $product->getTestProp('delete_callback'));
-            $this->removeAndFlush($product);
-            $this->assertEquals('called', $product->getTestProp('delete_callback'));
+                $this->assertEquals(null, $product->getTestProp('delete_callback'));
+                $this->removeAndFlush($product);
+                $this->assertEquals('called', $product->getTestProp('delete_callback'));
+            } catch (\Exception $e) {
+                throw new \Exception(get_class($product), $e->getCode(), $e);
+            }
         }
     }
 
