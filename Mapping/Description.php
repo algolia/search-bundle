@@ -1,6 +1,6 @@
 <?php
 
-namespace Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping;
+namespace Algolia\AlgoliaSearchBundle\Mapping;
 
 class Description
 {

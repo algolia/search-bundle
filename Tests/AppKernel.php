@@ -10,7 +10,7 @@ class AppKernel extends Kernel
         $bundles = array(
             new Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
-            new Algolia\AlgoliaSearchSymfonyDoctrineBundle\AlgoliaAlgoliaSearchSymfonyDoctrineBundle(),
+            new Algolia\AlgoliaSearchBundle\AlgoliaAlgoliaSearchBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

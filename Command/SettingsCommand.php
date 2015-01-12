@@ -1,6 +1,6 @@
 <?php
 
-namespace Algolia\AlgoliaSearchSymfonyDoctrineBundle\Command;
+namespace Algolia\AlgoliaSearchBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -15,7 +15,7 @@ class SettingsCommand extends ContainerAwareCommand
         $this
         ->setName('algolia:settings')
         ->setDescription('Push the Algolia index settings defined in your project to the Algolia servers.')
-        ->addOption('push', 'p', InputOption::VALUE_NONE, 'Push the local settings to the remote Alogia servers.')
+        ->addOption('push', 'p', InputOption::VALUE_NONE, 'Push the local settings to the remote Algolia servers.')
         ->addOption('force', 'f', InputOption::VALUE_NONE, 'Do not ask for confirmation.')
         ;
     }

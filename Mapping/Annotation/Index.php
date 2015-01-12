@@ -1,6 +1,6 @@
 <?php
 
-namespace Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping\Annotation;
+namespace Algolia\AlgoliaSearchBundle\Mapping\Annotation;
 
 /**
  * @Annotation
@@ -129,7 +129,7 @@ class Index
             $settings['algoliaName'] = $this->algoliaName;
         }
 
-        foreach (\Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping\Index::$algoliaSettingsProps as $field) {
+        foreach (\Algolia\AlgoliaSearchBundle\Mapping\Index::$algoliaSettingsProps as $field) {
             $settings[$field] = $this->$field;
         }
 

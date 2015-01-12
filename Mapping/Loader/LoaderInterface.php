@@ -1,6 +1,6 @@
 <?php
 
-namespace Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping\Loader;
+namespace Algolia\AlgoliaSearchBundle\Mapping\Loader;
 
 use Doctrine\ORM\EntityManager;
 
@@ -9,7 +9,7 @@ interface LoaderInterface
     /**
 	 * Extracts the Algolia metaData from an entity.
 	 *
-	 * @return Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping\Description
+	 * @return Algolia\AlgoliaSearchBundle\Mapping\Description
 	 */
     public function getMetaData($entity, EntityManager $em);
 }

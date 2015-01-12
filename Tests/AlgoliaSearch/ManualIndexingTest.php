@@ -1,6 +1,6 @@
 <?php
 
-namespace Algolia\AlgoliaSearchSymfonyDoctrineBundle\Tests;
+namespace Algolia\AlgoliaSearchBundle\Tests;
 
 class ManualIndexingTest extends BaseTest
 {
@@ -90,7 +90,7 @@ class ManualIndexingTest extends BaseTest
         $this->cleanDatabaseAndMakeProducts();
 
         $nIndexed = $this->getIndexer()->getManualIndexer($this->getEntityManager())->index(
-            'AlgoliaSearchSymfonyDoctrineBundle:ProductWithoutAutoIndex',
+            'AlgoliaSearchBundle:ProductWithoutAutoIndex',
             ['batchSize' => 27]
         );
 
@@ -105,7 +105,7 @@ class ManualIndexingTest extends BaseTest
         $this->cleanDatabaseAndMakeProducts();
 
         $nIndexed = $this->getIndexer()->getManualIndexer($this->getEntityManager())->unIndex(
-            'AlgoliaSearchSymfonyDoctrineBundle:ProductWithoutAutoIndex',
+            'AlgoliaSearchBundle:ProductWithoutAutoIndex',
             ['batchSize' => 27]
         );
 
@@ -120,10 +120,10 @@ class ManualIndexingTest extends BaseTest
         $this->cleanDatabaseAndMakeProducts();
 
         $nIndexed = $this->getIndexer()->getManualIndexer($this->getEntityManager())->index(
-            'AlgoliaSearchSymfonyDoctrineBundle:ProductWithoutAutoIndex',
+            'AlgoliaSearchBundle:ProductWithoutAutoIndex',
             [
                 'batchSize' => 27,
-                'query' => $this->getEntityManager()->createQuery('SELECT p FROM AlgoliaSearchSymfonyDoctrineBundle:ProductWithoutAutoIndex p WHERE p.rating = 9')
+                'query' => $this->getEntityManager()->createQuery('SELECT p FROM AlgoliaSearchBundle:ProductWithoutAutoIndex p WHERE p.rating = 9')
             ]
         );
 
@@ -138,10 +138,10 @@ class ManualIndexingTest extends BaseTest
         $this->cleanDatabaseAndMakeProducts();
 
         $nUnIndexed = $this->getIndexer()->getManualIndexer($this->getEntityManager())->unIndex(
-            'AlgoliaSearchSymfonyDoctrineBundle:ProductWithoutAutoIndex',
+            'AlgoliaSearchBundle:ProductWithoutAutoIndex',
             [
                 'batchSize' => 27,
-                'query' => $this->getEntityManager()->createQuery('SELECT p FROM AlgoliaSearchSymfonyDoctrineBundle:ProductWithoutAutoIndex p WHERE p.rating = 9')
+                'query' => $this->getEntityManager()->createQuery('SELECT p FROM AlgoliaSearchBundle:ProductWithoutAutoIndex p WHERE p.rating = 9')
             ]
         );
 
@@ -157,10 +157,10 @@ class ManualIndexingTest extends BaseTest
         $this->getIndexer()->deleteIndex('ProductWithoutAutoIndex')->waitForAlgoliaTasks();
 
         $nProcessed = $this->getIndexer()->getManualIndexer($this->getEntityManager())->reIndex(
-            'AlgoliaSearchSymfonyDoctrineBundle:ProductWithoutAutoIndex',
+            'AlgoliaSearchBundle:ProductWithoutAutoIndex',
             [
                 'batchSize' => 27,
-                'query' => $this->getEntityManager()->createQuery('SELECT p FROM AlgoliaSearchSymfonyDoctrineBundle:ProductWithoutAutoIndex p WHERE p.rating = 9')
+                'query' => $this->getEntityManager()->createQuery('SELECT p FROM AlgoliaSearchBundle:ProductWithoutAutoIndex p WHERE p.rating = 9')
             ]
         );
 

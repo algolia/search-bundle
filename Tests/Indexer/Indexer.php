@@ -1,7 +1,7 @@
 <?php
-namespace Algolia\AlgoliaSearchSymfonyDoctrineBundle\Tests\Indexer;
+namespace Algolia\AlgoliaSearchBundle\Tests\Indexer;
 
-class Indexer extends \Algolia\AlgoliaSearchSymfonyDoctrineBundle\Indexer\Indexer
+class Indexer extends \Algolia\AlgoliaSearchBundle\Indexer\Indexer
 {
     public $creations = array();
     public $updates = array();

@@ -1,6 +1,6 @@
 <?php
 
-namespace Algolia\AlgoliaSearchSymfonyDoctrineBundle\Tests\Entity;
+namespace Algolia\AlgoliaSearchBundle\Tests\Entity;
 
 class BaseTestAwareEntity
 {

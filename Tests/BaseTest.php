@@ -1,11 +1,11 @@
 <?php
 
-namespace Algolia\AlgoliaSearchSymfonyDoctrineBundle\Tests;
+namespace Algolia\AlgoliaSearchBundle\Tests;
 
 use Doctrine\ORM\Tools\SchemaTool;
 
 // Use lightweight test doubles that can inspect internal state
-use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Tests\Indexer\Indexer;
+use Algolia\AlgoliaSearchBundle\Tests\Indexer\Indexer;
 
 class BaseTest extends \PHPUnit_Framework_TestCase
 {
@@ -26,7 +26,7 @@ class BaseTest extends \PHPUnit_Framework_TestCase
     protected static function getNeededEntities()
     {
         $entities = array();
-        $namespace = 'Algolia\AlgoliaSearchSymfonyDoctrineBundle\Tests\\';
+        $namespace = 'Algolia\AlgoliaSearchBundle\Tests\\';
         $base = 'Entity';
         foreach (scandir(__DIR__.DIRECTORY_SEPARATOR.$base) as $entry) {
             if ($entry === 'BaseTestAwareEntity.php') {

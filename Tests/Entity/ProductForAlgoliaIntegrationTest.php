@@ -1,9 +1,9 @@
 <?php
 
-namespace Algolia\AlgoliaSearchSymfonyDoctrineBundle\Tests\Entity;
+namespace Algolia\AlgoliaSearchBundle\Tests\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping\Annotation as Algolia;
+use Algolia\AlgoliaSearchBundle\Mapping\Annotation as Algolia;
 
 /**
  * Product

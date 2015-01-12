@@ -1,11 +1,11 @@
 <?php
 
-namespace Algolia\AlgoliaSearchSymfonyDoctrineBundle\Indexer;
+namespace Algolia\AlgoliaSearchBundle\Indexer;
 
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\ORM\Query;
 
-use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Exception\NotAnAlgoliaEntity;
+use Algolia\AlgoliaSearchBundle\Exception\NotAnAlgoliaEntity;
 
 class ManualIndexer
 {

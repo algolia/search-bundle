@@ -1,6 +1,6 @@
 <?php
 
-namespace Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping\Loader;
+namespace Algolia\AlgoliaSearchBundle\Mapping\Loader;
 
 use Doctrine\ORM\EntityManager;
 
@@ -8,15 +8,15 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\CachedReader;
 use Doctrine\Common\Cache\ArrayCache;
 
-use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping\Annotation\Index as IndexAnnotation;
-use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping\Annotation\Attribute as IndexedAttributeAnnotation;
-use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping\Annotation\IndexIf as IndexIfAnnotation;
+use Algolia\AlgoliaSearchBundle\Mapping\Annotation\Index as IndexAnnotation;
+use Algolia\AlgoliaSearchBundle\Mapping\Annotation\Attribute as IndexedAttributeAnnotation;
+use Algolia\AlgoliaSearchBundle\Mapping\Annotation\IndexIf as IndexIfAnnotation;
 
-use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping\Index;
-use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping\IndexIf;
-use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping\Property;
-use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping\Method;
-use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping\Description;
+use Algolia\AlgoliaSearchBundle\Mapping\Index;
+use Algolia\AlgoliaSearchBundle\Mapping\IndexIf;
+use Algolia\AlgoliaSearchBundle\Mapping\Property;
+use Algolia\AlgoliaSearchBundle\Mapping\Method;
+use Algolia\AlgoliaSearchBundle\Mapping\Description;
 
 class AnnotationLoader implements LoaderInterface
 {

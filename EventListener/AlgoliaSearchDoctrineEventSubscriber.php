@@ -1,10 +1,10 @@
 <?php
-namespace Algolia\AlgoliaSearchSymfonyDoctrineBundle\EventListener;
+namespace Algolia\AlgoliaSearchBundle\EventListener;
 
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 
-use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Indexer\Indexer;
+use Algolia\AlgoliaSearchBundle\Indexer\Indexer;
 
 class AlgoliaSearchDoctrineEventSubscriber implements EventSubscriber
 {

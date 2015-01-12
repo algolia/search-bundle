@@ -1,12 +1,12 @@
 <?php
 
-namespace Algolia\AlgoliaSearchSymfonyDoctrineBundle\Tests;
+namespace Algolia\AlgoliaSearchBundle\Tests;
 
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Output\StreamOutput;
 use Symfony\Component\Console\Input\ArrayInput;
 
-use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Command\SettingsCommand;
+use Algolia\AlgoliaSearchBundle\Command\SettingsCommand;
 
 class SettingsCommandTest extends BaseTest
 {
