@@ -64,8 +64,6 @@ parameters:
     algolia.api_key: YOUR_API_KEY
 ```
 
-That's it!
-
 # Mapping entities to Algolia indexes
 
 Mapping an entity type to an Algolia index allows you to keep it in sync with Algolia, i.e. the operations involving mapped entities on your local database are mirrored on the Algolia indexes. Indexation is automatic by default, but can be made manual if needed.
