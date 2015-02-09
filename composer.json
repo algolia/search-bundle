@@ -2,6 +2,7 @@
     "name": "algolia/algolia-search-bundle",
     "type": "symfony-bundle",
     "description": "Seamless integration of Algolia Search into your Symfony project.",
+    "license": "MIT",
     "require": {
         "symfony/framework-bundle": "~2.5",
         "symfony/finder": "~2.5",
