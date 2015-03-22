@@ -1,6 +1,6 @@
 <?php
 
-namespace Algolia\AlgoliaSearchSymfonyDoctrineBundle\Tests;
+namespace Algolia\AlgoliaSearchBundle\Tests;
 
 class EntityAliasTest extends BaseTest
 {
@@ -45,7 +45,7 @@ class EntityAliasTest extends BaseTest
 
         $result = $this->getIndexer()->search(
             $this->getEntityManager(),
-            'AlgoliaSearchSymfonyDoctrineBundle:ProductForAlgoliaIntegrationTest',
+            'AlgoliaSearchBundle:ProductForAlgoliaIntegrationTest',
             'My First Product'
         );
 

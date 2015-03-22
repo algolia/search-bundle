@@ -1,12 +1,12 @@
-AlgoliaSearchSymfonyDoctrineBundle
+AlgoliaSearchBundle
 ==================================
 
 This Symfony bundle provides an easy way to integrate Algolia Search into your Symfony2 with Doctrine2 application.
 
-[![Build Status](https://travis-ci.org/djfm/AlgoliaSearchSymfonyDoctrineBundle.svg?branch=mongo)](https://travis-ci.org/djfm/AlgoliaSearchSymfonyDoctrineBundle)
+[![Build Status](https://travis-ci.org/djfm/AlgoliaSearchBundle.svg?branch=mongo)](https://travis-ci.org/djfm/AlgoliaSearchBundle)
 
 # DISCLAIMER: Doctrine With MongoDB and Algolia
-This is the **experimental** mongo branch of `AlgoliaSearchSymfonyDoctrineBundle`.
+This is the **experimental** mongo branch of `AlgoliaSearchBundle`.
 
 *What works*: everything should work at this point, except the command line helpers that still only work for the ORM.
 
@@ -67,12 +67,12 @@ Then run `composer update`.
 
 ## Register the bundle
 
-Add `Algolia\AlgoliaSearchSymfonyDoctrineBundle\AlgoliaAlgoliaSearchSymfonyDoctrineBundle()` to your application Kernel:
+Add `Algolia\AlgoliaSearchBundle\AlgoliaAlgoliaSearchBundle()` to your application Kernel:
 ```php
 $bundles = array(
     new Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
     new Doctrine\Bundle\MongoDBBundle\DoctrineMongoDBBundle(),
-    new Algolia\AlgoliaSearchSymfonyDoctrineBundle\AlgoliaAlgoliaSearchSymfonyDoctrineBundle(),
+    new Algolia\AlgoliaSearchBundle\AlgoliaAlgoliaSearchBundle(),
 );
 ```
 
@@ -101,7 +101,7 @@ Currently, mapping is only possible with annotations.
 
 The `Attribute` annotation marks a field or method for indexing by Algolia.
 
-All annotations are defined in the `Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping\Annotation` namespace.
+All annotations are defined in the `Algolia\AlgoliaSearchBundle\Mapping\Annotation` namespace.
 
 Below is an example of an indexed field and an indexed property:
 
@@ -109,7 +109,7 @@ Below is an example of an indexed field and an indexed property:
 namespace MyCoolAppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping\Annotation as Algolia;
+use Algolia\AlgoliaSearchBundle\Mapping\Annotation as Algolia;
 
 /**
  * Product

@@ -1,6 +1,6 @@
 <?php
 
-namespace Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping\Helper;
+namespace Algolia\AlgoliaSearchBundle\Mapping\Helper;
 
 class ChangeAwareMethod
 {

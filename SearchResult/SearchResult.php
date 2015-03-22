@@ -1,6 +1,6 @@
 <?php
 
-namespace Algolia\AlgoliaSearchSymfonyDoctrineBundle\SearchResult;
+namespace Algolia\AlgoliaSearchBundle\SearchResult;
 
 class SearchResult
 {

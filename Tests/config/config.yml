@@ -31,10 +31,10 @@ doctrine:
         entity_managers:
             default:
                 mappings:
-                    AlgoliaSearchSymfonyDoctrineBundle:
+                    AlgoliaSearchBundle:
                         type: annotation
-                        prefix: Algolia\AlgoliaSearchSymfonyDoctrineBundle\Tests\Entity\
-                        alias: AlgoliaSearchSymfonyDoctrineBundle
+                        prefix: Algolia\AlgoliaSearchBundle\Tests\Entity\
+                        alias: AlgoliaSearchBundle
                         dir: "%kernel.root_dir%/Entity"
 doctrine_mongodb:
     connections:
@@ -45,8 +45,8 @@ doctrine_mongodb:
     document_managers:
         default:
             mappings:
-                AlgoliaSearchSymfonyDoctrineBundle:
+                AlgoliaSearchBundle:
                     type: annotation
-                    prefix: Algolia\AlgoliaSearchSymfonyDoctrineBundle\Tests\Entity\
-                    alias: AlgoliaSearchSymfonyDoctrineBundle
+                    prefix: Algolia\AlgoliaSearchBundle\Tests\Entity\
+                    alias: AlgoliaSearchBundle
                     dir: "%kernel.root_dir%/Entity"

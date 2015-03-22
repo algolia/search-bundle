@@ -1,6 +1,6 @@
 <?php
 
-namespace Algolia\AlgoliaSearchSymfonyDoctrineBundle\Tests;
+namespace Algolia\AlgoliaSearchBundle\Tests;
 
 class ChangeDetectionTest extends BaseTest
 {
@@ -221,7 +221,7 @@ class ChangeDetectionTest extends BaseTest
 
         // convince ourselves that doctrine DOES delete the old product
         $oldProduct = $this->getEntityManager()
-        ->getRepository('AlgoliaSearchSymfonyDoctrineBundle:ProductWithCompositePrimaryKey')
+        ->getRepository('AlgoliaSearchBundle:ProductWithCompositePrimaryKey')
         ->findOneBy(['name' => '.the .product', 'price' => 10]);
         $this->assertEquals(null, $oldProduct);
 

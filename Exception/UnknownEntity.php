@@ -1,6 +1,6 @@
 <?php
 
-namespace Algolia\AlgoliaSearchSymfonyDoctrineBundle\Exception;
+namespace Algolia\AlgoliaSearchBundle\Exception;
 
 class UnknownEntity extends \Exception
 {

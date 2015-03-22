@@ -1,9 +1,9 @@
 <?php
-namespace Algolia\AlgoliaSearchSymfonyDoctrineBundle\EventListener;
+namespace Algolia\AlgoliaSearchBundle\EventListener;
 
 use Doctrine\Common\EventSubscriber;
 
-use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Indexer\Indexer;
+use Algolia\AlgoliaSearchBundle\Indexer\Indexer;
 
 class AlgoliaSearchDoctrineDocumentEventSubscriber implements EventSubscriber
 {
@@ -46,7 +46,7 @@ class AlgoliaSearchDoctrineDocumentEventSubscriber implements EventSubscriber
          */
         $this->indexer->removeScheduledIndexChanges();
 
-       
+
         $dm = $args->getDocumentManager();
 
         $uow = $dm->getUnitOfWork();

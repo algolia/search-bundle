@@ -22,7 +22,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "Algolia\\AlgoliaSearchSymfonyDoctrineBundle\\": ""
+            "Algolia\\AlgoliaSearchBundle\\": ""
         }
     }
 }

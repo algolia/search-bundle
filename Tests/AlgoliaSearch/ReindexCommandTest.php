@@ -1,12 +1,12 @@
 <?php
 
-namespace Algolia\AlgoliaSearchSymfonyDoctrineBundle\Tests;
+namespace Algolia\AlgoliaSearchBundle\Tests;
 
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Input\ArrayInput;
 
-use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Command\ReindexCommand;
+use Algolia\AlgoliaSearchBundle\Command\ReindexCommand;
 
 class ReindexCommandTest extends BaseTest
 {
@@ -68,8 +68,8 @@ class ReindexCommandTest extends BaseTest
     public function reIndex($use_entity_alias, $safe = true)
     {
         $entityName = $use_entity_alias ?
-            'AlgoliaSearchSymfonyDoctrineBundle:ProductForReindexTest' :
-            'Algolia\AlgoliaSearchSymfonyDoctrineBundle\Tests\Entity\ProductForReindexTest'
+            'AlgoliaSearchBundle:ProductForReindexTest' :
+            'Algolia\AlgoliaSearchBundle\Tests\Entity\ProductForReindexTest'
         ;
 
         $options = [

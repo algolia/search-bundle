@@ -1,6 +1,6 @@
 <?php
 
-namespace Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping\Annotation;
+namespace Algolia\AlgoliaSearchBundle\Mapping\Annotation;
 
 /**
  * @Annotation

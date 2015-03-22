@@ -11,7 +11,7 @@ class AppKernel extends Kernel
             new Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new Doctrine\Bundle\MongoDBBundle\DoctrineMongoDBBundle(),
-            new Algolia\AlgoliaSearchSymfonyDoctrineBundle\AlgoliaAlgoliaSearchSymfonyDoctrineBundle(),
+            new Algolia\AlgoliaSearchBundle\AlgoliaAlgoliaSearchBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

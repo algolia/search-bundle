@@ -1,7 +1,7 @@
 parameters:
-    algolia.indexer.class: Algolia\AlgoliaSearchSymfonyDoctrineBundle\Indexer\Indexer
-    algolia.indexer_subscriber.class: Algolia\AlgoliaSearchSymfonyDoctrineBundle\EventListener\AlgoliaSearchDoctrineEventSubscriber
-    algolia.document_indexer_subscriber.class: Algolia\AlgoliaSearchSymfonyDoctrineBundle\EventListener\AlgoliaSearchDoctrineDocumentEventSubscriber
+    algolia.indexer.class: Algolia\AlgoliaSearchBundle\Indexer\Indexer
+    algolia.indexer_subscriber.class: Algolia\AlgoliaSearchBundle\EventListener\AlgoliaSearchDoctrineEventSubscriber
+    algolia.document_indexer_subscriber.class: Algolia\AlgoliaSearchBundle\EventListener\AlgoliaSearchDoctrineDocumentEventSubscriber
 
 services:
     algolia.indexer:

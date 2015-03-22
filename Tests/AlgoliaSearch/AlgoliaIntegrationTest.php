@@ -1,6 +1,6 @@
 <?php
 
-namespace Algolia\AlgoliaSearchSymfonyDoctrineBundle\Tests;
+namespace Algolia\AlgoliaSearchBundle\Tests;
 
 class AlgoliaIntegrationTest extends BaseTest
 {
@@ -230,13 +230,13 @@ class AlgoliaIntegrationTest extends BaseTest
 
         $results = $this->getIndexer()->search(
             $this->getEntityManager(),
-            'Algolia\AlgoliaSearchSymfonyDoctrineBundle\Tests\Entity\ProductForAlgoliaIntegrationTest',
+            'Algolia\AlgoliaSearchBundle\Tests\Entity\ProductForAlgoliaIntegrationTest',
             'My First Product'
         );
 
         $this->assertEquals(1, $results->getNbHits());
         $this->assertEquals(
-            'Algolia\AlgoliaSearchSymfonyDoctrineBundle\Tests\Entity\ProductForAlgoliaIntegrationTest',
+            'Algolia\AlgoliaSearchBundle\Tests\Entity\ProductForAlgoliaIntegrationTest',
             get_class($results->getHit(0))
         );
         $this->assertEquals(

@@ -1,14 +1,14 @@
 <?php
 
-namespace Algolia\AlgoliaSearchSymfonyDoctrineBundle\Indexer;
+namespace Algolia\AlgoliaSearchBundle\Indexer;
 
 use Doctrine\Common\Persistence\ObjectManager;
 
-use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Exception\UnknownEntity;
-use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Exception\NoPrimaryKey;
-use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Exception\NotAnAlgoliaEntity;
-use Algolia\AlgoliaSearchSymfonyDoctrineBundle\Mapping\Loader\AnnotationLoader;
-use Algolia\AlgoliaSearchSymfonyDoctrineBundle\SearchResult\SearchResult;
+use Algolia\AlgoliaSearchBundle\Exception\UnknownEntity;
+use Algolia\AlgoliaSearchBundle\Exception\NoPrimaryKey;
+use Algolia\AlgoliaSearchBundle\Exception\NotAnAlgoliaEntity;
+use Algolia\AlgoliaSearchBundle\Mapping\Loader\AnnotationLoader;
+use Algolia\AlgoliaSearchBundle\SearchResult\SearchResult;
 
 class Indexer
 {
@@ -89,7 +89,7 @@ class Indexer
     /**
      * Right now this only returns a MetaDataAnnotationLoader,
      * but this abstraction is provided to enable other loaders later.
-     * A loader just has to implement the Algolia\AlgoliaSearchSymfonyDoctrineBundle\MetaData\MetaDataLoaderInterface
+     * A loader just has to implement the Algolia\AlgoliaSearchBundle\MetaData\MetaDataLoaderInterface
      * @return see MetaDataLoaderInterface
      * @internal
      */
