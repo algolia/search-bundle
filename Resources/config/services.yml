@@ -1,6 +1,6 @@
 parameters:
     algolia.indexer.class: Algolia\AlgoliaSearchBundle\Indexer\Indexer
-    algolia.indexer_subscriber.class: Algolia\AlgoliaSearchBundle\EventListener\AlgoliaSearchEventSubscriber
+    algolia.indexer_subscriber.class: Algolia\AlgoliaSearchBundle\EventListener\AlgoliaSearchDoctrineEventSubscriber
 
 services:
     algolia.indexer:
