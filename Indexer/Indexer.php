@@ -60,6 +60,11 @@ class Indexer
     // Cache index objects from the php client lib
     protected $indices = array();
 
+    public function __construct()
+    {
+        \AlgoliaSearch\Version::$custom_value = ' Symfony';
+    }
+
     public function getIndexSettings()
     {
         return self::$indexSettings;
