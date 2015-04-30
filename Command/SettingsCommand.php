@@ -62,12 +62,6 @@ class SettingsCommand extends ContainerAwareCommand
             }
         }
 
-        $remoteIndexSettings = [];
-        foreach ($indexer->getClient()->listIndexes()['items'] as $index) {
-            $indexName = $index['name'];
-            $remoteIndexSettings[$indexName] = $indexer->getIndex($indexName)->getSettings();
-        }
-
         $dirty = [];
 
         foreach ($localIndexSettings as $indexName => $localSettings) {
@@ -77,19 +71,26 @@ class SettingsCommand extends ContainerAwareCommand
                 continue;
             }
 
-            if (!isset($remoteIndexSettings[$indexName])) {
+            try {
+                $currentSettings = $indexer->getIndex($indexName)->getSettings();
+            }
+            catch(\Exception $e) {
+                $currentSettings = null;
+            }
+
+            if ($currentSettings === null) {
                 $dirty[$indexName] = true;
                 $output->writeln("Found a new local index <fg=green>$indexName</fg=green>.");
             } else {
                 foreach ($localSettings as $parameter => $localValue) {
-                    if (!isset($remoteIndexSettings[$indexName][$parameter])) {
+                    if (!isset($currentSettings[$parameter])) {
                         $dirty[$indexName] = true;
                         $output->writeln("Parameter <fg=green>$parameter</fg=green> is new in the local definition of <fg=yellow>$indexName</fg=yellow>.");
                         $output->writeln("New value for $parameter:");
                         $output->writeln('<fg=yellow>'.(is_array($localValue) ? json_encode($localValue, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) : $localValue).'</fg=yellow>');
                         $output->writeln('');
                     } else {
-                        $remoteValue = $remoteIndexSettings[$indexName][$parameter];
+                        $remoteValue = $currentSettings[$parameter];
                         if ($remoteValue !== $localValue) {
                             $dirty[$indexName] = true;
                             $output->writeln("\nParameter <fg=yellow>$parameter</fg=yellow> is different in the local definition of <fg=yellow>$indexName</fg=yellow>.");
