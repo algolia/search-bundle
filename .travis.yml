@@ -8,5 +8,5 @@ before_script: mv Tests/config/parameters.yml.travis Tests/config/parameters.yml
 script: php vendor/bin/phpunit -c Tests
 env:
   global:
-  - secure: Jzng8W9kHHmDDV65sn7OtsTR3XGKEjBdtSJMuQl3yjIMzxbnXbkb3YrXSbQG7C4jIlLCNGtaTg2hjATtTPwjteOJEds2W7X+RXqttBH8KWPzjMYhpg9FwAZ1PxFPbuweCgoieSRaelouw9TMcPgJla6x7iNkm2t/1gisZCIPkCM=
-  - secure: EZnGYh2dJcV0j3pryidiGJlLnT5SLNHrjUR+fI73KrYWw3FlPI4vEUXPM/Zm+qjS7XwS/udPNxM6I2Z2UmX3M0DXbjzdPWYKyT+53qTiUg7DbuOowRfznv2zICHfA3m0o6ZnGA6jvfzFJpWUv4MhejH+lj/7H+q1KWqu4RvXnx8=
+  - secure: kVMG3//7KXQ6I8qOD1B0Nsb7b4lRJenbt6fVFYWr/u3V/pEHoWlmab4isCHh3sBi3Y5ArlAyprKvJwHYG4Y8C+LKGOFaJEYmKwyoftWHCaF4PR2KYs+5ScZwso84/RRHlD7mYMhdrLgJ2TtbeZoZclgJ85S1zETrYPrgfZpFm50=
+  - secure: A/Vsshcysra1lor07JeUZ6iYCP5Q26IqiEQI1fMq9kElIliHl4BntrIhjOeL/nvj2iUSJz1S+n1pnM5MDGSyHFXSGu/w2MJy+k1COPcp1/GRmuU2dTlcKVaDZ5xU4XkE+zKNpONAwfFUtYNhcUOCVqbOthusFTAavVv1d7WrFQ8=
