@@ -242,6 +242,23 @@ You can have several `IndexIf` conditions, in which case the record is indexed i
 
 You can optionally specify your index settings directly in the `Index` annotation.
 
+```php
+/**
+ *
+ * @ORM\Entity
+ *
+ * @Algolia\Index(
+ *     attributesToIndex = {"name", "description", "url"},
+ *     customRanking = {"desc(vote_count)", "asc(name)" }
+ *     [...]
+ * )
+ *
+ */
+class Product
+{
+}
+```
+
 The index settings are **not** automatically synchronized with Algolia but we provide a command line command to do it:
 
 ```bash
