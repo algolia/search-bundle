@@ -1,4 +1,10 @@
 CHANGELOG
 
+2015-06-22  1.0.3
+    * Upgraded the underlying algoliasearch-client-php dependency
+
+2015-05-14  1.0.2
+    * Minor fixes
+
 2015-02-09  1.0.1
-      * MIT License
+    * MIT License
