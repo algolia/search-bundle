@@ -103,6 +103,16 @@ class Indexer
         return new AnnotationLoader();
     }
 
+    private function get_class($entity)
+    {
+        $class = get_class($entity);
+
+        /* Avoid proxy class form symfony */
+        $class = str_replace("Proxies\\__CG__\\", "", $class);
+
+        return $class;
+    }
+
     /**
      * This function does 2 things at once for efficiency:
      * - return a simple boolean telling us whether or not there might be
@@ -117,7 +127,7 @@ class Indexer
     {
         if (is_object($entity_or_class)) {
             $entity = $entity_or_class;
-            $class = get_class($entity);
+            $class = $this->get_class($entity);
         } else {
             $class = $em->getRepository($entity_or_class)->getClassName();
             $entity = new $class();
@@ -141,7 +151,7 @@ class Indexer
         if (!$this->discoverEntity($entity, $em)) {
             return false;
         } else {
-            return self::$indexSettings[get_class($entity)]->getIndex()->getAutoIndex();
+            return self::$indexSettings[$this->get_class($entity)]->getIndex()->getAutoIndex();
         }
     }
 
@@ -153,7 +163,7 @@ class Indexer
      */
     private function shouldIndex($entity, array $changeSet = null)
     {
-        $class = get_class($entity);
+        $class = $this->get_class($entity);
 
         $needsIndexing = true;
         $wasIndexed = true;
@@ -181,7 +191,7 @@ class Indexer
      */
     private function shouldHaveBeenIndexed($entity, array $originalData)
     {
-        foreach (self::$indexSettings[get_class($entity)]->getIndexIfs() as $if) {
+        foreach (self::$indexSettings[$this->get_class($entity)]->getIndexIfs() as $if) {
             if (!$if->evaluateWith($entity, $originalData)) {
                 return false;
             }
@@ -262,7 +272,7 @@ class Indexer
      */
     public function getPrimaryKeyForAlgolia($entity, array $changeSet = null)
     {
-        $class = get_class($entity);
+        $class = $this->get_class($entity);
         if (!isset(self::$indexSettings[$class])) {
             throw new UnknownEntity("Entity `$class` is not known to Algolia. This is likely an implementation bug.");
         }
@@ -329,10 +339,7 @@ class Indexer
      */
     public function getFieldsForAlgolia($entity, array $changeSet = null)
     {
-        $class = get_class($entity);
-
-        /* Avoid proxy class form symfony */
-        $class = str_replace("Proxies\\__CG__\\", "", $class);
+        $class = $this->get_class($entity);
 
         if (!isset(self::$indexSettings[$class])) {
             throw new UnknownEntity("Entity of class `$class` is not known to Algolia. This is likely an implementation bug.");
@@ -372,7 +379,7 @@ class Indexer
      */
     public function getAlgoliaIndexName($entity_or_class)
     {
-        $class = is_object($entity_or_class) ? get_class($entity_or_class) : $entity_or_class;
+        $class = is_object($entity_or_class) ? $this->get_class($entity_or_class) : $entity_or_class;
 
         if (!isset(self::$indexSettings[$class])) {
             throw new UnknownEntity("Entity $class is not known to Algolia. This is likely an implementation bug.");
