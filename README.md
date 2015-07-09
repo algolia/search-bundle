@@ -3,7 +3,7 @@ AlgoliaSearchBundle
 
 This Symfony bundle provides an easy way to integrate Algolia Search into your Symfony2 with Doctrine2 application.
 
-[![Build Status](https://travis-ci.org/algolia/AlgoliaSearchBundle.svg?branch=master)](https://travis-ci.org/algolia/AlgoliaSearchBundle)
+[![Build Status](https://travis-ci.org/algolia/AlgoliaSearchBundle.svg?branch=master)](https://travis-ci.org/algolia/AlgoliaSearchBundle) [![Latest Stable Version](https://poser.pugx.org/algolia/algolia-search-bundle/v/stable)](https://packagist.org/packages/algolia/algolia-search-bundle) [![License](https://poser.pugx.org/algolia/algolia-search-bundle/license)](https://packagist.org/packages/algolia/algolia-search-bundle)
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -241,6 +241,23 @@ You can have several `IndexIf` conditions, in which case the record is indexed i
 ## Index settings
 
 You can optionally specify your index settings directly in the `Index` annotation.
+
+```php
+/**
+ *
+ * @ORM\Entity
+ *
+ * @Algolia\Index(
+ *     attributesToIndex = {"name", "description", "url"},
+ *     customRanking = {"desc(vote_count)", "asc(name)" }
+ *     [...]
+ * )
+ *
+ */
+class Product
+{
+}
+```
 
 The index settings are **not** automatically synchronized with Algolia but we provide a command line command to do it:
 
