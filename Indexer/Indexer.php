@@ -330,6 +330,10 @@ class Indexer
     public function getFieldsForAlgolia($entity, array $changeSet = null)
     {
         $class = get_class($entity);
+
+        /* Avoid proxy class form symfony */
+        $class = str_replace("Proxies\\__CG__\\", "", $class);
+
         if (!isset(self::$indexSettings[$class])) {
             throw new UnknownEntity("Entity of class `$class` is not known to Algolia. This is likely an implementation bug.");
         }
