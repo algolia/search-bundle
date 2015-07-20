@@ -2,6 +2,7 @@
 
 namespace Algolia\AlgoliaSearchBundle\Indexer;
 
+use Doctrine\Common\Persistence\Proxy;
 use Doctrine\ORM\EntityManager;
 
 use Algolia\AlgoliaSearchBundle\Exception\UnknownEntity;
@@ -260,6 +261,18 @@ class Indexer
         );
     }
 
+
+    function isEntity(EntityManager $em, $class)
+    {
+        if (is_object($class)) {
+            $class = ($class instanceof Proxy)
+                ? get_parent_class($class)
+                : get_class($class);
+        }
+
+        return ! $em->getMetadataFactory()->isTransient($class);
+    }
+
     /**
      * OOP? Encapsulation? No thanks! :)
      * http://php.net/manual/en/closure.bind.php
@@ -286,6 +299,14 @@ class Indexer
                 return $this->getFieldsForAlgolia($value);
             }, $value);
         }
+
+        if (is_object($value) && $this->isEntity($this->em, $value))
+        {
+            $this->discoverEntity($value, $this->em);
+
+            $value = $this->getFieldsForAlgolia($value);
+        }
+
 
 
         return $value;
