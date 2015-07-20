@@ -16,6 +16,8 @@ class ManualIndexer
     {
         $this->indexer = $indexer;
         $this->entityManager = $entityManager;
+
+        $this->indexer->setEm($entityManager);
     }
 
     /**

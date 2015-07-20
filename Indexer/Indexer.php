@@ -60,9 +60,16 @@ class Indexer
     // Cache index objects from the php client lib
     protected $indices = array();
 
+    private $em;
+
     public function __construct()
     {
         \AlgoliaSearch\Version::$custom_value = ' Symfony';
+    }
+
+    public function setEm($em)
+    {
+        $this->em = $em;
     }
 
     public function getIndexSettings()
@@ -148,6 +155,8 @@ class Indexer
      */
     public function autoIndex($entity, EntityManager $em)
     {
+        $this->em = $em;
+
         if (!$this->discoverEntity($entity, $em)) {
             return false;
         } else {
@@ -257,11 +266,29 @@ class Indexer
      */
     private function extractPropertyValue($entity, $field)
     {
+
         $privateGetter = \Closure::bind(function ($field) {
             return $this->$field;
         }, $entity, $entity);
 
-        return $privateGetter($field);
+        $value = $privateGetter($field);
+
+        if ($value instanceof \Doctrine\Common\Collections\Collection)
+        {
+            $value = $value->toArray();
+
+            if (count($value) > 0)
+            {
+                $this->discoverEntity($value[0], $this->em);
+            }
+
+            $value = array_map(function ($value) {
+                return $this->getFieldsForAlgolia($value);
+            }, $value);
+        }
+
+
+        return $value;
     }
 
     /**
