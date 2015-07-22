@@ -292,7 +292,7 @@ class Indexer
 
             if (count($value) > 0)
             {
-                $this->discoverEntity($value[0], $this->em);
+                $this->discoverEntity(reset($value), $this->em);
             }
 
             $value = array_map(function ($value) {
