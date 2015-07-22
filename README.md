@@ -33,7 +33,7 @@ Add this line to your `composer.json` file:
 ```json
 "require": {
     ...
-    "algolia/algolia-search-bundle": "1.0.1",
+    "algolia/algolia-search-bundle": "~1.0",
     ...
 }
 ```
