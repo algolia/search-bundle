@@ -12,6 +12,7 @@ services:
         class: %algolia.indexer_subscriber.class%
         arguments:
             - @algolia.indexer
-            - @logger
+            - %algolia.catch_log_exceptions%
+            - @?logger
         tags:
             - {name: doctrine.event_subscriber}

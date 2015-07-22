@@ -64,6 +64,20 @@ parameters:
     algolia.api_key: YOUR_API_KEY
 ```
 
+You can also define those credentials directly in your `config.yml` file:
+```yaml
+algolia:
+    application_id: YOUR_APP_ID
+    api_key: YOUR_API_KEY
+```
+
+There's an extra parameter you can add to this file:
+```yaml
+algolia:
+    catch_log_exceptions: true
+```
+To catch exceptions thrown in the doctrine event subscriber and log them.
+
 # Mapping entities to Algolia indexes
 
 Mapping an entity type to an Algolia index allows you to keep it in sync with Algolia, i.e. the operations involving mapped entities on your local database are mirrored on the Algolia indexes. Indexation is automatic by default, but can be made manual if needed.
@@ -88,7 +102,7 @@ use Algolia\AlgoliaSearchBundle\Mapping\Annotation as Algolia;
  * Product
  *
  * @ORM\Entity
- * 
+ *
  */
 class Product
 {
@@ -105,9 +119,9 @@ class Product
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
-     * 
+     *
      * @Algolia\Attribute
-     * 
+     *
      */
     protected $name;
 
@@ -115,7 +129,7 @@ class Product
      * @var float
      *
      * @ORM\Column(name="price", type="decimal", nullable=true)
-     * 
+     *
      */
     protected $price;
 
@@ -164,7 +178,7 @@ You can change this behaviour with the `Index` annotation and the `autoIndex` pa
  *
  * @ORM\Entity
  * @Algolia\Index(autoIndex=false)
- * 
+ *
  */
 class Product
 {
@@ -202,7 +216,7 @@ To disable this feature, use the `perEnvironment` option of the `Index` annotati
  *
  * @ORM\Entity
  * @Algolia\Index(perEnvironment=false)
- * 
+ *
  */
 class Product
 {
@@ -222,7 +236,7 @@ To this end, we provide the `IndexIf` annotation. This annotation can only be us
  *
  * @ORM\Entity
  * @Algolia\Index(perEnvironment=false)
- * 
+ *
  */
 class Product
 {
@@ -279,7 +293,7 @@ This will return an array of hits, wrapped inside of a [SearchResult](SearchResu
 
 This will not connect to the local database.
 
-## Performing a native search 
+## Performing a native search
 
 You can retrieve Doctrine entities from Algolia indexes using the `search` method of the indexer:
 

@@ -12,14 +12,16 @@ class AlgoliaSearchDoctrineEventSubscriber implements EventSubscriber
 {
     private $indexer;
     private $logger;
+    private $catchAndLogExceptions;
 
     /**
      * Under normal circumstances, the service loader will set the indexer.
      * @param Indexer $indexer
      */
-    public function __construct(Indexer $indexer, LoggerInterface $logger)
+    public function __construct(Indexer $indexer, $catchAndLogExceptions, LoggerInterface $logger = null)
     {
         $this->indexer = $indexer;
+        $this->catchAndLogExceptions = $catchAndLogExceptions;
         $this->logger = $logger;
     }
 
@@ -88,10 +90,14 @@ class AlgoliaSearchDoctrineEventSubscriber implements EventSubscriber
              *
              * Leaving the comment just in case I'm wrong.
              */
-        } catch (AlgoliaException $e) {
-            $this->logger->error('Algolia: '.$e->getMessage());
         } catch (\Exception $e) {
-            $this->logger->error($e->getMessage());
+            if ($this->catchAndLogExceptions) {
+                if ($this->logger) {
+                    $this->logger->error('AlgoliaSearch: '.$e->getMessage());
+                }
+            } else {
+                throw $e;
+            }
         }
     }
 
@@ -102,10 +108,14 @@ class AlgoliaSearchDoctrineEventSubscriber implements EventSubscriber
     {
         try {
             $this->indexer->processScheduledIndexChanges();
-        } catch (AlgoliaException $e) {
-            $this->logger->error('Algolia: '.$e->getMessage());
         } catch (\Exception $e) {
-            $this->logger->error($e->getMessage());
+            if ($this->catchAndLogExceptions) {
+                if ($this->logger) {
+                    $this->logger->error('AlgoliaSearch: '.$e->getMessage());
+                }
+            } else {
+                throw $e;
+            }
         }
     }
 
