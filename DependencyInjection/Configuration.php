@@ -23,6 +23,9 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('application_id')
             ->end()
             ->scalarNode('api_key')
+            ->end()
+            ->booleanNode('catch_log_exceptions')
+              ->defaultFalse()
             ->end();
 
         // Here you should define the parameters that are allowed to

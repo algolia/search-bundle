@@ -10,6 +10,9 @@ services:
             - [setApiSettings, ["%algolia.application_id%", "%algolia.api_key%"]]
     algolia.indexer_subscriber:
         class: %algolia.indexer_subscriber.class%
-        arguments: ["@algolia.indexer"]
+        arguments:
+            - @algolia.indexer
+            - %algolia.catch_log_exceptions%
+            - @?logger
         tags:
             - {name: doctrine.event_subscriber}
