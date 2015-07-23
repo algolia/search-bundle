@@ -181,6 +181,17 @@ class ManualIndexer
         }
     }
 
+    public function clear($entityName)
+    {
+        $className =  $this->entityManager->getRepository($entityName)->getClassName();
+
+        $this->indexer->discoverEntity($className, $this->entityManager);
+
+        $targetIndexName = $this->indexer->getAlgoliaIndexName($className);
+
+        $this->indexer->getIndex($targetIndexName)->clearIndex();
+    }
+
     /**
      * Re-index entities from a collection.
      *
