@@ -397,25 +397,11 @@ class Indexer
 
         // Get fields coming from properties
         foreach (self::$indexSettings[$class]->getProperties() as $prop) {
-
-            // When performing an update, ignore unchanged properties
-            if (is_array($changeSet) && !array_key_exists($prop->getName(), $changeSet)) {
-                continue;
-            }
-
             $fields[$prop->getAlgoliaName()] = $this->extractPropertyValue($entity, $prop->getName());
         }
 
         // Get fields coming from methods
         foreach (self::$indexSettings[$class]->getMethods() as $meth) {
-            // When performing an update, ignore unchanged properties
-            if (is_array($changeSet)) {
-                list($newValue, $oldValue) = $meth->diff($entity, $changeSet);
-                if ($newValue === $oldValue) {
-                    continue;
-                }
-            }
-
             $fields[$meth->getAlgoliaName()] = $meth->evaluate($entity);
         }
 
@@ -573,7 +559,7 @@ class Indexer
         foreach ($updates as $indexName => $objects) {
             $this->algoliaTask(
                 $indexName,
-                $this->getIndex($indexName)->partialUpdateObjects($objects)
+                $this->getIndex($indexName)->saveObjects($objects)
             );
         }
     }

@@ -108,25 +108,6 @@ class ChangeDetectionTest extends BaseTest
         );
     }
 
-    public function testExistingProductWouldNotBeUpdatedWhenUninterestingAttributesAreChanged()
-    {
-        $indexer = $this->getIndexer();
-
-        $product = new Entity\ProductWithIndexedMethod();
-        $product->setName('Another Precision Watch');
-        $this->persistAndFlush($product);
-
-        $indexer->reset();
-
-        $product->setPrice(42);
-        $this->persistAndFlush($product);
-
-        $this->assertEquals(
-            array(),
-            $indexer->updates
-        );
-    }
-
     public function testExistingProductWouldBeDeleted()
     {
         $indexer = $this->getIndexer();
