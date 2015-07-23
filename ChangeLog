@@ -1,5 +1,14 @@
 CHANGELOG
 
+2015-07-23  1.0.7
+    * Bug Fixing
+
+2015-07-20  1.0.6
+    * Improve handling of relations
+
+2015-07-20  1.0.5
+    * Handle collection when creating the record.
+
 2015-07-09  1.0.4
     * Quick Fix get_class that gets the proxy instead of the Entity
 
