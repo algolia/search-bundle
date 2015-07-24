@@ -30,16 +30,16 @@ class Indexer
      * The arrays below hold the entities we will sync with
      * Algolia on postFlush.
      */
-    
+
     // holds either naked entities or arrays of the form [
     // 'entity' => $someEntity,
     // 'indexName' => 'index name to override where the entity should normally go'
     // ]
     private $entitiesScheduledForCreation = array();
-    
+
     // holds arrays like ['entity' => $entity, 'changeSet' => $changeSet]
     private $entitiesScheduledForUpdate = array();
-    
+
     // holds arrays like ['objectID' => 'aStringID', 'index' => 'anIndexName']
     private $entitiesScheduledForDeletion = array();
 
@@ -138,7 +138,12 @@ class Indexer
             $class = $this->get_class($entity);
         } else {
             $class = $em->getRepository($entity_or_class)->getClassName();
-            $entity = new $class();
+            $reflClass = new \ReflectionClass($class);
+
+            if ($reflClass->isAbstract()) {
+                return false;
+            }
+            $entity = $reflClass;
         }
 
         // check if we already saw this type of entity
