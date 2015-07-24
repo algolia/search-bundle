@@ -143,7 +143,7 @@ class Indexer
             if ($reflClass->isAbstract()) {
                 return false;
             }
-            $entity = $reflClass;
+            $entity = new $class();
         }
 
         // check if we already saw this type of entity
