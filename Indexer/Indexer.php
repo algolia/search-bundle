@@ -35,19 +35,13 @@ class Indexer
     // 'entity' => $someEntity,
     // 'indexName' => 'index name to override where the entity should normally go'
     // ]
-<<<<<<< HEAD
+
+    // holds arrays like ['entity' => $entity, 'changeSet' => $changeSet]
     protected $entitiesScheduledForCreation = array();
-    
+
     // holds arrays like ['entity' => $entity, 'changeSet' => $changeSet]
     protected $entitiesScheduledForUpdate = array();
-    
-=======
-    private $entitiesScheduledForCreation = array();
 
-    // holds arrays like ['entity' => $entity, 'changeSet' => $changeSet]
-    private $entitiesScheduledForUpdate = array();
-
->>>>>>> 157a0a3136dfd468a20c31901f5aeb969799c577
     // holds arrays like ['objectID' => 'aStringID', 'index' => 'anIndexName']
     protected $entitiesScheduledForDeletion = array();
 
