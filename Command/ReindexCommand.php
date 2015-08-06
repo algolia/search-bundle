@@ -44,7 +44,7 @@ class ReindexCommand extends ContainerAwareCommand
     {
         $toReindex = [];
 
-        if ($input->hasArgument('entityName')) {
+        if ($input->getArgument('entityName')) {
             $filter = $this->getEntityManager()->getRepository($input->getArgument('entityName'))->getClassName();
         } else {
             $filter = null;
