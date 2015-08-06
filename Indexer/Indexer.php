@@ -35,13 +35,13 @@ class Indexer
     // 'entity' => $someEntity,
     // 'indexName' => 'index name to override where the entity should normally go'
     // ]
-    private $entitiesScheduledForCreation = array();
+    protected $entitiesScheduledForCreation = array();
     
     // holds arrays like ['entity' => $entity, 'changeSet' => $changeSet]
-    private $entitiesScheduledForUpdate = array();
+    protected $entitiesScheduledForUpdate = array();
     
     // holds arrays like ['objectID' => 'aStringID', 'index' => 'anIndexName']
-    private $entitiesScheduledForDeletion = array();
+    protected $entitiesScheduledForDeletion = array();
 
     // Stores the current environment, this is injected by Symfo
     // at service instanciation.
