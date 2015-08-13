@@ -1,6 +1,6 @@
 CHANGELOG
 
-2015-08-14
+2015-08-14  1.0.8
     * Fixes instantiating entities with constructor args
 
 2015-07-23  1.0.7
