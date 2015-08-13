@@ -145,7 +145,8 @@ class Indexer
             if ($reflClass->isAbstract()) {
                 return false;
             }
-            $entity = new $class();
+            
+            $entity = $reflClass->newInstanceWithoutConstructor();
         }
 
         // check if we already saw this type of entity
