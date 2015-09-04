@@ -204,6 +204,48 @@ $this->get('algolia.indexer')->getManualIndexer($em)->index($product);
 The `ManualIndexer` class also provides the `unIndex` method to manually un-index entities and the `reIndex` method to re-index a whole collection.
 Please see [the methods' comments](Indexer/ManualIndexer.php) for more info.
 
+## Index names
+
+By default, the Algolia index name is generated from the entity class name.
+
+You can provide your own index name by using the `algoliaName` option of the `Index` annotation:
+
+```php
+/**
+ * Product
+ *
+ * @ORM\Entity
+ * @Algolia\Index(algoliaName="my_custom_index_name")
+ *
+ */
+class Product
+{
+    // ...
+}
+```
+
+You can also provide a method name to generate you index name dynamically :
+
+```php
+/**
+ * Product
+ *
+ * @ORM\Entity
+ * @Algolia\Index(algoliaName="generateIndexName")
+ *
+ */
+class Product
+{
+    public function generateIndexName()
+    {
+        return 'products_'.$this->getCategory()->getName().'_index';
+        // will output, for example, "products_technology_index"
+    }
+}
+```
+
+
+
 ## Per environment indexing
 
 By default, Algolia index names are suffixed with the name of the current application environment.

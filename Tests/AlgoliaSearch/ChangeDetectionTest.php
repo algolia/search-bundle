@@ -9,7 +9,8 @@ class ChangeDetectionTest extends BaseTest
         'ProductWithIndexedMethod',
         'ProductWithCompositePrimaryKey',
         'ProductWithNoAlgoliaAnnotation',
-        'ProductWithCustomAttributeNames'
+        'ProductWithCustomAttributeNames',
+        'ProductWithDynamicIndexName'
     ];
 
     public function testNewProductWouldBeInserted()
@@ -165,11 +166,11 @@ class ChangeDetectionTest extends BaseTest
     {
         /**
          * This one is a bit special:
-         * 
+         *
          * If a product has a composite primary key, updating a field from the primary key
          * will actually be equivalent to deleting the product and inserting a new one, which
          * will have a different objectID.
-         * 
+         *
          * So in this case, what should happen is:
          * - old product is unindexed from Algolia
          * - updated product is inserted into Algolia index as a new entity
@@ -233,6 +234,21 @@ class ChangeDetectionTest extends BaseTest
                 [
                     'objectID' => $this->getObjectID(['id' => $product->getId()]),
                     'nonDefaultAttributeName' => 'Hello World.'
+                ]
+            ]
+        ], $this->getIndexer()->creations);
+    }
+
+    public function testDynamicAlgoliaNameIsTakenIntoAccount()
+    {
+        $product = new Entity\ProductWithDynamicIndexName();
+        $product->setName('my_name');
+        $this->persistAndFlush($product);
+        $this->assertEquals([
+            metaenv('my_name_dynamic_index_dev') => [
+                [
+                    'objectID' => $this->getObjectID(['id' => $product->getId()]),
+                    'name' => 'my_name'
                 ]
             ]
         ], $this->getIndexer()->creations);
