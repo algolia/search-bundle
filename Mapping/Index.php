@@ -44,6 +44,11 @@ class Index
         return $this->algoliaName;
     }
 
+    public function setAlgoliaName($algoliaName)
+    {
+        $this->algoliaName = $algoliaName;
+    }
+
     public function setAlgoliaNameFromClass($class)
     {
         $this->algoliaName = substr($class, strrpos($class, '\\') + 1);

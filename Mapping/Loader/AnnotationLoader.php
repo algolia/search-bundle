@@ -58,6 +58,12 @@ class AnnotationLoader implements LoaderInterface
                 $index = new Index();
                 $index->setAlgoliaNameFromClass($class);
                 $index->updateSettingsFromArray($annotation->toArray());
+
+                $method = $annotation->algoliaName;
+                if (method_exists($entity, $method)) {
+                    $index->setAlgoliaName($entity->$method());
+                }
+
                 $description->setIndex($index);
             }
         }
