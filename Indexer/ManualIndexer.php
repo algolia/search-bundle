@@ -72,7 +72,7 @@ class ManualIndexer
         return count($entities);
     }
 
-    private function batchQuery($entityName, $query, $batchSize, $callback)
+    private function batchQuery($entityName, $query, $batchSize, $callback, $clearEntityManager = false)
     {
         if (!$query) {
             $query = $this->entityManager->createQueryBuilder()->select('e')->from($entityName, 'e')->getQuery();
@@ -98,6 +98,10 @@ class ManualIndexer
                 $nEntities += count($batch);
                 $callback($batch);
             }
+
+            if ($clearEntityManager) {
+                $this->entityManager->clear();
+            }
         }
 
         return $nEntities;
@@ -122,7 +126,8 @@ class ManualIndexer
         $defaults = [
             'batchSize' => 1000,
             'query' => null,
-            'indexName' => null // default is to let the engine guess
+            'indexName' => null, // default is to let the engine guess
+            'clearEntityManager' => false,
         ];
 
         $options = array_merge($defaults, $options);
@@ -134,7 +139,7 @@ class ManualIndexer
         } elseif (is_string($entities)) {
             return $this->batchQuery($entities, $options['query'], $options['batchSize'], function ($batch) use ($options) {
                 $this->doIndex($batch, $options['indexName']);
-            });
+            }, $options['clearEntityManager']);
         } elseif (is_object($entities)) {
             $this->doIndex([$entities], $options['indexName']);
 
@@ -161,7 +166,8 @@ class ManualIndexer
     {
         $defaults = [
             'batchSize' => 1000,
-            'query' => null
+            'query' => null,
+            'clearEntityManager' => false,
         ];
 
         $options = array_merge($defaults, $options);
@@ -173,7 +179,7 @@ class ManualIndexer
         } elseif (is_string($entities)) {
             return $this->batchQuery($entities, $options['query'], $options['batchSize'], function ($batch) {
                 $this->doUnIndex($batch);
-            });
+            }, $options['clearEntityManager']);
         } elseif (is_object($entities)) {
             $this->doUnIndex([$entities]);
 
@@ -212,7 +218,8 @@ class ManualIndexer
         $defaults = [
             'safe' => true,
             'batchSize' => 1000,
-            'query' => null
+            'query' => null,
+            'clearEntityManager' => false,
         ];
 
         $options = array_merge($defaults, $options);
@@ -242,7 +249,8 @@ class ManualIndexer
         $nProcessed = $this->index($entityName, [
             'batchSize' => $options['batchSize'],
             'query' => $options['query'],
-            'indexName' => $indexTo
+            'indexName' => $indexTo,
+            'clearEntityManager' => $options['clearEntityManager'],
         ]);
 
         if ($options['safe']) {
