@@ -92,7 +92,8 @@ class ReindexCommand extends ContainerAwareCommand
 
         return $reIndexer->reIndex($className, [
             'batchSize' => $batchSize,
-            'safe' => $safe
+            'safe' => $safe,
+            'clearEntityManager' => true,
         ]);
     }
 }
