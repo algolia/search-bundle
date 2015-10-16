@@ -58,7 +58,17 @@ class ClearCommand extends ContainerAwareCommand
             $nIndexed += $this->clear($className);
         }
 
-        return $nIndexed;
+        switch ($nIndexed) {
+            case 0:
+                $output->writeln('No entity cleared');
+                break;
+            case 1:
+                $output->writeln('<info>1</info> entity cleared');
+                break;
+            default:
+                $output->writeln(sprintf('<info>%s</info> entities cleared', $nIndexed));
+                break;
+        }
     }
 
     public function clear($className)
