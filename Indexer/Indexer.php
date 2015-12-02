@@ -285,9 +285,8 @@ class Indexer
      * OOP? Encapsulation? No thanks! :)
      * http://php.net/manual/en/closure.bind.php
      */
-    private function extractPropertyValue($entity, $field)
+    private function extractPropertyValue($entity, $field, $depth)
     {
-
         $privateGetter = \Closure::bind(function ($field) {
             return $this->$field;
         }, $entity, $entity);
@@ -296,6 +295,11 @@ class Indexer
 
         if ($value instanceof \Doctrine\Common\Collections\Collection)
         {
+            if ($depth >= 2)
+            {
+                return null;
+            }
+
             $value = $value->toArray();
 
             if (count($value) > 0)
@@ -303,16 +307,21 @@ class Indexer
                 $this->discoverEntity(reset($value), $this->em);
             }
 
-            $value = array_map(function ($value) {
-                return $this->getFieldsForAlgolia($value);
+            $value = array_map(function ($val) use ($depth) {
+                return $this->getFieldsForAlgolia($val, null, $depth + 1);
             }, $value);
         }
 
         if (is_object($value) && $this->isEntity($this->em, $value))
         {
+            if ($depth >= 2)
+            {
+                return null;
+            }
+
             $this->discoverEntity($value, $this->em);
 
-            $value = $this->getFieldsForAlgolia($value);
+            $value = $this->getFieldsForAlgolia($value, null, $depth + 1);
         }
 
 
@@ -326,7 +335,7 @@ class Indexer
      * Where oldPrimaryKey is null if the primary key did not change,
      * which is most of the times!
      */
-    public function getPrimaryKeyForAlgolia($entity, array $changeSet = null)
+    public function getPrimaryKeyForAlgolia($entity, array $changeSet = null, $depth = 0)
     {
         $class = $this->get_class($entity);
         if (!isset(self::$indexSettings[$class])) {
@@ -347,7 +356,7 @@ class Indexer
                 $new = $changeSet[$fieldName][1];
                 $changed = true;
             } else {
-                $old = $new = $this->extractPropertyValue($entity, $fieldName);
+                $old = $new = $this->extractPropertyValue($entity, $fieldName, $depth);
             }
 
             if (!$new) {
@@ -393,7 +402,7 @@ class Indexer
     /**
      * @internal
      */
-    public function getFieldsForAlgolia($entity, array $changeSet = null)
+    public function getFieldsForAlgolia($entity, array $changeSet = null, $depth = 0)
     {
         $class = $this->get_class($entity);
 
@@ -405,7 +414,7 @@ class Indexer
 
         // Get fields coming from properties
         foreach (self::$indexSettings[$class]->getProperties() as $prop) {
-            $fields[$prop->getAlgoliaName()] = $this->extractPropertyValue($entity, $prop->getName());
+            $fields[$prop->getAlgoliaName()] = $this->extractPropertyValue($entity, $prop->getName(), $depth);
         }
 
         // Get fields coming from methods
