@@ -73,7 +73,17 @@ class ReindexCommand extends ContainerAwareCommand
             $this->getContainer()->get('algolia.indexer')->waitForAlgoliaTasks();
         }
 
-        return $nIndexed;
+        switch ($nIndexed) {
+            case 0:
+                $output->writeln('No entity indexed');
+                break;
+            case 1:
+                $output->writeln('<info>1</info> entity indexed');
+                break;
+            default:
+                $output->writeln(sprintf('<info>%s</info> entities indexed', $nIndexed));
+                break;
+        }
     }
 
     public function reIndex($className, $batchSize = 1000, $safe = true)
@@ -82,7 +92,8 @@ class ReindexCommand extends ContainerAwareCommand
 
         return $reIndexer->reIndex($className, [
             'batchSize' => $batchSize,
-            'safe' => $safe
+            'safe' => $safe,
+            'clearEntityManager' => true,
         ]);
     }
 }
