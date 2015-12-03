@@ -191,7 +191,11 @@ class ManualIndexer
     {
         $className =  $this->entityManager->getRepository($entityName)->getClassName();
 
-        $this->indexer->discoverEntity($className, $this->entityManager);
+        if (!$this->indexer->discoverEntity($className, $this->entityManager)) {
+            throw new NotAnAlgoliaEntity(
+                'Tried to index entity of class `'.get_class($className).'`, which is not recognized as an entity to index.'
+            );
+        }
 
         $targetIndexName = $this->indexer->getAlgoliaIndexName($className);
 
@@ -226,7 +230,11 @@ class ManualIndexer
 
         $className =  $this->entityManager->getRepository($entityName)->getClassName();
 
-        $this->indexer->discoverEntity($className, $this->entityManager);
+        if (!$this->indexer->discoverEntity($className, $this->entityManager)) {
+            throw new NotAnAlgoliaEntity(
+                'Tried to index entity of class `'.get_class($className).'`, which is not recognized as an entity to index.'
+            );
+        }
 
         $targetIndexName = $this->indexer->getAlgoliaIndexName($className);
 
