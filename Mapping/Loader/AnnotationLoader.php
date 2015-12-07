@@ -57,7 +57,7 @@ class AnnotationLoader implements LoaderInterface
 
         $description = new Description($class);
 
-        $refl = new \ReflectionClass($entity);
+        $refl = new \ReflectionClass($class);
 
         $reader = $this->getAnnotationReader();
 

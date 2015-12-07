@@ -4,6 +4,7 @@ namespace Algolia\AlgoliaSearchBundle\Indexer;
 
 use Doctrine\Common\Persistence\Proxy;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
 use Algolia\AlgoliaSearchBundle\Exception\UnknownEntity;
 use Algolia\AlgoliaSearchBundle\Exception\NoPrimaryKey;
@@ -151,7 +152,7 @@ class Indexer
             if ($reflClass->isAbstract()) {
                 return false;
             }
-            
+
             $entity = $reflClass->newInstanceWithoutConstructor();
         }
 
@@ -287,17 +288,10 @@ class Indexer
         return ! $em->getMetadataFactory()->isTransient($class);
     }
 
-    /**
-     * OOP? Encapsulation? No thanks! :)
-     * http://php.net/manual/en/closure.bind.php
-     */
     private function extractPropertyValue($entity, $field, $depth)
     {
-        $privateGetter = \Closure::bind(function ($field) {
-            return $this->$field;
-        }, $entity, $entity);
-
-        $value = $privateGetter($field);
+        $accessor = PropertyAccess::createPropertyAccessor();
+        $value = $accessor->getValue($entity, $field);
 
         if ($value instanceof \Doctrine\Common\Collections\Collection)
         {
