@@ -232,7 +232,7 @@ class ManualIndexer
 
         if (!$this->indexer->discoverEntity($className, $this->entityManager)) {
             throw new NotAnAlgoliaEntity(
-                'Tried to index entity of class `'.get_class($className).'`, which is not recognized as an entity to index.'
+                'Tried to index entity of class `'.$className.'`, which is not recognized as an entity to index.'
             );
         }
 
