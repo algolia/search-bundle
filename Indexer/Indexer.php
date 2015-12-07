@@ -113,12 +113,17 @@ class Indexer
         return new AnnotationLoader();
     }
 
+    private function removeProxy($class)
+    {
+        /* Avoid proxy class form symfony */
+        return str_replace("Proxies\\__CG__\\", "", $class);
+    }
+
     private function get_class($entity)
     {
         $class = get_class($entity);
 
-        /* Avoid proxy class form symfony */
-        $class = str_replace("Proxies\\__CG__\\", "", $class);
+        $class = $this->removeProxy($class);
 
         return $class;
     }
@@ -140,6 +145,7 @@ class Indexer
             $class = $this->get_class($entity);
         } else {
             $class = $em->getRepository($entity_or_class)->getClassName();
+            $class = $this->removeProxy($class);
             $reflClass = new \ReflectionClass($class);
 
             if ($reflClass->isAbstract()) {

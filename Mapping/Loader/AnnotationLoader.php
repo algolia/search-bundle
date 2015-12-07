@@ -40,12 +40,20 @@ class AnnotationLoader implements LoaderInterface
         return self::$annotationReader;
     }
 
+    private function removeProxy($class)
+    {
+        /* Avoid proxy class form symfony */
+        return str_replace("Proxies\\__CG__\\", "", $class);
+    }
+
     /**
      * @return Description
      */
     public function getMetaData($entity, EntityManager $em)
     {
         $class = get_class($entity);
+
+        $class = $this->removeProxy($class);
 
         $description = new Description($class);
 
