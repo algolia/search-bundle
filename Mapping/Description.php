@@ -9,6 +9,7 @@ class Description
     private $properties = [];
     private $methods = [];
     private $indexIfs = [];
+    private $identifierAttributeNames = [];
 
     public function __construct($class)
     {
@@ -59,6 +60,12 @@ class Description
     public function setIdentifierAttributeNames(array $fields)
     {
         $this->identifierAttributeNames = $fields;
+
+        return $this;
+    }
+    public function mergeIdentifierAttributeNames(array $fields)
+    {
+        $this->identifierAttributeNames = array_unique(array_merge($this->identifierAttributeNames, $fields));
 
         return $this;
     }

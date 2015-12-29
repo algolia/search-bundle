@@ -2,6 +2,7 @@
 
 namespace Algolia\AlgoliaSearchBundle\Mapping\Loader;
 
+use Algolia\AlgoliaSearchBundle\Mapping\Annotation\Id;
 use Doctrine\ORM\EntityManager;
 
 use Doctrine\Common\Annotations\AnnotationReader;
@@ -84,6 +85,9 @@ class AnnotationLoader implements LoaderInterface
 
                     $description->addProperty($field);
                 }
+                if ($annotation instanceof Id) {
+                    $description->mergeIdentifierAttributeNames(array($property->name));
+                }
             }
         }
         foreach ($refl->getMethods() as $meth) {
@@ -112,7 +116,7 @@ class AnnotationLoader implements LoaderInterface
         if (!$description->isEmpty()) {
 
             $meta = $em->getClassMetadata($class);
-            $description->setIdentifierAttributeNames($meta->getIdentifierFieldNames());
+            $description->mergeIdentifierAttributeNames($meta->getIdentifierFieldNames());
 
             // In case the user omitted defining the index, define it for him with default values
             if (null === $description->getIndex()) {
