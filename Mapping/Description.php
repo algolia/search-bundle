@@ -9,6 +9,7 @@ class Description
     private $properties = [];
     private $methods = [];
     private $indexIfs = [];
+    private $identifierAttributeNames = [];
 
     public function __construct($class)
     {
@@ -63,9 +64,21 @@ class Description
         return $this;
     }
 
+    public function addIdentifierAttributeName($field)
+    {
+        $this->identifierAttributeNames[] = $field;
+
+        return $this;
+    }
+
     public function getIdentifierFieldNames()
     {
         return $this->identifierAttributeNames;
+    }
+
+    public function hasIdentifierFieldNames()
+    {
+        return !empty($this->identifierAttributeNames);
     }
 
     public function addIndexIf(IndexIf $iif)
