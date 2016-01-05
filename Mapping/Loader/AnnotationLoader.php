@@ -86,7 +86,7 @@ class AnnotationLoader implements LoaderInterface
                     $description->addProperty($field);
                 }
                 if ($annotation instanceof Id) {
-                    $description->mergeIdentifierAttributeNames(array($property->name));
+                    $description->addIdentifierAttributeName($property->name);
                 }
             }
         }
@@ -116,7 +116,9 @@ class AnnotationLoader implements LoaderInterface
         if (!$description->isEmpty()) {
 
             $meta = $em->getClassMetadata($class);
-            $description->mergeIdentifierAttributeNames($meta->getIdentifierFieldNames());
+            if (!$description->hasIdentifierFieldNames()) {
+                $description->setIdentifierAttributeNames($meta->getIdentifierFieldNames());
+            }
 
             // In case the user omitted defining the index, define it for him with default values
             if (null === $description->getIndex()) {

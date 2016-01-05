@@ -63,9 +63,10 @@ class Description
 
         return $this;
     }
-    public function mergeIdentifierAttributeNames(array $fields)
+
+    public function addIdentifierAttributeName($field)
     {
-        $this->identifierAttributeNames = array_unique(array_merge($this->identifierAttributeNames, $fields));
+        $this->identifierAttributeNames[] = $field;
 
         return $this;
     }
@@ -73,6 +74,11 @@ class Description
     public function getIdentifierFieldNames()
     {
         return $this->identifierAttributeNames;
+    }
+
+    public function hasIdentifierFieldNames()
+    {
+        return !empty($this->identifierAttributeNames);
     }
 
     public function addIndexIf(IndexIf $iif)
