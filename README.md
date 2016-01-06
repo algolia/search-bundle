@@ -167,6 +167,54 @@ You can override the Algolia name by setting the `algoliaName` argument in the a
         return $this->name . " - " . $this->price;
     }
 ```
+
+By default the bundle will take the primary keys of your model to create the algolia objectID if you want to override this you can use one or more Id annotations.
+
+```php
+namespace MyCoolAppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use Algolia\AlgoliaSearchBundle\Mapping\Annotation as Algolia;
+
+/**
+ * Product
+ *
+ * @ORM\Entity
+ *
+ */
+class Product
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    protected $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="name", type="string", length=255)
+     * @Algolia\Id
+     * @Algolia\Attribute
+     *
+     */
+    protected $name;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="price", type="decimal", nullable=true)
+     *
+     */
+    protected $price;
+}
+```
+
+In this example id will not be use as the objectId, instead name will be use
+
 ## Autoindexing vs Manual Indexing
 By default, mapped entities are automatically indexed on Algolia's servers using Doctrine's lifecycle events (synchronization is made during the onFlush and postFlush events).
 

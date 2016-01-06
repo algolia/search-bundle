@@ -165,4 +165,43 @@ class AlgoliaIntegrationTest extends BaseTest
             $results->getHit(0)->getName()
         );
     }
+
+    public function testCustomObjectId()
+    {
+        $product = new Entity\ProductWithCustomObjectId();
+
+        $product
+            ->setName('.the .product')
+            ->setPrice(10)
+            ->setShortDescription('test')
+            ->setDescription('Just watch https://www.youtube.com/watch?v=Y3n3c_8Nn2Y.')
+            ->setRating(10);
+
+        $this->getIndexer()->discoverEntity($product, $this->getEntityManager());
+
+        $this->assertEquals($this->getIndexer()->getPrimaryKeyForAlgolia($product)[0], $this->getIndexer()->serializePrimaryKey(array('shortDescription' => 'test')));
+
+        return $product;
+    }
+
+    public function testMultipleCustomObjectId()
+    {
+        $product = new Entity\ProductWithMultipleCustomObjectIds();
+
+        $product
+            ->setName('.the .product')
+            ->setPrice(10)
+            ->setShortDescription('test')
+            ->setDescription('Just watch https://www.youtube.com/watch?v=Y3n3c_8Nn2Y.')
+            ->setRating(10);
+
+        $this->getIndexer()->discoverEntity($product, $this->getEntityManager());
+
+        $this->assertEquals(
+            $this->getIndexer()->getPrimaryKeyForAlgolia($product)[0],
+            $this->getIndexer()->serializePrimaryKey(array('name' => '.the .product', 'shortDescription' => 'test'))
+        );
+
+        return $product;
+    }
 }
