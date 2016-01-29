@@ -9,7 +9,7 @@
 	"symfony/property-access": "~2.5",
         "doctrine/orm": "~2.2,>=2.2.3",
         "doctrine/doctrine-bundle": "~1.2",
-        "algolia/algoliasearch-client-php": "~1.5"
+        "algolia/algoliasearch-client-php": "~1.6"
     },
     "require-dev": {
         "phpunit/phpunit": "~4.3"
