@@ -29,6 +29,7 @@ class AlgoliaAlgoliaSearchExtension extends Extension
             $container->setParameter('algolia.api_key', $config['api_key']);
 
         $container->setParameter('algolia.catch_log_exceptions', $config['catch_log_exceptions']);
+        $container->setParameter('algolia.index_name_prefix', $config['index_name_prefix']);
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');

@@ -7,6 +7,7 @@ services:
         class: %algolia.indexer.class%
         calls:
             - [setEnvironment, ["%kernel.environment%"]]
+            - [setIndexNamePrefix, ["%algolia.index_name_prefix%"]]
             - [setApiSettings, ["%algolia.application_id%", "%algolia.api_key%"]]
     algolia.indexer_subscriber:
         class: %algolia.indexer_subscriber.class%
