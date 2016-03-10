@@ -50,6 +50,10 @@ class Indexer
     // at service instanciation.
     private $environment;
 
+    // Stores the current index name prefix, this is injected by Symfo
+    // at service instanciation.
+    private $indexNamePrefix;
+
     /**
      * The algolia application_id and api_key.
      * Also injected for us by symfony from the config.
@@ -90,6 +94,14 @@ class Indexer
         $this->environment = $environment;
 
         return $this;
+    }
+
+    /**
+     * @param mixed $indexNamePrefix
+     */
+    public function setIndexNamePrefix($indexNamePrefix)
+    {
+        $this->indexNamePrefix = $indexNamePrefix;
     }
 
     public function setApiSettings($application_id, $api_key)
@@ -446,6 +458,10 @@ class Indexer
 
         $index = self::$indexSettings[$class]->getIndex();
         $indexName = $index->getAlgoliaName();
+
+        if (!empty($this->indexNamePrefix)) {
+            $indexName = $this->indexNamePrefix . '_' . $indexName;
+        }
 
         if ($index->getPerEnvironment() && $this->environment) {
             $indexName .= '_'.$this->environment;

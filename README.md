@@ -71,12 +71,15 @@ algolia:
     api_key: YOUR_API_KEY
 ```
 
-There's an extra parameter you can add to this file:
+There's two optional parameters you can add to this file:
 ```yaml
 algolia:
     catch_log_exceptions: true
+    index_name_prefix: staging
 ```
-To catch exceptions thrown in the doctrine event subscriber and log them.
+* **catch_log_exceptions**: If set to true, all exceptions thrown in the doctrine event subscriber will be caught and logged.
+* **index_name_prefix**: If set, this will add a prefix to all the index names (Useful if you want to setup multiple environments within the same Algolia app)
+
 
 # Mapping entities to Algolia indexes
 

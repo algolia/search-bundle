@@ -24,6 +24,9 @@ class Configuration implements ConfigurationInterface
             ->end()
             ->scalarNode('api_key')
             ->end()
+            ->scalarNode('index_name_prefix')
+            ->defaultValue('')
+            ->end()
             ->booleanNode('catch_log_exceptions')
               ->defaultFalse()
             ->end();
