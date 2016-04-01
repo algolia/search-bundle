@@ -1,10 +1,15 @@
+<!--NO_HTML-->
+
 AlgoliaSearchBundle
 ==================================
+
+<!--/NO_HTML-->
 
 This Symfony bundle provides an easy way to integrate Algolia Search into your Symfony2 with Doctrine2 application.
 
 [![Build Status](https://travis-ci.org/algolia/AlgoliaSearchBundle.svg?branch=master)](https://travis-ci.org/algolia/AlgoliaSearchBundle) [![Latest Stable Version](https://poser.pugx.org/algolia/algolia-search-bundle/v/stable)](https://packagist.org/packages/algolia/algolia-search-bundle) [![License](https://poser.pugx.org/algolia/algolia-search-bundle/license)](https://packagist.org/packages/algolia/algolia-search-bundle)
 
+<!--NO_HTML-->
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Content**
@@ -26,6 +31,7 @@ This Symfony bundle provides an easy way to integrate Algolia Search into your S
 - [Running the tests](#running-the-tests)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
+<!--/NO_HTML-->
 
 # Setup
 
@@ -372,8 +378,10 @@ By default, a temporary index is created, the indexation is performed on the tem
 
 You can re-index in place by passing the `--unsafe` option. Please note that in unsafe mode outdated entities will not be un-indexed.
 
+<!--NO_HTML-->
 # Running the tests
 Rename the test [parameters.yml.dist](Tests/config/parameters.yml.dist) file to `parameters.yml`, customize the settings with the correct database settings and Algolia API settings, then run:
 ```bash
 php vendor/bin/phpunit -c Tests
 ```
+<!--/NO_HTML-->
