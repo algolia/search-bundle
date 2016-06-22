@@ -8,6 +8,7 @@ namespace Algolia\AlgoliaSearchBundle\Mapping\Annotation;
  */
 class Index
 {
+    
     /**
 	 * @var  string
 	 */
@@ -117,6 +118,11 @@ class Index
 	 * @var  string
 	 */
     public $highlightPostTag;
+    
+    /**
+	 * @var  array
+	 */
+    public $synonyms;
 
     public function toArray()
     {
