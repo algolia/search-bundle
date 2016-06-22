@@ -8,7 +8,6 @@ namespace Algolia\AlgoliaSearchBundle\Mapping\Annotation;
  */
 class Index
 {
-    
     /**
 	 * @var  string
 	 */
