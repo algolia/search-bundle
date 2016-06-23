@@ -36,7 +36,8 @@ class Index
         'queryType',
         'highlightPreTag',
         'highlightPostTag',
-        'slaves'
+        'slaves',
+        'synonyms'
     ];
 
     public function getAlgoliaName()

@@ -117,6 +117,11 @@ class Index
 	 * @var  string
 	 */
     public $highlightPostTag;
+    
+    /**
+	 * @var  array
+	 */
+    public $synonyms;
 
     public function toArray()
     {
