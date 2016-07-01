@@ -222,7 +222,9 @@ class Product
 }
 ```
 
-In this example id will not be use as the objectId, instead name will be use
+In this example id will not be use as the objectId, instead name will be use.
+
+**When you make changes to the mappings, you need to [re-index your entities](#re-indexing-whole-collections) to reflect the changes in Algolia.**
 
 ## Autoindexing vs Manual Indexing
 By default, mapped entities are automatically indexed on Algolia's servers using Doctrine's lifecycle events (synchronization is made during the onFlush and postFlush events).
