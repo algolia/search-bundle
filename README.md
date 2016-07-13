@@ -369,7 +369,10 @@ Hits will be instance of the `Product` class, fetched from the local database.
 
 Please note that since we need to access the local database here contrary to the `rawSearch` call you need to pass the `EntityManager`, which adds an argument.
 
-## Re-indexing whole collections
+## Re-indexing
+
+### Re-indexing whole collections
+
 You can re-index collections programmatically using the `reIndex` method of the `ManualIndexer` class (`$this->get('algolia.indexer')->getManualIndexer($this->getEntityManager())->reIndex('SomeBundle:EntityName')`), but you can also very easily do it using a simple console command:
 
 ```bash
