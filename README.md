@@ -33,7 +33,7 @@ This Symfony bundle provides an easy way to integrate Algolia Search into your S
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 <!--/NO_HTML-->
 
-# Setup
+## Setup
 
 Add this line to your `composer.json` file:
 ```json
@@ -46,7 +46,7 @@ Add this line to your `composer.json` file:
 
 Then run `composer update`.
 
-## Register the bundle
+### Register the bundle
 
 Add `Algolia\AlgoliaSearchBundle\AlgoliaAlgoliaSearchBundle()` to your application Kernel:
 ```php
@@ -57,7 +57,7 @@ $bundles = array(
 );
 ```
 
-## Fill in your Algolia credentials
+### Fill in your Algolia credentials
 
 Add your Algolia application ID and API key to your `parameters.yml` file:
 
@@ -87,13 +87,13 @@ algolia:
 * **index_name_prefix**: If set, this will add a prefix to all the index names (Useful if you want to setup multiple environments within the same Algolia app)
 
 
-# Mapping entities to Algolia indexes
+## Mapping entities to Algolia indexes
 
 Mapping an entity type to an Algolia index allows you to keep it in sync with Algolia, i.e. the operations involving mapped entities on your local database are mirrored on the Algolia indexes. Indexation is automatic by default, but can be made manual if needed.
 
 Currently, mapping is only possible with annotations.
 
-## Indexing entity properties or methods
+### Indexing entity properties or methods
 
 The `Attribute` annotation marks a field or method for indexing by Algolia.
 
@@ -226,7 +226,7 @@ In this example id will not be use as the objectId, instead name will be use.
 
 **When you make changes to the mappings, you need to [re-index your entities](#re-indexing-whole-collections) to reflect the changes in Algolia.**
 
-## Autoindexing vs Manual Indexing
+### Autoindexing vs Manual Indexing
 By default, mapped entities are automatically indexed on Algolia's servers using Doctrine's lifecycle events (synchronization is made during the onFlush and postFlush events).
 
 You can change this behaviour with the `Index` annotation and the `autoIndex` parameter, like this:
@@ -263,7 +263,7 @@ $this->get('algolia.indexer')->getManualIndexer($em)->index($product);
 The `ManualIndexer` class also provides the `unIndex` method to manually un-index entities and the `reIndex` method to re-index a whole collection.
 Please see [the methods' comments](Indexer/ManualIndexer.php) for more info.
 
-## Per environment indexing
+### Per environment indexing
 
 By default, Algolia index names are suffixed with the name of the current application environment.
 
@@ -283,7 +283,7 @@ class Product
 }
 ```
 
-## Conditional indexing
+### Conditional indexing
 
 It is often useful to skip indexing an entity based on some condition.
 
@@ -311,7 +311,7 @@ class Product
 
 You can have several `IndexIf` conditions, in which case the record is indexed if they *all* return true. It may be better for readability to keep only one such annotation though.
 
-## Index settings
+### Index settings
 
 You can optionally specify your index settings directly in the `Index` annotation.
 
@@ -338,9 +338,9 @@ The index settings are **not** automatically synchronized with Algolia but we pr
 php app/console algolia:settings # show the local settings that are not applied to the Algolia indexes
 php app/console algolia:settings --push # push the configuration changes to Algolia servers
 ```
-# Retrieving entities
+## Retrieving entities
 
-## Performing a raw search
+### Performing a raw search
 
 You can retrieve raw results from Algolia indexes using the `rawSearch` method of the indexer:
 
@@ -352,7 +352,7 @@ This will return an array of hits, wrapped inside of a [SearchResult](SearchResu
 
 This will not connect to the local database.
 
-## Performing a native search
+### Performing a native search
 
 You can retrieve Doctrine entities from Algolia indexes using the `search` method of the indexer:
 
@@ -369,7 +369,7 @@ Hits will be instance of the `Product` class, fetched from the local database.
 
 Please note that since we need to access the local database here contrary to the `rawSearch` call you need to pass the `EntityManager`, which adds an argument.
 
-# Re-indexing whole collections
+## Re-indexing whole collections
 You can re-index collections programmatically using the `reIndex` method of the `ManualIndexer` class (`$this->get('algolia.indexer')->getManualIndexer($this->getEntityManager())->reIndex('SomeBundle:EntityName')`), but you can also very easily do it using a simple console command:
 
 ```bash
@@ -381,7 +381,7 @@ By default, a temporary index is created, the indexation is performed on the tem
 You can re-index in place by passing the `--unsafe` option. Please note that in unsafe mode outdated entities will not be un-indexed.
 
 <!--NO_HTML-->
-# Running the tests
+## Running the tests
 Rename the test [parameters.yml.dist](Tests/config/parameters.yml.dist) file to `parameters.yml`, customize the settings with the correct database settings and Algolia API settings, then run:
 ```bash
 php vendor/bin/phpunit -c Tests
