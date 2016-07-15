@@ -156,6 +156,7 @@ class Indexer
         if (is_object($entity_or_class)) {
             $entity = $entity_or_class;
             $class = $this->get_class($entity);
+            $class = $this->removeProxy($class);
         } else {
             $class = $em->getRepository($entity_or_class)->getClassName();
             $class = $this->removeProxy($class);
