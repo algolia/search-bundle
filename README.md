@@ -348,7 +348,7 @@ You can retrieve raw results from Algolia indexes using the `rawSearch` method o
 $this->get('algolia.indexer')->rawSearch('SomeIndexName', 'a query string');
 ```
 
-This will return an array of hits, wrapped inside of a [SearchResult](SearchResult/SearchResult.php) instance.
+This will return an array of hits, wrapped inside of a [SearchResult](https://github.com/algolia/AlgoliaSearchBundle/blob/master/SearchResult/SearchResult.php) instance.
 
 This will not connect to the local database.
 
@@ -364,7 +364,7 @@ $this->get('algolia.indexer')->search(
 );
 ```
 
-This will return an array of hits, wrapped inside of a [SearchResult](SearchResult/SearchResult.php) instance.
+This will return an array of hits, wrapped inside of a [SearchResult](https://github.com/algolia/AlgoliaSearchBundle/blob/master/SearchResult/SearchResult.php) instance.
 Hits will be instance of the `Product` class, fetched from the local database.
 
 Please note that since we need to access the local database here contrary to the `rawSearch` call you need to pass the `EntityManager`, which adds an argument.
