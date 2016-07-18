@@ -261,7 +261,7 @@ $this->get('algolia.indexer')->getManualIndexer($em)->index($product);
 (With autoindexing enabled, the product would have been indexed by the `$em->flush()` call)
 
 The `ManualIndexer` class also provides the `unIndex` method to manually un-index entities and the `reIndex` method to re-index a whole collection.
-Please see [the methods' comments](Indexer/ManualIndexer.php) for more info.
+Please see [the methods' comments](https://github.com/algolia/AlgoliaSearchBundle/blob/master/Indexer/ManualIndexer.php) for more info.
 
 ### Per environment indexing
 
