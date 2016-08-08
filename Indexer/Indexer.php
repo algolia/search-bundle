@@ -290,7 +290,7 @@ class Indexer
     }
 
 
-    function isEntity(EntityManager $em, $class)
+    private function isEntity(EntityManager $em, $class)
     {
         if (is_object($class)) {
             $class = ($class instanceof Proxy)
