@@ -4,6 +4,7 @@
     "description": "Seamless integration of Algolia Search into your Symfony project.",
     "license": "MIT",
     "require": {
+        "php": "^5.6 || ^7.0",
         "symfony/framework-bundle": "~2.5|~3.0",
         "symfony/finder": "~2.5|~3.0",
 	"symfony/property-access": "~2.5|~3.0",
