@@ -9,7 +9,7 @@ namespace Algolia\AlgoliaSearchBundle\Mapping\Annotation;
 class Attribute
 {
     /**
-	 * @var  string
-	 */
+     * @var  string
+     */
     public $algoliaName;
 }
