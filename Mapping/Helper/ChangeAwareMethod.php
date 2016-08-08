@@ -19,15 +19,15 @@ class ChangeAwareMethod
     }
 
     /**
-	 * This function violates all OOP design practices
-	 * by setting private properties of an external object.
-	 *
-	 * Well done, PHP :) http://php.net/manual/fr/closure.bind.php
-	 *
-	 * But we need this, as we can't assume there are setters on all fields.
-	 * And this is far more efficient than using a ReflectionClass:
-	 * http://ocramius.github.io/blog/accessing-private-php-class-members-without-reflection/
-	 */
+     * This function violates all OOP design practices
+     * by setting private properties of an external object.
+     *
+     * Well done, PHP :) http://php.net/manual/fr/closure.bind.php
+     *
+     * But we need this, as we can't assume there are setters on all fields.
+     * And this is far more efficient than using a ReflectionClass:
+     * http://ocramius.github.io/blog/accessing-private-php-class-members-without-reflection/
+     */
     private function fillWith($entity, array $data)
     {
         $privateSetter = \Closure::bind(function () use ($data) {

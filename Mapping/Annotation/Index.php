@@ -9,118 +9,118 @@ namespace Algolia\AlgoliaSearchBundle\Mapping\Annotation;
 class Index
 {
     /**
-	 * @var  string
-	 */
+     * @var  string
+     */
     public $algoliaName;
 
     /**
-	 * @var  boolean
-	 */
+     * @var  boolean
+     */
     public $perEnvironment = true;
 
     /**
-	 * @var  boolean
-	 */
+     * @var  boolean
+     */
     public $autoIndex = true;
 
     /**
-	 * @var  integer
-	 */
+     * @var  integer
+     */
     public $minWordSizefor1Typo;
 
     /**
-	 * @var  integer
-	 */
+     * @var  integer
+     */
     public $minWordSizefor2Typos;
 
     /**
-	 * @var  integer
-	 */
+     * @var  integer
+     */
     public $hitsPerPage;
 
     /**
-	 * @var  array<string>
-	 */
+     * @var  array<string>
+     */
     public $attributesToIndex;
 
     /**
-	 * @var  array<string>
-	 */
+     * @var  array<string>
+     */
     public $attributesToRetrieve;
 
     /**
-	 * @var  array<string>
-	 */
+     * @var  array<string>
+     */
     public $unretrievableAttributes;
 
     /**
-	 * @var  array<string>
-	 */
+     * @var  array<string>
+     */
     public $optionalWords;
 
     /**
-	 * @var  array<string>
-	 */
+     * @var  array<string>
+     */
     public $attributesForFaceting;
 
     /**
-	 * @var  array<string>
-	 */
+     * @var  array<string>
+     */
     public $attributesToSnippet;
 
     /**
-	 * @var  array<string>
-	 */
+     * @var  array<string>
+     */
     public $attributesToHighlight;
 
     /**
-	 * @var  string
-	 */
+     * @var  string
+     */
     public $attributeForDistinct;
 
     /**
-	 * @var  array<string>
-	 */
+     * @var  array<string>
+     */
     public $ranking;
 
     /**
-	 * @var  array<string>
-	 */
+     * @var  array<string>
+     */
     public $slaves;
 
     /**
-	 * @var  array<string>
-	 */
+     * @var  array<string>
+     */
     public $customRanking;
 
     /**
-	 * @var  string
-	 */
+     * @var  string
+     */
     public $separatorsToIndex;
 
     /**
-	 * @var  string
-	 */
+     * @var  string
+     */
     public $removeWordsIfNoResults;
 
     /**
-	 * @var  string
-	 */
+     * @var  string
+     */
     public $queryType;
 
     /**
-	 * @var  string
-	 */
+     * @var  string
+     */
     public $highlightPreTag;
 
     /**
-	 * @var  string
-	 */
+     * @var  string
+     */
     public $highlightPostTag;
     
     /**
-	 * @var  array
-	 */
+     * @var  array
+     */
     public $synonyms;
 
     public function toArray()

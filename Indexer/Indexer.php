@@ -132,7 +132,7 @@ class Indexer
         return str_replace("Proxies\\__CG__\\", "", $class);
     }
 
-    private function get_class($entity)
+    private function getClass($entity)
     {
         $class = get_class($entity);
 
@@ -155,7 +155,7 @@ class Indexer
     {
         if (is_object($entity_or_class)) {
             $entity = $entity_or_class;
-            $class = $this->get_class($entity);
+            $class = $this->getClass($entity);
             $class = $this->removeProxy($class);
         } else {
             $class = $em->getRepository($entity_or_class)->getClassName();
@@ -189,7 +189,7 @@ class Indexer
         if (!$this->discoverEntity($entity, $em)) {
             return false;
         } else {
-            return self::$indexSettings[$this->get_class($entity)]->getIndex()->getAutoIndex();
+            return self::$indexSettings[$this->getClass($entity)]->getIndex()->getAutoIndex();
         }
     }
 
@@ -201,7 +201,7 @@ class Indexer
      */
     private function shouldIndex($entity, array $changeSet = null)
     {
-        $class = $this->get_class($entity);
+        $class = $this->getClass($entity);
 
         $needsIndexing = true;
         $wasIndexed = true;
@@ -229,7 +229,7 @@ class Indexer
      */
     private function shouldHaveBeenIndexed($entity, array $originalData)
     {
-        foreach (self::$indexSettings[$this->get_class($entity)]->getIndexIfs() as $if) {
+        foreach (self::$indexSettings[$this->getClass($entity)]->getIndexIfs() as $if) {
             if (!$if->evaluateWith($entity, $originalData)) {
                 return false;
             }
@@ -290,7 +290,7 @@ class Indexer
     }
 
 
-    function isEntity(EntityManager $em, $class)
+    private function isEntity(EntityManager $em, $class)
     {
         if (is_object($class)) {
             $class = ($class instanceof Proxy)
@@ -306,17 +306,14 @@ class Indexer
         $accessor = PropertyAccess::createPropertyAccessor();
         $value = $accessor->getValue($entity, $field);
 
-        if ($value instanceof \Doctrine\Common\Collections\Collection)
-        {
-            if ($depth >= 2)
-            {
+        if ($value instanceof \Doctrine\Common\Collections\Collection) {
+            if ($depth >= 2) {
                 return null;
             }
 
             $value = $value->toArray();
 
-            if (count($value) > 0)
-            {
+            if (count($value) > 0) {
                 if (! $this->discoverEntity(reset($value), $this->em)) {
                     throw new NotAnAlgoliaEntity(
                         'Tried to index `'.$field.'` relation which is a `'.get_class(reset($value)).'` instance, which is not recognized as an entity to index.'
@@ -329,10 +326,8 @@ class Indexer
             }, $value);
         }
 
-        if (is_object($value) && $this->isEntity($this->em, $value))
-        {
-            if ($depth >= 2)
-            {
+        if (is_object($value) && $this->isEntity($this->em, $value)) {
+            if ($depth >= 2) {
                 return null;
             }
 
@@ -358,7 +353,7 @@ class Indexer
      */
     public function getPrimaryKeyForAlgolia($entity, array $changeSet = null, $depth = 0)
     {
-        $class = $this->get_class($entity);
+        $class = $this->getClass($entity);
         if (!isset(self::$indexSettings[$class])) {
             throw new UnknownEntity("Entity `$class` is not known to Algolia. This is likely an implementation bug.");
         }
@@ -425,7 +420,7 @@ class Indexer
      */
     public function getFieldsForAlgolia($entity, array $changeSet = null, $depth = 0)
     {
-        $class = $this->get_class($entity);
+        $class = $this->getClass($entity);
 
         if (!isset(self::$indexSettings[$class])) {
             throw new UnknownEntity("Entity of class `$class` is not known to Algolia. This is likely an implementation bug.");
@@ -451,7 +446,7 @@ class Indexer
      */
     public function getAlgoliaIndexName($entity_or_class)
     {
-        $class = is_object($entity_or_class) ? $this->get_class($entity_or_class) : $entity_or_class;
+        $class = is_object($entity_or_class) ? $this->getClass($entity_or_class) : $entity_or_class;
 
         if (!isset(self::$indexSettings[$class])) {
             throw new UnknownEntity("Entity $class is not known to Algolia. This is likely an implementation bug.");
@@ -481,7 +476,6 @@ class Indexer
         $deletions = array();
 
         foreach ($this->entitiesScheduledForCreation as $entity) {
-
             if (is_object($entity)) {
                 $index = $this->getAlgoliaIndexName($entity);
             } else {
@@ -502,7 +496,6 @@ class Indexer
         }
 
         foreach ($this->entitiesScheduledForUpdate as $data) {
-
             $index = $this->getAlgoliaIndexName($data['entity']);
 
             list($primaryKey, $oldPrimaryKey) = $this->getPrimaryKeyForAlgolia($data['entity'], $data['changeSet']);
@@ -535,7 +528,6 @@ class Indexer
         }
 
         foreach ($this->entitiesScheduledForDeletion as $data) {
-
             $index = $data['index'];
 
             if (!isset($deletions[$index])) {

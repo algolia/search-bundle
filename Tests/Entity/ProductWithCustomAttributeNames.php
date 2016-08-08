@@ -26,7 +26,7 @@ class ProductWithCustomAttributeNames extends BaseTestAwareEntity
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
-     * 
+     *
      * @Algolia\Attribute(algoliaName="nonDefaultAttributeName")
      */
     protected $name;

@@ -80,9 +80,9 @@ class Index
     }
 
     /**
-	 * Returns the index settings in a format
-	 * compatible with that expected by https://github.com/algolia/algoliasearch-client-php
-	 */
+     * Returns the index settings in a format
+     * compatible with that expected by https://github.com/algolia/algoliasearch-client-php
+     */
     public function getAlgoliaSettings()
     {
         $settings = [];

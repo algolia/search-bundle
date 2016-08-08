@@ -114,7 +114,6 @@ class AnnotationLoader implements LoaderInterface
         }
 
         if (!$description->isEmpty()) {
-
             $meta = $em->getClassMetadata($class);
             if (!$description->hasIdentifierFieldNames()) {
                 $description->setIdentifierAttributeNames($meta->getIdentifierFieldNames());
@@ -128,10 +127,8 @@ class AnnotationLoader implements LoaderInterface
             }
 
             return $description;
-
         } else {
             return false;
-
         }
     }
 }

@@ -65,7 +65,6 @@ class SettingsCommand extends ContainerAwareCommand
         $dirty = [];
 
         foreach ($localIndexSettings as $indexName => $localSettings) {
-
             if (empty($localSettings)) {
                 // Cannot update settings if they're empty.
                 continue;
@@ -73,8 +72,7 @@ class SettingsCommand extends ContainerAwareCommand
 
             try {
                 $currentSettings = $indexer->getIndex($indexName)->getSettings();
-            }
-            catch(\Exception $e) {
+            } catch (\Exception $e) {
                 $currentSettings = null;
             }
 

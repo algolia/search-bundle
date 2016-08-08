@@ -22,19 +22,19 @@ class AlgoliaAlgoliaSearchExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        if (isset($config['application_id']))
+        if (isset($config['application_id'])) {
             $container->setParameter('algolia.application_id', $config['application_id']);
+        }
 
-        if (isset($config['api_key']))
+        if (isset($config['api_key'])) {
             $container->setParameter('algolia.api_key', $config['api_key']);
+        }
 
         $container->setParameter('algolia.catch_log_exceptions', $config['catch_log_exceptions']);
         $container->setParameter('algolia.index_name_prefix', $config['index_name_prefix']);
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
-
-
     }
 
     public function getAlias()
