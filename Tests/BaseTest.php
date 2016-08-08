@@ -34,7 +34,6 @@ class BaseTest extends \PHPUnit_Framework_TestCase
             }
 
             if (preg_match('/\.php$/', $entry)) {
-
                 if (!empty(static::$neededEntityTypes) && !in_array(basename($entry, '.php'), static::$neededEntityTypes)) {
                     continue;
                 }

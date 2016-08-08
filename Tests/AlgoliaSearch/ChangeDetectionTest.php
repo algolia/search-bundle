@@ -165,11 +165,11 @@ class ChangeDetectionTest extends BaseTest
     {
         /**
          * This one is a bit special:
-         * 
+         *
          * If a product has a composite primary key, updating a field from the primary key
          * will actually be equivalent to deleting the product and inserting a new one, which
          * will have a different objectID.
-         * 
+         *
          * So in this case, what should happen is:
          * - old product is unindexed from Algolia
          * - updated product is inserted into Algolia index as a new entity

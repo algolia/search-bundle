@@ -306,17 +306,14 @@ class Indexer
         $accessor = PropertyAccess::createPropertyAccessor();
         $value = $accessor->getValue($entity, $field);
 
-        if ($value instanceof \Doctrine\Common\Collections\Collection)
-        {
-            if ($depth >= 2)
-            {
+        if ($value instanceof \Doctrine\Common\Collections\Collection) {
+            if ($depth >= 2) {
                 return null;
             }
 
             $value = $value->toArray();
 
-            if (count($value) > 0)
-            {
+            if (count($value) > 0) {
                 if (! $this->discoverEntity(reset($value), $this->em)) {
                     throw new NotAnAlgoliaEntity(
                         'Tried to index `'.$field.'` relation which is a `'.get_class(reset($value)).'` instance, which is not recognized as an entity to index.'
@@ -329,10 +326,8 @@ class Indexer
             }, $value);
         }
 
-        if (is_object($value) && $this->isEntity($this->em, $value))
-        {
-            if ($depth >= 2)
-            {
+        if (is_object($value) && $this->isEntity($this->em, $value)) {
+            if ($depth >= 2) {
                 return null;
             }
 
@@ -481,7 +476,6 @@ class Indexer
         $deletions = array();
 
         foreach ($this->entitiesScheduledForCreation as $entity) {
-
             if (is_object($entity)) {
                 $index = $this->getAlgoliaIndexName($entity);
             } else {
@@ -502,7 +496,6 @@ class Indexer
         }
 
         foreach ($this->entitiesScheduledForUpdate as $data) {
-
             $index = $this->getAlgoliaIndexName($data['entity']);
 
             list($primaryKey, $oldPrimaryKey) = $this->getPrimaryKeyForAlgolia($data['entity'], $data['changeSet']);
@@ -535,7 +528,6 @@ class Indexer
         }
 
         foreach ($this->entitiesScheduledForDeletion as $data) {
-
             $index = $data['index'];
 
             if (!isset($deletions[$index])) {

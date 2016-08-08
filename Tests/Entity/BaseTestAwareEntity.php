@@ -15,8 +15,10 @@ class BaseTestAwareEntity
 
     public function getTestProp($prop, $default = null)
     {
-        if (isset($this->test_props[$prop]))
+        if (isset($this->test_props[$prop])) {
             return $this->test_props[$prop];
-        else return $default;
+        } else {
+            return $default;
+        }
     }
 }

@@ -29,7 +29,6 @@ class ManualIndexer
     private function doIndex(array $entities, $indexName = null)
     {
         foreach ($entities as $entity) {
-
             if (!$this->indexer->discoverEntity($entity, $this->entityManager)) {
                 throw new NotAnAlgoliaEntity(
                     'Tried to index entity of class `'.get_class($entity).'`, which is not recognized as an entity to index.'
@@ -52,7 +51,6 @@ class ManualIndexer
     private function doUnIndex($entities)
     {
         foreach ($entities as $entity) {
-
             if (!$this->indexer->discoverEntity($entity, $this->entityManager)) {
                 throw new NotAnAlgoliaEntity(
                     'Tried to unIndex entity of class `'.get_class($entity).'`, which is not recognized as an entity to index.'
