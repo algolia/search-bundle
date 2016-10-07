@@ -2,22 +2,24 @@
 
 namespace Algolia\AlgoliaSearchBundle\Indexer;
 
+use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\Tools\Pagination\Paginator;
-use Doctrine\ORM\Query;
 
 use Algolia\AlgoliaSearchBundle\Exception\NotAnAlgoliaEntity;
 
 class ManualIndexer
 {
+    /** @var Indexer */
     private $indexer;
-    private $entityManager;
+    /** @var ObjectManager */
+    private $objectManager;
 
-    public function __construct(Indexer $indexer, $entityManager)
+    public function __construct(Indexer $indexer, ObjectManager $entityManager)
     {
         $this->indexer = $indexer;
-        $this->entityManager = $entityManager;
+        $this->objectManager = $entityManager;
 
-        $this->indexer->setEm($entityManager);
+        $this->indexer->setObjectManager($entityManager);
     }
 
     /**
@@ -29,7 +31,7 @@ class ManualIndexer
     private function doIndex(array $entities, $indexName = null)
     {
         foreach ($entities as $entity) {
-            if (!$this->indexer->discoverEntity($entity, $this->entityManager)) {
+            if (!$this->indexer->discoverEntity($entity, $this->objectManager)) {
                 throw new NotAnAlgoliaEntity(
                     'Tried to index entity of class `'.get_class($entity).'`, which is not recognized as an entity to index.'
                 );
@@ -51,7 +53,7 @@ class ManualIndexer
     private function doUnIndex($entities)
     {
         foreach ($entities as $entity) {
-            if (!$this->indexer->discoverEntity($entity, $this->entityManager)) {
+            if (!$this->indexer->discoverEntity($entity, $this->objectManager)) {
                 throw new NotAnAlgoliaEntity(
                     'Tried to unIndex entity of class `'.get_class($entity).'`, which is not recognized as an entity to index.'
                 );
@@ -73,7 +75,7 @@ class ManualIndexer
     private function batchQuery($entityName, $query, $batchSize, $callback, $clearEntityManager = false)
     {
         if (!$query) {
-            $query = $this->entityManager->createQueryBuilder()->select('e')->from($entityName, 'e')->getQuery();
+            $query = $this->objectManager->createQueryBuilder()->select('e')->from($entityName, 'e')->getQuery();
         }
 
         $nEntities = 0;
@@ -98,7 +100,7 @@ class ManualIndexer
             }
 
             if ($clearEntityManager) {
-                $this->entityManager->clear();
+                $this->objectManager->clear();
             }
         }
 
@@ -187,9 +189,9 @@ class ManualIndexer
 
     public function clear($entityName)
     {
-        $className =  $this->entityManager->getRepository($entityName)->getClassName();
+        $className =  $this->objectManager->getRepository($entityName)->getClassName();
 
-        if (!$this->indexer->discoverEntity($className, $this->entityManager)) {
+        if (!$this->indexer->discoverEntity($className, $this->objectManager)) {
             throw new NotAnAlgoliaEntity(
                 'Tried to index entity of class `'.get_class($className).'`, which is not recognized as an entity to index.'
             );
@@ -226,9 +228,9 @@ class ManualIndexer
 
         $options = array_merge($defaults, $options);
 
-        $className =  $this->entityManager->getRepository($entityName)->getClassName();
+        $className =  $this->objectManager->getRepository($entityName)->getClassName();
 
-        if (!$this->indexer->discoverEntity($className, $this->entityManager)) {
+        if (!$this->indexer->discoverEntity($className, $this->objectManager)) {
             throw new NotAnAlgoliaEntity(
                 'Tried to index entity of class `'.$className.'`, which is not recognized as an entity to index.'
             );

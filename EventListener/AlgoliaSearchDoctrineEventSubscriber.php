@@ -3,6 +3,10 @@ namespace Algolia\AlgoliaSearchBundle\EventListener;
 
 use Algolia\AlgoliaSearchBundle\Indexer\Indexer;
 use Doctrine\Common\EventSubscriber;
+use Doctrine\Common\Persistence\Event\ManagerEventArgs;
+use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ODM\MongoDB\DocumentManager;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Psr\Log\LoggerInterface;
 
@@ -42,8 +46,21 @@ class AlgoliaSearchDoctrineEventSubscriber implements EventSubscriber
      * This is done to avoid sending wrong data to Algolia
      * if the local DB rejected our changes.
      */
-    public function onFlush(OnFlushEventArgs $args)
+    public function onFlush($args)
     {
+        switch (true) {
+            case $args instanceof ManagerEventArgs:
+                $objectManager = $args->getObjectManager();
+                break;
+
+            case $args instanceof OnFlushEventArgs:
+                $objectManager = $args->getEntityManager();
+                break;
+
+            default:
+                throw new \LogicException('Invalid onFlushEventArgs object encountered');
+        }
+
         try {
             /**
              * There might have been an exception thrown during the previous flush attempt,
@@ -52,42 +69,23 @@ class AlgoliaSearchDoctrineEventSubscriber implements EventSubscriber
              */
             $this->indexer->removeScheduledIndexChanges();
 
-            $em = $args->getEntityManager();
-            $uow = $em->getUnitOfWork();
-
-            foreach ($uow->getScheduledEntityInsertions() as $entity) {
-                if ($this->indexer->autoIndex($entity, $em)) {
-                    $this->create($entity);
+            foreach ($this->getScheduledObjectInsertions($objectManager) as $object) {
+                if ($this->indexer->autoIndex($object, $objectManager)) {
+                    $this->create($object);
                 }
             }
 
-            foreach ($uow->getScheduledEntityUpdates() as $entity) {
-                if ($this->indexer->autoIndex($entity, $em)) {
-                    $changeSet = $uow->getEntityChangeSet($entity);
-                    $this->update($entity, $changeSet);
+            foreach ($this->getScheduledObjectUpdates($objectManager) as list($object, $changeSet)) {
+                if ($this->indexer->autoIndex($object, $objectManager)) {
+                    $this->update($object, $changeSet);
                 }
             }
 
-            foreach ($uow->getScheduledEntityDeletions() as $entity) {
-                if ($this->indexer->autoIndex($entity, $em)) {
-                    $originalData = $uow->getOriginalEntityData($entity);
-                    $this->delete($entity, $originalData);
+            foreach ($this->getScheduledObjectDeletions($objectManager) as list($object, $originalData)) {
+                if ($this->indexer->autoIndex($object, $objectManager)) {
+                    $this->delete($object, $originalData);
                 }
             }
-
-            /**
-             * There are also:
-             *
-             * $uow->getScheduledCollectionDeletions();
-             * $uow->getScheduledCollectionUpdates();
-             *
-             * But they're not relevant here, I think.
-             *
-             * Apparently they're used for internal bookkeeping when
-             * doing things with Many-To-Many relationships.
-             *
-             * Leaving the comment just in case I'm wrong.
-             */
         } catch (\Exception $e) {
             if ($this->catchAndLogExceptions) {
                 if ($this->logger) {
@@ -130,5 +128,76 @@ class AlgoliaSearchDoctrineEventSubscriber implements EventSubscriber
     protected function delete($entity, $originalData)
     {
         $this->indexer->scheduleEntityDeletion($entity, $originalData);
+    }
+
+    private function getScheduledObjectInsertions(ObjectManager $objectManager)
+    {
+        switch (true) {
+            case $objectManager instanceof EntityManager:
+                return $objectManager->getUnitOfWork()->getScheduledEntityInsertions();
+                break;
+
+            case $objectManager instanceof DocumentManager:
+                return array_merge(
+                    $objectManager->getUnitOfWork()->getScheduledDocumentInsertions(),
+                    $objectManager->getUnitOfWork()->getScheduledDocumentUpserts()
+                );
+                break;
+
+            default:
+                throw new \LogicException('Unsupported document manager given');
+        }
+    }
+
+    private function getScheduledObjectUpdates(ObjectManager $objectManager)
+    {
+        switch (true) {
+            case $objectManager instanceof EntityManager:
+                return array_map(
+                    function ($entity) use ($objectManager) {
+                        return [$entity, $objectManager->getUnitOfWork()->getEntityChangeSet($entity)];
+                    },
+                    $objectManager->getUnitOfWork()->getScheduledEntityUpdates()
+                );
+                break;
+
+            case $objectManager instanceof DocumentManager:
+                return array_map(
+                    function ($document) use ($objectManager) {
+                        return [$document, $objectManager->getUnitOfWork()->getDocumentChangeSet($document)];
+                    },
+                    $objectManager->getUnitOfWork()->getScheduledDocumentUpdates()
+                );
+                break;
+
+            default:
+                throw new \LogicException('Unsupported document manager given');
+        }
+    }
+
+    private function getScheduledObjectDeletions(ObjectManager $objectManager)
+    {
+        switch (true) {
+            case $objectManager instanceof EntityManager:
+                return array_map(
+                    function ($entity) use ($objectManager) {
+                        return [$entity, $objectManager->getUnitOfWork()->getOriginalEntityData($entity)];
+                    },
+                    $objectManager->getUnitOfWork()->getScheduledEntityDeletions()
+                );
+                break;
+
+            case $objectManager instanceof DocumentManager:
+                return array_map(
+                    function ($document) use ($objectManager) {
+                        return [$document, $objectManager->getUnitOfWork()->getOriginalDocumentData($document)];
+                    },
+                    $objectManager->getUnitOfWork()->getScheduledDocumentDeletions()
+                );
+                break;
+
+            default:
+                throw new \LogicException('Unsupported document manager given');
+        }
     }
 }
