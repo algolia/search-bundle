@@ -2,39 +2,44 @@
 
 namespace Algolia\AlgoliaSearchBundle\Command;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 
-class SettingsCommand extends ContainerAwareCommand
+class SettingsCommand extends AlgoliaCommand
 {
     protected function configure()
     {
+        parent::configure();
+
         $this
-        ->setName('algolia:settings')
-        ->setDescription('Push the Algolia index settings defined in your project to the Algolia servers.')
-        ->addOption('push', 'p', InputOption::VALUE_NONE, 'Push the local settings to the remote Algolia servers.')
-        ->addOption('force', 'f', InputOption::VALUE_NONE, 'Do not ask for confirmation.')
+            ->setName('algolia:settings')
+            ->setDescription('Push the Algolia index settings defined in your project to the Algolia servers.')
+            ->addOption('push', 'p', InputOption::VALUE_NONE, 'Push the local settings to the remote Algolia servers.')
+            ->addOption('force', 'f', InputOption::VALUE_NONE, 'Do not ask for confirmation.')
         ;
     }
 
-    protected function getEntityClasses()
+    protected function getObjectClasses()
     {
-        $metaData = $this
-        ->getContainer()
-        ->get('doctrine.orm.entity_manager')
-        ->getMetadataFactory()
-        ->getAllMetaData();
+        $metaData = $this->getObjectManager()
+            ->getMetadataFactory()
+            ->getAllMetadata();
 
-        return array_map(function ($data) {
-            return $data->getName();
-        }, $metaData);
+        return array_map(
+            function (ClassMetadata $data) {
+                return $data->getName();
+            },
+            $metaData
+        );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->setObjectManagerFromInput($input);
+
         $operation = 'diff';
 
         if ($input->getOption('push')) {
@@ -43,12 +48,12 @@ class SettingsCommand extends ContainerAwareCommand
 
         $output->writeln('<comment>Computing differences between local and remote indexes...</comment>');
 
-        $entityClasses = $this->getEntityClasses();
+        $entityClasses = $this->getObjectClasses();
 
         $indexer = $this->getContainer()->get('algolia.indexer');
 
         foreach ($entityClasses as $className) {
-            $indexer->discoverEntity($className, $this->getContainer()->get('doctrine.orm.entity_manager'));
+            $indexer->discoverEntity($className, $this->getObjectManager());
         }
 
         $localIndexSettings = [];
