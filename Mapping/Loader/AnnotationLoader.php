@@ -3,7 +3,7 @@
 namespace Algolia\AlgoliaSearchBundle\Mapping\Loader;
 
 use Algolia\AlgoliaSearchBundle\Mapping\Annotation\Id;
-use Doctrine\ORM\EntityManager;
+use Doctrine\Common\Persistence\ObjectManager;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\CachedReader;
@@ -50,7 +50,7 @@ class AnnotationLoader implements LoaderInterface
     /**
      * @return Description
      */
-    public function getMetaData($entity, EntityManager $em)
+    public function getMetaData($entity, ObjectManager $objectManager)
     {
         $class = get_class($entity);
 
@@ -114,7 +114,7 @@ class AnnotationLoader implements LoaderInterface
         }
 
         if (!$description->isEmpty()) {
-            $meta = $em->getClassMetadata($class);
+            $meta = $objectManager->getClassMetadata($class);
             if (!$description->hasIdentifierFieldNames()) {
                 $description->setIdentifierAttributeNames($meta->getIdentifierFieldNames());
             }
