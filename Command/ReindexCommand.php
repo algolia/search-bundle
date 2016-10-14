@@ -2,6 +2,7 @@
 
 namespace Algolia\AlgoliaSearchBundle\Command;
 
+use Algolia\AlgoliaSearchBundle\Exception\NotAnAlgoliaEntity;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -66,7 +67,11 @@ class ReindexCommand extends AlgoliaCommand
 
         $nIndexed = 0;
         foreach ($toReindex as $className) {
-            $nIndexed += $this->reIndex($className, $batchSize, $safe);
+            try {
+                $nIndexed += $this->reIndex($className, $batchSize, $safe);
+            } catch (NotAnAlgoliaEntity $e) {
+                $output->writeln("<info>Skipped $className which isn't an entity to index.</info>");
+            }
         }
 
         if ($input->getOption('sync')) {

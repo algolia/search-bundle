@@ -2,6 +2,7 @@
 
 namespace Algolia\AlgoliaSearchBundle\Command;
 
+use Algolia\AlgoliaSearchBundle\Exception\NotAnAlgoliaEntity;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -38,9 +39,9 @@ class ClearCommand extends AlgoliaCommand
     {
         $this->setObjectManagerFromInput($input);
 
-        $toReindex = [];
+        $toClear = [];
 
-        if ($input->hasArgument('entityName')) {
+        if ($input->getArgument('entityName')) {
             $filter = $this->getObjectManager()->getRepository($input->getArgument('entityName'))->getClassName();
         } else {
             $filter = null;
@@ -48,16 +49,21 @@ class ClearCommand extends AlgoliaCommand
 
         foreach ($this->getObjectClasses() as $class) {
             if (!$filter || $class === $filter) {
-                $toReindex[] = $class;
+                $toClear[] = $class;
             }
         }
 
-        $nIndexed = 0;
-        foreach ($toReindex as $className) {
-            $nIndexed += $this->clear($className);
+        $nCleared = 0;
+        foreach ($toClear as $className) {
+            try {
+                $this->clear($className);
+                $nCleared++;
+            } catch (NotAnAlgoliaEntity $e) {
+                $output->writeln("<info>Skipped $className which isn't an entity to clear.</info>");
+            }
         }
 
-        switch ($nIndexed) {
+        switch ($nCleared) {
             case 0:
                 $output->writeln('No entity cleared');
                 break;
@@ -65,7 +71,7 @@ class ClearCommand extends AlgoliaCommand
                 $output->writeln('<info>1</info> entity cleared');
                 break;
             default:
-                $output->writeln(sprintf('<info>%s</info> entities cleared', $nIndexed));
+                $output->writeln(sprintf('<info>%s</info> entities cleared', $nCleared));
                 break;
         }
 
@@ -75,7 +81,6 @@ class ClearCommand extends AlgoliaCommand
     public function clear($className)
     {
         $reIndexer = $this->getContainer()->get('algolia.indexer')->getManualIndexer($this->getObjectManager());
-
-        return $reIndexer->clear($className);
+        $reIndexer->clear($className);
     }
 }
