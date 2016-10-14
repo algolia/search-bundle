@@ -2,6 +2,7 @@
 
 namespace Algolia\AlgoliaSearchBundle\Command;
 
+use Algolia\AlgoliaSearchBundle\Exception\NotAnAlgoliaEntity;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -16,6 +17,7 @@ class ClearCommand extends ContainerAwareCommand
             ->setName('algolia:clean')
             ->setDescription('Clear the index related to an entity')
             ->addArgument('entityName', InputArgument::OPTIONAL, 'Which entity index do you want to clear? If not set, all is assumed.')
+            ->addOption('skip-non-algolia-entities', null, InputOption::VALUE_NONE, 'Omit errors for all non Algolia entities.')
         ;
     }
 
@@ -41,7 +43,7 @@ class ClearCommand extends ContainerAwareCommand
     {
         $toReindex = [];
 
-        if ($input->hasArgument('entityName')) {
+        if ($input->getArgument('entityName')) {
             $filter = $this->getEntityManager()->getRepository($input->getArgument('entityName'))->getClassName();
         } else {
             $filter = null;
@@ -53,9 +55,11 @@ class ClearCommand extends ContainerAwareCommand
             }
         }
 
+        $skipNonAlgoliaEntities = $input->hasOption('skip-non-algolia-entities');
+
         $nIndexed = 0;
         foreach ($toReindex as $className) {
-            $nIndexed += $this->clear($className);
+            $this->clear($className, $skipNonAlgoliaEntities) ? $nIndexed++ : $nIndexed;
         }
 
         switch ($nIndexed) {
@@ -71,10 +75,20 @@ class ClearCommand extends ContainerAwareCommand
         }
     }
 
-    public function clear($className)
+    public function clear($className, $skipNonAlgoliaEntities = false)
     {
         $reIndexer = $this->getContainer()->get('algolia.indexer')->getManualIndexer($this->getEntityManager());
 
-        return $reIndexer->clear($className);
+        try {
+            $reIndexer->clear($className);
+
+            return true;
+        } catch (NotAnAlgoliaEntity $e) {
+            if (! $skipNonAlgoliaEntities) {
+                throw $e;
+            }
+        }
+
+        return false;
     }
 }
