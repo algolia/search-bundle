@@ -1,6 +1,8 @@
 <?php
 namespace Algolia\AlgoliaSearchBundle\Tests\Indexer;
 
+use Algolia\AlgoliaSearchBundle\Tests\Entity\BaseTestAwareEntity;
+
 class Indexer extends \Algolia\AlgoliaSearchBundle\Indexer\Indexer
 {
     public $creations = array();
@@ -99,5 +101,32 @@ class Indexer extends \Algolia\AlgoliaSearchBundle\Indexer\Indexer
         }
 
         return $this;
+    }
+
+    public function scheduleEntityCreation($entity, $checkShouldIndex = true)
+    {
+        if ($entity instanceof BaseTestAwareEntity) {
+            $entity->setTestProp('create_callback', 'called');
+        }
+
+        return parent::scheduleEntityCreation($entity, $checkShouldIndex);
+    }
+
+    public function scheduleEntityUpdate($entity, array $changeSet)
+    {
+        if ($entity instanceof BaseTestAwareEntity) {
+            $entity->setTestProp('update_callback', 'called');
+        }
+
+        parent::scheduleEntityUpdate($entity, $changeSet);
+    }
+
+    public function scheduleEntityDeletion($entity, array $originalData = null)
+    {
+        if ($entity instanceof BaseTestAwareEntity) {
+            $entity->setTestProp('delete_callback', 'called');
+        }
+
+        return parent::scheduleEntityDeletion($entity, $originalData);
     }
 }

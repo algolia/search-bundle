@@ -12,4 +12,3 @@ parameters:
     algolia.application_id: YOUR_APPLICATION_ID
     algolia.api_key: YOUR_API_KEY
     algolia.indexer.class: Algolia\AlgoliaSearchBundle\Tests\Indexer\Indexer
-    algolia.indexer_subscriber.class: Algolia\AlgoliaSearchBundle\Tests\EventListener\AlgoliaSearchDoctrineEventSubscriber
