@@ -27,7 +27,7 @@ This Symfony bundle provides an easy way to integrate Algolia Search into your S
 - [Retrieving entities](#retrieving-entities)
   - [Performing a raw search](#performing-a-raw-search)
   - [Performing a native search](#performing-a-native-search)
-- [Re-indexing whole collections](#re-indexing-whole-collections)
+- [Re-indexing whole collections](#reindexing-whole-collections)
 - [Running the tests](#running-the-tests)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -224,7 +224,7 @@ class Product
 
 In this example id will not be use as the objectId, instead name will be use.
 
-**When you make changes to the mappings, you need to [re-index your entities](reindexing#re-indexing-whole-collections) to reflect the changes in Algolia.**
+**When you make changes to the mappings, you need to [re-index your entities](reindexing#reindexing-whole-collections) to reflect the changes in Algolia.**
 
 ### Autoindexing vs Manual Indexing
 By default, mapped entities are automatically indexed on Algolia's servers using Doctrine's lifecycle events (synchronization is made during the onFlush and postFlush events).
