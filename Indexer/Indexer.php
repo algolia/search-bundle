@@ -15,8 +15,6 @@ use Algolia\AlgoliaSearchBundle\SearchResult\SearchResult;
 
 class Indexer
 {
-    private static $annotationReader;
-
     /**
      * Holds index settings for entities we're interested in.
      *
@@ -158,10 +156,8 @@ class Indexer
         if (is_object($entity_or_class)) {
             $entity = $entity_or_class;
             $class = $this->getClass($entity);
-            $class = $this->removeProxy($class);
         } else {
             $class = $objectManager->getRepository($entity_or_class)->getClassName();
-            $class = $this->removeProxy($class);
             $reflClass = new \ReflectionClass($class);
 
             if ($reflClass->isAbstract()) {
