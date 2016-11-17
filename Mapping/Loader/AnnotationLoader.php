@@ -18,6 +18,7 @@ use Algolia\AlgoliaSearchBundle\Mapping\IndexIf;
 use Algolia\AlgoliaSearchBundle\Mapping\Property;
 use Algolia\AlgoliaSearchBundle\Mapping\Method;
 use Algolia\AlgoliaSearchBundle\Mapping\Description;
+use Doctrine\Common\Util\ClassUtils;
 
 class AnnotationLoader implements LoaderInterface
 {
@@ -41,20 +42,13 @@ class AnnotationLoader implements LoaderInterface
         return self::$annotationReader;
     }
 
-    private function removeProxy($class)
-    {
-        /* Avoid proxy class form symfony */
-        return str_replace("Proxies\\__CG__\\", "", $class);
-    }
-
     /**
      * @return Description
      */
     public function getMetaData($entity, ObjectManager $objectManager)
     {
         $class = get_class($entity);
-
-        $class = $this->removeProxy($class);
+        $class = ClassUtils::getRealClass($class);
 
         $description = new Description($class);
 
