@@ -4,6 +4,7 @@ namespace Algolia\AlgoliaSearchBundle\Indexer;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\Persistence\Proxy;
+use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
@@ -126,17 +127,10 @@ class Indexer
         return new AnnotationLoader();
     }
 
-    private function removeProxy($class)
-    {
-        /* Avoid proxy class form symfony */
-        return str_replace("Proxies\\__CG__\\", "", $class);
-    }
-
     private function getClass($entity)
     {
         $class = get_class($entity);
-
-        $class = $this->removeProxy($class);
+        $class = ClassUtils::getRealClass($class);
 
         return $class;
     }
