@@ -653,6 +653,18 @@ class Indexer
     }
 
     /**
+     * @param \AlgoliaSearch\Client $client
+     *
+     * @return $this
+     */
+    public function setClient(\AlgoliaSearch\Client $client)
+    {
+        $this->client = $client;
+
+        return $this;
+    }
+
+    /**
      * Returns an object used to communicate with the Algolia indexes
      * and caches it.
      * @internal

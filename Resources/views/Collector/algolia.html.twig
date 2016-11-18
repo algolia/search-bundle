@@ -1,0 +1,128 @@
+{% extends '@WebProfiler/Profiler/layout.html.twig' %}
+
+{% from _self import expandableProfilerDump %}
+
+{% block head %}
+    {{ parent() }}
+
+    <style>
+        {{ include('@AlgoliaAlgoliaSearch/Collector/algolia.css.twig') }}
+    </style>
+{% endblock %}
+
+{% block toolbar %}
+    {% if collector.transactionCount > 0 %}
+        {% set icon %}
+            {{ include('@AlgoliaAlgoliaSearch/Collector/icon.svg') }}
+            <span class="sf-toolbar-value">{{ collector.transactionCount }}</span>
+        {% endset %}
+
+        {% set text %}
+            <div class="sf-toolbar-info-piece">
+                <b>Total Time</b>
+                <span>{{ collector.totalTime }}ms</span>
+            </div>
+            <div class="sf-toolbar-info-piece">
+                <b>Transactions</b>
+                <span class="sf-toolbar-status">{{ collector.transactionCount }}</span>
+            </div>
+        {% endset %}
+
+        {{ include('@WebProfiler/Profiler/toolbar_item.html.twig', { link: true }) }}
+    {% endif %}
+{% endblock %}
+
+{% block menu %}
+    <span class="label {{ not collector.transactionCount > 0 ? 'disabled' }}">
+        <span class="icon">{{ include('@AlgoliaAlgoliaSearch/Collector/icon.svg') }}</span>
+        <strong>Algolia</strong>
+
+        {% if collector.transactionCount > 0 %}
+            <span class="count">
+                <span>{{ collector.transactionCount }}</span>
+            </span>
+        {% endif %}
+    </span>
+{% endblock %}
+
+{% block panel %}
+    <div class="metrics">
+        <div class="metric">
+            <span class="value">{{ collector.transactionCount }}</span>
+            <span class="label">Transactions</span>
+        </div>
+        <div class="metric">
+            <span class="value">{{ collector.totalTime }} <span class="unit">ms</span></span>
+            <span class="label">Total Time</span>
+        </div>
+    </div>
+
+    <h2>Transactions</h2>
+
+    {% if collector.transactionCount > 0 %}
+        <table class="sf-toolbar-algolia-requests">
+            <thead>
+            <tr>
+                <th>Type</th>
+                <th>Method</th>
+                <th>Host</th>
+                <th>Path</th>
+                <th>Time</th>
+                <th>Connect-Timeout</th>
+                <th>Read-Timeout</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for key, transaction in collector.transactions %}
+                <tr class="sf-toolbar-algolia-requests-info">
+                    <td>
+                        {% if transaction.mocked %}
+                            <span class="label">MOCK</span>
+                        {% else %}
+                            <span class="label status-error">API</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ transaction.request.method }}</td>
+                    <td>{{ transaction.request.host }}</td>
+                    <td>{{ transaction.request.path }}</td>
+                    <td class="font-normal">{{ transaction.ms }}ms</td>
+                    <td class="font-normal">{{ transaction.request.connect_timeout }}</td>
+                    <td class="font-normal">{{ transaction.request.read_timeout }}</td>
+                </tr>
+                <tr>
+                    <td colspan="7">
+                        {{ expandableProfilerDump('Response', transaction.response, 'response-' ~ key) }}
+                        {{ expandableProfilerDump('Request Data', transaction.request.data, 'req-data-' ~ key) }}
+                        {{ expandableProfilerDump('Request Params', transaction.request.params, 'req-params-' ~ key) }}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="empty">
+            <p>No transactions available.</p>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% macro expandableProfilerDump(title, data, key, maxLength = 80) %}
+    {% set context_id = 'context-params-' ~ key %}
+    {% set context_dump = profiler_dump(data) %}
+
+    <div class="metadata">
+        <strong>{{ title }}</strong>:
+
+        {% if context_dump|length > 80 %}
+            {{ context_dump[:80] }} ...
+
+            <a class="btn-link text-small sf-toggle" data-toggle-selector="#{{ context_id }}" data-toggle-alt-content="Collapse">Expand</a>
+
+            <div id="{{ context_id }}" class="context">
+                <pre>{{ context_dump }}</pre>
+            </div>
+        {% else %}
+            {{ context_dump }}
+        {% endif %}
+    </div>
+{% endmacro %}

@@ -19,21 +19,16 @@ class Configuration implements ConfigurationInterface
     {
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('algolia');
-        $rootNode->children()
-            ->scalarNode('application_id')
+        $rootNode
+            ->children()
+                ->scalarNode('application_id')->end()
+                ->scalarNode('api_key')->end()
+                ->scalarNode('index_name_prefix')->defaultValue('')->end()
+                ->booleanNode('catch_log_exceptions')->defaultFalse()->end()
+                ->booleanNode('disable_requests')->defaultFalse()->end()
             ->end()
-            ->scalarNode('api_key')
-            ->end()
-            ->scalarNode('index_name_prefix')
-            ->defaultValue('')
-            ->end()
-            ->booleanNode('catch_log_exceptions')
-              ->defaultFalse()
-            ->end();
+        ;
 
-        // Here you should define the parameters that are allowed to
-        // configure your bundle. See the documentation linked above for
-        // more information on that topic.
         return $treeBuilder;
     }
 }
