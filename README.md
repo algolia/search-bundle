@@ -1,39 +1,66 @@
-<!--NO_HTML-->
+# Algolia Search API Client for Symfony
 
-AlgoliaSearchBundle
-==================================
-
-<!--/NO_HTML-->
+[Algolia Search](https://www.algolia.com) is a hosted full-text, numerical, and faceted search engine capable of delivering realtime results from the first keystroke.
 
 This Symfony bundle provides an easy way to integrate Algolia Search into your Symfony2 with Doctrine2 application.
 
 [![Build Status](https://travis-ci.org/algolia/AlgoliaSearchBundle.svg?branch=master)](https://travis-ci.org/algolia/AlgoliaSearchBundle) [![Latest Stable Version](https://poser.pugx.org/algolia/algolia-search-bundle/v/stable)](https://packagist.org/packages/algolia/algolia-search-bundle) [![License](https://poser.pugx.org/algolia/algolia-search-bundle/license)](https://packagist.org/packages/algolia/algolia-search-bundle)
 
-<!--NO_HTML-->
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Content**
 
-- [Setup](#setup)
-  - [Setup composer](#setup-composer)
-  - [Register the bundle](#register-the-bundle)
-  - [Fill in your Algolia credentials](#fill-in-your-algolia-credentials)
-- [Mapping entities to Algolia indexes](#mapping-entities-to-algolia-indexes)
-  - [Indexing entity properties or methods](#indexing-entity-properties-or-methods)
-  - [Autoindexing vs Manual Indexing](#autoindexing-vs-manual-indexing)
-  - [Per environment indexing](#per-environment-indexing)
-  - [Conditional indexing](#conditional-indexing)
-  - [Advanced index settings](#advanced-index-settings)
-- [Retrieving entities](#retrieving-entities)
-  - [Performing a raw search](#performing-a-raw-search)
-  - [Performing a native search](#performing-a-native-search)
-- [Re-indexing whole collections](#reindexing-whole-collections)
-- [Running the tests](#running-the-tests)
+# Table of Contents
 
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-<!--/NO_HTML-->
 
-## Setup
+**Setup**
+
+1. [Install](#install)
+1. [Register the bundle](#register-the-bundle)
+1. [Fill in your Algolia credentials](#fill-in-your-algolia-credentials)
+
+**Mapping entities to Algolia indexes**
+
+1. [Indexing entity properties or methods](#indexing-entity-properties-or-methods)
+1. [Autoindexing vs Manual Indexing](#autoindexing-vs-manual-indexing)
+1. [Per environment indexing](#per-environment-indexing)
+1. [Conditional indexing](#conditional-indexing)
+1. [Index settings](#index-settings)
+
+**Retrieving entities**
+
+1. [Performing a raw search](#performing-a-raw-search)
+1. [Performing a native search](#performing-a-native-search)
+
+**Re-indexing**
+
+1. [Re-indexing whole collections](#re-indexing-whole-collections)
+
+**Running the tests**
+
+1. [Running the tests](#running-the-tests)
+
+
+# Guides & Tutorials
+
+Check our [online guides](https://www.algolia.com/doc):
+
+* [Data Formatting](https://www.algolia.com/doc/indexing/formatting-your-data)
+* [Import and Synchronize data](https://www.algolia.com/doc/indexing/import-synchronize-data/php)
+* [Autocomplete](https://www.algolia.com/doc/search/auto-complete)
+* [Instant search page](https://www.algolia.com/doc/search/instant-search)
+* [Filtering and Faceting](https://www.algolia.com/doc/search/filtering-faceting)
+* [Sorting](https://www.algolia.com/doc/relevance/sorting)
+* [Ranking Formula](https://www.algolia.com/doc/relevance/ranking)
+* [Typo-Tolerance](https://www.algolia.com/doc/relevance/typo-tolerance)
+* [Geo-Search](https://www.algolia.com/doc/geo-search/geo-search-overview)
+* [Security](https://www.algolia.com/doc/security/best-security-practices)
+* [API-Keys](https://www.algolia.com/doc/security/api-keys)
+* [REST API](https://www.algolia.com/doc/rest)
+
+
+# Setup
+
+
+
+## Install
 
 Add this line to your `composer.json` file:
 ```json
@@ -46,7 +73,7 @@ Add this line to your `composer.json` file:
 
 Then run `composer update`.
 
-### Register the bundle
+## Register the bundle
 
 Add `Algolia\AlgoliaSearchBundle\AlgoliaAlgoliaSearchBundle()` to your application Kernel:
 ```php
@@ -57,7 +84,7 @@ $bundles = array(
 );
 ```
 
-### Fill in your Algolia credentials
+## Fill in your Algolia credentials
 
 Add your Algolia application ID and API key to your `parameters.yml` file:
 
@@ -87,13 +114,15 @@ algolia:
 * **index_name_prefix**: If set, this will add a prefix to all the index names (Useful if you want to setup multiple environments within the same Algolia app)
 
 
-## Mapping entities to Algolia indexes
+# Mapping entities to Algolia indexes
+
+
 
 Mapping an entity type to an Algolia index allows you to keep it in sync with Algolia, i.e. the operations involving mapped entities on your local database are mirrored on the Algolia indexes. Indexation is automatic by default, but can be made manual if needed.
 
 Currently, mapping is only possible with annotations.
 
-### Indexing entity properties or methods
+## Indexing entity properties or methods
 
 The `Attribute` annotation marks a field or method for indexing by Algolia.
 
@@ -224,9 +253,9 @@ class Product
 
 In this example id will not be use as the objectId, instead name will be use.
 
-**When you make changes to the mappings, you need to [re-index your entities](reindexing#reindexing-whole-collections) to reflect the changes in Algolia.**
+**When you make changes to the mappings, you need to [re-index your entities](#reindexing-whole-collections) to reflect the changes in Algolia.**
 
-### Autoindexing vs Manual Indexing
+## Autoindexing vs Manual Indexing
 By default, mapped entities are automatically indexed on Algolia's servers using Doctrine's lifecycle events (synchronization is made during the onFlush and postFlush events).
 
 You can change this behaviour with the `Index` annotation and the `autoIndex` parameter, like this:
@@ -263,7 +292,7 @@ $this->get('algolia.indexer')->getManualIndexer($em)->index($product);
 The `ManualIndexer` class also provides the `unIndex` method to manually un-index entities and the `reIndex` method to re-index a whole collection.
 Please see [the methods' comments](https://github.com/algolia/AlgoliaSearchBundle/blob/master/Indexer/ManualIndexer.php) for more info.
 
-### Per environment indexing
+## Per environment indexing
 
 By default, Algolia index names are suffixed with the name of the current application environment.
 
@@ -283,7 +312,7 @@ class Product
 }
 ```
 
-### Conditional indexing
+## Conditional indexing
 
 It is often useful to skip indexing an entity based on some condition.
 
@@ -311,7 +340,7 @@ class Product
 
 You can have several `IndexIf` conditions, in which case the record is indexed if they *all* return true. It may be better for readability to keep only one such annotation though.
 
-### Index settings
+## Index settings
 
 You can optionally specify your index settings directly in the `Index` annotation.
 
@@ -338,9 +367,13 @@ The index settings are **not** automatically synchronized with Algolia but we pr
 php app/console algolia:settings # show the local settings that are not applied to the Algolia indexes
 php app/console algolia:settings --push # push the configuration changes to Algolia servers
 ```
-## Retrieving entities
 
-### Performing a raw search
+
+# Retrieving entities
+
+
+
+## Performing a raw search
 
 You can retrieve raw results from Algolia indexes using the `rawSearch` method of the indexer:
 
@@ -352,7 +385,7 @@ This will return an array of hits, wrapped inside of a [SearchResult](https://gi
 
 This will not connect to the local database.
 
-### Performing a native search
+## Performing a native search
 
 You can retrieve Doctrine entities from Algolia indexes using the `search` method of the indexer:
 
@@ -369,9 +402,12 @@ Hits will be instance of the `Product` class, fetched from the local database.
 
 Please note that since we need to access the local database here contrary to the `rawSearch` call you need to pass the `EntityManager`, which adds an argument.
 
-## Re-indexing
 
-### Re-indexing whole collections
+# Re-indexing
+
+
+
+## Re-indexing whole collections
 
 You can re-index collections programmatically using the `reIndex` method of the `ManualIndexer` class (`$this->get('algolia.indexer')->getManualIndexer($this->getEntityManager())->reIndex('SomeBundle:EntityName')`), but you can also very easily do it using a simple console command:
 
@@ -383,10 +419,16 @@ By default, a temporary index is created, the indexation is performed on the tem
 
 You can re-index in place by passing the `--unsafe` option. Please note that in unsafe mode outdated entities will not be un-indexed.
 
-<!--NO_HTML-->
+
+# Running the tests
+
+
+
 ## Running the tests
-Rename the test [parameters.yml.dist](Tests/config/parameters.yml.dist) file to `parameters.yml`, customize the settings with the correct database settings and Algolia API settings, then run:
+
+Rename the test `parameters.yml.dist` file to `parameters.yml`, customize the settings with the correct database settings and Algolia API settings, then run:
 ```bash
 php vendor/bin/phpunit -c Tests
 ```
-<!--/NO_HTML-->
+
+
