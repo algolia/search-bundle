@@ -12,3 +12,5 @@ parameters:
     algolia.application_id: YOUR_APPLICATION_ID
     algolia.api_key: YOUR_API_KEY
     algolia.indexer.class: Algolia\AlgoliaSearchBundle\Tests\Indexer\Indexer
+    mongodb_uri: "localhost:27017"
+    mongodb_database: "algolia_test"
