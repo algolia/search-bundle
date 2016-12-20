@@ -2,14 +2,13 @@
 
 namespace Algolia\AlgoliaSearchBundle\Tests\Entity;
 
+use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Doctrine\ORM\Mapping as ORM;
 use Algolia\AlgoliaSearchBundle\Mapping\Annotation as Algolia;
 
 /**
- * Product
- *
  * @ORM\Entity
- *
+ * @ODM\Document
  */
 class ProductWithCustomObjectId extends BaseTestAwareEntity
 {
@@ -19,15 +18,16 @@ class ProductWithCustomObjectId extends BaseTestAwareEntity
      * @ORM\Id
      * @ORM\Column(name="name", type="string", length=255)
      *
-     * @Algolia\Attribute
+     * @ODM\Id(strategy="increment")
      *
+     * @Algolia\Attribute
      */
     protected $name;
 
     /**
      * @var float
      * @ORM\Column(name="price", type="decimal", nullable=true)
-     *
+     * @ODM\Field(type="float")
      */
     protected $price;
 
@@ -36,6 +36,7 @@ class ProductWithCustomObjectId extends BaseTestAwareEntity
      * @Algolia\Id
      *
      * @ORM\Column(name="short_description", type="string", length=255, nullable=true)
+     * @ODM\Field(type="string")
      */
     protected $shortDescription;
 
@@ -43,6 +44,7 @@ class ProductWithCustomObjectId extends BaseTestAwareEntity
      * @var string
      *
      * @ORM\Column(name="description", type="text", nullable=true)
+     * @ODM\Field(type="string")
      */
     protected $description;
 
@@ -50,12 +52,14 @@ class ProductWithCustomObjectId extends BaseTestAwareEntity
      * @var integer
      *
      * @ORM\Column(name="rating", type="integer", nullable=true)
+     * @ODM\Field(type="int")
      */
     protected $rating;
 
     /**
      * @ORM\ManyToOne(targetEntity="Supplier", inversedBy="products")
      * @ORM\JoinColumn(name="supplier_id", nullable=true)
+     * @ODM\ReferenceOne(targetDocument="Supplier")
      */
     protected $supplier;
 
