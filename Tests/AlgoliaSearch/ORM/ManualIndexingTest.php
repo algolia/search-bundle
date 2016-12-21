@@ -8,4 +8,9 @@ use Algolia\AlgoliaSearchBundle\Tests\Traits\ORMTestTrait;
 class ManualIndexingTest extends BaseManualIndexingTest
 {
     use ORMTestTrait;
+
+    protected function getQuery()
+    {
+        return $this->getObjectManager()->createQuery('SELECT p FROM AlgoliaSearchBundle:ProductWithoutAutoIndex p WHERE p.rating = 9');
+    }
 }

@@ -19,6 +19,8 @@ abstract class ReindexCommandTest extends BaseTest
 
     public static $nProducts = 30;
 
+    abstract protected function getCommandOptions();
+
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
@@ -69,7 +71,7 @@ abstract class ReindexCommandTest extends BaseTest
             'Algolia\AlgoliaSearchBundle\Tests\Entity\ProductForReindexTest'
         ;
 
-        $options = [
+        $options = $this->getCommandOptions() + [
             'entityName' => $entityName,
             '--batch-size' => 8, // not a divisor of static::$nProducts, on purpose
             '--sync' => ' '

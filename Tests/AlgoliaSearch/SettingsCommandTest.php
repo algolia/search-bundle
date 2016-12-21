@@ -16,6 +16,8 @@ abstract class SettingsCommandTest extends BaseTest
      */
     public static $isolateFromAlgolia = false;
 
+    abstract protected function getCommandOptions();
+
     public function setUp()
     {
         parent::setUp();
@@ -61,7 +63,7 @@ abstract class SettingsCommandTest extends BaseTest
      */
     public function testIndexIsCreated()
     {
-        $this->runCommand(['--push' => ' ', '--force' => ' ']);
+        $this->runCommand($this->getCommandOptions() + ['--push' => ' ', '--force' => ' ']);
 
         $output = $this->runCommand();
         
@@ -110,12 +112,12 @@ abstract class SettingsCommandTest extends BaseTest
         );
         $this->getIndexer()->waitForAlgoliaTasks();
 
-        $output = $this->runCommand();
+        $output = $this->runCommand($this->getCommandOptions());
 
         $this->assertContains('We found 1 index(es) that may need updating.', $output);
         $this->assertContains('Local searchableAttributes:', $output);
 
-        $this->runCommand(['--push' => ' ', '--force' => ' ']);
+        $this->runCommand($this->getCommandOptions() + ['--push' => ' ', '--force' => ' ']);
         $output = $this->runCommand();
         $this->assertContains('Your local index settings seem to be in sync with the Algolia servers!', $output);
     }
