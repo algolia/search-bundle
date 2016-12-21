@@ -114,6 +114,8 @@ abstract class ManualIndexingTest extends BaseTest
         );
     }
 
+    abstract protected function getQuery();
+
     public function testManualIndexByQuery()
     {
         $this->cleanDatabaseAndMakeProducts();
@@ -122,7 +124,7 @@ abstract class ManualIndexingTest extends BaseTest
             'AlgoliaSearchBundle:ProductWithoutAutoIndex',
             [
                 'batchSize' => 27,
-                'query' => $this->getObjectManager()->createQuery('SELECT p FROM AlgoliaSearchBundle:ProductWithoutAutoIndex p WHERE p.rating = 9')
+                'query' => $this->getQuery()
             ]
         );
 
@@ -140,7 +142,7 @@ abstract class ManualIndexingTest extends BaseTest
             'AlgoliaSearchBundle:ProductWithoutAutoIndex',
             [
                 'batchSize' => 27,
-                'query' => $this->getObjectManager()->createQuery('SELECT p FROM AlgoliaSearchBundle:ProductWithoutAutoIndex p WHERE p.rating = 9')
+                'query' => $this->getQuery()
             ]
         );
 
@@ -159,7 +161,7 @@ abstract class ManualIndexingTest extends BaseTest
             'AlgoliaSearchBundle:ProductWithoutAutoIndex',
             [
                 'batchSize' => 27,
-                'query' => $this->getObjectManager()->createQuery('SELECT p FROM AlgoliaSearchBundle:ProductWithoutAutoIndex p WHERE p.rating = 9')
+                'query' => $this->getQuery()
             ]
         );
 

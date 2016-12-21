@@ -1,16 +1,16 @@
 <?php
 
-namespace Algolia\AlgoliaSearchBundle\Tests\AlgoliaSearch\ORM;
+namespace Algolia\AlgoliaSearchBundle\Tests\AlgoliaSearch\ODM;
 
 use Algolia\AlgoliaSearchBundle\Tests\AlgoliaSearch\ReindexCommandTest as BaseReindexCommandTest;
-use Algolia\AlgoliaSearchBundle\Tests\Traits\ORMTestTrait;
+use Algolia\AlgoliaSearchBundle\Tests\Traits\ODMTestTrait;
 
 class ReindexCommandTest extends BaseReindexCommandTest
 {
-    use ORMTestTrait;
+    use ODMTestTrait;
 
     protected function getCommandOptions()
     {
-        return ['--em' => 'default'];
+        return ['--dm' => 'default'];
     }
 }
