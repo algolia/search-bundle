@@ -1,14 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <phpunit bootstrap="./app.php">
     <testsuites>
         <testsuite name="AlgoliaSearch">
-            <file>./AlgoliaSearch/EntityAliasTest.php</file>
-            <file>./AlgoliaSearch/CallbacksTest.php</file>
-            <file>./AlgoliaSearch/ChangeDetectionTest.php</file>
-            <file>./AlgoliaSearch/ManualIndexingTest.php</file>
-            <file>./AlgoliaSearch/ConditionalIndexingTest.php</file>
-            <file>./AlgoliaSearch/AlgoliaIntegrationTest.php</file>
-            <file>./AlgoliaSearch/ReindexCommandTest.php</file>
-            <file>./AlgoliaSearch/SettingsCommandTest.php</file>
+            <directory suffix=".php">./AlgoliaSearch/</directory>
         </testsuite>
     </testsuites>
 </phpunit>
