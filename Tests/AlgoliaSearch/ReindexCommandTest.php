@@ -1,14 +1,15 @@
 <?php
 
-namespace Algolia\AlgoliaSearchBundle\Tests;
+namespace Algolia\AlgoliaSearchBundle\Tests\AlgoliaSearch;
 
+use Algolia\AlgoliaSearchBundle\Command\ReindexCommand;
+use Algolia\AlgoliaSearchBundle\Tests\BaseTest;
+use Algolia\AlgoliaSearchBundle\Tests\Entity;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Input\ArrayInput;
 
-use Algolia\AlgoliaSearchBundle\Command\ReindexCommand;
-
-class ReindexCommandTest extends BaseTest
+abstract class ReindexCommandTest extends BaseTest
 {
     /**
      * Here we really want to test the full integration
@@ -16,17 +17,13 @@ class ReindexCommandTest extends BaseTest
      */
     public static $isolateFromAlgolia = false;
 
-    public static $neededEntityTypes = [
-        'ProductForReindexTest'
-    ];
-
     public static $nProducts = 30;
 
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
 
-        $em = static::staticGetEntityManager();
+        $em = static::staticGetObjectManager();
 
         // Setup our fixtures
         for ($i = 0; $i < static::$nProducts; $i += 1) {

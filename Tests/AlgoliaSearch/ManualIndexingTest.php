@@ -1,20 +1,19 @@
 <?php
 
-namespace Algolia\AlgoliaSearchBundle\Tests;
+namespace Algolia\AlgoliaSearchBundle\Tests\AlgoliaSearch;
 
-class ManualIndexingTest extends BaseTest
+use Algolia\AlgoliaSearchBundle\Tests\BaseTest;
+use Algolia\AlgoliaSearchBundle\Tests\Entity;
+
+abstract class ManualIndexingTest extends BaseTest
 {
-    public static $neededEntityTypes = [
-        'ProductWithoutAutoIndex'
-    ];
-
     public static $nProducts = 100;
 
     public function cleanDatabaseAndMakeProducts()
     {
-        parent::setupDatabase();
+        static::setupDatabase();
 
-        $em = $this->getEntityManager();
+        $em = $this->getObjectManager();
 
         for ($i = 0; $i < static::$nProducts; $i += 1) {
             $product = new Entity\ProductWithoutAutoIndex();
@@ -61,7 +60,7 @@ class ManualIndexingTest extends BaseTest
 
         $id = $product->getId();
 
-        $indexer->getManualIndexer($this->getEntityManager())->index($product);
+        $indexer->getManualIndexer($this->getObjectManager())->index($product);
 
         $this->assertEquals(array(), $indexer->deletions);
         $this->assertEquals(array(), $indexer->updates);
@@ -76,7 +75,7 @@ class ManualIndexingTest extends BaseTest
 
         $indexer->reset();
 
-        $indexer->getManualIndexer($this->getEntityManager())->unIndex($product);
+        $indexer->getManualIndexer($this->getObjectManager())->unIndex($product);
         $this->assertEquals(array(
             metaenv('ProductWithoutAutoIndex_dev') => array(
                 $this->getObjectID(['id' => $id])
@@ -89,7 +88,7 @@ class ManualIndexingTest extends BaseTest
     {
         $this->cleanDatabaseAndMakeProducts();
 
-        $nIndexed = $this->getIndexer()->getManualIndexer($this->getEntityManager())->index(
+        $nIndexed = $this->getIndexer()->getManualIndexer($this->getObjectManager())->index(
             'AlgoliaSearchBundle:ProductWithoutAutoIndex',
             ['batchSize' => 27]
         );
@@ -104,7 +103,7 @@ class ManualIndexingTest extends BaseTest
     {
         $this->cleanDatabaseAndMakeProducts();
 
-        $nIndexed = $this->getIndexer()->getManualIndexer($this->getEntityManager())->unIndex(
+        $nIndexed = $this->getIndexer()->getManualIndexer($this->getObjectManager())->unIndex(
             'AlgoliaSearchBundle:ProductWithoutAutoIndex',
             ['batchSize' => 27]
         );
@@ -119,11 +118,11 @@ class ManualIndexingTest extends BaseTest
     {
         $this->cleanDatabaseAndMakeProducts();
 
-        $nIndexed = $this->getIndexer()->getManualIndexer($this->getEntityManager())->index(
+        $nIndexed = $this->getIndexer()->getManualIndexer($this->getObjectManager())->index(
             'AlgoliaSearchBundle:ProductWithoutAutoIndex',
             [
                 'batchSize' => 27,
-                'query' => $this->getEntityManager()->createQuery('SELECT p FROM AlgoliaSearchBundle:ProductWithoutAutoIndex p WHERE p.rating = 9')
+                'query' => $this->getObjectManager()->createQuery('SELECT p FROM AlgoliaSearchBundle:ProductWithoutAutoIndex p WHERE p.rating = 9')
             ]
         );
 
@@ -137,11 +136,11 @@ class ManualIndexingTest extends BaseTest
     {
         $this->cleanDatabaseAndMakeProducts();
 
-        $nUnIndexed = $this->getIndexer()->getManualIndexer($this->getEntityManager())->unIndex(
+        $nUnIndexed = $this->getIndexer()->getManualIndexer($this->getObjectManager())->unIndex(
             'AlgoliaSearchBundle:ProductWithoutAutoIndex',
             [
                 'batchSize' => 27,
-                'query' => $this->getEntityManager()->createQuery('SELECT p FROM AlgoliaSearchBundle:ProductWithoutAutoIndex p WHERE p.rating = 9')
+                'query' => $this->getObjectManager()->createQuery('SELECT p FROM AlgoliaSearchBundle:ProductWithoutAutoIndex p WHERE p.rating = 9')
             ]
         );
 
@@ -156,11 +155,11 @@ class ManualIndexingTest extends BaseTest
         $this->getIndexer()->isolateFromAlgolia(false);
         $this->getIndexer()->deleteIndex('ProductWithoutAutoIndex')->waitForAlgoliaTasks();
 
-        $nProcessed = $this->getIndexer()->getManualIndexer($this->getEntityManager())->reIndex(
+        $nProcessed = $this->getIndexer()->getManualIndexer($this->getObjectManager())->reIndex(
             'AlgoliaSearchBundle:ProductWithoutAutoIndex',
             [
                 'batchSize' => 27,
-                'query' => $this->getEntityManager()->createQuery('SELECT p FROM AlgoliaSearchBundle:ProductWithoutAutoIndex p WHERE p.rating = 9')
+                'query' => $this->getObjectManager()->createQuery('SELECT p FROM AlgoliaSearchBundle:ProductWithoutAutoIndex p WHERE p.rating = 9')
             ]
         );
 

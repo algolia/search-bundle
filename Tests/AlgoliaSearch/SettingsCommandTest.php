@@ -1,24 +1,20 @@
 <?php
 
-namespace Algolia\AlgoliaSearchBundle\Tests;
+namespace Algolia\AlgoliaSearchBundle\Tests\AlgoliaSearch;
 
+use Algolia\AlgoliaSearchBundle\Command\SettingsCommand;
+use Algolia\AlgoliaSearchBundle\Tests\BaseTest;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Output\StreamOutput;
 use Symfony\Component\Console\Input\ArrayInput;
 
-use Algolia\AlgoliaSearchBundle\Command\SettingsCommand;
-
-class SettingsCommandTest extends BaseTest
+abstract class SettingsCommandTest extends BaseTest
 {
     /**
      * Here we really want to test the full integration
      * and talk with Algolia servers.
      */
     public static $isolateFromAlgolia = false;
-
-    public static $neededEntityTypes = [
-        'ProductForAlgoliaIntegrationTest'
-    ];
 
     public function setUp()
     {
@@ -35,7 +31,7 @@ class SettingsCommandTest extends BaseTest
     public static function tearDownAfterClass()
     {
         parent::tearDownAfterClass();
-        self::staticGetIndexer()->deleteIndex('ProductForAlgoliaIntegrationTest');
+        static::staticGetIndexer()->deleteIndex('ProductForAlgoliaIntegrationTest');
     }
 
     public function runCommand(array $args = array())
