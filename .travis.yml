@@ -26,4 +26,4 @@ before_script:
     - mv Tests/config/parameters.yml.travis Tests/config/parameters.yml
 
 script:
-    - php vendor/bin/phpunit -c Tests
+    - php vendor/bin/phpunit
