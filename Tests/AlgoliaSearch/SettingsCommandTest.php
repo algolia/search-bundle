@@ -75,12 +75,41 @@ class SettingsCommandTest extends BaseTest
     /**
      * @depends testIndexIsCreated
      */
+    public function testSettingsAreCorrectlyPushed()
+    {
+        $actual = $this->getIndexer()->getIndex(metaenv('ProductForAlgoliaIntegrationTest_dev'))->getSettings();
+        $expected = [
+            'searchableAttributes'          => [
+                'name',
+                'price',
+                'shortDescription',
+                'description',
+                'rating',
+            ],
+            'numericAttributesForFiltering' => [
+                'rating',
+                'price',
+            ],
+            'highlightPreTag'               => '<strong>',
+            'highlightPostTag'              => '</strong>',
+            'slaves'                        => ['test'],
+        ];
+
+        // Remove entries added by the API.
+        $actual = array_intersect_key($actual, $expected);
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * @depends testSettingsAreCorrectlyPushed
+     */
     public function testSettingsOfExistingIndexAreUpdated()
     {
         $this->getIndexer()->setIndexSettings(
             'ProductForAlgoliaIntegrationTest',
             [
-                'attributesToIndex' => array('price')
+                'searchableAttributes' => ['price']
             ]
         );
         $this->getIndexer()->waitForAlgoliaTasks();
@@ -88,10 +117,12 @@ class SettingsCommandTest extends BaseTest
         $output = $this->runCommand();
 
         $this->assertContains('We found 1 index(es) that may need updating.', $output);
-        $this->assertContains('Local attributesToIndex:', $output);
+        $this->assertContains('Local searchableAttributes:', $output);
 
         $this->runCommand(['--push' => ' ', '--force' => ' ']);
         $output = $this->runCommand();
         $this->assertContains('Your local index settings seem to be in sync with the Algolia servers!', $output);
     }
+
+
 }

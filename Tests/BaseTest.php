@@ -83,6 +83,9 @@ class BaseTest extends \PHPUnit_Framework_TestCase
         return $kernel->getContainer()->get('doctrine.orm.entity_manager');
     }
 
+    /**
+     * @return \Algolia\AlgoliaSearchBundle\Indexer\Indexer
+     */
     public function getIndexer()
     {
         return self::staticGetIndexer();
