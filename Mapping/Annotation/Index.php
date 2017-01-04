@@ -46,12 +46,22 @@ class Index
     /**
      * @var  array<string>
      */
+    public $searchableAttributes;
+
+    /**
+     * @var  array<string>
+     */
     public $attributesToRetrieve;
 
     /**
      * @var  array<string>
      */
     public $unretrievableAttributes;
+
+    /**
+     * @var  array<string>
+     */
+    public $numericAttributesForFiltering;
 
     /**
      * @var  array<string>
@@ -87,6 +97,11 @@ class Index
      * @var  array<string>
      */
     public $slaves;
+
+    /**
+     * @var  array<string>
+     */
+    public $replicas;
 
     /**
      * @var  array<string>

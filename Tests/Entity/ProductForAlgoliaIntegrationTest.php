@@ -11,10 +11,11 @@ use Algolia\AlgoliaSearchBundle\Mapping\Annotation as Algolia;
  * @ORM\Entity
  *
  * @Algolia\Index(
- *     attributesToIndex = {"name", "price", "shortDescription", "description", "rating"},
+ *     searchableAttributes = {"name", "price", "shortDescription", "description", "rating"},
+ *     numericAttributesForFiltering = {"rating", "price"},
  *     highlightPreTag = "<strong>",
  *     highlightPostTag = "</strong>",
- *     slaves = {"test"}
+ *     replicas = {"test"}
  * )
  *
  */

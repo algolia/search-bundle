@@ -7,7 +7,6 @@ class Index
     private $algoliaName;
     private $perEnvironment = true;
     private $autoIndex = true;
-    private $identifierAttributeNames;
 
     // The names of the settings only we care about (client side)
     private static $internalSettingsProps = [
@@ -22,8 +21,10 @@ class Index
         'minWordSizefor2Typos',
         'hitsPerPage',
         'attributesToIndex',
+        'searchableAttributes',
         'attributesToRetrieve',
         'unretrievableAttributes',
+        'numericAttributesForFiltering',
         'optionalWords',
         'attributesForFaceting',
         'attributesToSnippet',
@@ -37,7 +38,8 @@ class Index
         'highlightPreTag',
         'highlightPostTag',
         'slaves',
-        'synonyms'
+        'replicas',
+        'synonyms',
     ];
 
     public function getAlgoliaName()
