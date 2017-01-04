@@ -15,7 +15,7 @@ use Algolia\AlgoliaSearchBundle\Mapping\Annotation as Algolia;
  *     numericAttributesForFiltering = {"rating", "price"},
  *     highlightPreTag = "<strong>",
  *     highlightPostTag = "</strong>",
- *     slaves = {"test"}
+ *     replicas = {"test"}
  * )
  *
  */

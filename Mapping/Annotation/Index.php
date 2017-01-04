@@ -101,6 +101,11 @@ class Index
     /**
      * @var  array<string>
      */
+    public $replicas;
+
+    /**
+     * @var  array<string>
+     */
     public $customRanking;
 
     /**

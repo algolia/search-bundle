@@ -92,7 +92,7 @@ class SettingsCommandTest extends BaseTest
             ],
             'highlightPreTag'               => '<strong>',
             'highlightPostTag'              => '</strong>',
-            'slaves'                        => ['test'],
+            'replicas'                      => ['test'],
         ];
 
         // Remove entries added by the API.
