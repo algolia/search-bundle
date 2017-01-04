@@ -1,11 +1,9 @@
 <?php
 namespace Algolia\AlgoliaSearchBundle\EventListener;
 
-use AlgoliaSearch\AlgoliaException;
+use Algolia\AlgoliaSearchBundle\Indexer\Indexer;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\OnFlushEventArgs;
-
-use Algolia\AlgoliaSearchBundle\Indexer\Indexer;
 use Psr\Log\LoggerInterface;
 
 class AlgoliaSearchDoctrineEventSubscriber implements EventSubscriber

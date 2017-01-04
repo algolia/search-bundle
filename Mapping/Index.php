@@ -7,7 +7,6 @@ class Index
     private $algoliaName;
     private $perEnvironment = true;
     private $autoIndex = true;
-    private $identifierAttributeNames;
 
     // The names of the settings only we care about (client side)
     private static $internalSettingsProps = [
@@ -22,8 +21,10 @@ class Index
         'minWordSizefor2Typos',
         'hitsPerPage',
         'attributesToIndex',
+        'searchableAttributes',
         'attributesToRetrieve',
         'unretrievableAttributes',
+        'numericAttributesForFiltering',
         'optionalWords',
         'attributesForFaceting',
         'attributesToSnippet',
@@ -37,7 +38,7 @@ class Index
         'highlightPreTag',
         'highlightPostTag',
         'slaves',
-        'synonyms'
+        'synonyms',
     ];
 
     public function getAlgoliaName()
@@ -90,6 +91,14 @@ class Index
         foreach (self::$algoliaSettingsProps as $field) {
             if (isset($this->$field)) {
                 $settings[$field] = $this->$field;
+            }
+        }
+
+        if(isset($settings['attributesToIndex'])) {
+            if(!isset($settings['searchableAttributes'])) {
+                $settings['searchableAttributes'] = $settings['attributesToIndex'];
+            } else {
+                $settings['searchableAttributes'] = array_merge($settings['searchableAttributes'], $settings['attributesToIndex']);
             }
         }
 
