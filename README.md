@@ -350,7 +350,7 @@ You can optionally specify your index settings directly in the `Index` annotatio
  * @ORM\Entity
  *
  * @Algolia\Index(
- *     attributesToIndex = {"name", "description", "url"},
+ *     searchableAttributes = {"name", "description", "url"},
  *     customRanking = {"desc(vote_count)", "asc(name)" }
  *     [...]
  * )
