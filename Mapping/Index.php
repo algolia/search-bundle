@@ -94,14 +94,6 @@ class Index
             }
         }
 
-        if(isset($settings['attributesToIndex'])) {
-            if(!isset($settings['searchableAttributes'])) {
-                $settings['searchableAttributes'] = $settings['attributesToIndex'];
-            } else {
-                $settings['searchableAttributes'] = array_merge($settings['searchableAttributes'], $settings['attributesToIndex']);
-            }
-        }
-
         return $settings;
     }
 }
