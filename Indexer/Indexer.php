@@ -2,7 +2,7 @@
 
 namespace Algolia\AlgoliaSearchBundle\Indexer;
 
-use Doctrine\Common\Persistence\ObjectManager
+use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\Persistence\Proxy;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
