@@ -8,56 +8,44 @@
 This Symfony bundle provides an easy way to integrate Algolia Search into your Symfony2 with Doctrine2 application.
 
 
-**Note:** An easier-to-read version of this documentation is available on
-[Algolia's website](https://www.algolia.com/doc/api-client/symfony/).
-
-# Table of Contents
 
 
-**Setup**
+## API Documentation
 
-1. [Install](#install)
-1. [Register the bundle](#register-the-bundle)
-1. [Fill in your Algolia credentials](#fill-in-your-algolia-credentials)
-
-**Mapping entities to Algolia indexes**
-
-1. [Indexing entity properties or methods](#indexing-entity-properties-or-methods)
-1. [Autoindexing vs Manual Indexing](#autoindexing-vs-manual-indexing)
-1. [Per environment indexing](#per-environment-indexing)
-1. [Conditional indexing](#conditional-indexing)
-1. [Index settings](#index-settings)
-
-**Retrieving entities**
-
-1. [Performing a raw search](#performing-a-raw-search)
-1. [Performing a native search](#performing-a-native-search)
-
-**Reindexing**
-
-1. [Reindexing whole collections](#reindexing-whole-collections)
-
-**Running the tests**
-
-1. [Running the tests](#running-the-tests)
+You can find the full reference on the [Algolia's website](https://www.algolia.com/doc/api-client/symfony/).
 
 
-# Guides & Tutorials
+## Table of Contents
 
-Check our [online guides](https://www.algolia.com/doc):
 
-* [Data Formatting](https://www.algolia.com/doc/indexing/formatting-your-data)
-* [Import and Synchronize data](https://www.algolia.com/doc/indexing/import-synchronize-data/php)
-* [Autocomplete](https://www.algolia.com/doc/search/auto-complete)
-* [Instant search page](https://www.algolia.com/doc/search/instant-search)
-* [Filtering and Faceting](https://www.algolia.com/doc/search/filtering-faceting)
-* [Sorting](https://www.algolia.com/doc/relevance/sorting)
-* [Ranking Formula](https://www.algolia.com/doc/relevance/ranking)
-* [Typo-Tolerance](https://www.algolia.com/doc/relevance/typo-tolerance)
-* [Geo-Search](https://www.algolia.com/doc/geo-search/geo-search-overview)
-* [Security](https://www.algolia.com/doc/security/best-security-practices)
-* [API-Keys](https://www.algolia.com/doc/security/api-keys)
-* [REST API](https://www.algolia.com/doc/rest)
+1. **[Setup](#setup)**
+
+    * [Install](#install)
+    * [Register the bundle](#register-the-bundle)
+    * [Fill in your Algolia credentials](#fill-in-your-algolia-credentials)
+
+1. **[Mapping entities to Algolia indexes](#mapping-entities-to-algolia-indexes)**
+
+    * [Indexing entity properties or methods](#indexing-entity-properties-or-methods)
+    * [Autoindexing vs Manual Indexing](#autoindexing-vs-manual-indexing)
+    * [Per environment indexing](#per-environment-indexing)
+    * [Conditional indexing](#conditional-indexing)
+    * [Index settings](#index-settings)
+
+1. **[Retrieving entities](#retrieving-entities)**
+
+    * [Performing a raw search](#performing-a-raw-search)
+    * [Performing a native search](#performing-a-native-search)
+
+1. **[Reindexing](#reindexing)**
+
+    * [Reindexing whole collections](#reindexing-whole-collections)
+
+1. **[Running the tests](#running-the-tests)**
+
+    * [Running the tests](#running-the-tests)
+
+
 
 
 # Setup
@@ -434,5 +422,6 @@ Rename the test `parameters.yml.dist` file to `parameters.yml`, customize the se
 ```bash
 php vendor/bin/phpunit -c Tests
 ```
+
 
 
