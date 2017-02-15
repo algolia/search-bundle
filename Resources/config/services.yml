@@ -1,6 +1,7 @@
 parameters:
     algolia.indexer.class: Algolia\AlgoliaSearchBundle\Indexer\Indexer
     algolia.indexer_subscriber.class: Algolia\AlgoliaSearchBundle\EventListener\AlgoliaSearchDoctrineEventSubscriber
+    algolia.connection_timeout: 2
 
 services:
     algolia.indexer:
@@ -8,7 +9,7 @@ services:
         calls:
             - [setEnvironment, ["%kernel.environment%"]]
             - [setIndexNamePrefix, ["%algolia.index_name_prefix%"]]
-            - [setApiSettings, ["%algolia.application_id%", "%algolia.api_key%"]]
+            - [setApiSettings, ["%algolia.application_id%", "%algolia.api_key%", "%algolia.connection_timeout%"]]
     algolia.indexer_subscriber:
         class: "%algolia.indexer_subscriber.class%"
         arguments:

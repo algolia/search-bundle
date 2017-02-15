@@ -101,9 +101,11 @@ There's two optional parameters you can add to this file:
 algolia:
     catch_log_exceptions: true
     index_name_prefix: staging
+    connection_timeout: 2
 ```
 * **catch_log_exceptions**: If set to true, all exceptions thrown in the doctrine event subscriber will be caught and logged.
 * **index_name_prefix**: If set, this will add a prefix to all the index names (Useful if you want to setup multiple environments within the same Algolia app)
+* **connection_timeout**: If set, this will set connection timeout to Algolia
 
 
 # Mapping entities to Algolia indexes
