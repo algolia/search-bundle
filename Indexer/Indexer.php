@@ -2,6 +2,7 @@
 
 namespace Algolia\AlgoliaSearchBundle\Indexer;
 
+use Algolia\AlgoliaSearchBundle\Mapping\Loader\LoaderInterface;
 use Doctrine\Common\Persistence\Proxy;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\PropertyAccess\PropertyAccess;
@@ -9,7 +10,6 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 use Algolia\AlgoliaSearchBundle\Exception\UnknownEntity;
 use Algolia\AlgoliaSearchBundle\Exception\NoPrimaryKey;
 use Algolia\AlgoliaSearchBundle\Exception\NotAnAlgoliaEntity;
-use Algolia\AlgoliaSearchBundle\Mapping\Loader\AnnotationLoader;
 use Algolia\AlgoliaSearchBundle\SearchResult\SearchResult;
 
 class Indexer
@@ -70,8 +70,14 @@ class Indexer
 
     private $em;
 
-    public function __construct()
+    /**
+     * @var LoaderInterface
+     */
+    private $loaderChain;
+
+    public function __construct(LoaderInterface $loaderChain)
     {
+        $this->loaderChain = $loaderChain;
         \AlgoliaSearch\Version::$custom_value = ' Symfony';
     }
 
@@ -112,18 +118,6 @@ class Indexer
         ];
 
         return $this;
-    }
-
-    /**
-     * Right now this only returns a MetaDataAnnotationLoader,
-     * but this abstraction is provided to enable other loaders later.
-     * A loader just has to implement the Algolia\AlgoliaSearchBundle\MetaData\MetaDataLoaderInterface
-     * @return see MetaDataLoaderInterface
-     * @internal
-     */
-    public function getMetaDataLoader()
-    {
-        return new AnnotationLoader();
     }
 
     private function removeProxy($class)
@@ -172,7 +166,7 @@ class Indexer
         // check if we already saw this type of entity
         // to avoid some expensive work
         if (!array_key_exists($class, self::$indexSettings)) {
-            self::$indexSettings[$class] = $this->getMetaDataLoader()->getMetaData($entity, $em);
+            self::$indexSettings[$class] = $this->loaderChain->getMetaData($entity, $em);
         }
 
         return false !== self::$indexSettings[$class];

@@ -1,10 +1,16 @@
 parameters:
     algolia.indexer.class: Algolia\AlgoliaSearchBundle\Indexer\Indexer
     algolia.indexer_subscriber.class: Algolia\AlgoliaSearchBundle\EventListener\AlgoliaSearchDoctrineEventSubscriber
+    algolia.metadata.file_locator.class: Algolia\AlgoliaSearchBundle\Mapping\Loader\FileLocator
+    algolia.metadata.chain_loader.class: Algolia\AlgoliaSearchBundle\Mapping\Loader\LoaderChain
+    algolia.metadata.annotation_loader.class: Algolia\AlgoliaSearchBundle\Mapping\Loader\AnnotationLoader
+    algolia.metadata.yaml_loader.class: Algolia\AlgoliaSearchBundle\Mapping\Loader\YamlLoader
 
 services:
     algolia.indexer:
         class: "%algolia.indexer.class%"
+        arguments:
+            - "@algolia.metadata.chain_loader"
         calls:
             - [setEnvironment, ["%kernel.environment%"]]
             - [setIndexNamePrefix, ["%algolia.index_name_prefix%"]]
@@ -17,3 +23,21 @@ services:
             - "@?logger"
         tags:
             - {name: doctrine.event_subscriber}
+    algolia.metadata.file_locator:
+        public: false
+        class: "%algolia.metadata.file_locator.class%"
+        arguments:
+            - []
+    algolia.metadata.annotation_loader:
+        class: "%algolia.metadata.annotation_loader.class%"
+    algolia.metadata.chain_loader:
+        public: false
+        class: "%algolia.metadata.chain_loader.class%"
+        arguments:
+            - [ "@algolia.metadata.yaml_loader", "@algolia.metadata.annotation_loader" ]
+    algolia.metadata.yaml_loader:
+        public: false
+        class: "%algolia.metadata.yaml_loader.class%"
+        arguments:
+            - "@algolia.metadata.file_locator"
+
