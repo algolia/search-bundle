@@ -61,7 +61,7 @@ class Indexer extends \Algolia\AlgoliaSearchBundle\Indexer\Indexer
         global $kernel;
 
         try {
-            if ($kernel->getContainer()->getParameter('algolia.get_secrets_from_travis')) {
+            if ($kernel->getContainer()->getParameter('algolia.get_credentials_from_env')) {
                 $application_id = getenv('ALGOLIA_APPLICATION_ID');
                 $api_key = getenv('ALGOLIA_API_KEY');
             }
