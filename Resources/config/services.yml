@@ -1,7 +1,7 @@
 parameters:
     algolia.indexer.class: Algolia\AlgoliaSearchBundle\Indexer\Indexer
     algolia.indexer_subscriber.class: Algolia\AlgoliaSearchBundle\EventListener\AlgoliaSearchDoctrineEventSubscriber
-    algolia.connection_timeout: 2
+    algolia.connection_timeout: ~
 
 services:
     algolia.indexer:

@@ -109,11 +109,8 @@ class Indexer
         $this->apiSettings = [
             'application_id' => $application_id,
             'api_key' => $api_key,
+            'connection_timeout' => $connection_timeout,
         ];
-
-        if($connection_timeout !== null) {
-            $this->apiSettings['connection_timeout'] = $connection_timeout;
-        }
 
         return $this;
     }
@@ -645,9 +642,11 @@ class Indexer
                 $this->apiSettings['api_key']
             );
 
-            $this->client->setConnectTimeout(
-                $this->apiSettings['connection_timeout']
-            );
+            if (isset($this->apiSettings['connection_timeout'])) {
+                $this->client->setConnectTimeout(
+                    $this->apiSettings['connection_timeout']
+                );
+            }
         }
 
 
