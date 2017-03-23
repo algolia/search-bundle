@@ -8,7 +8,7 @@ parameters:
     database_password: ''
     locale: en
     secret: somesecretstringthatwedontuseherebutitmakessymfonyhappy
-    algolia.get_secrets_from_travis: true
+    algolia.get_credentials_from_env: true
     algolia.application_id: YOUR_APPLICATION_ID
     algolia.api_key: YOUR_API_KEY
     algolia.indexer.class: Algolia\AlgoliaSearchBundle\Tests\Indexer\Indexer
