@@ -56,7 +56,7 @@ class Indexer extends \Algolia\AlgoliaSearchBundle\Indexer\Indexer
         return $indexer;
     }
 
-    public function setApiSettings($application_id, $api_key)
+    public function setApiSettings($application_id, $api_key, $connection_timeout = null)
     {
         global $kernel;
 
@@ -69,7 +69,7 @@ class Indexer extends \Algolia\AlgoliaSearchBundle\Indexer\Indexer
             // ignore this, it means we're just not running on Travis
         }
 
-        parent::setApiSettings($application_id, $api_key);
+        parent::setApiSettings($application_id, $api_key, $connection_timeout);
 
         return $this;
     }
