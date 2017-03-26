@@ -2,6 +2,7 @@
 
 namespace Algolia\AlgoliaSearchBundle\Command;
 
+use Algolia\AlgoliaSearchBundle\Exception\NotAnAlgoliaEntity;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -19,6 +20,7 @@ class ReindexCommand extends ContainerAwareCommand
         ->addOption('unsafe', null, InputOption::VALUE_NONE, 'Index inplace, without deleting out-dated records.')
         ->addOption('batch-size', null, InputOption::VALUE_REQUIRED, 'Specify a batch size for the reindexing operation.', 1000)
         ->addOption('sync', null, InputOption::VALUE_NONE, 'Wait for operations to complete before returning.')
+        ->addOption('skip-non-algolia-entities', null, InputOption::VALUE_NONE, 'Omit errors for all non Algolia entities.')
         ;
     }
 
@@ -63,10 +65,11 @@ class ReindexCommand extends ContainerAwareCommand
         }
 
         $safe = !$input->getOption('unsafe');
+        $skipNonAlgoliaEntities = $input->hasOption('skip-non-algolia-entities');
 
         $nIndexed = 0;
         foreach ($toReindex as $className) {
-            $nIndexed += $this->reIndex($className, $batchSize, $safe);
+            $this->reIndex($className, $batchSize, $safe, $skipNonAlgoliaEntities) ? $nIndexed++ : $nIndexed;
         }
 
         if ($input->getOption('sync')) {
@@ -86,14 +89,24 @@ class ReindexCommand extends ContainerAwareCommand
         }
     }
 
-    public function reIndex($className, $batchSize = 1000, $safe = true)
+    public function reIndex($className, $batchSize = 1000, $safe = true, $skipNonAlgoliaEntities = false)
     {
         $reIndexer = $this->getContainer()->get('algolia.indexer')->getManualIndexer($this->getEntityManager());
 
-        return $reIndexer->reIndex($className, [
-            'batchSize' => $batchSize,
-            'safe' => $safe,
-            'clearEntityManager' => true,
-        ]);
+        try {
+            $reIndexer->reIndex($className, [
+                'batchSize' => $batchSize,
+                'safe' => $safe,
+                'clearEntityManager' => true,
+            ]);
+
+            return true;
+        } catch (NotAnAlgoliaEntity $e) {
+            if (!$skipNonAlgoliaEntities) {
+                throw $e;
+            }
+        }
+
+        return false;
     }
 }
