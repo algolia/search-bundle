@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+2.2.0
+-----
+
+- Introduce `algolia.connection_timeout` parameter to override default timeout of the Algolia PHP client
+
 2.1.0
 -----
 
