@@ -2,8 +2,8 @@
 
 namespace Algolia\AlgoliaSearchBundle\Indexer;
 
+use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\Persistence\Proxy;
-use Doctrine\ORM\EntityManager;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
 use Algolia\AlgoliaSearchBundle\Exception\UnknownEntity;
@@ -149,10 +149,11 @@ class Indexer
      * - extract, and store for later, the index settings for the entity
      *   if we're interested in indexing it
      * @param  $entity
+     * @param  $em
      * @return bool
      * @internal
      */
-    public function discoverEntity($entity_or_class, EntityManager $em)
+    public function discoverEntity($entity_or_class, ObjectManager $em)
     {
         if (is_object($entity_or_class)) {
             $entity = $entity_or_class;
@@ -183,7 +184,7 @@ class Indexer
      * Tells us whether we need to autoindex this entity.
      * @internal
      */
-    public function autoIndex($entity, EntityManager $em)
+    public function autoIndex($entity, ObjectManager $em)
     {
         $this->em = $em;
 
@@ -291,7 +292,7 @@ class Indexer
     }
 
 
-    private function isEntity(EntityManager $em, $class)
+    private function isEntity(ObjectManager $em, $class)
     {
         if (is_object($class)) {
             $class = ($class instanceof Proxy)
@@ -625,7 +626,7 @@ class Indexer
         return $this;
     }
 
-    public function getManualIndexer(EntityManager $em)
+    public function getManualIndexer(ObjectManager $em)
     {
         return new ManualIndexer($this, $em);
     }
@@ -724,13 +725,13 @@ class Indexer
      * 'Native' means that once the results are retrieved, they will be fetched from the local DB
      * and replaced with native ORM entities.
      *
-     * @param  EntityManager $em          The Doctrine Entity Manager to use to fetch entities when hydrating the results.
+     * @param  ObjectManager $em          The Doctrine Object Manager to use to fetch entities when hydrating the results.
      * @param  string        $indexName   The name of the index to search from.
      * @param  string        $queryString The query string.
      * @param  array         $options     Any search option understood by https://github.com/algolia/algoliasearch-client-php
      * @return SearchResult  The results returned by Algolia. The `isHydrated` method of the result will return true.
      */
-    public function search(EntityManager $em, $entityName, $queryString, array $options = array())
+    public function search(ObjectManager $em, $entityName, $queryString, array $options = array())
     {
         $entityClass = $em->getRepository($entityName)->getClassName();
 
