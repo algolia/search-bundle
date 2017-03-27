@@ -1,12 +1,13 @@
 <?php
+
 namespace Algolia\AlgoliaSearchBundle\EventListener;
 
 use Algolia\AlgoliaSearchBundle\Indexer\Indexer;
 use Doctrine\Common\EventSubscriber;
-use Doctrine\ORM\Event\OnFlushEventArgs;
+use Doctrine\Common\Persistence\ObjectManager;
 use Psr\Log\LoggerInterface;
 
-class AlgoliaSearchDoctrineEventSubscriber implements EventSubscriber
+abstract class AbstractDoctrineEventSubscriber implements EventSubscriber
 {
     private $indexer;
     private $logger;
@@ -15,8 +16,10 @@ class AlgoliaSearchDoctrineEventSubscriber implements EventSubscriber
     /**
      * Under normal circumstances, the service loader will set the indexer.
      * @param Indexer $indexer
+     * @param bool $catchAndLogExceptions
+     * @param LoggerInterface|null $logger
      */
-    public function __construct(Indexer $indexer, $catchAndLogExceptions, LoggerInterface $logger = null)
+    public function __construct(Indexer $indexer, $catchAndLogExceptions = false, LoggerInterface $logger = null)
     {
         $this->indexer = $indexer;
         $this->catchAndLogExceptions = $catchAndLogExceptions;
@@ -35,6 +38,30 @@ class AlgoliaSearchDoctrineEventSubscriber implements EventSubscriber
     }
 
     /**
+     * @param \Doctrine\ORM\Event\OnFlushEventArgs|\Doctrine\ODM\MongoDB\Event\OnFlushEventArgs $args
+     * @return ObjectManager
+     */
+    abstract protected function getObjectManager($args);
+
+    /**
+     * @param ObjectManager $objectManager
+     * @return array Returns an array of objects to be inserted
+     */
+    abstract protected function getScheduledObjectInsertions(ObjectManager $objectManager);
+
+    /**
+     * @param ObjectManager $objectManager
+     * @return array Returns an array of objects and changesets
+     */
+    abstract protected function getScheduledObjectUpdates(ObjectManager $objectManager);
+
+    /**
+     * @param ObjectManager $objectManager
+     * @return array Returns an array of objects and original data
+     */
+    abstract protected function getScheduledObjectDeletions(ObjectManager $objectManager);
+
+    /**
      * During onFlush, we tell the indexer what it should
      * index or unindex right after the data has been committed to the DB.
      *
@@ -42,8 +69,10 @@ class AlgoliaSearchDoctrineEventSubscriber implements EventSubscriber
      * This is done to avoid sending wrong data to Algolia
      * if the local DB rejected our changes.
      */
-    public function onFlush(OnFlushEventArgs $args)
+    public function onFlush($args)
     {
+        $objectManager = $this->getObjectManager($args);
+
         try {
             /**
              * There might have been an exception thrown during the previous flush attempt,
@@ -52,42 +81,23 @@ class AlgoliaSearchDoctrineEventSubscriber implements EventSubscriber
              */
             $this->indexer->removeScheduledIndexChanges();
 
-            $em = $args->getEntityManager();
-            $uow = $em->getUnitOfWork();
-
-            foreach ($uow->getScheduledEntityInsertions() as $entity) {
-                if ($this->indexer->autoIndex($entity, $em)) {
-                    $this->create($entity);
+            foreach ($this->getScheduledObjectInsertions($objectManager) as $object) {
+                if ($this->indexer->autoIndex($object, $objectManager)) {
+                    $this->indexer->scheduleEntityCreation($object);
                 }
             }
 
-            foreach ($uow->getScheduledEntityUpdates() as $entity) {
-                if ($this->indexer->autoIndex($entity, $em)) {
-                    $changeSet = $uow->getEntityChangeSet($entity);
-                    $this->update($entity, $changeSet);
+            foreach ($this->getScheduledObjectUpdates($objectManager) as list($object, $changeSet)) {
+                if ($this->indexer->autoIndex($object, $objectManager)) {
+                    $this->indexer->scheduleEntityUpdate($object, $changeSet);
                 }
             }
 
-            foreach ($uow->getScheduledEntityDeletions() as $entity) {
-                if ($this->indexer->autoIndex($entity, $em)) {
-                    $originalData = $uow->getOriginalEntityData($entity);
-                    $this->delete($entity, $originalData);
+            foreach ($this->getScheduledObjectDeletions($objectManager) as list($object, $originalData)) {
+                if ($this->indexer->autoIndex($object, $objectManager)) {
+                    $this->indexer->scheduleEntityDeletion($object, $originalData);
                 }
             }
-
-            /**
-             * There are also:
-             *
-             * $uow->getScheduledCollectionDeletions();
-             * $uow->getScheduledCollectionUpdates();
-             *
-             * But they're not relevant here, I think.
-             *
-             * Apparently they're used for internal bookkeeping when
-             * doing things with Many-To-Many relationships.
-             *
-             * Leaving the comment just in case I'm wrong.
-             */
         } catch (\Exception $e) {
             if ($this->catchAndLogExceptions) {
                 if ($this->logger) {
@@ -115,20 +125,5 @@ class AlgoliaSearchDoctrineEventSubscriber implements EventSubscriber
                 throw $e;
             }
         }
-    }
-
-    protected function create($entity)
-    {
-        $this->indexer->scheduleEntityCreation($entity);
-    }
-
-    protected function update($entity, $changeSet)
-    {
-        $this->indexer->scheduleEntityUpdate($entity, $changeSet);
-    }
-
-    protected function delete($entity, $originalData)
-    {
-        $this->indexer->scheduleEntityDeletion($entity, $originalData);
     }
 }

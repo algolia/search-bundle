@@ -3,7 +3,7 @@
 namespace Algolia\AlgoliaSearchBundle\Mapping\Loader;
 
 use Algolia\AlgoliaSearchBundle\Mapping\Annotation\Id;
-use Doctrine\ORM\EntityManager;
+use Doctrine\Common\Persistence\ObjectManager;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\CachedReader;
@@ -18,6 +18,7 @@ use Algolia\AlgoliaSearchBundle\Mapping\IndexIf;
 use Algolia\AlgoliaSearchBundle\Mapping\Property;
 use Algolia\AlgoliaSearchBundle\Mapping\Method;
 use Algolia\AlgoliaSearchBundle\Mapping\Description;
+use Doctrine\Common\Util\ClassUtils;
 
 class AnnotationLoader implements LoaderInterface
 {
@@ -41,20 +42,13 @@ class AnnotationLoader implements LoaderInterface
         return self::$annotationReader;
     }
 
-    private function removeProxy($class)
-    {
-        /* Avoid proxy class form symfony */
-        return str_replace("Proxies\\__CG__\\", "", $class);
-    }
-
     /**
      * @return Description
      */
-    public function getMetaData($entity, EntityManager $em)
+    public function getMetaData($entity, ObjectManager $objectManager)
     {
         $class = get_class($entity);
-
-        $class = $this->removeProxy($class);
+        $class = ClassUtils::getRealClass($class);
 
         $description = new Description($class);
 
@@ -114,7 +108,7 @@ class AnnotationLoader implements LoaderInterface
         }
 
         if (!$description->isEmpty()) {
-            $meta = $em->getClassMetadata($class);
+            $meta = $objectManager->getClassMetadata($class);
             if (!$description->hasIdentifierFieldNames()) {
                 $description->setIdentifierAttributeNames($meta->getIdentifierFieldNames());
             }

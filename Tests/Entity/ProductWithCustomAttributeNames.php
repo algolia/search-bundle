@@ -2,13 +2,14 @@
 
 namespace Algolia\AlgoliaSearchBundle\Tests\Entity;
 
+use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Doctrine\ORM\Mapping as ORM;
 use Algolia\AlgoliaSearchBundle\Mapping\Annotation as Algolia;
 
 /**
- * Product
- *
  * @ORM\Entity
+ * @ODM\Document
+ *
  * @Algolia\Index(algoliaName="nonDefaultIndexName")
  */
 class ProductWithCustomAttributeNames extends BaseTestAwareEntity
@@ -19,6 +20,8 @@ class ProductWithCustomAttributeNames extends BaseTestAwareEntity
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     *
+     * @ODM\Id(strategy="increment")
      */
     protected $id;
 
@@ -26,6 +29,7 @@ class ProductWithCustomAttributeNames extends BaseTestAwareEntity
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
+     * @ODM\Field(type="string")
      *
      * @Algolia\Attribute(algoliaName="nonDefaultAttributeName")
      */

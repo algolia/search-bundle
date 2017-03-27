@@ -2,13 +2,13 @@
 
 namespace Algolia\AlgoliaSearchBundle\Tests\Entity;
 
+use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Doctrine\ORM\Mapping as ORM;
 use Algolia\AlgoliaSearchBundle\Mapping\Annotation as Algolia;
 
 /**
- * Product
- *
  * @ORM\Entity
+ * @ODM\Document
  *
  * @Algolia\Index(
  *  autoIndex = false
@@ -22,6 +22,8 @@ class ProductWithoutAutoIndex extends BaseTestAwareEntity
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     *
+     * @ODM\Id(strategy="increment")
      */
     protected $id;
 
@@ -29,9 +31,9 @@ class ProductWithoutAutoIndex extends BaseTestAwareEntity
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
+     * @ODM\Field(type="string")
      *
      * @Algolia\Attribute
-     *
      */
     protected $name;
 
@@ -39,7 +41,7 @@ class ProductWithoutAutoIndex extends BaseTestAwareEntity
      * @var string
      *
      * @ORM\Column(name="price", type="decimal", nullable=true)
-     *
+     * @ODM\Field(type="float")
      */
     protected $price;
 
@@ -47,6 +49,7 @@ class ProductWithoutAutoIndex extends BaseTestAwareEntity
      * @var string
      *
      * @ORM\Column(name="short_description", type="string", length=255, nullable=true)
+     * @ODM\Field(type="string")
      */
     protected $shortDescription;
 
@@ -54,6 +57,7 @@ class ProductWithoutAutoIndex extends BaseTestAwareEntity
      * @var string
      *
      * @ORM\Column(name="description", type="text", nullable=true)
+     * @ODM\Field(type="string")
      */
     protected $description;
 
@@ -61,11 +65,13 @@ class ProductWithoutAutoIndex extends BaseTestAwareEntity
      * @var integer
      *
      * @ORM\Column(name="rating", type="integer", nullable=true)
+     * @ODM\Field(type="int")
      */
     protected $rating;
 
     /**
      * @ORM\Column(name="supplier_id", type="integer", nullable=true)
+     * @ODM\Field(type="int")
      */
     protected $supplier_id;
 

@@ -2,13 +2,13 @@
 
 namespace Algolia\AlgoliaSearchBundle\Tests\Entity;
 
+use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Doctrine\ORM\Mapping as ORM;
 use Algolia\AlgoliaSearchBundle\Mapping\Annotation as Algolia;
 
 /**
- * Store
- *
  * @ORM\Entity
+ * @ODM\Document
  *
  * @Algolia\Index(
  *  perEnvironment = true
@@ -22,6 +22,8 @@ class Store extends BaseTestAwareEntity
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     *
+     * @ODM\Id(strategy="increment")
      */
     private $id;
 
@@ -29,17 +31,17 @@ class Store extends BaseTestAwareEntity
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
+     * @ODM\Field(type="string")
      *
      * @Algolia\Attribute
-     *
      */
     private $name;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="price", type="decimal")
-     *
+     * @ORM\Column(name="address", type="string", length=255)
+     * @ODM\Field(type="string")
      */
     private $address;
 
@@ -47,6 +49,7 @@ class Store extends BaseTestAwareEntity
      * @var  double
      *
      * @ORM\Column(name="lat", type="float")
+     * @ODM\Field(type="float")
      */
     private $lat;
 
@@ -54,6 +57,7 @@ class Store extends BaseTestAwareEntity
      * @var  double
      *
      * @ORM\Column(name="lng", type="float")
+     * @ODM\Field(type="float")
      */
     private $lng;
 

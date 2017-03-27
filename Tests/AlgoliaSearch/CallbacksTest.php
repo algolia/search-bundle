@@ -1,14 +1,12 @@
 <?php
 
-namespace Algolia\AlgoliaSearchBundle\Tests;
+namespace Algolia\AlgoliaSearchBundle\Tests\AlgoliaSearch;
 
-class CallbacksTest extends BaseTest
+use Algolia\AlgoliaSearchBundle\Tests\BaseTest;
+use Algolia\AlgoliaSearchBundle\Tests\Entity;
+
+abstract class CallbacksTest extends BaseTest
 {
-    public static $neededEntityTypes = [
-        'Product',
-        'Supplier'
-    ];
-
     // Just to be sure we did not mess something up in our namespaces
     public function testOurEntitiesExist()
     {

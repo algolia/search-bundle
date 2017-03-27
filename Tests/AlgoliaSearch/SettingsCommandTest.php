@@ -1,14 +1,14 @@
 <?php
 
-namespace Algolia\AlgoliaSearchBundle\Tests;
+namespace Algolia\AlgoliaSearchBundle\Tests\AlgoliaSearch;
 
+use Algolia\AlgoliaSearchBundle\Command\SettingsCommand;
+use Algolia\AlgoliaSearchBundle\Tests\BaseTest;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Output\StreamOutput;
 use Symfony\Component\Console\Input\ArrayInput;
 
-use Algolia\AlgoliaSearchBundle\Command\SettingsCommand;
-
-class SettingsCommandTest extends BaseTest
+abstract class SettingsCommandTest extends BaseTest
 {
     /**
      * Here we really want to test the full integration
@@ -16,9 +16,7 @@ class SettingsCommandTest extends BaseTest
      */
     public static $isolateFromAlgolia = false;
 
-    public static $neededEntityTypes = [
-        'ProductForAlgoliaIntegrationTest'
-    ];
+    abstract protected function getCommandOptions();
 
     public function setUp()
     {
@@ -35,7 +33,7 @@ class SettingsCommandTest extends BaseTest
     public static function tearDownAfterClass()
     {
         parent::tearDownAfterClass();
-        self::staticGetIndexer()->deleteIndex('ProductForAlgoliaIntegrationTest');
+        static::staticGetIndexer()->deleteIndex('ProductForAlgoliaIntegrationTest');
     }
 
     public function runCommand(array $args = array())
@@ -65,7 +63,7 @@ class SettingsCommandTest extends BaseTest
      */
     public function testIndexIsCreated()
     {
-        $this->runCommand(['--push' => ' ', '--force' => ' ']);
+        $this->runCommand($this->getCommandOptions() + ['--push' => ' ', '--force' => ' ']);
 
         $output = $this->runCommand();
         
@@ -114,12 +112,12 @@ class SettingsCommandTest extends BaseTest
         );
         $this->getIndexer()->waitForAlgoliaTasks();
 
-        $output = $this->runCommand();
+        $output = $this->runCommand($this->getCommandOptions());
 
         $this->assertContains('We found 1 index(es) that may need updating.', $output);
         $this->assertContains('Local searchableAttributes:', $output);
 
-        $this->runCommand(['--push' => ' ', '--force' => ' ']);
+        $this->runCommand($this->getCommandOptions() + ['--push' => ' ', '--force' => ' ']);
         $output = $this->runCommand();
         $this->assertContains('Your local index settings seem to be in sync with the Algolia servers!', $output);
     }
