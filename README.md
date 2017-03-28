@@ -54,11 +54,16 @@ You can find the full reference on [Algolia's website](https://www.algolia.com/d
 
 ## Install
 
-#### With composer
-
-```bash
-composer require algolia/algolia-search-bundle
+Add this line to your `composer.json` file:
+```json
+"require": {
+    ...
+    "algolia/algolia-search-bundle": "~1.0",
+    ...
+}
 ```
+
+Then run `composer update`.
 
 ## Register the bundle
 
@@ -96,11 +101,9 @@ There's two optional parameters you can add to this file:
 algolia:
     catch_log_exceptions: true
     index_name_prefix: staging
-    connection_timeout: 2
 ```
 * **catch_log_exceptions**: If set to true, all exceptions thrown in the doctrine event subscriber will be caught and logged.
 * **index_name_prefix**: If set, this will add a prefix to all the index names (Useful if you want to setup multiple environments within the same Algolia app)
-* **connection_timeout**: If set, this will set connection timeout to Algolia (in seconds)
 
 
 # Mapping entities to Algolia indexes
@@ -415,10 +418,10 @@ You can re-index in place by passing the `--unsafe` option. Please note that in 
 
 ## Running the tests
 
-Rename the test `parameters.yml.travis` file to `parameters.yml`, customize the settings with the correct database settings and Algolia API settings.
-Please note that by default Algolia credentials are loaded from environment variable (see `algolia.get_credentials_from_env`)
-
-Then run:
+Rename the test `parameters.yml.dist` file to `parameters.yml`, customize the settings with the correct database settings and Algolia API settings, then run:
 ```bash
 php vendor/bin/phpunit -c Tests
 ```
+
+
+
