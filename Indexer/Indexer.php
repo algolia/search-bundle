@@ -2,8 +2,10 @@
 
 namespace Algolia\AlgoliaSearchBundle\Indexer;
 
+use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\Persistence\Proxy;
-use Doctrine\ORM\EntityManager;
+use Doctrine\Common\Util\ClassUtils;
+use Doctrine\ODM\MongoDB\DocumentManager;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
 use Algolia\AlgoliaSearchBundle\Exception\UnknownEntity;
@@ -14,8 +16,6 @@ use Algolia\AlgoliaSearchBundle\SearchResult\SearchResult;
 
 class Indexer
 {
-    private static $annotationReader;
-
     /**
      * Holds index settings for entities we're interested in.
      *
@@ -68,16 +68,16 @@ class Indexer
     // Cache index objects from the php client lib
     protected $indices = array();
 
-    private $em;
+    private $objectManager;
 
     public function __construct()
     {
         \AlgoliaSearch\Version::$custom_value = ' Symfony';
     }
 
-    public function setEm($em)
+    public function setObjectManager(ObjectManager $objectManager)
     {
-        $this->em = $em;
+        $this->objectManager = $objectManager;
     }
 
     public function getIndexSettings()
@@ -127,17 +127,10 @@ class Indexer
         return new AnnotationLoader();
     }
 
-    private function removeProxy($class)
-    {
-        /* Avoid proxy class form symfony */
-        return str_replace("Proxies\\__CG__\\", "", $class);
-    }
-
     private function getClass($entity)
     {
         $class = get_class($entity);
-
-        $class = $this->removeProxy($class);
+        $class = ClassUtils::getRealClass($class);
 
         return $class;
     }
@@ -152,15 +145,13 @@ class Indexer
      * @return bool
      * @internal
      */
-    public function discoverEntity($entity_or_class, EntityManager $em)
+    public function discoverEntity($entity_or_class, ObjectManager $objectManager)
     {
         if (is_object($entity_or_class)) {
             $entity = $entity_or_class;
             $class = $this->getClass($entity);
-            $class = $this->removeProxy($class);
         } else {
-            $class = $em->getRepository($entity_or_class)->getClassName();
-            $class = $this->removeProxy($class);
+            $class = $objectManager->getRepository($entity_or_class)->getClassName();
             $reflClass = new \ReflectionClass($class);
 
             if ($reflClass->isAbstract()) {
@@ -173,7 +164,7 @@ class Indexer
         // check if we already saw this type of entity
         // to avoid some expensive work
         if (!array_key_exists($class, self::$indexSettings)) {
-            self::$indexSettings[$class] = $this->getMetaDataLoader()->getMetaData($entity, $em);
+            self::$indexSettings[$class] = $this->getMetaDataLoader()->getMetaData($entity, $objectManager);
         }
 
         return false !== self::$indexSettings[$class];
@@ -183,11 +174,11 @@ class Indexer
      * Tells us whether we need to autoindex this entity.
      * @internal
      */
-    public function autoIndex($entity, EntityManager $em)
+    public function autoIndex($entity, ObjectManager $objectManager)
     {
-        $this->em = $em;
+        $this->objectManager = $objectManager;
 
-        if (!$this->discoverEntity($entity, $em)) {
+        if (!$this->discoverEntity($entity, $objectManager)) {
             return false;
         } else {
             return self::$indexSettings[$this->getClass($entity)]->getIndex()->getAutoIndex();
@@ -206,6 +197,10 @@ class Indexer
 
         $needsIndexing = true;
         $wasIndexed = true;
+
+        if ($this->isEmbeddedObject($entity)) {
+            return false;
+        }
 
         foreach (self::$indexSettings[$class]->getIndexIfs() as $if) {
             if (null === $changeSet) {
@@ -291,7 +286,7 @@ class Indexer
     }
 
 
-    private function isEntity(EntityManager $em, $class)
+    public function isEntity(ObjectManager $objectManager, $class)
     {
         if (is_object($class)) {
             $class = ($class instanceof Proxy)
@@ -299,7 +294,7 @@ class Indexer
                 : get_class($class);
         }
 
-        return ! $em->getMetadataFactory()->isTransient($class);
+        return ! $objectManager->getMetadataFactory()->isTransient($class);
     }
 
     private function extractPropertyValue($entity, $field, $depth)
@@ -308,14 +303,14 @@ class Indexer
         $value = $accessor->getValue($entity, $field);
 
         if ($value instanceof \Doctrine\Common\Collections\Collection) {
-            if ($depth >= 2) {
+            if ($depth >= 2 && !$this->isEmbeddedObject($entity)) {
                 return null;
             }
 
             $value = $value->toArray();
 
             if (count($value) > 0) {
-                if (! $this->discoverEntity(reset($value), $this->em)) {
+                if (! $this->discoverEntity(reset($value), $this->objectManager)) {
                     throw new NotAnAlgoliaEntity(
                         'Tried to index `'.$field.'` relation which is a `'.get_class(reset($value)).'` instance, which is not recognized as an entity to index.'
                     );
@@ -327,12 +322,12 @@ class Indexer
             }, $value);
         }
 
-        if (is_object($value) && $this->isEntity($this->em, $value)) {
-            if ($depth >= 2) {
+        if (is_object($value) && $this->isEntity($this->objectManager, $value)) {
+            if ($depth >= 2 && !$this->isEmbeddedObject($entity)) {
                 return null;
             }
 
-            if (! $this->discoverEntity($value, $this->em)) {
+            if (! $this->discoverEntity($value, $this->objectManager)) {
                 throw new NotAnAlgoliaEntity(
                     'Tried to index `'.$field.'` relation which is a `'.get_class($value).'` instance, which is not recognized as an entity to index.'
                 );
@@ -625,7 +620,7 @@ class Indexer
         return $this;
     }
 
-    public function getManualIndexer(EntityManager $em)
+    public function getManualIndexer(ObjectManager $em)
     {
         return new ManualIndexer($this, $em);
     }
@@ -724,13 +719,13 @@ class Indexer
      * 'Native' means that once the results are retrieved, they will be fetched from the local DB
      * and replaced with native ORM entities.
      *
-     * @param  EntityManager $em          The Doctrine Entity Manager to use to fetch entities when hydrating the results.
+     * @param  ObjectManager $em          The Doctrine Entity Manager to use to fetch entities when hydrating the results.
      * @param  string        $indexName   The name of the index to search from.
      * @param  string        $queryString The query string.
      * @param  array         $options     Any search option understood by https://github.com/algolia/algoliasearch-client-php
      * @return SearchResult  The results returned by Algolia. The `isHydrated` method of the result will return true.
      */
-    public function search(EntityManager $em, $entityName, $queryString, array $options = array())
+    public function search(ObjectManager $em, $entityName, $queryString, array $options = array())
     {
         $entityClass = $em->getRepository($entityName)->getClassName();
 
@@ -827,5 +822,19 @@ class Indexer
         }
 
         return $this;
+    }
+
+    /**
+     * @param $entity
+     * @return bool
+     */
+    private function isEmbeddedObject($entity)
+    {
+        if (! $this->objectManager instanceof DocumentManager) {
+            return false;
+        }
+
+        $classMetadata = $this->objectManager->getClassMetadata($this->getClass($entity));
+        return $classMetadata->isEmbeddedDocument;
     }
 }

@@ -2,16 +2,17 @@
 
 namespace Algolia\AlgoliaSearchBundle\Command;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ClearCommand extends ContainerAwareCommand
+class ClearCommand extends AlgoliaCommand
 {
     protected function configure()
     {
+        parent::configure();
+
         $this
             ->setName('algolia:clean')
             ->setDescription('Clear the index related to an entity')
@@ -19,35 +20,33 @@ class ClearCommand extends ContainerAwareCommand
         ;
     }
 
-    protected function getEntityManager()
+    protected function getObjectClasses()
     {
-        return $this
-            ->getContainer()
-            ->get('doctrine.orm.entity_manager');
-    }
-
-    protected function getEntityClasses()
-    {
-        $metaData = $this->getEntityManager()
+        $metaData = $this->getObjectManager()
             ->getMetadataFactory()
-            ->getAllMetaData();
+            ->getAllMetadata();
 
-        return array_map(function ($data) {
-            return $data->getName();
-        }, $metaData);
+        return array_map(
+            function (ClassMetadata $data) {
+                return $data->getName();
+            },
+            $metaData
+        );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->setObjectManagerFromInput($input);
+
         $toReindex = [];
 
         if ($input->hasArgument('entityName')) {
-            $filter = $this->getEntityManager()->getRepository($input->getArgument('entityName'))->getClassName();
+            $filter = $this->getObjectManager()->getRepository($input->getArgument('entityName'))->getClassName();
         } else {
             $filter = null;
         }
 
-        foreach ($this->getEntityClasses() as $class) {
+        foreach ($this->getObjectClasses() as $class) {
             if (!$filter || $class === $filter) {
                 $toReindex[] = $class;
             }
@@ -69,11 +68,13 @@ class ClearCommand extends ContainerAwareCommand
                 $output->writeln(sprintf('<info>%s</info> entities cleared', $nIndexed));
                 break;
         }
+
+        return 0;
     }
 
     public function clear($className)
     {
-        $reIndexer = $this->getContainer()->get('algolia.indexer')->getManualIndexer($this->getEntityManager());
+        $reIndexer = $this->getContainer()->get('algolia.indexer')->getManualIndexer($this->getObjectManager());
 
         return $reIndexer->clear($className);
     }

@@ -2,14 +2,14 @@
 
 namespace Algolia\AlgoliaSearchBundle\Mapping\Loader;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\Common\Persistence\ObjectManager;
 
 interface LoaderInterface
 {
     /**
      * Extracts the Algolia metaData from an entity.
      *
-     * @return Algolia\AlgoliaSearchBundle\Mapping\Description
+     * @return \Algolia\AlgoliaSearchBundle\Mapping\Description
      */
-    public function getMetaData($entity, EntityManager $em);
+    public function getMetaData($entity, ObjectManager $objectManager);
 }

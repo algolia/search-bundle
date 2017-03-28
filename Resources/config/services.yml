@@ -1,7 +1,8 @@
 parameters:
     algolia.indexer.class: Algolia\AlgoliaSearchBundle\Indexer\Indexer
-    algolia.indexer_subscriber.class: Algolia\AlgoliaSearchBundle\EventListener\AlgoliaSearchDoctrineEventSubscriber
     algolia.connection_timeout: ~
+    algolia.indexer_subscriber.orm.class: Algolia\AlgoliaSearchBundle\EventListener\AlgoliaSearchDoctrineORMEventSubscriber
+    algolia.indexer_subscriber.mongodb_odm.class: Algolia\AlgoliaSearchBundle\EventListener\AlgoliaSearchDoctrineMongoDBODMEventSubscriber
 
 services:
     algolia.indexer:
@@ -10,11 +11,22 @@ services:
             - [setEnvironment, ["%kernel.environment%"]]
             - [setIndexNamePrefix, ["%algolia.index_name_prefix%"]]
             - [setApiSettings, ["%algolia.application_id%", "%algolia.api_key%", "%algolia.connection_timeout%"]]
-    algolia.indexer_subscriber:
-        class: "%algolia.indexer_subscriber.class%"
+
+    algolia.indexer_subscriber.abstract:
+        abstract: true
         arguments:
             - "@algolia.indexer"
             - "%algolia.catch_log_exceptions%"
             - "@?logger"
+
+    algolia.indexer_subscriber.orm:
+        parent: algolia.indexer_subscriber.abstract
+        class: "%algolia.indexer_subscriber.orm.class%"
         tags:
             - {name: doctrine.event_subscriber}
+
+    algolia.indexer_subscriber.mongodb_odm:
+        parent: algolia.indexer_subscriber.abstract
+        class: "%algolia.indexer_subscriber.mongodb_odm.class%"
+        tags:
+            - {name: doctrine_mongodb.odm.event_subscriber}
