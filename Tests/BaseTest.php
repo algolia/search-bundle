@@ -6,8 +6,9 @@ use Doctrine\ORM\Tools\SchemaTool;
 
 // Use lightweight test doubles that can inspect internal state
 use Algolia\AlgoliaSearchBundle\Tests\Indexer\Indexer;
+use PHPUnit\Framework\TestCase;
 
-class BaseTest extends \PHPUnit_Framework_TestCase
+class BaseTest extends TestCase
 {
     protected $backupGlobalsBlacklist = ['kernel'];
 

@@ -7,11 +7,13 @@ use Algolia\AlgoliaSearchBundle\Tests\Entity;
 
 abstract class CallbacksTest extends BaseTest
 {
-    // Just to be sure we did not mess something up in our namespaces
     public function testOurEntitiesExist()
     {
-        new Entity\Product();
-        new Entity\Supplier();
+        $product = new Entity\Product();
+        $this->assertInstanceOf('Algolia\AlgoliaSearchBundle\Tests\Entity\Product', $product);
+
+        $supplier = new Entity\Supplier();
+        $this->assertInstanceOf('Algolia\AlgoliaSearchBundle\Tests\Entity\Supplier', $supplier);
     }
 
     public function testCreateUpdateDeleteCallbacksAreCalled()
