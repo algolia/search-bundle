@@ -416,9 +416,14 @@ You can re-index in place by passing the `--unsafe` option. Please note that in 
 ## Running the tests
 
 Rename the test `parameters.yml.travis` file to `parameters.yml`, customize the settings with the correct database settings and Algolia API settings.
-Please note that by default Algolia credentials are loaded from environment variable (see `algolia.get_credentials_from_env`)
+
+Please note that by default Algolia credentials are loaded from environment variable (see `algolia.get_credentials_from_env`).
 
 Then run:
+
 ```bash
 php vendor/bin/phpunit -c Tests
 ```
+
+
+
