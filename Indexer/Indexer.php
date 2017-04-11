@@ -277,6 +277,10 @@ class Indexer
             return;
         }
 
+        if ($this->isEmbeddedObject($entity)) {
+            return;
+        }
+
         // We need to get the primary key now, because post-flush it will be gone from the entity
         list($primaryKey, $unusedOldPrimaryKey) = $this->getPrimaryKeyForAlgolia($entity);
         $this->entitiesScheduledForDeletion[] = array(

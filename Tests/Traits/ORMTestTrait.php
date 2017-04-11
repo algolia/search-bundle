@@ -32,9 +32,13 @@ trait ORMTestTrait
     {
         $em = static::staticGetObjectManager();
 
-        $schema = array_map(function ($class) use ($em) {
-            return $em->getClassMetadata($class);
-        }, static::getNeededEntities());
+        $schema = array_filter(array_map(function ($class) use ($em) {
+            try {
+                return $em->getClassMetadata($class);
+            } catch (\Exception $e) {
+                return false;
+            }
+        }, static::getNeededEntities()));
 
         $schemaTool = new SchemaTool($em);
         $schemaTool->dropSchema($schema);
