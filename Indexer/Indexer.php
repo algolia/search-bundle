@@ -304,7 +304,12 @@ class Indexer
     private function extractPropertyValue($entity, $field, $depth)
     {
         $accessor = PropertyAccess::createPropertyAccessor();
-        $value = $accessor->getValue($entity, $field);
+
+        try {
+            $value = $accessor->getValue($entity, $field);
+        } catch (\Doctrine\ORM\EntityNotFoundException $e) {
+            return null;
+        }
 
         if ($value instanceof \Doctrine\Common\Collections\Collection) {
             if ($depth >= 2 && !$this->isEmbeddedObject($entity)) {

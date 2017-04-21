@@ -203,4 +203,22 @@ abstract class AlgoliaIntegrationTest extends BaseTest
 
         return $product;
     }
+
+    public function testMissingEntity()
+    {
+        $product = new Entity\ProductWithMissingRelation();
+
+        $em = $this->getObjectManager();
+        $product
+            ->setSupplier($em->getReference(Entity\Supplier::class, 11));
+
+
+        $indexer = $this->getIndexer();
+        $indexer->discoverEntity($product, $em);
+
+        $this->assertEquals(
+            ['name', 'supplier'],
+            array_keys($indexer->getFieldsForAlgolia($product))
+        );
+    }
 }
