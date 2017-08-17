@@ -285,7 +285,7 @@ class Indexer
         list($primaryKey, $unusedOldPrimaryKey) = $this->getPrimaryKeyForAlgolia($entity);
         $this->entitiesScheduledForDeletion[] = array(
             'objectID' => $primaryKey,
-            'index' => $this->getAlgoliaIndexName($entity)
+            'index' => $this->getInternalAlgoliaIndexName($entity)
         );
     }
 
@@ -444,7 +444,7 @@ class Indexer
     /**
      * @internal
      */
-    public function getAlgoliaIndexName($entity_or_class)
+    public function getInternalAlgoliaIndexName($entity_or_class)
     {
         $class = is_object($entity_or_class) ? $this->getClass($entity_or_class) : $entity_or_class;
 
@@ -467,6 +467,26 @@ class Indexer
     }
 
     /**
+     * @param ObjectManager $em
+     * @param               $entityName
+     *
+     * @return string
+     * @throws NotAnAlgoliaEntity
+     */
+    public function getAlgoliaIndexName(ObjectManager $em, $entityName)
+    {
+        $entityClass = $em->getRepository($entityName)->getClassName();
+
+        if (!$this->discoverEntity($entityClass, $em)) {
+            throw new NotAnAlgoliaEntity(
+                'Can\'t search, entity of class `'.$entityClass.'` is not recognized as an Algolia enriched entity.'
+            );
+        }
+
+        return $this->getInternalAlgoliaIndexName($entityClass);
+    }
+
+    /**
      * @internal
      */
     public function processScheduledIndexChanges()
@@ -477,7 +497,7 @@ class Indexer
 
         foreach ($this->entitiesScheduledForCreation as $entity) {
             if (is_object($entity)) {
-                $index = $this->getAlgoliaIndexName($entity);
+                $index = $this->getInternalAlgoliaIndexName($entity);
             } else {
                 $index = $entity['indexName'];
                 $entity = $entity['entity'];
@@ -496,7 +516,7 @@ class Indexer
         }
 
         foreach ($this->entitiesScheduledForUpdate as $data) {
-            $index = $this->getAlgoliaIndexName($data['entity']);
+            $index = $this->getInternalAlgoliaIndexName($data['entity']);
 
             list($primaryKey, $oldPrimaryKey) = $this->getPrimaryKeyForAlgolia($data['entity'], $data['changeSet']);
 
@@ -742,7 +762,7 @@ class Indexer
         // We're already finding the right index ourselves.
         $options['adaptIndexName'] = false;
 
-        $indexName = $this->getAlgoliaIndexName($entityClass);
+        $indexName = $this->getInternalAlgoliaIndexName($entityClass);
 
         // get results from Algolia
         $results = $this->rawSearch($indexName, $queryString, $options);
