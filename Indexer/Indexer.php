@@ -311,19 +311,15 @@ class Indexer
                 return null;
             }
 
-            $value = $value->toArray();
-
-            if (count($value) > 0) {
-                if (! $this->discoverEntity(reset($value), $this->objectManager)) {
+            $value = array_map(function ($val) use ($field, $depth) {
+                if (! $this->discoverEntity($val, $this->objectManager)) {
                     throw new NotAnAlgoliaEntity(
-                        'Tried to index `'.$field.'` relation which is a `'.get_class(reset($value)).'` instance, which is not recognized as an entity to index.'
+                        'Tried to index `'.$field.'` relation which is a `'.get_class($val).'` instance, which is not recognized as an entity to index.'
                     );
                 }
-            }
 
-            $value = array_map(function ($val) use ($depth) {
                 return $this->getFieldsForAlgolia($val, null, $depth + 1);
-            }, $value);
+            }, $value->toArray());
         }
 
         if (is_object($value) && $this->isEntity($this->objectManager, $value)) {
