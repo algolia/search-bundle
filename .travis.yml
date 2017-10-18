@@ -3,11 +3,13 @@ language: php
 php:
     - 5.6
     - 7.0
+    - 7.1
+    - 7.2
 
 env:
   global:
-      - DRIVER_VERSION="stable"
-      - ADAPTER_VERSION="^1.0.0"
+      - MONGODB_DRIVER_VERSION="stable"
+      - MONGODB_ADAPTER_VERSION="1.1.3"
 
 services: mongodb
 
@@ -15,10 +17,10 @@ before_install:
     - curl -sS https://getcomposer.org/installer | php
 
 install:
-    - if [[ ${TRAVIS_PHP_VERSION:0:2} == "5." ]]; then yes '' | pecl -q install -f mongo-${DRIVER_VERSION}; fi
-    - if [[ ${TRAVIS_PHP_VERSION:0:2} == "7." ]]; then pecl install -f mongodb-${DRIVER_VERSION}; fi
-    - if [[ ${TRAVIS_PHP_VERSION:0:2} == "7." ]]; then composer require "alcaeus/mongo-php-adapter=${ADAPTER_VERSION}" --ignore-platform-reqs; fi
-    - php composer.phar install
+    - if [[ ${TRAVIS_PHP_VERSION:0:2} == "5." ]]; then yes '' | pecl -q install -f mongo-${MONGODB_DRIVER_VERSION}; fi
+    - if [[ ${TRAVIS_PHP_VERSION:0:2} == "7." ]]; then pecl install -f mongodb-${MONGODB_DRIVER_VERSION}; fi
+    - if [[ ${TRAVIS_PHP_VERSION:0:2} == "7." ]]; then composer require "alcaeus/mongo-php-adapter=${MONGODB_ADAPTER_VERSION}" --prefer-lowest --ignore-platform-reqs; fi
+    - php composer.phar update
 
 before_script:
     - mv Tests/config/parameters.yml.travis Tests/config/parameters.yml
