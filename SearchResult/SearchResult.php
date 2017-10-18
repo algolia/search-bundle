@@ -29,9 +29,9 @@ class SearchResult
     {
         if ($this->isHydrated()) {
             return $this->maybeHydratedHits;
-        } else {
-            return $this->originalResult['hits'];
         }
+
+        return $this->originalResult['hits'];
     }
 
     public function getHit($n)
