@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="search.search_indexer_subscriber" class="Algolia\SearchBundle\EventListener\SearchIndexerSubscriber">
+            <argument type="service" id="search.indexing_engine" />
+            <tag name="doctrine.event_subscriber" event="postPersist" connection="default" />
+        </service>
+
+        <service id="algolia.client" class="AlgoliaSearch\Client">
+            <argument key="$applicationID">%env(ALGOLIA_ID)%</argument>
+            <argument key="$apiKey">%env(ALGOLIA_KEY)%</argument>
+        </service>
+        <service id="search.indexing_engine" class="Algolia\SearchBundle\Engine\AlgoliaIndexingEngine">
+            <argument type="service" id="algolia.client" />
+        </service>
+    </services>
+
+</container>
