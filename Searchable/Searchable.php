@@ -5,6 +5,7 @@ namespace Algolia\SearchBundle\Searchable;
 use Algolia\SearchBundle\Encoder\SearchableArrayNormalizer;
 use Algolia\SearchBundle\Encoder\SearchableArrayEncoder;
 use Symfony\Component\Config\Definition\Exception\Exception;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 
 class Searchable implements SearchableInterface
@@ -25,7 +26,7 @@ class Searchable implements SearchableInterface
         return 'ENV_' . $this->entityMetaData->table['name'];
     }
 
-    public function getRecord()
+    public function getSearchableArray()
     {
         $normalizer = new SearchableArrayNormalizer();
 
@@ -36,7 +37,7 @@ class Searchable implements SearchableInterface
         ]);
     }
 
-    public function getObjectID()
+    public function getId()
     {
         $ids = $this->entityMetaData->getIdentifierValues($this->entity);
 

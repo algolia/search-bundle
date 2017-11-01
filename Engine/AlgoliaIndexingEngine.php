@@ -27,16 +27,16 @@ class AlgoliaIndexingEngine implements IndexingEngineInterface
 
     public function update(SearchableInterface $searchableEntity)
     {
-        $record = $searchableEntity->getRecord();
+        $record = $searchableEntity->getSearchableArray();
 
         $this->getIndexer($searchableEntity->getIndexName())
-            ->addObject($record, $searchableEntity->getObjectID());
+            ->addObject($record, $searchableEntity->getId());
     }
 
     public function delete(SearchableInterface $searchableEntity)
     {
         $this->getIndexer($searchableEntity->getIndexName())
-            ->deleteObject($searchableEntity->getObjectID());
+            ->deleteObject($searchableEntity->getId());
     }
 
     protected function getIndexer($indexName)

@@ -7,7 +7,7 @@ interface SearchableInterface
 {
     public function getIndexName(); // searchableAs
 
-    public function getRecord(); // toSearchableArray
+    public function getSearchableArray(); // toSearchableArray
 
-    public function getObjectID();
+    public function getId();
 }
