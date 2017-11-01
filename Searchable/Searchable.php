@@ -2,7 +2,7 @@
 
 namespace Algolia\SearchBundle\Searchable;
 
-use Algolia\SearchBundle\Encoder\EntityNormalizer;
+use Algolia\SearchBundle\Encoder\SearchableArrayNormalizer;
 use Algolia\SearchBundle\Encoder\SearchableArrayEncoder;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Serializer\Serializer;
@@ -27,7 +27,13 @@ class Searchable implements SearchableInterface
 
     public function getRecord()
     {
-        return ['my record' => 'should be here'];
+        $normalizer = new SearchableArrayNormalizer();
+
+        $serializer = new Serializer([$normalizer]);
+
+        return $serializer->normalize($this->entity, 'searchableArray', [
+            'fieldsMapping' => $this->entityMetaData->fieldMappings,
+        ]);
     }
 
     public function getObjectID()
