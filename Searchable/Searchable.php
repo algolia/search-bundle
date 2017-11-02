@@ -12,14 +12,14 @@ class Searchable implements SearchableInterface
     protected $indexName;
     protected $entity;
     protected $entityMetadata;
-    protected $normalizer;
+    protected $normalizers;
 
-    public function __construct($indexName, $entity, $entityMetadata, NormalizerInterface $normalizer = null)
+    public function __construct($indexName, $entity, $entityMetadata, array $normalizers = [])
     {
         $this->indexName = $indexName;
         $this->entity = $entity;
         $this->entityMetadata = $entityMetadata;
-        $this->normalizer = $normalizer ?? new SearchableArrayNormalizer();
+        $this->normalizers = $normalizer ?? [new SearchableArrayNormalizer()];
     }
 
     public function getIndexName()
@@ -29,7 +29,7 @@ class Searchable implements SearchableInterface
 
     public function getSearchableArray()
     {
-        $serializer = new Serializer([$this->normalizer]);
+        $serializer = new Serializer($this->normalizers);
 
         return $serializer->normalize($this->entity, 'searchableArray', [
             'fieldsMapping' => $this->entityMetadata->fieldMappings,

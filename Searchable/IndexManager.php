@@ -48,10 +48,10 @@ class IndexManager implements IndexManagerInterface
             }
 
             $this->engine->update(new Searchable(
-                $index['name'],
+                $this->prefix.$index['name'],
                 $entity,
                 $objectManager->getClassMetadata($className),
-                $index['normalizer']
+                $index['normalizers']
             ));
         }
 

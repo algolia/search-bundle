@@ -23,14 +23,14 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->children()
                 ->scalarNode('prefix')
-                    ->defaultValue('coolSF_')
+                    ->defaultValue('')
                 ->end()
                 ->arrayNode('indices')
                     ->arrayPrototype()
                         ->children()
                             ->scalarNode('name')->end()
                             ->scalarNode('class')->end()
-                            ->scalarNode('normalizer')->end()
+                            ->arrayNode('normalizers')->scalarPrototype()->end()->end()
                         ->end()
                     ->end()
                 ->end() // indices
