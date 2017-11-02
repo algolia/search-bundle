@@ -41,11 +41,6 @@ class AlgoliaIndexingEngine implements IndexingEngineInterface
 
     protected function getIndexer($indexName)
     {
-        if (! isset($this->indexers[$indexName])) {
-            $this->indexers[$indexName] = $this->algolia->initIndex($indexName);
-        }
-
-        return $this->indexers[$indexName];
-
+        return $this->algolia->initIndex($indexName);
     }
 }

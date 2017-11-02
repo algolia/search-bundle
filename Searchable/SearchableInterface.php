@@ -5,9 +5,9 @@ namespace Algolia\SearchBundle\Searchable;
 
 interface SearchableInterface
 {
-    public function getIndexName(); // searchableAs
+    public function getIndexName();
 
-    public function getSearchableArray(); // toSearchableArray
+    public function getSearchableArray();
 
     public function getId();
 }

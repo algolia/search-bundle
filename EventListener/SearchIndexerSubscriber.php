@@ -22,7 +22,6 @@ class SearchIndexerSubscriber implements EventSubscriber
         return array(
             'postPersist',
             'postUpdate',
-            'postRemove',
         );
     }
 
@@ -34,16 +33,6 @@ class SearchIndexerSubscriber implements EventSubscriber
     public function postPersist(LifecycleEventArgs $args)
     {
         $this->index($args);
-    }
-
-    public function postRemove(LifecycleEventArgs $args)
-    {
-        $object = $args->getObject();
-        $meta = $args->getObjectManager()->getClassMetadata(get_class($object));
-
-        $searchableEntity = new Searchable($object, $meta);
-
-        $this->engine->delete($searchableEntity);
     }
 
     public function index(LifecycleEventArgs $args)
