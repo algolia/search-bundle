@@ -6,7 +6,7 @@
 
     <services>
         <service id="search.search_indexer_subscriber" class="Algolia\SearchBundle\EventListener\SearchIndexerSubscriber">
-            <argument type="service" id="search.indexing_engine" />
+            <argument type="service" id="search.index_manager" />
             <tag name="doctrine.event_subscriber" event="postPersist" connection="default" />
         </service>
 

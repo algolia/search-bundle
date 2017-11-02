@@ -20,9 +20,21 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('algolia_search');
 
-        // Here you should define the parameters that are allowed to
-        // configure your bundle. See the documentation linked above for
-        // more information on that topic.
+        $rootNode
+            ->children()
+                ->scalarNode('prefix')
+                    ->defaultValue('coolSF_')
+                ->end()
+                ->arrayNode('indices')
+                    ->arrayPrototype()
+                        ->children()
+                            ->scalarNode('name')->end()
+                            ->scalarNode('class')->end()
+                            ->scalarNode('normalizer')->end()
+                        ->end()
+                    ->end()
+                ->end() // indices
+            ->end();
 
         return $treeBuilder;
     }

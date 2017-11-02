@@ -3,18 +3,18 @@
 namespace Algolia\SearchBundle\EventListener;
 
 
-use Algolia\SearchBundle\Engine\AlgoliaIndexingEngine;
+use Algolia\SearchBundle\Searchable\IndexManager;
 use Algolia\SearchBundle\Searchable\Searchable;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 
 class SearchIndexerSubscriber implements EventSubscriber
 {
-    protected $engine;
+    protected $indexManager;
 
-    public function __construct(AlgoliaIndexingEngine $engine)
+    public function __construct(IndexManager $indexManager)
     {
-        $this->engine = $engine;
+        $this->indexManager = $indexManager;
     }
 
     public function getSubscribedEvents()
@@ -38,10 +38,8 @@ class SearchIndexerSubscriber implements EventSubscriber
     public function index(LifecycleEventArgs $args)
     {
         $object = $args->getObject();
-        $meta = $args->getObjectManager()->getClassMetadata(get_class($object));
+        $objectManager = $args->getObjectManager();
 
-        $searchableEntity = new Searchable($object, $meta);
-
-        $this->engine->update($searchableEntity);
+        $this->indexManager->index($object, $objectManager);
     }
 }

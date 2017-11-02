@@ -3,43 +3,42 @@
 namespace Algolia\SearchBundle\Searchable;
 
 use Algolia\SearchBundle\Encoder\SearchableArrayNormalizer;
-use Algolia\SearchBundle\Encoder\SearchableArrayEncoder;
 use Symfony\Component\Config\Definition\Exception\Exception;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Serializer;
 
 class Searchable implements SearchableInterface
 {
+    protected $indexName;
     protected $entity;
+    protected $entityMetadata;
+    protected $normalizer;
 
-    protected $entityMetaData;
-
-    public function __construct($entity, $entityMetaData)
+    public function __construct($indexName, $entity, $entityMetadata, NormalizerInterface $normalizer = null)
     {
+        $this->indexName = $indexName;
         $this->entity = $entity;
-        $this->entityMetaData = $entityMetaData;
+        $this->entityMetadata = $entityMetadata;
+        $this->normalizer = $normalizer ?? new SearchableArrayNormalizer();
     }
 
     public function getIndexName()
     {
-        // TODO: Use actual env var
-        return 'ENV_' . $this->entityMetaData->table['name'];
+        return $this->indexName;
     }
 
     public function getSearchableArray()
     {
-        $normalizer = new SearchableArrayNormalizer();
-
-        $serializer = new Serializer([$normalizer]);
+        $serializer = new Serializer([$this->normalizer]);
 
         return $serializer->normalize($this->entity, 'searchableArray', [
-            'fieldsMapping' => $this->entityMetaData->fieldMappings,
+            'fieldsMapping' => $this->entityMetadata->fieldMappings,
         ]);
     }
 
     public function getId()
     {
-        $ids = $this->entityMetaData->getIdentifierValues($this->entity);
+        $ids = $this->entityMetadata->getIdentifierValues($this->entity);
 
         if (empty($ids)) {
             throw new Exception('Entity has no primary key');
