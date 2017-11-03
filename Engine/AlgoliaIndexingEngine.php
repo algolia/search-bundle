@@ -8,16 +8,12 @@ use AlgoliaSearch\Index;
 
 class AlgoliaIndexingEngine implements IndexingEngineInterface
 {
-    /** @var Index[] */
-    protected $indexers;
-
     /** @var Client Client */
     protected $algolia;
 
     public function __construct(Client $algolia)
     {
         $this->algolia = $algolia;
-        $this->indexers = [];
     }
 
     public function add(SearchableEntityInterface $searchableEntity)
