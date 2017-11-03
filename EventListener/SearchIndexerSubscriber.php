@@ -21,6 +21,7 @@ class SearchIndexerSubscriber implements EventSubscriber
         return array(
             'postPersist',
             'postUpdate',
+            'preRemove',
         );
     }
 
@@ -40,5 +41,12 @@ class SearchIndexerSubscriber implements EventSubscriber
         $objectManager = $args->getObjectManager();
 
         $this->indexManager->index($object, $objectManager);
+    }
+
+    public function preRemove(LifecycleEventArgs $args)
+    {
+        $object = $args->getObject();
+
+        $this->indexManager->delete($object, $args->getObjectManager());
     }
 }

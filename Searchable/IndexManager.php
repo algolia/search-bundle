@@ -69,12 +69,29 @@ class IndexManager implements IndexManagerInterface
                 $this->indexConfiguration[$indexName]['normalizers']
             ));
         }
-
     }
 
     public function clear($indexName)
     {
         $this->engine->clear($this->prefix.$indexName);
+    }
+
+    public function delete($entity, ObjectManager $objectManager)
+    {
+        $className = get_class($entity);
+
+        if (! $this->isSearchable($className)) {
+            return;
+        }
+
+        foreach ($this->classToIndexMapping[$className] as $indexName) {
+
+            $this->engine->delete(new SearchableEntity(
+                $this->prefix.$indexName,
+                $entity,
+                $objectManager->getClassMetadata($className)
+            ));
+        }
     }
 
     private function setClassToIndexMapping()
