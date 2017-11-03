@@ -10,7 +10,7 @@ class IndexManager implements IndexManagerInterface
 {
     protected $engine;
 
-    protected $indices;
+    protected $indexConfiguration;
 
     protected $prefix;
 
@@ -18,10 +18,10 @@ class IndexManager implements IndexManagerInterface
 
     private $classToIndexMapping;
 
-    public function __construct(IndexingEngineInterface $engine, array $indices, $prefix)
+    public function __construct(IndexingEngineInterface $engine, array $indexConfiguration, $prefix)
     {
         $this->engine = $engine;
-        $this->indices = $indices;
+        $this->indexConfiguration = $indexConfiguration;
         $this->prefix = $prefix;
 
         $this->setSearchableEntities();
@@ -35,6 +35,16 @@ class IndexManager implements IndexManagerInterface
         }
 
         return in_array($className, $this->searchableEntities);
+    }
+
+    public function getIndexConfiguration()
+    {
+        return $this->indexConfiguration;
+    }
+
+    public function getSearchableEntities()
+    {
+        return $this->searchableEntities;
     }
 
     public function index($entity, ObjectManager $objectManager)
@@ -51,7 +61,7 @@ class IndexManager implements IndexManagerInterface
                 $this->prefix.$indexName,
                 $entity,
                 $objectManager->getClassMetadata($className),
-                $this->indices[$indexName]['normalizers']
+                $this->indexConfiguration[$indexName]['normalizers']
             ));
         }
 
@@ -60,7 +70,7 @@ class IndexManager implements IndexManagerInterface
     private function setClassToIndexMapping()
     {
         $mapping = [];
-        foreach ($this->indices as $indexName => $indexDetails) {
+        foreach ($this->indexConfiguration as $indexName => $indexDetails) {
             foreach ($indexDetails['classes'] as $class) {
                 if (! isset($mapping[$class])) {
                     $mapping[$class] = [];
@@ -77,7 +87,7 @@ class IndexManager implements IndexManagerInterface
     {
         $searchable = [];
 
-        foreach ($this->indices as $name => $index) {
+        foreach ($this->indexConfiguration as $name => $index) {
             $searchable = array_merge($searchable, $index['classes']);
         }
 
