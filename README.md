@@ -28,7 +28,7 @@ algolia_search:
       classes: [App\Entity\Post]
       normalizers:
         - Symfony\Component\Serializer\Normalizer\CustomNormalizer
-        - Algolia\SearchBundle\Encoder\SearchableArrayNormalizer
+        - Algolia\SearchBundle\Normalizer\SearchableArrayNormalizer
 
     - name: comments
       classes: [App\Entity\Comment]
@@ -39,7 +39,7 @@ algolia_search:
       normalizers:
         - App\Normalizers\CommentNormalizer
         - Symfony\Component\Serializer\Normalizer\CustomNormalizer
-        - Algolia\SearchBundle\Encoder\SearchableArrayNormalizer
+        - Algolia\SearchBundle\Normalizer\SearchableArrayNormalizer
 
 ```
 

@@ -1,14 +1,12 @@
 <?php
 
-namespace Algolia\SearchBundle\Encoder;
+namespace Algolia\SearchBundle\Normalizer;
 
 
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
-use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\NormalizableInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Symfony\Component\Serializer\Serializer;
 
 class SearchableArrayNormalizer implements NormalizerInterface
 {

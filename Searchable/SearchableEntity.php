@@ -2,12 +2,11 @@
 
 namespace Algolia\SearchBundle\Searchable;
 
-use Algolia\SearchBundle\Encoder\SearchableArrayNormalizer;
+use Algolia\SearchBundle\Normalizer\SearchableArrayNormalizer;
 use Symfony\Component\Config\Definition\Exception\Exception;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Serializer;
 
-class Searchable implements SearchableInterface
+class SearchableEntity implements SearchableEntityInterface
 {
     protected $indexName;
     protected $entity;
@@ -24,7 +23,7 @@ class Searchable implements SearchableInterface
 
     public function getIndexName()
     {
-        return $this->indexName;
+        return getenv('ALGOLIA_PREFIX').$this->indexName;
     }
 
     public function getSearchableArray()

@@ -2,7 +2,7 @@
 
 namespace Algolia\SearchBundle\Engine;
 
-use Algolia\SearchBundle\Searchable\SearchableInterface;
+use Algolia\SearchBundle\Searchable\SearchableEntityInterface;
 use AlgoliaSearch\Client;
 use AlgoliaSearch\Index;
 
@@ -20,12 +20,12 @@ class AlgoliaIndexingEngine implements IndexingEngineInterface
         $this->indexers = [];
     }
 
-    public function add(SearchableInterface $searchableEntity)
+    public function add(SearchableEntityInterface $searchableEntity)
     {
         $this->update($searchableEntity);
     }
 
-    public function update(SearchableInterface $searchableEntity)
+    public function update(SearchableEntityInterface $searchableEntity)
     {
         $record = $searchableEntity->getSearchableArray();
 
@@ -33,7 +33,7 @@ class AlgoliaIndexingEngine implements IndexingEngineInterface
             ->addObject($record, $searchableEntity->getId());
     }
 
-    public function delete(SearchableInterface $searchableEntity)
+    public function delete(SearchableEntityInterface $searchableEntity)
     {
         $this->getIndexer($searchableEntity->getIndexName())
             ->deleteObject($searchableEntity->getId());

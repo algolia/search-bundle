@@ -3,7 +3,7 @@
 namespace Algolia\SearchBundle\Searchable;
 
 
-interface SearchableInterface
+interface SearchableEntityInterface
 {
     public function getIndexName();
 

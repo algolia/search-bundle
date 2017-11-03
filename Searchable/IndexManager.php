@@ -47,7 +47,7 @@ class IndexManager implements IndexManagerInterface
 
         foreach ($this->classToIndexMapping[$className] as $indexName) {
 
-            $this->engine->update(new Searchable(
+            $this->engine->update(new SearchableEntity(
                 $this->prefix.$indexName,
                 $entity,
                 $objectManager->getClassMetadata($className),
