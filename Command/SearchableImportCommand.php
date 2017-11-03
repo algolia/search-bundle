@@ -22,7 +22,6 @@ class SearchableImportCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-
         $indexManager = $this->getContainer()->get('search.index_manager');
         $doctrine = $this->getContainer()->get('doctrine');
         $entitiesToIndex = $this->getEntitiesToIndex($input, $indexManager);
@@ -37,9 +36,10 @@ class SearchableImportCommand extends ContainerAwareCommand
                 $indexManager->index($entity, $manager);
             }
 
+            $output->writeln('Indexed <comment>'.count($entities).'</comment> '.$entityClassName);
         }
 
-        $output->writeln('I hope it worked');
+        $output->writeln('<info>Done!</info>');
     }
 
     private function getEntitiesToIndex($input, $indexManager)
