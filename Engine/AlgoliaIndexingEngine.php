@@ -4,7 +4,6 @@ namespace Algolia\SearchBundle\Engine;
 
 use Algolia\SearchBundle\Searchable\SearchableEntityInterface;
 use AlgoliaSearch\Client;
-use AlgoliaSearch\Index;
 
 class AlgoliaIndexingEngine implements IndexingEngineInterface
 {
@@ -38,5 +37,10 @@ class AlgoliaIndexingEngine implements IndexingEngineInterface
     protected function getIndexer($indexName)
     {
         return $this->algolia->initIndex($indexName);
+    }
+
+    public function clear($indexName)
+    {
+        $this->algolia->initIndex($indexName)->clearIndex();
     }
 }

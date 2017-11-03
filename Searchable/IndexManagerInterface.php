@@ -13,5 +13,9 @@ interface IndexManagerInterface
 
     public function getSearchableEntities();
 
+    public function getPrefix();
+
     public function index($entity, ObjectManager $objectManager);
+
+    public function clear($indexName);
 }

@@ -47,6 +47,11 @@ class IndexManager implements IndexManagerInterface
         return $this->searchableEntities;
     }
 
+    public function getPrefix()
+    {
+        return $this->prefix;
+    }
+
     public function index($entity, ObjectManager $objectManager)
     {
         $className = get_class($entity);
@@ -65,6 +70,11 @@ class IndexManager implements IndexManagerInterface
             ));
         }
 
+    }
+
+    public function clear($indexName)
+    {
+        $this->engine->clear($this->prefix.$indexName);
     }
 
     private function setClassToIndexMapping()

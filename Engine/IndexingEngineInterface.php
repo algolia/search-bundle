@@ -11,4 +11,6 @@ interface IndexingEngineInterface
     public function update(SearchableEntityInterface $searchableEntity);
 
     public function delete(SearchableEntityInterface $searchableEntity);
+
+    public function clear($indexName);
 }
