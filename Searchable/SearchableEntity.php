@@ -23,7 +23,7 @@ class SearchableEntity implements SearchableEntityInterface
 
     public function getIndexName()
     {
-        return getenv('ALGOLIA_PREFIX').$this->indexName;
+        return $this->indexName;
     }
 
     public function getSearchableArray()
