@@ -7,7 +7,7 @@ use Algolia\SearchBundle\Engine\EngineInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Config\Definition\Exception\Exception;
 
-class IndexManager implements IndexConfigurationInterface, IndexingManagerInterface, ResultManagerInterface
+class IndexManager implements IndexingManagerInterface, SearchManagerInterface
 {
     protected $engine;
 
@@ -36,23 +36,6 @@ class IndexManager implements IndexConfigurationInterface, IndexingManagerInterf
         }
 
         return in_array($className, $this->searchableEntities);
-    }
-
-    public function getConfiguration()
-    {
-        return $this->indexConfiguration;
-    }
-
-    public function getPrefix()
-    {
-        return $this->prefix;
-    }
-
-    public function getIndexName($className)
-    {
-        $this->assertIsSearchable($className);
-
-        return $this->prefix . $this->classToIndexMapping[$className] ?? '';
     }
 
     public function index($entity, ObjectManager $objectManager)
@@ -142,7 +125,7 @@ class IndexManager implements IndexConfigurationInterface, IndexingManagerInterf
 
     private function getFullIndexName($className)
     {
-        return $this->getPrefix().$this->getFullIndexName($className);
+        return $this->prefix.$this->classToIndexMapping[$className];
     }
 
     private function assertIsSearchable($className)
