@@ -98,13 +98,11 @@ class IndexManager implements IndexManagerInterface
     {
         $mapping = [];
         foreach ($this->indexConfiguration as $indexName => $indexDetails) {
-            foreach ($indexDetails['classes'] as $class) {
-                if (! isset($mapping[$class])) {
-                    $mapping[$class] = [];
-                }
-
-                $mapping[$class][] = $indexName;
+            if (! isset($mapping[$indexDetails['class']])) {
+                $mapping[$indexDetails['class']] = [];
             }
+
+            $mapping[$indexDetails['class']][] = $indexName;
         }
 
         $this->classToIndexMapping = $mapping;
@@ -115,7 +113,7 @@ class IndexManager implements IndexManagerInterface
         $searchable = [];
 
         foreach ($this->indexConfiguration as $name => $index) {
-            $searchable = array_merge($searchable, $index['classes']);
+            $searchable[] = $index['class'];
         }
 
         $this->searchableEntities = array_unique($searchable);

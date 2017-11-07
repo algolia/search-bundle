@@ -25,17 +25,17 @@ algolia_search:
   prefix: demoapp_
   indices:
     - name: posts
-      classes: [App\Entity\Post]
+      class: App\Entity\Post
       normalizers:
         - Symfony\Component\Serializer\Normalizer\CustomNormalizer
         - Algolia\SearchBundle\Normalizer\SearchableArrayNormalizer
 
     - name: comments
-      classes: [App\Entity\Comment]
+      class: App\Entity\Comment
       normalizers: [App\Normalizers\CommentNormalizer]
 
     - name: all
-      classes: [App\Entity\Post, App\Entity\Tag]
+      class: App\Entity\Post, App\Entity\Tag
       normalizers:
         - App\Normalizers\CommentNormalizer
         - Symfony\Component\Serializer\Normalizer\CustomNormalizer
