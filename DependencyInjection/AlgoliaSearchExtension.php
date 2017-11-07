@@ -32,7 +32,7 @@ class AlgoliaSearchExtension extends Extension
         $container->setDefinition('search.index_manager', new Definition(
             IndexManager::class,
             [
-                new Reference('search.indexing_engine'),
+                new Reference('search.engine'),
                 $config['indices'],
                 $prefix,
             ]

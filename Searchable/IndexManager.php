@@ -3,10 +3,11 @@
 namespace Algolia\SearchBundle\Searchable;
 
 
-use Algolia\SearchBundle\Engine\IndexingEngineInterface;
+use Algolia\SearchBundle\Engine\EngineInterface;
 use Doctrine\Common\Persistence\ObjectManager;
+use Symfony\Component\Config\Definition\Exception\Exception;
 
-class IndexManager implements IndexManagerInterface
+class IndexManager implements IndexConfigurationInterface, IndexingManagerInterface, ResultManagerInterface
 {
     protected $engine;
 
@@ -18,7 +19,7 @@ class IndexManager implements IndexManagerInterface
 
     private $classToIndexMapping;
 
-    public function __construct(IndexingEngineInterface $engine, array $indexConfiguration, $prefix)
+    public function __construct(EngineInterface $engine, array $indexConfiguration, $prefix)
     {
         $this->engine = $engine;
         $this->indexConfiguration = $indexConfiguration;
@@ -37,14 +38,9 @@ class IndexManager implements IndexManagerInterface
         return in_array($className, $this->searchableEntities);
     }
 
-    public function getIndexConfiguration()
+    public function getConfiguration()
     {
         return $this->indexConfiguration;
-    }
-
-    public function getSearchableEntities()
-    {
-        return $this->searchableEntities;
     }
 
     public function getPrefix()
@@ -52,13 +48,18 @@ class IndexManager implements IndexManagerInterface
         return $this->prefix;
     }
 
+    public function getIndexName($className)
+    {
+        $this->assertIsSearchable($className);
+
+        return $this->prefix . $this->classToIndexMapping[$className] ?? '';
+    }
+
     public function index($entity, ObjectManager $objectManager)
     {
         $className = get_class($entity);
 
-        if (! $this->isSearchable($className)) {
-            return;
-        }
+        $this->assertIsSearchable($className);
 
         foreach ($this->classToIndexMapping[$className] as $indexName) {
 
@@ -80,9 +81,7 @@ class IndexManager implements IndexManagerInterface
     {
         $className = get_class($entity);
 
-        if (! $this->isSearchable($className)) {
-            return;
-        }
+        $this->assertIsSearchable($className);
 
         foreach ($this->classToIndexMapping[$className] as $indexName) {
 
@@ -94,15 +93,37 @@ class IndexManager implements IndexManagerInterface
         }
     }
 
+    public function search($query, $className, ObjectManager $objectManager, $nbResults = 20, $page = 0, array $parameters = [])
+    {
+        $this->assertIsSearchable($className);
+
+        $repo = $objectManager->getRepository($className);
+        $ids = $this->engine->searchIds($query, $this->getFullIndexName($className), $nbResults, $page, $parameters);
+
+        $results = $repo->findBy(['id' => $ids]);
+
+        return $results;
+    }
+
+    public function rawSearch($query, $className, $nbResults = 20, $page = 0, array $parameters = [])
+    {
+        $this->assertIsSearchable($className);
+
+        return $this->engine->search($query, $this->getFullIndexName($className), $nbResults = 20, $page = 0, $parameters);
+    }
+
+    public function count($query, $className, array $parameters = [])
+    {
+        $this->assertIsSearchable($className);
+
+        return $this->engine->count($query, $this->getFullIndexName($className));
+    }
+
     private function setClassToIndexMapping()
     {
         $mapping = [];
         foreach ($this->indexConfiguration as $indexName => $indexDetails) {
-            if (! isset($mapping[$indexDetails['class']])) {
-                $mapping[$indexDetails['class']] = [];
-            }
-
-            $mapping[$indexDetails['class']][] = $indexName;
+            $mapping[$indexDetails['class']] = $indexName;
         }
 
         $this->classToIndexMapping = $mapping;
@@ -117,5 +138,17 @@ class IndexManager implements IndexManagerInterface
         }
 
         $this->searchableEntities = array_unique($searchable);
+    }
+
+    private function getFullIndexName($className)
+    {
+        return $this->getPrefix().$this->getFullIndexName($className);
+    }
+
+    private function assertIsSearchable($className)
+    {
+        if (! $this->isSearchable($className)) {
+            throw new Exception('Class '.$className.' is not searchable.');
+        }
     }
 }

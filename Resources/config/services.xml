@@ -14,9 +14,11 @@
             <argument key="$applicationID">%env(ALGOLIA_ID)%</argument>
             <argument key="$apiKey">%env(ALGOLIA_KEY)%</argument>
         </service>
-        <service id="search.indexing_engine" class="Algolia\SearchBundle\Engine\AlgoliaIndexingEngine">
+
+        <service id="search.engine" class="Algolia\SearchBundle\Engine\AlgoliaEngine">
             <argument type="service" id="algolia.client" />
         </service>
+
     </services>
 
 </container>
