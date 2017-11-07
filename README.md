@@ -26,16 +26,9 @@ algolia_search:
   indices:
     - name: posts
       class: App\Entity\Post
-      normalizers:
-        - Symfony\Component\Serializer\Normalizer\CustomNormalizer
-        - Algolia\SearchBundle\Normalizer\SearchableArrayNormalizer
 
     - name: comments
       class: App\Entity\Comment
-      normalizers: [App\Normalizers\CommentNormalizer]
-
-    - name: all
-      class: App\Entity\Post, App\Entity\Tag
       normalizers:
         - App\Normalizers\CommentNormalizer
         - Symfony\Component\Serializer\Normalizer\CustomNormalizer
@@ -43,6 +36,81 @@ algolia_search:
 
 ```
 
+## Search
+
+In this example we'll search for posts.
+
+```php
+$em = $this->getDoctrine()->getManager();
+$indexManager = $this->get('search.index_manager');
+
+$posts = $indexManager->search('query', Post::class, $em);
+```
+
+Note that this method will return an array of entities retrieved by Doctrine object manager (data are pulled from the database).
+
+If you want to get the raw result from Algolia, use the `rawSearch` method.
+
+
+```php
+$indexManager = $this->get('search.index_manager');
+
+$posts = $indexManager->rawSearch('query', Post::class);
+```
+
+### Pagination
+
+To get a specific page, define the `page` (and `nbResults` if you want).
+
+```php
+$em = $this->getDoctrine()->getManager();
+$indexManager = $this->get('search.index_manager');
+
+$posts = $indexManager->search('query', Post::class, $em, 2);
+// Or
+$posts = $indexManager->search('query', Post::class, $em, 2, 100);
+```
+
+### Count
+
+```php
+$indexManager = $this->get('search.index_manager');
+
+$posts = $indexManager->count('query', Post::class);
+```
+
+### Advanced search
+
+Pass anything you want in the `parameters` array. You can pass it in any search-related method.
+
+
+```php
+$indexManager = $this->get('search.index_manager');
+
+$posts = $indexManager->count('query', Post::class, 0, 10, [
+		'filters' => 'comment_count>10'
+]);
+```
+
+
+## Index entities
+
+### Automatically
+
+The bundle will listen to `postPersist` and `preRemove` doctrine events to keep your data in sync. You have nothing to do.
+
+### Manually
+
+If you want to update a post manually, you can get the `IndexManager` from the container and call the `index` method manually.
+
+```php
+$em = $this->getDoctrine()->getManager();
+$indexManager = $this->get('search.index_manager');
+$post = $em->getRepository(Post::class)->findBy(['author' => 1]);
+
+$indexManager->index($post, $em);
+
+```
 
 ## Normalizers
 
