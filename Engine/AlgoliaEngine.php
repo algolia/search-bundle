@@ -39,7 +39,7 @@ class AlgoliaEngine implements EngineInterface
         $this->algolia->initIndex($indexName)->clearIndex();
     }
 
-    public function search($query, $indexName, $nbResults = 20, $page = 0, array $parameters = [])
+    public function search($query, $indexName, $page = 0, $nbResults = 20, array $parameters = [])
     {
         $params = array_merge($parameters, [
             'hitsPerPage' => $nbResults,
@@ -49,9 +49,9 @@ class AlgoliaEngine implements EngineInterface
         return $this->algolia->initIndex($indexName)->search($query, $params);
     }
 
-    public function searchIds($query, $indexName, $nbResults = 20, $page = 0, array $parameters = [])
+    public function searchIds($query, $indexName, $page = 0, $nbResults = 20, array $parameters = [])
     {
-        $result = $this->search($query, $indexName, $nbResults, $page, $parameters);
+        $result = $this->search($query, $indexName, $page, $nbResults, $parameters);
 
         return array_column($result['hits'], 'objectID');
     }

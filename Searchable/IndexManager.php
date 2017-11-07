@@ -76,23 +76,23 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
         }
     }
 
-    public function search($query, $className, ObjectManager $objectManager, $nbResults = 20, $page = 0, array $parameters = [])
+    public function search($query, $className, ObjectManager $objectManager, $page = 0, $nbResults = 20, array $parameters = [])
     {
         $this->assertIsSearchable($className);
 
         $repo = $objectManager->getRepository($className);
-        $ids = $this->engine->searchIds($query, $this->getFullIndexName($className), $nbResults, $page, $parameters);
+        $ids = $this->engine->searchIds($query, $this->getFullIndexName($className), $page, $nbResults, $parameters);
 
         $results = $repo->findBy(['id' => $ids]);
 
         return $results;
     }
 
-    public function rawSearch($query, $className, $nbResults = 20, $page = 0, array $parameters = [])
+    public function rawSearch($query, $className, $page = 0, $nbResults = 20, array $parameters = [])
     {
         $this->assertIsSearchable($className);
 
-        return $this->engine->search($query, $this->getFullIndexName($className), $nbResults = 20, $page = 0, $parameters);
+        return $this->engine->search($query, $this->getFullIndexName($className), $page,  $nbResults, $parameters);
     }
 
     public function count($query, $className, array $parameters = [])
