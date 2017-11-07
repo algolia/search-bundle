@@ -5,7 +5,7 @@ namespace Algolia\SearchBundle\EventListener;
 
 use Algolia\SearchBundle\Searchable\IndexManager;
 use Doctrine\Common\EventSubscriber;
-use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
 
 class SearchIndexerSubscriber implements EventSubscriber
 {
