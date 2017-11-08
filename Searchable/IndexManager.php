@@ -49,15 +49,14 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
 
         $this->assertIsSearchable($className);
 
-        foreach ($this->classToIndexMapping[$className] as $indexName) {
+        $indexName = $this->classToIndexMapping[$className];
 
-            $this->engine->update(new SearchableEntity(
-                $this->prefix.$indexName,
-                $entity,
-                $objectManager->getClassMetadata($className),
-                $this->indexConfiguration[$indexName]['normalizers']
-            ));
-        }
+        $this->engine->update(new SearchableEntity(
+            $this->prefix.$indexName,
+            $entity,
+            $objectManager->getClassMetadata($className),
+            $this->indexConfiguration[$indexName]['normalizers']
+        ));
     }
 
     public function clear($indexName)
@@ -71,14 +70,11 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
 
         $this->assertIsSearchable($className);
 
-        foreach ($this->classToIndexMapping[$className] as $indexName) {
-
-            $this->engine->delete(new SearchableEntity(
-                $this->prefix.$indexName,
-                $entity,
-                $objectManager->getClassMetadata($className)
-            ));
-        }
+        $this->engine->delete(new SearchableEntity(
+            $this->getFullIndexName($className),
+            $entity,
+            $objectManager->getClassMetadata($className)
+        ));
     }
 
     public function search($query, $className, ObjectManager $objectManager, $page = 0, $nbResults = 20, array $parameters = [])
