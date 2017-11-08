@@ -36,6 +36,18 @@ algolia_search:
 
 ```
 
+### Credentials
+
+You will also need to provide Algolia App ID and Admin API key. By default they are loaded from env variables `ALGOLIA_ID` and `ALGOLIA_KEY`.
+
+If you don't use env variable, you can set them in your `parameters.yml`.
+
+```yml
+parameters:
+    env(ALGOLIA_ID): K7MLRQH1JG
+    env(ALGOLIA_KEY): 0d7036b75416ad0c811f30536134b313
+```
+
 ## Search
 
 In this example we'll search for posts.
