@@ -23,7 +23,7 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->children()
                 ->scalarNode('prefix')
-                    ->defaultValue('')
+                    ->defaultValue(null)
                 ->end()
                 ->scalarNode('nbResults')
                     ->defaultValue(20)
