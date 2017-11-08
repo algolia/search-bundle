@@ -9,7 +9,8 @@
         }
     ],
     "require": {
-        "algolia/algoliasearch-client-php": "^1.23"
+        "algolia/algoliasearch-client-php": "^1.23",
+        "symfony/serializer": "^3.3"
     },
     "autoload": {
         "psr-4": {

@@ -27,7 +27,7 @@ class AlgoliaSearchExtension extends Extension
 
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
-        $prefix = getenv('SEARCHABLE_PREFIX').$config['prefix'];
+        $prefix = getenv('SEARCHABLE_PREFIX').$config['prefix']; // TODO: Should find smething better
 
         $container->setDefinition('search.index_manager', new Definition(
             IndexManager::class,
