@@ -9,6 +9,8 @@ interface IndexingManagerInterface
 {
     public function isSearchable($className);
 
+    public function getSearchableEntities();
+
     public function index($entity, ObjectManager $objectManager);
 
     public function delete($entity, ObjectManager $objectManager);

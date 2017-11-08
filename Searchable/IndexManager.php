@@ -38,6 +38,11 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
         return in_array($className, $this->searchableEntities);
     }
 
+    public function getSearchableEntities()
+    {
+        return $this->searchableEntities;
+    }
+
     public function index($entity, ObjectManager $objectManager)
     {
         $className = get_class($entity);
