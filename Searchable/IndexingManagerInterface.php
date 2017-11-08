@@ -15,5 +15,5 @@ interface IndexingManagerInterface
 
     public function delete($entity, ObjectManager $objectManager);
 
-    public function clear($indexName);
+    public function clear($className);
 }

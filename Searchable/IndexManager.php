@@ -62,9 +62,11 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
         ));
     }
 
-    public function clear($indexName)
+    public function clear($className)
     {
-        $this->engine->clear($this->prefix.$indexName);
+        $this->assertIsSearchable($className);
+
+        $this->engine->clear($this->getFullIndexName($className));
     }
 
     public function delete($entity, ObjectManager $objectManager)
