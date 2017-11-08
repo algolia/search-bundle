@@ -14,7 +14,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Algolia\\SearchBundle\\": "/"
+            "Algolia\\SearchBundle\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Algolia\\SearchBundle\\": "tests/"
         }
     }
 }
