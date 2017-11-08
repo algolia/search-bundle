@@ -5,6 +5,7 @@ namespace Algolia\SearchBundle\Searchable;
 
 use Algolia\SearchBundle\Engine\EngineInterface;
 use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Common\Util\ClassUtils;
 use Symfony\Component\Config\Definition\Exception\Exception;
 
 class IndexManager implements IndexingManagerInterface, SearchManagerInterface
@@ -35,7 +36,7 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
     public function isSearchable($className)
     {
         if (is_object($className)) {
-            $className = get_class($className);
+            $className = ClassUtils::getClass($className);
         }
 
         return in_array($className, $this->searchableEntities);
@@ -48,7 +49,7 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
 
     public function index($entity, ObjectManager $objectManager)
     {
-        $className = get_class($entity);
+        $className = ClassUtils::getClass($entity);
 
         $this->assertIsSearchable($className);
 
@@ -71,7 +72,7 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
 
     public function delete($entity, ObjectManager $objectManager)
     {
-        $className = get_class($entity);
+        $className = ClassUtils::getClass($entity);
 
         $this->assertIsSearchable($className);
 
