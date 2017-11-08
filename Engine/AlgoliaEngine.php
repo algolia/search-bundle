@@ -42,17 +42,17 @@ class AlgoliaEngine implements EngineInterface
         $this->algolia->initIndex($indexName)->clearIndex();
     }
 
-    public function search($query, $indexName, $page = 0, $nbResults = 20, array $parameters = [])
+    public function search($query, $indexName, $page = 1, $nbResults = null, array $parameters = [])
     {
         $params = array_merge($parameters, [
             'hitsPerPage' => $nbResults,
-            'page' => $page
+            'page' => $page - 1,
         ]);
 
         return $this->algolia->initIndex($indexName)->search($query, $params);
     }
 
-    public function searchIds($query, $indexName, $page = 0, $nbResults = 20, array $parameters = [])
+    public function searchIds($query, $indexName, $page = 1, $nbResults = null, array $parameters = [])
     {
         $result = $this->search($query, $indexName, $page, $nbResults, $parameters);
 

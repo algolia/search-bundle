@@ -14,9 +14,9 @@ interface EngineInterface
 
     public function clear($indexName);
 
-    public function search($query, $indexName, $page = 0, $nbResults = 20, array $parameters = []);
+    public function search($query, $indexName, $page = 0, $nbResults = null, array $parameters = []);
 
-    public function searchIds($query, $indexName, $page = 0, $nbResults = 20, array $parameters = []);
+    public function searchIds($query, $indexName, $page = 0, $nbResults = null, array $parameters = []);
 
     public function count($query, $indexName);
 }

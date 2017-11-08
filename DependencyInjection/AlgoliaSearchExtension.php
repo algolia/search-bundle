@@ -35,6 +35,7 @@ class AlgoliaSearchExtension extends Extension
                 new Reference('search.engine'),
                 $config['indices'],
                 $prefix,
+                $config['nbResults']
             ]
         ));
     }
