@@ -117,7 +117,10 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
         $repo = $objectManager->getRepository($className);
         $ids = $this->engine->searchIds($query, $this->getFullIndexName($className), $page, $nbResults, $parameters);
 
-        $results = $repo->findBy(['id' => $ids]);
+        $results = [];
+        foreach ($ids as $id) {
+            $results[] = $repo->findOneBy(['id' => $id]);
+        }
 
         return $results;
     }
