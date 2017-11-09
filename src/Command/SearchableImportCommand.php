@@ -32,9 +32,7 @@ class SearchableImportCommand extends ContainerAwareCommand
 
             $entities = $repository->findAll();
 
-            foreach ($entities as $entity) {
-                $indexManager->index($entity, $manager);
-            }
+            $indexManager->index($entities, $manager);
 
             $output->writeln('Indexed <comment>'.count($entities).'</comment> '.$entityClassName);
         }

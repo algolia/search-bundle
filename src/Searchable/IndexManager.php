@@ -47,20 +47,30 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
         return $this->searchableEntities;
     }
 
-    public function index($entity, ObjectManager $objectManager)
+    public function index($entities, ObjectManager $objectManager)
     {
-        $className = ClassUtils::getClass($entity);
+        if (! is_array($entities)) {
+            $entities = [$entities];
+        }
 
-        $this->assertIsSearchable($className);
+        foreach (array_chunk($entities, 500) as $chunk) {
+            $searchableEntities = [];
 
-        $indexName = $this->classToIndexMapping[$className];
+            foreach ($chunk as $entity) {
+                $className = ClassUtils::getClass($entity);
+                $this->assertIsSearchable($className);
 
-        $this->engine->update(new SearchableEntity(
-            $this->prefix.$indexName,
-            $entity,
-            $objectManager->getClassMetadata($className),
-            $this->indexConfiguration[$indexName]['normalizers']
-        ));
+                $searchableEntities[] = new SearchableEntity(
+                    $this->getFullIndexName($className),
+                    $entity,
+                    $objectManager->getClassMetadata($className),
+                    $this->getNormalizer($className)
+                );
+            }
+
+            $this->engine->update($searchableEntities);
+        }
+
     }
 
     public function clear($className)
@@ -70,17 +80,30 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
         $this->engine->clear($this->getFullIndexName($className));
     }
 
-    public function delete($entity, ObjectManager $objectManager)
+    public function delete($entities, ObjectManager $objectManager)
     {
-        $className = ClassUtils::getClass($entity);
+        if (! is_array($entities)) {
+            $entities = [$entities];
+        }
 
-        $this->assertIsSearchable($className);
+        foreach (array_chunk($entities, 500) as $chunk) {
+            $searchableEntities = [];
 
-        $this->engine->delete(new SearchableEntity(
-            $this->getFullIndexName($className),
-            $entity,
-            $objectManager->getClassMetadata($className)
-        ));
+            foreach ($chunk as $entity) {
+                $className = ClassUtils::getClass($entity);
+                $this->assertIsSearchable($className);
+
+                $searchableEntities[] = new SearchableEntity(
+                    $this->getFullIndexName($className),
+                    $entity,
+                    $objectManager->getClassMetadata($className),
+                    $this->getNormalizer($className)
+                );
+            }
+
+            $this->engine->delete($searchableEntities);
+        }
+
     }
 
     public function search($query, $className, ObjectManager $objectManager, $page = 1, $nbResults = null, array $parameters = [])
@@ -141,6 +164,11 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
     private function getFullIndexName($className)
     {
         return $this->prefix.$this->classToIndexMapping[$className];
+    }
+
+    private function getNormalizer($className)
+    {
+        return $this->indexConfiguration[$this->classToIndexMapping[$className]]['normalizers'];
     }
 
     private function assertIsSearchable($className)

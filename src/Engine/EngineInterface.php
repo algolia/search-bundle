@@ -2,15 +2,13 @@
 
 namespace Algolia\SearchBundle\Engine;
 
-use Algolia\SearchBundle\Searchable\SearchableEntityInterface;
-
 interface EngineInterface
 {
-    public function add(SearchableEntityInterface $entity);
+    public function add($searchableEntities);
 
-    public function update(SearchableEntityInterface $searchableEntity);
+    public function update($searchableEntities);
 
-    public function delete(SearchableEntityInterface $searchableEntity);
+    public function delete($searchableEntities);
 
     public function clear($indexName);
 

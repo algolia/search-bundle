@@ -18,23 +18,33 @@ class AlgoliaEngine implements EngineInterface
         $this->algolia = $algolia;
     }
 
-    public function add(SearchableEntityInterface $searchableEntity)
+    public function add($searchableEntities)
     {
-        $this->update($searchableEntity);
+        $this->update($searchableEntities);
     }
 
-    public function update(SearchableEntityInterface $searchableEntity)
+    public function update($searchableEntities)
     {
-        $record = $searchableEntity->getSearchableArray();
-
-        $this->algolia->initIndex($searchableEntity->getIndexName())
-            ->addObject($record, $searchableEntity->getId());
+        if ($searchableEntities instanceof SearchableEntityInterface) {
+            $this->algolia
+                ->initIndex($searchableEntities->getIndexName())
+                ->addObject(
+                    $searchableEntities->getSearchableArray(), $searchableEntities->getId()
+                );
+        } else {
+            $this->batchUpdate($searchableEntities);
+        }
     }
 
-    public function delete(SearchableEntityInterface $searchableEntity)
+    public function delete($searchableEntities)
     {
-        $this->algolia->initIndex($searchableEntity->getIndexName())
-            ->deleteObject($searchableEntity->getId());
+        if ($searchableEntities instanceof SearchableEntityInterface) {
+            $this->algolia
+                ->initIndex($searchableEntities->getIndexName())
+                ->deleteObject($searchableEntities->getId());
+        } else {
+            $this->batchDelete($searchableEntities);
+        }
     }
 
     public function clear($indexName)
@@ -64,5 +74,47 @@ class AlgoliaEngine implements EngineInterface
         $results = $this->algolia->initIndex($indexName)->search($query);
 
         return (int) $results['nbHits'];
+    }
+
+    private function batchUpdate($searchableEntities)
+    {
+        $data = [];
+        foreach ($searchableEntities as $entity) {
+            $indexName = $entity->getIndexName();
+
+            if (! isset($data[$indexName])) {
+                $data[$indexName] = [];
+            }
+
+            $data[$indexName][] = $entity->getSearchableArray() + [
+                'objectID' => $entity->getId()
+            ];
+        }
+
+        foreach ($data as $indexName => $objects) {
+            $this->algolia
+                ->initIndex($indexName)
+                ->addObjects($objects);
+        }
+    }
+
+    private function batchDelete($searchableEntities)
+    {
+        $data = [];
+        foreach ($searchableEntities as $entity) {
+            $indexName = $entity->getIndexName();
+
+            if (! isset($data[$indexName])) {
+                $data[$indexName] = [];
+            }
+
+            $data[$indexName][] = $entity->getId();
+        }
+
+        foreach ($data as $indexName => $objects) {
+            $this->algolia
+                ->initIndex($indexName)
+                ->deleteObjects($objects);
+        }
     }
 }
