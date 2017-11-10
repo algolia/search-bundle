@@ -8,6 +8,7 @@ use Symfony\Component\Serializer\Serializer;
 
 class SearchableEntity implements SearchableEntityInterface
 {
+    private $id;
     protected $indexName;
     protected $entity;
     protected $entityMetadata;
@@ -19,6 +20,8 @@ class SearchableEntity implements SearchableEntityInterface
         $this->entity = $entity;
         $this->entityMetadata = $entityMetadata;
         $this->normalizers = $normalizer ?? [new SearchableArrayNormalizer()];
+
+        $this->setId();
     }
 
     public function getIndexName()
@@ -35,7 +38,7 @@ class SearchableEntity implements SearchableEntityInterface
         ]);
     }
 
-    public function getId()
+    private function setId()
     {
         $ids = $this->entityMetadata->getIdentifierValues($this->entity);
 
@@ -44,7 +47,7 @@ class SearchableEntity implements SearchableEntityInterface
         }
 
         if (1 == count($ids)) {
-            return reset($ids);
+            $this->id = reset($ids);
         }
 
         $objectID = '';
@@ -52,6 +55,11 @@ class SearchableEntity implements SearchableEntityInterface
             $objectID .= $key . '-' . $value . '__';
         }
 
-        return rtrim($objectID, '_');
+        $this->id = rtrim($objectID, '_');
+    }
+
+    public function getId()
+    {
+        return $this->id;
     }
 }
