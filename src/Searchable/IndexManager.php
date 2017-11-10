@@ -171,7 +171,11 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
 
     private function getNormalizer($className)
     {
-        return $this->indexConfiguration[$this->classToIndexMapping[$className]]['normalizers'];
+        if (isset($this->indexConfiguration[$this->classToIndexMapping[$className]]['normalizers'])) {
+            return $this->indexConfiguration[$this->classToIndexMapping[$className]]['normalizers'];
+        }
+
+        return [];
     }
 
     private function assertIsSearchable($className)
