@@ -8,9 +8,12 @@
             "email": "julien@sigerr.org"
         }
     ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "require": {
         "algolia/algoliasearch-client-php": "^1.23",
-        "symfony/serializer": "^3.3"
+        "symfony/serializer": "^3.4-BETA3",
+        "symfony/property-access": "^3.4-BETA3"
     },
     "autoload": {
         "psr-4": {
