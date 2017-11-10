@@ -1,6 +1,6 @@
 <?php
 
-namespace Algolia\SearchBundle\Entity;
+namespace Algolia\SearchableBundle\Entity;
 
 
 use Doctrine\ORM\Mapping as ORM;

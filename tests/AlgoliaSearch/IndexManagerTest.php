@@ -1,12 +1,12 @@
 <?php
 
-namespace Algolia\SearchBundle;
+namespace Algolia\SearchableBundle;
 
 
-use Algolia\SearchBundle\Doctrine\NullObjectManager;
-use Algolia\SearchBundle\Entity\Comment;
-use Algolia\SearchBundle\Entity\Post;
-use Algolia\SearchBundle\Entity\Tag;
+use Algolia\SearchableBundle\Doctrine\NullObjectManager;
+use Algolia\SearchableBundle\Entity\Comment;
+use Algolia\SearchableBundle\Entity\Post;
+use Algolia\SearchableBundle\Entity\Tag;
 
 class IndexManagerTest extends BaseTest
 {

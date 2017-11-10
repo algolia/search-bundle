@@ -1,6 +1,6 @@
 <?php
 
-namespace Algolia\SearchBundle\Normalizer;
+namespace Algolia\SearchableBundle\Normalizer;
 
 
 use Symfony\Component\PropertyAccess\PropertyAccess;

@@ -1,5 +1,5 @@
 {
-    "name": "algolia/symfony-searchable",
+    "name": "algolia/searchable-bundle",
     "type": "symfony-bundle",
     "license": "MIT",
     "authors": [
@@ -17,12 +17,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Algolia\\SearchBundle\\": "src/"
+            "Algolia\\SearchableBundle\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Algolia\\SearchBundle\\": "tests/"
+            "Algolia\\SearchableBundle\\": "tests/"
         }
     },
     "require-dev": {

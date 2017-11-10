@@ -1,6 +1,6 @@
 <?php
 
-namespace Algolia\SearchBundle\Command;
+namespace Algolia\SearchableBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -22,7 +22,7 @@ class SearchableImportCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $indexManager = $this->getContainer()->get('search.index_manager');
+        $indexManager = $this->getContainer()->get('searchable.index_manager');
         $doctrine = $this->getContainer()->get('doctrine');
         $entitiesToIndex = $this->getEntitiesToIndex($input, $indexManager);
 

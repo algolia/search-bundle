@@ -1,6 +1,6 @@
 <?php
 
-namespace Algolia\SearchBundle\DependencyInjection;
+namespace Algolia\SearchableBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -18,7 +18,7 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('algolia_search');
+        $rootNode = $treeBuilder->root('algolia_searchable');
 
         $rootNode
             ->children()

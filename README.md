@@ -1,4 +1,4 @@
-# Symfony Searchable
+# Symfony Searchable Bundle
 
 This package will help you get your data indexed in Algolia
 
@@ -13,7 +13,7 @@ composer req search
 Otherwise
 
 ```
-composer require algolia/symfony-searchable
+composer require algolia/searchable-bundle
 ```
 
 ## Configuration
@@ -32,7 +32,7 @@ algolia_search:
       normalizers:
         - App\Normalizers\CommentNormalizer
         - Symfony\Component\Serializer\Normalizer\CustomNormalizer
-        - Algolia\SearchBundle\Normalizer\SearchableArrayNormalizer
+        - Algolia\SearchableBundle\Normalizer\SearchableArrayNormalizer
 
 ```
 

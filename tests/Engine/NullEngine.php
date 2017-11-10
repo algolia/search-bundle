@@ -1,6 +1,6 @@
 <?php
 
-namespace Algolia\SearchBundle\Engine;
+namespace Algolia\SearchableBundle\Engine;
 
 
 class NullEngine implements EngineInterface

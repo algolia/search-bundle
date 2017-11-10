@@ -1,9 +1,9 @@
 <?php
 
-namespace Algolia\SearchBundle\Searchable;
+namespace Algolia\SearchableBundle;
 
 
-use Algolia\SearchBundle\Engine\EngineInterface;
+use Algolia\SearchableBundle\Engine\EngineInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\Util\ClassUtils;
 use Symfony\Component\Config\Definition\Exception\Exception;

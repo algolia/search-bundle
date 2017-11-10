@@ -1,6 +1,6 @@
 <?php
 
-namespace Algolia\SearchBundle;
+namespace Algolia\SearchableBundle;
 
 
 use Symfony\Component\Config\Loader\LoaderInterface;
@@ -19,7 +19,7 @@ class Kernel extends \Symfony\Component\HttpKernel\Kernel
         return [
             new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new \Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
-            new AlgoliaSearchBundle(),
+            new AlgoliaSearchableBundle(),
         ];
     }
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Algolia\SearchBundle\Searchable;
+namespace Algolia\SearchableBundle;
 
 
 use Doctrine\Common\Persistence\ObjectManager;

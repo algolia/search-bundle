@@ -1,8 +1,8 @@
 <?php
 
-namespace Algolia\SearchBundle\DependencyInjection;
+namespace Algolia\SearchableBundle\DependencyInjection;
 
-use Algolia\SearchBundle\Searchable\IndexManager;
+use Algolia\SearchableBundle\IndexManager;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Definition;
@@ -15,7 +15,7 @@ use Symfony\Component\DependencyInjection\Loader;
  *
  * @link http://symfony.com/doc/current/cookbook/bundles/extension.html
  */
-class AlgoliaSearchExtension extends Extension
+class AlgoliaSearchableExtension extends Extension
 {
     /**
      * {@inheritdoc}
@@ -33,10 +33,10 @@ class AlgoliaSearchExtension extends Extension
             $prefix = $container->getParameter("kernel.environment").'_';
         }
 
-        $container->setDefinition('search.index_manager', new Definition(
+        $container->setDefinition('searchable.index_manager', new Definition(
             IndexManager::class,
             [
-                new Reference('search.engine'),
+                new Reference('searchable.engine'),
                 $config['indices'],
                 $prefix,
                 $config['nbResults']

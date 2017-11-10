@@ -5,8 +5,8 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="search.search_indexer_subscriber" class="Algolia\SearchBundle\EventListener\SearchIndexerSubscriber">
-            <argument type="service" id="search.index_manager" />
+        <service id="searchable.search_indexer_subscriber" class="Algolia\SearchableBundle\EventListener\SearchIndexerSubscriber">
+            <argument type="service" id="searchable.index_manager" />
             <tag name="doctrine.event_subscriber" event="postPersist" connection="default" />
             <tag name="doctrine_mongodb.odm.event_subscriber" event="postPersist" connection="default" />
         </service>
@@ -16,7 +16,7 @@
             <argument key="$apiKey">%env(ALGOLIA_KEY)%</argument>
         </service>
 
-        <service id="search.engine" class="Algolia\SearchBundle\Engine\AlgoliaEngine">
+        <service id="searchable.engine" class="Algolia\SearchableBundle\Engine\AlgoliaEngine">
             <argument type="service" id="algolia.client" />
         </service>
 

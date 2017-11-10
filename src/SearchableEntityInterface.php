@@ -1,6 +1,6 @@
 <?php
 
-namespace Algolia\SearchBundle\Searchable;
+namespace Algolia\SearchableBundle;
 
 
 interface SearchableEntityInterface

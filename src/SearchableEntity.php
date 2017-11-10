@@ -1,8 +1,8 @@
 <?php
 
-namespace Algolia\SearchBundle\Searchable;
+namespace Algolia\SearchableBundle;
 
-use Algolia\SearchBundle\Normalizer\SearchableArrayNormalizer;
+use Algolia\SearchableBundle\Normalizer\SearchableArrayNormalizer;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Serializer\Serializer;
 

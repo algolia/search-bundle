@@ -1,8 +1,8 @@
 <?php
 
-namespace Algolia\SearchBundle\Engine;
+namespace Algolia\SearchableBundle\Engine;
 
-use Algolia\SearchBundle\Searchable\SearchableEntityInterface;
+use Algolia\SearchableBundle\SearchableEntityInterface;
 use AlgoliaSearch\Client;
 use AlgoliaSearch\Version;
 

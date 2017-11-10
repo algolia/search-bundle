@@ -6,7 +6,7 @@
  * Time: 17:14
  */
 
-namespace Algolia\SearchBundle\Command;
+namespace Algolia\SearchableBundle\Command;
 
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -29,7 +29,7 @@ class SearchableClearCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $indexManager = $this->getContainer()->get('search.index_manager');
+        $indexManager = $this->getContainer()->get('searchable.index_manager');
         $indexToClear = $this->getIndexToClear($input, $indexManager);
 
         foreach ($indexToClear as $indexName) {

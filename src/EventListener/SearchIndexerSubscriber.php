@@ -1,9 +1,9 @@
 <?php
 
-namespace Algolia\SearchBundle\EventListener;
+namespace Algolia\SearchableBundle\EventListener;
 
 
-use Algolia\SearchBundle\Searchable\IndexManager;
+use Algolia\SearchableBundle\IndexManager;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
 
