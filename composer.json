@@ -24,5 +24,13 @@
         "psr-4": {
             "Algolia\\SearchBundle\\": "tests/"
         }
+    },
+    "require-dev": {
+        "symfony/framework-bundle": "~3.4-BETA3",
+        "phpunit/phpunit": "^5.7",
+        "doctrine/doctrine-bundle": "^1.7",
+        "symfony/doctrine-bridge": "~3.4-BETA3",
+        "doctrine/orm": "^2.5",
+        "symfony/var-dumper": "^3.3"
     }
 }
