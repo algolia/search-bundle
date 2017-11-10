@@ -47,6 +47,6 @@ class SearchIndexerSubscriber implements EventSubscriber
     {
         $object = $args->getObject();
 
-        $this->indexManager->delete($object, $args->getObjectManager());
+        $this->indexManager->remove($object, $args->getObjectManager());
     }
 }

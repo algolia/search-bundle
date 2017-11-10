@@ -38,7 +38,7 @@ class AlgoliaEngine implements EngineInterface
         return $this->batchUpdate($searchableEntities);
     }
 
-    public function delete($searchableEntities)
+    public function remove($searchableEntities)
     {
         if ($searchableEntities instanceof SearchableEntityInterface) {
             return [
@@ -55,6 +55,13 @@ class AlgoliaEngine implements EngineInterface
     {
         return [
             $indexName => $this->algolia->initIndex($indexName)->clearIndex()
+        ];
+    }
+
+    public function delete($indexName)
+    {
+        return [
+            $indexName => $this->algolia->deleteIndex($indexName)
         ];
     }
 

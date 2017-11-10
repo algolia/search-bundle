@@ -73,14 +73,7 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
 
     }
 
-    public function clear($className)
-    {
-        $this->assertIsSearchable($className);
-
-        $this->engine->clear($this->getFullIndexName($className));
-    }
-
-    public function delete($entities, ObjectManager $objectManager)
+    public function remove($entities, ObjectManager $objectManager)
     {
         if (! is_array($entities)) {
             $entities = [$entities];
@@ -104,6 +97,20 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
             $this->engine->delete($searchableEntities);
         }
 
+    }
+
+    public function clear($className)
+    {
+        $this->assertIsSearchable($className);
+
+        $this->engine->clear($this->getFullIndexName($className));
+    }
+
+    public function delete($className)
+    {
+        $this->assertIsSearchable($className);
+
+        $this->engine->delete($this->getFullIndexName($className));
     }
 
     public function search($query, $className, ObjectManager $objectManager, $page = 1, $nbResults = null, array $parameters = [])

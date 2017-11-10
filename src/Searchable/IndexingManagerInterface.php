@@ -13,7 +13,9 @@ interface IndexingManagerInterface
 
     public function index($entity, ObjectManager $objectManager);
 
-    public function delete($entity, ObjectManager $objectManager);
+    public function remove($entity, ObjectManager $objectManager);
 
     public function clear($className);
+
+    public function delete($className);
 }
