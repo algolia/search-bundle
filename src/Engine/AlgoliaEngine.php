@@ -20,36 +20,42 @@ class AlgoliaEngine implements EngineInterface
 
     public function add($searchableEntities)
     {
-        $this->update($searchableEntities);
+        return $this->update($searchableEntities);
     }
 
     public function update($searchableEntities)
     {
         if ($searchableEntities instanceof SearchableEntityInterface) {
-            $this->algolia
-                ->initIndex($searchableEntities->getIndexName())
-                ->addObject(
-                    $searchableEntities->getSearchableArray(), $searchableEntities->getId()
-                );
-        } else {
-            $this->batchUpdate($searchableEntities);
+            return [
+                $searchableEntities->getIndexName() => $this->algolia
+                    ->initIndex($searchableEntities->getIndexName())
+                    ->addObject(
+                        $searchableEntities->getSearchableArray(), $searchableEntities->getId()
+                    )
+            ];
         }
+
+        return $this->batchUpdate($searchableEntities);
     }
 
     public function delete($searchableEntities)
     {
         if ($searchableEntities instanceof SearchableEntityInterface) {
-            $this->algolia
-                ->initIndex($searchableEntities->getIndexName())
-                ->deleteObject($searchableEntities->getId());
-        } else {
-            $this->batchDelete($searchableEntities);
+            return [
+                $searchableEntities->getIndexName() => $this->algolia
+                    ->initIndex($searchableEntities->getIndexName())
+                    ->deleteObject($searchableEntities->getId())
+            ];
         }
+
+        return $this->batchDelete($searchableEntities);
     }
 
     public function clear($indexName)
     {
-        $this->algolia->initIndex($indexName)->clearIndex();
+        return [
+            $indexName => $this->algolia->initIndex($indexName)->clearIndex()
+        ];
     }
 
     public function search($query, $indexName, $page = 1, $nbResults = null, array $parameters = [])
@@ -91,11 +97,14 @@ class AlgoliaEngine implements EngineInterface
             ];
         }
 
+        $result = [];
         foreach ($data as $indexName => $objects) {
-            $this->algolia
+            $result[$indexName] = $this->algolia
                 ->initIndex($indexName)
                 ->addObjects($objects);
         }
+
+        return $result;
     }
 
     private function batchDelete($searchableEntities)
@@ -111,10 +120,13 @@ class AlgoliaEngine implements EngineInterface
             $data[$indexName][] = $entity->getId();
         }
 
+        $result = [];
         foreach ($data as $indexName => $objects) {
-            $this->algolia
+            $result[$indexName] = $this->algolia
                 ->initIndex($indexName)
                 ->deleteObjects($objects);
         }
+
+        return $result;
     }
 }
