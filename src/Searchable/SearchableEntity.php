@@ -48,14 +48,15 @@ class SearchableEntity implements SearchableEntityInterface
 
         if (1 == count($ids)) {
             $this->id = reset($ids);
+        } else {
+            $objectID = '';
+            foreach ($ids as $key => $value) {
+                $objectID .= $key . '-' . $value . '__';
+            }
+
+            $this->id = rtrim($objectID, '_');
         }
 
-        $objectID = '';
-        foreach ($ids as $key => $value) {
-            $objectID .= $key . '-' . $value . '__';
-        }
-
-        $this->id = rtrim($objectID, '_');
     }
 
     public function getId()
