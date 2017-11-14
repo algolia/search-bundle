@@ -19,11 +19,12 @@ abstract class AbstractDoctrineEventSubscriber implements EventSubscriber
      * @param bool $catchAndLogExceptions
      * @param LoggerInterface|null $logger
      */
-    public function __construct(Indexer $indexer, $catchAndLogExceptions = false, LoggerInterface $logger = null)
+    public function __construct(Indexer $indexer, $catchAndLogExceptions = false, LoggerInterface $logger = null, $disabled = false)
     {
         $this->indexer = $indexer;
         $this->catchAndLogExceptions = $catchAndLogExceptions;
         $this->logger = $logger;
+        $this->disabled = $disabled;
     }
 
     /**
@@ -31,7 +32,7 @@ abstract class AbstractDoctrineEventSubscriber implements EventSubscriber
      */
     public function getSubscribedEvents()
     {
-        return array(
+        return $this->disabled ? array() : array(
             'onFlush',
             'postFlush'
         );

@@ -18,6 +18,7 @@ services:
             - "@algolia.indexer"
             - "%algolia.catch_log_exceptions%"
             - "@?logger"
+            - "%algolia.disabled%"
 
     algolia.indexer_subscriber.orm:
         parent: algolia.indexer_subscriber.abstract
