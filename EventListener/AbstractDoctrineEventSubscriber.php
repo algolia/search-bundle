@@ -12,19 +12,26 @@ abstract class AbstractDoctrineEventSubscriber implements EventSubscriber
     private $indexer;
     private $logger;
     private $catchAndLogExceptions;
+    private $disableDoctrineListeners;
 
     /**
      * Under normal circumstances, the service loader will set the indexer.
-     * @param Indexer $indexer
-     * @param bool $catchAndLogExceptions
+     *
+     * @param Indexer              $indexer
+     * @param bool                 $catchAndLogExceptions
      * @param LoggerInterface|null $logger
+     * @param bool                 $disableDoctrineListeners
      */
-    public function __construct(Indexer $indexer, $catchAndLogExceptions = false, LoggerInterface $logger = null, $disabled = false)
-    {
+    public function __construct(
+        Indexer $indexer,
+        $catchAndLogExceptions = false,
+        LoggerInterface $logger = null,
+        $disableDoctrineListeners = false
+    ) {
         $this->indexer = $indexer;
         $this->catchAndLogExceptions = $catchAndLogExceptions;
         $this->logger = $logger;
-        $this->disabled = $disabled;
+        $this->disableDoctrineListeners = $disableDoctrineListeners;
     }
 
     /**
@@ -32,7 +39,7 @@ abstract class AbstractDoctrineEventSubscriber implements EventSubscriber
      */
     public function getSubscribedEvents()
     {
-        return $this->disabled ? array() : array(
+        return $this->disableDoctrineListeners ? array() : array(
             'onFlush',
             'postFlush'
         );

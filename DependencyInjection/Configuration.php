@@ -30,7 +30,7 @@ class Configuration implements ConfigurationInterface
             ->booleanNode('catch_log_exceptions')
               ->defaultFalse()
             ->end()
-            ->booleanNode('disabled')
+            ->booleanNode('disable_doctrine_listeners')
               ->defaultFalse()
             ->end();
 
