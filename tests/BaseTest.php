@@ -7,8 +7,6 @@ use Algolia\SearchableBundle\Engine\AlgoliaEngine;
 use Algolia\SearchableBundle\Engine\AlgoliaSyncEngine;
 use Algolia\SearchableBundle\Engine\NullEngine;
 use Algolia\SearchableBundle\Entity\Comment;
-use Algolia\SearchableBundle\IndexManager;
-use Algolia\SearchableBundle\SearchableEntity;
 use AlgoliaSearch\Client;
 use Algolia\SearchableBundle\Entity\Post;
 use PHPUnit\Framework\TestCase;
