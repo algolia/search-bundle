@@ -191,6 +191,54 @@ class CommentNormalizer implements NormalizerInterface
 }
 ```
 
+## Using the Algolia Client (Advanced)
+
+In some cases, you may want to access the Algolia client directly to perform advanced operations
+(like manage API keys, manage indices and such).
+
+By default the `AlgoliaSearch\Client` in not public in the container, but you can easily expose it.
+In the service file of your project, `config/serices.yaml` in a typical Symfony4 app,
+you can alias it and make it public with the following code:
+
+```yaml
+services:
+    algolia.client:
+        alias: algolia_client
+        public: true
+```
+
+Or in XML
+
+```xml
+<services>
+    <service id="algolia.client" alias="algolia_client" public="true" />
+</services>
+```
+
+### Example
+
+Here is an example of how to use the client after your registered it publicly.
+
+```php
+class TestController extends Controller
+{
+    public function testAction()
+    {
+        $algoliaClient = $this->get('algolia.client');
+        var_dump($algoliaClient->listIndexes());
+
+        $indexManager = $this->get('searchable.index_manager');
+        $index = $algoliaClient->initIndex(
+            $indexManager->getFullIndexName(Post::class)
+        );
+
+        var_dump($index->listApiKeys());
+
+        die;
+    }
+}
+```
+
 ## Tests
 
 The tests require `ALGOLIA_ID` and `ALGOLIA_KEY` to be defined in the environment variables.
