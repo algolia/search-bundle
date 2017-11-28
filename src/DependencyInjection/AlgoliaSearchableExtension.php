@@ -27,11 +27,13 @@ class AlgoliaSearchableExtension extends Extension
 
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
-        $prefix = $config['prefix'];
 
+        $prefix = $config['prefix'];
         if (is_null($prefix)) {
             $prefix = $container->getParameter("kernel.environment").'_';
         }
+
+        $container->setParameter('algolia_searchable.doctrineSubscribedEvents', $config['doctrineSubscribedEvents']);
 
         $container->setDefinition('searchable.index_manager', new Definition(
             IndexManager::class,

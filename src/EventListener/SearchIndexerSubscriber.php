@@ -11,18 +11,17 @@ class SearchIndexerSubscriber implements EventSubscriber
 {
     protected $indexManager;
 
-    public function __construct(IndexManager $indexManager)
+    protected $subscribedEvents;
+
+    public function __construct(IndexManager $indexManager, $subscribedEvents)
     {
         $this->indexManager = $indexManager;
+        $this->subscribedEvents = $subscribedEvents;
     }
 
     public function getSubscribedEvents()
     {
-        return array(
-            'postPersist',
-            'postUpdate',
-            'preRemove',
-        );
+        return $this->subscribedEvents;
     }
 
     public function postUpdate(LifecycleEventArgs $args)

@@ -42,6 +42,10 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end() // indices
+                ->arrayNode('doctrineSubscribedEvents')
+                    ->prototype('scalar')->end()
+                    ->defaultValue(['postPersist', 'postUpdate', 'preRemove'])
+                ->end()
             ->end();
 
         return $treeBuilder;
