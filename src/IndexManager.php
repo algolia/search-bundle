@@ -171,7 +171,7 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
         $this->searchableEntities = array_unique($searchable);
     }
 
-    private function getFullIndexName($className)
+    public function getFullIndexName($className)
     {
         return $this->prefix.$this->classToIndexMapping[$className];
     }

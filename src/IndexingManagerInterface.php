@@ -11,6 +11,8 @@ interface IndexingManagerInterface
 
     public function getSearchableEntities();
 
+    public function getFullIndexName($className);
+
     public function index($entity, ObjectManager $objectManager);
 
     public function remove($entity, ObjectManager $objectManager);
