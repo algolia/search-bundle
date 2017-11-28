@@ -190,3 +190,20 @@ class CommentNormalizer implements NormalizerInterface
     }
 }
 ```
+
+## Tests
+
+The tests require `ALGOLIA_ID` and `ALGOLIA_KEY` to be defined in the environment variables.
+
+```
+ALGOLIA_ID=XXXXXXXXXX ALGOLIA_KEY=4b31300d70d70b75811f413366ad0c ./vendor/bin/phpunit
+```
+
+### About `AlgoliaSyncEngine`
+
+In Algolia, all indexing operations are asynchronous. The API will return a taskID and you can check
+if this task is completed or not via another API endpoint.
+
+For test purposes, we use the AlgoliaSyncEngine. It will always wait for task to be completed
+before returning. This engine is only autoloaded during in the tests, if you will to use it in your
+project, you can copy it into your app and modify the `searchable.engine` service definition.
