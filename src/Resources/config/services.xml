@@ -12,13 +12,13 @@
             <tag name="doctrine_mongodb.odm.event_subscriber" connection="default" />
         </service>
 
-        <service id="algolia.client" class="AlgoliaSearch\Client">
+        <service id="algolia_client" class="AlgoliaSearch\Client" public="false">
             <argument key="$applicationID">%env(ALGOLIA_ID)%</argument>
             <argument key="$apiKey">%env(ALGOLIA_KEY)%</argument>
         </service>
 
         <service id="searchable.engine" class="Algolia\SearchableBundle\Engine\AlgoliaEngine">
-            <argument type="service" id="algolia.client" />
+            <argument type="service" id="algolia_client" />
         </service>
 
     </services>
