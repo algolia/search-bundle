@@ -191,6 +191,35 @@ class CommentNormalizer implements NormalizerInterface
 }
 ```
 
+## Engine
+
+### The `NullEngine`
+
+The package ships with a NullEngine. This engine implements the `EngineInterface` and return an empty array, zero or null depending on the method.
+
+You can use it for your test for instance but also in dev environment.
+
+### Using another engine
+
+Let's say you want to use the `NullEngine` in your dev environment. You can override the service
+definition in your `config/dev/serices.yaml` this way:
+
+```yaml
+services:
+    searchable.engine:
+        class: Algolia\SearchableBundle\Engine\NullEngine
+```
+
+Or in XML
+
+```xml
+<services>
+    <service id="searchable.engine" class="Algolia\SearchableBundle\Engine\NullEngine" />
+</services>
+```
+
+This is also how you can use a custom engine, to handle another search engine or extend Algolia' default engine.
+
 ## Using the Algolia Client (Advanced)
 
 In some cases, you may want to access the Algolia client directly to perform advanced operations
