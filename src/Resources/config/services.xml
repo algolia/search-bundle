@@ -7,9 +7,9 @@
     <services>
         <service id="searchable.search_indexer_subscriber" class="Algolia\SearchableBundle\EventListener\SearchIndexerSubscriber">
             <argument type="service" id="searchable.index_manager" />
-            <tag name="doctrine_mongodb.odm.event_subscriber" event="postPersist" connection="default" />
             <argument key="$subscribedEvents">%algolia_searchable.doctrineSubscribedEvents%</argument>
             <tag name="doctrine.event_subscriber" connection="default" />
+            <tag name="doctrine_mongodb.odm.event_subscriber" connection="default" />
         </service>
 
         <service id="algolia.client" class="AlgoliaSearch\Client">
