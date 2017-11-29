@@ -2,8 +2,15 @@
 
 This package will help you get your data indexed in a dedicated Search Engine
 
+---
+## New package
+
+Are you looking for the v1 package? It was moved to the [`1.x` branch](https://github.com/algolia/AlgoliaSearchBundle/tree/1.x).
+---
+
 **Table of Contents**
 
+- [Compatibility](#compatibility)
 - [Install](#install)
 - [Configuration](#configuration)
   - [Credentials](#credentials)
@@ -26,6 +33,11 @@ This package will help you get your data indexed in a dedicated Search Engine
 - [Tests](#tests)
   - [About `AlgoliaSyncEngine`](#about-algoliasyncengine)
 
+## Compatibility
+
+This package is compatible with Symfony 3.4 and higher.
+
+If your app runs an older version, you can use the v1, [available on the 1.x branch](https://github.com/algolia/AlgoliaSearchBundle/tree/1.x).
 
 ## Install
 
