@@ -85,13 +85,13 @@ class BaseTest extends TestCase
     {
         if ('algolia' == $engine) {
             $engine = new AlgoliaEngine(new Client(
-                getenv('ALGOLIA_ID'),
-                getenv('ALGOLIA_KEY')
+                getenv('ALGOLIA_APP_ID'),
+                getenv('ALGOLIA_API_KEY')
             ));
         } elseif ('algolia-sync' == $engine) {
             $engine = new AlgoliaSyncEngine(new Client(
-                getenv('ALGOLIA_ID'),
-                getenv('ALGOLIA_KEY')
+                getenv('ALGOLIA_APP_ID'),
+                getenv('ALGOLIA_API_KEY')
             ));
         } else {
             $engine = new NullEngine;

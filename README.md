@@ -76,14 +76,14 @@ algolia_search:
 
 ### Credentials
 
-You will also need to provide Algolia App ID and Admin API key. By default they are loaded from env variables `ALGOLIA_ID` and `ALGOLIA_KEY`.
+You will also need to provide Algolia App ID and Admin API key. By default they are loaded from env variables `ALGOLIA_APP_ID` and `ALGOLIA_API_KEY`.
 
 If you don't use env variable, you can set them in your `parameters.yml`.
 
 ```yml
 parameters:
-    env(ALGOLIA_ID): K7MLRQH1JG
-    env(ALGOLIA_KEY): 0d7036b75416ad0c811f30536134b313
+    env(ALGOLIA_APP_ID): K7MLRQH1JG
+    env(ALGOLIA_API_KEY): 0d7036b75416ad0c811f30536134b313
 ```
 
 ## Search
@@ -308,10 +308,10 @@ class TestController extends Controller
 
 ## Tests
 
-The tests require `ALGOLIA_ID` and `ALGOLIA_KEY` to be defined in the environment variables.
+The tests require `ALGOLIA_APP_ID` and `ALGOLIA_API_KEY` to be defined in the environment variables.
 
 ```
-ALGOLIA_ID=XXXXXXXXXX ALGOLIA_KEY=4b31300d70d70b75811f413366ad0c ./vendor/bin/phpunit
+ALGOLIA_APP_ID=XXXXXXXXXX ALGOLIA_API_KEY=4b31300d70d70b75811f413366ad0c ./vendor/bin/phpunit
 ```
 
 ### About `AlgoliaSyncEngine`
