@@ -1,6 +1,6 @@
 <?php
 
-namespace Algolia\SearchableBundle\Entity;
+namespace Algolia\SearchBundle\Entity;
 
 
 use Doctrine\Common\Collections\ArrayCollection;

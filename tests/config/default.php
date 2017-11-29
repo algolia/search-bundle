@@ -5,10 +5,10 @@ return [
     'nbResults' => 12,
     'indices' => [
         'posts' => [
-            'class' => 'Algolia\SearchableBundle\Entity\Post',
+            'class' => 'Algolia\SearchBundle\Entity\Post',
         ],
         'comments' => [
-            'class' => 'Algolia\SearchableBundle\Entity\Comment',
+            'class' => 'Algolia\SearchBundle\Entity\Comment',
         ],
     ]
 ];

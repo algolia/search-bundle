@@ -1,4 +1,4 @@
-# Symfony Searchable Bundle
+# Symfony Search Bundle
 
 This package will help you get your data indexed in a dedicated Search Engine
 
@@ -69,7 +69,7 @@ algolia_search:
       normalizers:
         - App\Normalizers\CommentNormalizer
         - Symfony\Component\Serializer\Normalizer\CustomNormalizer
-        - Algolia\SearchableBundle\Normalizer\SearchableArrayNormalizer
+        - Algolia\SearchBundle\Normalizer\SearchableArrayNormalizer
 
 ```
 
@@ -243,15 +243,15 @@ definition in your `config/dev/serices.yaml` this way:
 
 ```yaml
 services:
-    searchable.engine:
-        class: Algolia\SearchableBundle\Engine\NullEngine
+    search.engine:
+        class: Algolia\SearchBundle\Engine\NullEngine
 ```
 
 Or in XML
 
 ```xml
 <services>
-    <service id="searchable.engine" class="Algolia\SearchableBundle\Engine\NullEngine" />
+    <service id="search.engine" class="Algolia\SearchBundle\Engine\NullEngine" />
 </services>
 ```
 
@@ -293,7 +293,7 @@ class TestController extends Controller
         $algoliaClient = $this->get('algolia.client');
         var_dump($algoliaClient->listIndexes());
 
-        $indexManager = $this->get('searchable.index_manager');
+        $indexManager = $this->get('search.index_manager');
         $index = $algoliaClient->initIndex(
             $indexManager->getFullIndexName(Post::class)
         );
@@ -320,4 +320,4 @@ if this task is completed or not via another API endpoint.
 
 For test purposes, we use the AlgoliaSyncEngine. It will always wait for task to be completed
 before returning. This engine is only autoloaded during in the tests, if you will to use it in your
-project, you can copy it into your app and modify the `searchable.engine` service definition.
+project, you can copy it into your app and modify the `search.engine` service definition.

@@ -1,14 +1,14 @@
 <?php
 
-namespace Algolia\SearchableBundle;
+namespace Algolia\SearchBundle;
 
-use Algolia\SearchableBundle\Doctrine\NullConnection;
-use Algolia\SearchableBundle\Engine\AlgoliaEngine;
-use Algolia\SearchableBundle\Engine\AlgoliaSyncEngine;
-use Algolia\SearchableBundle\Engine\NullEngine;
-use Algolia\SearchableBundle\Entity\Comment;
+use Algolia\SearchBundle\Doctrine\NullConnection;
+use Algolia\SearchBundle\Engine\AlgoliaEngine;
+use Algolia\SearchBundle\Engine\AlgoliaSyncEngine;
+use Algolia\SearchBundle\Engine\NullEngine;
+use Algolia\SearchBundle\Entity\Comment;
 use AlgoliaSearch\Client;
-use Algolia\SearchableBundle\Entity\Post;
+use Algolia\SearchBundle\Entity\Post;
 use PHPUnit\Framework\TestCase;
 
 class BaseTest extends TestCase

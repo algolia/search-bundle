@@ -1,6 +1,6 @@
 <?php
 
-namespace Algolia\SearchableBundle\Command;
+namespace Algolia\SearchBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -8,12 +8,12 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class SearchableImportCommand extends ContainerAwareCommand
+class SearchImportCommand extends ContainerAwareCommand
 {
     protected function configure()
     {
         $this
-            ->setName('searchable:import')
+            ->setName('search:import')
             ->setDescription('Import given entity into search engine')
             ->addArgument('entities', InputArgument::IS_ARRAY | InputArgument::OPTIONAL, 'Entities to reindex')
             ->addOption('all', false, InputOption::VALUE_NONE, 'Reindex everything?');
@@ -22,7 +22,7 @@ class SearchableImportCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $indexManager = $this->getContainer()->get('searchable.index_manager');
+        $indexManager = $this->getContainer()->get('search.index_manager');
         $doctrine = $this->getContainer()->get('doctrine');
         $entitiesToIndex = $this->getEntitiesToIndex($input, $indexManager);
 
