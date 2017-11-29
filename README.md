@@ -1,35 +1,31 @@
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
-
-- [Symfony Searchable Bundle](#symfony-searchable-bundle)
-  - [Install](#install)
-  - [Configuration](#configuration)
-    - [Credentials](#credentials)
-  - [Search](#search)
-    - [Pagination](#pagination)
-    - [Count](#count)
-    - [Advanced search](#advanced-search)
-  - [Index entities](#index-entities)
-    - [Automatically](#automatically)
-    - [Manually](#manually)
-  - [Normalizers](#normalizers)
-    - [Custom Normalizers](#custom-normalizers)
-      - [Using `normalize` method in entity](#using-normalize-method-in-entity)
-      - [Using a dedicated normalizer](#using-a-dedicated-normalizer)
-  - [Engine](#engine)
-    - [The `NullEngine`](#the-nullengine)
-    - [Using another engine](#using-another-engine)
-  - [Using the Algolia Client (Advanced)](#using-the-algolia-client-advanced)
-    - [Example](#example)
-  - [Tests](#tests)
-    - [About `AlgoliaSyncEngine`](#about-algoliasyncengine)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
 # Symfony Searchable Bundle
 
-This package will help you get your data indexed in Algolia
+This package will help you get your data indexed in a dedicated Search Engine
+
+**Table of Contents**
+
+- [Install](#install)
+- [Configuration](#configuration)
+  - [Credentials](#credentials)
+- [Search](#search)
+  - [Pagination](#pagination)
+  - [Count](#count)
+  - [Advanced search](#advanced-search)
+- [Index entities](#index-entities)
+  - [Automatically](#automatically)
+  - [Manually](#manually)
+- [Normalizers](#normalizers)
+  - [Custom Normalizers](#custom-normalizers)
+    - [Using `normalize` method in entity](#using-normalize-method-in-entity)
+    - [Using a dedicated normalizer](#using-a-dedicated-normalizer)
+- [Engine](#engine)
+  - [The `NullEngine`](#the-nullengine)
+  - [Using another engine](#using-another-engine)
+- [Using the Algolia Client (Advanced)](#using-the-algolia-client-advanced)
+  - [Example](#example)
+- [Tests](#tests)
+  - [About `AlgoliaSyncEngine`](#about-algoliasyncengine)
+
 
 ## Install
 
