@@ -3,9 +3,10 @@
 This package will help you get your data indexed in a dedicated Search Engine
 
 ---
-## New package
+### New package
 
 Are you looking for the v1 package? It was moved to the [`1.x` branch](https://github.com/algolia/AlgoliaSearchBundle/tree/1.x).
+
 ---
 
 **Table of Contents**
@@ -50,7 +51,7 @@ composer req search
 Otherwise
 
 ```
-composer require algolia/searchable-bundle
+composer require algolia/search-bundle
 ```
 
 ## Configuration
