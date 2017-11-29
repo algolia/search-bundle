@@ -13,7 +13,7 @@ class AlgoliaEngine implements EngineInterface
 
     public function __construct(Client $algolia)
     {
-        Version::addSuffixUserAgentSegment('Symfony Search Bundle', '2.0.0-BETA');
+        Version::addSuffixUserAgentSegment('Symfony Search Bundle', '3.0.0-BETA');
 
         $this->algolia = $algolia;
     }
