@@ -35,7 +35,7 @@ class AlgoliaSearchExtension extends Extension
 
         $container->setParameter('algolia_search.doctrineSubscribedEvents', $config['doctrineSubscribedEvents']);
 
-        $container->setDefinition('search.index_manager', new Definition(
+        $indexManagerDefinition = (new Definition(
             IndexManager::class,
             [
                 new Reference('search.engine'),
@@ -43,6 +43,8 @@ class AlgoliaSearchExtension extends Extension
                 $prefix,
                 $config['nbResults']
             ]
-        ));
+        ))->setPublic(true);
+
+        $container->setDefinition('search.index_manager', $indexManagerDefinition);
     }
 }
