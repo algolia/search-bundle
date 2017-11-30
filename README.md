@@ -5,7 +5,7 @@ This package will help you get your data indexed in a dedicated Search Engine
 ---
 ### New package
 
-You're looking at the new major version of this package. If your looking for the previous one, it was moved to the [`2.x` branch](https://github.com/algolia/AlgoliaSearchBundle/tree/2.x).
+You're looking at the new major version of this package. If your looking for the previous one, it was moved to the [`2.x` branch](https://github.com/algolia/search-bundle/tree/2.x).
 
 ---
 
@@ -38,17 +38,11 @@ You're looking at the new major version of this package. If your looking for the
 
 This package is compatible with Symfony 3.4 and higher.
 
-If your app runs an older version, you can use the previous version, [available on the 2.x branch](https://github.com/algolia/AlgoliaSearchBundle/tree/1.x).
+If your app runs an older version, you can use the previous version, [available on the 2.x branch](https://github.com/algolia/search-bundle/tree/2.x).
 
 ## Install
 
-With Symfony Flex:
-
-```
-composer req search
-```
-
-Otherwise
+With composer
 
 ```
 composer require algolia/search-bundle
