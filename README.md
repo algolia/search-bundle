@@ -5,7 +5,7 @@ This package will help you get your data indexed in a dedicated Search Engine
 ---
 ### New package
 
-Are you looking for the v1 package? It was moved to the [`1.x` branch](https://github.com/algolia/AlgoliaSearchBundle/tree/1.x).
+You're looking at the new major version of this package. If your looking for the previous one, it was moved to the [`2.x` branch](https://github.com/algolia/AlgoliaSearchBundle/tree/2.x).
 
 ---
 
@@ -38,7 +38,7 @@ Are you looking for the v1 package? It was moved to the [`1.x` branch](https://g
 
 This package is compatible with Symfony 3.4 and higher.
 
-If your app runs an older version, you can use the v1, [available on the 1.x branch](https://github.com/algolia/AlgoliaSearchBundle/tree/1.x).
+If your app runs an older version, you can use the previous version, [available on the 2.x branch](https://github.com/algolia/AlgoliaSearchBundle/tree/1.x).
 
 ## Install
 
