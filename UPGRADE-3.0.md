@@ -87,7 +87,7 @@ algolia_search:
 ```yml
 // config_dev.yml
 algolia_search:
-# not possible ATM
+    prefix: dev_
 ```
 
 Mapping
