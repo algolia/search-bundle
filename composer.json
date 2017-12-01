@@ -1,5 +1,6 @@
 {
     "name": "algolia/search-bundle",
+    "description": "Provides search feature through algolia such as searching and managing the cycle life of search object (indexing, delete indexes...)"
     "type": "symfony-bundle",
     "license": "MIT",
     "authors": [
@@ -12,12 +13,11 @@
             "email": "contact@algolia.com"
         }
     ],
-    "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
         "algolia/algoliasearch-client-php": "^1.23",
-        "symfony/serializer": "^3.4-RC2 || ^4.0-RC2",
-        "symfony/property-access": "^3.4-RC2 || ^4.0-RC2"
+        "symfony/serializer": "^3.4.0||^4.0.0",
+        "symfony/property-access": "^3.4.0||^4.0.0"
     },
     "autoload": {
         "psr-4": {
@@ -30,10 +30,10 @@
         }
     },
     "require-dev": {
-        "symfony/framework-bundle": "^3.4-RC2 || ^4.0-RC2",
+        "symfony/framework-bundle": "^3.4.0||^4.0.0",
         "phpunit/phpunit": "^5.7",
         "doctrine/doctrine-bundle": "^1.7",
-        "symfony/doctrine-bridge": "^3.4-RC2 || ^4.0-RC2",
+        "symfony/doctrine-bridge": "^3.4.0||^4.0.0",
         "doctrine/orm": "^2.5",
         "symfony/var-dumper": "^3.3"
     }
