@@ -85,7 +85,7 @@ parameters:
 In this example we'll search for posts.
 
 ```php
-$em = $this->getDoctrine()->getManager();
+$em           = $this->getDoctrine()->getManager();
 $indexManager = $this->get('search.index_manager');
 
 $posts = $indexManager->search('query', Post::class, $em);
@@ -107,7 +107,7 @@ $posts = $indexManager->rawSearch('query', Post::class);
 To get a specific page, define the `page` (and `nbResults` if you want).
 
 ```php
-$em = $this->getDoctrine()->getManager();
+$em           = $this->getDoctrine()->getManager();
 $indexManager = $this->get('search.index_manager');
 
 $posts = $indexManager->search('query', Post::class, $em, 2);
@@ -131,9 +131,7 @@ Pass anything you want in the `parameters` array. You can pass it in any search-
 ```php
 $indexManager = $this->get('search.index_manager');
 
-$posts = $indexManager->count('query', Post::class, 0, 10, [
-		'filters' => 'comment_count>10'
-]);
+$posts = $indexManager->count('query', Post::class, 0, 10, ['filters' => 'comment_count>10']);
 ```
 
 
@@ -148,9 +146,9 @@ The bundle will listen to `postPersist` and `preRemove` doctrine events to keep 
 If you want to update a post manually, you can get the `IndexManager` from the container and call the `index` method manually.
 
 ```php
-$em = $this->getDoctrine()->getManager();
+$em           = $this->getDoctrine()->getManager();
 $indexManager = $this->get('search.index_manager');
-$post = $em->getRepository(Post::class)->findBy(['author' => 1]);
+$post         = $em->getRepository(Post::class)->findBy(['author' => 1]);
 
 $indexManager->index($post, $em);
 
@@ -160,7 +158,7 @@ $indexManager->index($post, $em);
 
 By default all entities are converted to an array with the `Algolia\SearchBundle\Normalizer\SearchableArrayNormalizer`.
 
-It converts the entity WITHOUT the relationships. And convert DateTime object to timestamps.
+**It converts the entity WITHOUT the relationships**. And convert DateTime object to timestamps.
 
 You can define as many normalizers as you want. Symfony will use the first one to support your entity or format.
 
@@ -178,14 +176,14 @@ To define the `normalize` method in the entity class.
 **Example**
 
 ```php
-public function normalize(NormalizerInterface $normalizer, $format = null, array $context = array()): array
-{
-	return [
-		'title' => $this->getTitle(),
-		'content' => $this->getContent(),
-		'author' => $this->getAuthor()->getFullName(),
-	];
-}
+  public function normalize(NormalizerInterface $normalizer, $format = null, array $context = []): array
+  {
+      return [
+          'title'   => $this->getTitle(),
+          'content' => $this->getContent(),
+          'author'  => $this->getAuthor()->getFullName(),
+      ];
+  }
 ```
 
 
@@ -197,7 +195,6 @@ If you prefer, you can create a custom normalizer for any entity. The following 
 <?php
 
 namespace App\Normalizers;
-
 
 use App\Entity\Comment;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
@@ -211,7 +208,7 @@ class CommentNormalizer implements NormalizerInterface
     {
         return [
             'post_id' => $object->getPost()->getId(),
-            'author' => $object->getAuthor()->getFullName(),
+            'author'  => $object->getAuthor()->getFullName(),
             'content' => $object->getContent(),
         ];
     }
