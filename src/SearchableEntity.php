@@ -2,24 +2,24 @@
 
 namespace Algolia\SearchBundle;
 
-use Algolia\SearchBundle\Normalizer\SearchableArrayNormalizer;
 use Symfony\Component\Config\Definition\Exception\Exception;
-use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 class SearchableEntity implements SearchableEntityInterface
 {
-    private $id;
     protected $indexName;
     protected $entity;
     protected $entityMetadata;
-    protected $normalizers;
 
-    public function __construct($indexName, $entity, $entityMetadata, array $normalizers = [])
+    private $id;
+    private $normalizer;
+
+    public function __construct($indexName, $entity, $entityMetadata, NormalizerInterface $normalizer)
     {
-        $this->indexName = $indexName;
-        $this->entity = $entity;
+        $this->indexName      = $indexName;
+        $this->entity         = $entity;
         $this->entityMetadata = $entityMetadata;
-        $this->normalizers = $normalizers ?? [new SearchableArrayNormalizer()];
+        $this->normalizer     = $normalizer;
 
         $this->setId();
     }
@@ -31,9 +31,7 @@ class SearchableEntity implements SearchableEntityInterface
 
     public function getSearchableArray()
     {
-        $serializer = new Serializer($this->normalizers);
-
-        return $serializer->normalize($this->entity, 'searchableArray', [
+        return $this->normalizer->normalize($this->entity, SearchFormat::NORMALIZATION_FORMAT, [
             'fieldsMapping' => $this->entityMetadata->fieldMappings,
         ]);
     }
