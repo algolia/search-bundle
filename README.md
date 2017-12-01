@@ -61,11 +61,6 @@ algolia_search:
 
     - name: comments
       class: App\Entity\Comment
-      normalizers:
-        - App\Normalizers\CommentNormalizer
-        - Symfony\Component\Serializer\Normalizer\CustomNormalizer
-        - Algolia\SearchBundle\Normalizer\SearchableArrayNormalizer
-
 ```
 
 ### Credentials
@@ -158,15 +153,93 @@ $indexManager->index($post, $em);
 
 ## Normalizers
 
-By default all entities are converted to an array with the `Algolia\SearchBundle\Normalizer\SearchableArrayNormalizer`.
+By default all entities are converted to an array with the built-in (Symfony Normalizers)[https://symfony.com/doc/current/components/serializer.html#normalizers] 
+(GetSetMethodNormalizer, DateTimeNormalizer, ObjectNormalizer...) which should be enough for simple use case, but we encourage you to write your own Normalizer to have more control on what you send to Algolia or to simply avoid (circular references)[https://symfony.com/doc/current/components/serializer.html#handling-circular-references].
 
-It converts the entity WITHOUT the relationships. And convert DateTime object to timestamps.
-
-You can define as many normalizers as you want. Symfony will use the first one to support your entity or format.
+Symfony will use the first one to support your entity or format.
 
 Note that the normalizer is called with _searchableArray_ format.
 
 ### Custom Normalizers
+
+#### Using a dedicated normalizer
+
+You can create a custom normalizer for any entity. The following snippet shows a simple CommentNormalizer. Normalizer must implement `Symfony\Component\Serializer\Normalizer\NormalizerInterface` interface.
+
+```php
+<?php
+
+namespace App\Serializer\Normalizers;
+
+use App\Entity\Comment;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+
+class CommentNormalizer implements NormalizerInterface, SerializerAwareInterface
+{
+    use SerializerAwareTrait;
+    
+    /**
+     * Normalizes an Comment into a set of arrays/scalars.
+     */
+    public function normalize($object, $format = null, array $context = array())
+    {
+        return [
+            'post_id'   => $object->getPost()->getId(),
+            'content'   => $object->getContent(),
+            'createdAt' => $this->serializer->normalize($object->getCreatedAt(), $format, $context),
+            'author'    => $this->serializer->normalize($object->getAuthor(), $format, $context),
+        ];
+    }
+
+    public function supportsNormalization($data, $format = null)
+    {
+        return $data instanceof Comment;
+    }
+}
+```
+
+```php
+<?php
+
+namespace App\Serializer\Normalizers;
+
+use App\Entity\User;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+
+class UserNormalizer implements NormalizerInterface
+{
+    /**
+     * Normalizes an Comment into a set of arrays/scalars.
+     */
+    public function normalize($object, $format = null, array $context = array())
+    {
+        return [
+            'username' => $object->getUsername(),
+            'id'       => $object->getAuthor()->getFullName(),
+        ];
+    }
+
+    public function supportsNormalization($data, $format = null)
+    {
+        return $data instanceof User;
+    }
+}
+```
+
+Dont forget to create the new services for your newly created `Normalizers`. You can find an example on the 
+(Symfony documentation)[http://symfony.com/doc/current/serializer.html#adding-normalizers-and-encoders].
+
+In our case, it will be:
+
+```xml
+<service id="comment_normalizer" class="App\Serializer\Normalizer\CommentNormalizer" public="false">
+    <tag name="serializer.normalizer" />
+</service>
+<service id="comment_normalizer" class="App\Serializer\Normalizer\UserNormalizer" public="false">
+    <tag name="serializer.normalizer" />
+</service>
+```
+
 
 #### Using `normalize` method in entity
 
@@ -178,50 +251,63 @@ To define the `normalize` method in the entity class.
 **Example**
 
 ```php
+<?php
+
 public function normalize(NormalizerInterface $normalizer, $format = null, array $context = array()): array
 {
 	return [
-		'title' => $this->getTitle(),
+		'title'   => $this->getTitle(),
 		'content' => $this->getContent(),
-		'author' => $this->getAuthor()->getFullName(),
+		'author'  => $this->getAuthor()->getFullName(),
 	];
 }
 ```
 
+#### Create Normalizer for Algolia\SearchBundle only
 
-#### Using a dedicated normalizer
+Sometimes, you want to create a specific `Normalizer` just to send data to Algolia. But what happens if you have 2 normalizers for the same class ?
+Well you can add a condition so your `Normalizer` will only be called when Indexing through Algolia.
 
-If you prefer, you can create a custom normalizer for any entity. The following snippet shows a simple CommentNormalizer. Normalizer must implement `Symfony\Component\Serializer\Normalizer\NormalizerInterface` interface.
-
+When you create your `Normalizers`, you can add an additionnal check for the format :
 ```php
-<?php
+use Algolia\SearchBundle\SearchFormat; 
 
-namespace App\Normalizers;
-
-
-use App\Entity\Comment;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-
-class CommentNormalizer implements NormalizerInterface
+class UserNormalizer implements NormalizerInterface
 {
-    /**
-     * Normalizes an Comment into a set of arrays/scalars.
-     */
-    public function normalize($object, $format = null, array $context = array())
-    {
-        return [
-            'post_id' => $object->getPost()->getId(),
-            'author' => $object->getAuthor()->getFullName(),
-            'content' => $object->getContent(),
-        ];
-    }
+    ... 
 
     public function supportsNormalization($data, $format = null)
     {
-        return $data instanceof Comment;
+        return $data instanceof User && $format == SearchFormat::NORMALIZATION_FORMAT;
     }
 }
 ```
+
+Though it's not really encouraged to add this kind of logic inside the normalize method, you could also add/remove some specific fields on your entity for Algolia this way:
+
+```php
+<?php 
+use Algolia\SearchBundle\SearchFormat; 
+
+class UserNormalizer implements NormalizerInterface
+{
+    public function normalize($object, $format = null, array $context = array())
+    {
+        if ($format == SearchFormat::NORMALIZATION_FORMAT) {
+            // 'id' of user will be provided only in Algolia usage
+            return ['id' => $object->getId()];
+        }
+        
+        return [
+            'username' => $object->getUsername(),
+            'email'    => $object->getEmail(),
+        ];
+    }
+    
+    ...
+}
+```
+
 
 ## Engine
 
