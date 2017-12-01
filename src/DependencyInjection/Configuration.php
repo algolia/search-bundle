@@ -40,9 +40,6 @@ class Configuration implements ConfigurationInterface
                                 ->isRequired()
                                 ->cannotBeEmpty()
                             ->end()
-                            ->arrayNode('normalizers')
-                                ->scalarPrototype()->end()
-                            ->end()
                         ->end()
                     ->end()
                 ->end() // indices

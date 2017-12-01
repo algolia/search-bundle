@@ -2,32 +2,30 @@
 
 namespace Algolia\SearchBundle;
 
-
 use Algolia\SearchBundle\Engine\EngineInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\Util\ClassUtils;
 use Symfony\Component\Config\Definition\Exception\Exception;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 class IndexManager implements IndexingManagerInterface, SearchManagerInterface
 {
     protected $engine;
-
     protected $indexConfiguration;
-
     protected $prefix;
-
     protected $nbResults;
 
     private $searchableEntities;
-
     private $classToIndexMapping;
+    private $normalizer;
 
-    public function __construct(EngineInterface $engine, array $indexConfiguration, $prefix, $nbResults)
+    public function __construct(NormalizerInterface $normalizer, EngineInterface $engine, array $indexConfiguration, $prefix, $nbResults)
     {
-        $this->engine = $engine;
+        $this->engine             = $engine;
         $this->indexConfiguration = $indexConfiguration;
-        $this->prefix = $prefix;
-        $this->nbResults = $nbResults;
+        $this->prefix             = $prefix;
+        $this->nbResults          = $nbResults;
+        $this->normalizer         = $normalizer;
 
         $this->setSearchableEntities();
         $this->setClassToIndexMapping();
@@ -64,7 +62,7 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
                     $this->getFullIndexName($className),
                     $entity,
                     $objectManager->getClassMetadata($className),
-                    $this->getNormalizer($className)
+                    $this->normalizer
                 );
             }
 
@@ -90,7 +88,7 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
                     $this->getFullIndexName($className),
                     $entity,
                     $objectManager->getClassMetadata($className),
-                    $this->getNormalizer($className)
+                    $this->normalizer
                 );
             }
 
@@ -117,7 +115,7 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
     {
         $this->assertIsSearchable($className);
 
-        if (! is_int($nbResults)) {
+        if (!is_int($nbResults)) {
             $nbResults = $this->nbResults;
         }
 
@@ -136,7 +134,7 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
     {
         $this->assertIsSearchable($className);
 
-        if (! is_int($nbResults)) {
+        if (!is_int($nbResults)) {
             $nbResults = $this->nbResults;
         }
 
@@ -176,18 +174,9 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
         return $this->prefix.$this->classToIndexMapping[$className];
     }
 
-    private function getNormalizer($className)
-    {
-        if (isset($this->indexConfiguration[$this->classToIndexMapping[$className]]['normalizers'])) {
-            return $this->indexConfiguration[$this->classToIndexMapping[$className]]['normalizers'];
-        }
-
-        return [];
-    }
-
     private function assertIsSearchable($className)
     {
-        if (! $this->isSearchable($className)) {
+        if (!$this->isSearchable($className)) {
             throw new Exception('Class '.$className.' is not searchable.');
         }
     }

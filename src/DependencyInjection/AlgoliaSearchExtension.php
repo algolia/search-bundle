@@ -38,6 +38,7 @@ class AlgoliaSearchExtension extends Extension
         $indexManagerDefinition = (new Definition(
             IndexManager::class,
             [
+                new Reference('serializer'),
                 new Reference('search.engine'),
                 $config['indices'],
                 $prefix,
