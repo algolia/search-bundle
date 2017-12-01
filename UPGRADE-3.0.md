@@ -87,9 +87,7 @@ algolia_search:
 ```yml
 // config_dev.yml
 algolia_search:
-    indices:
-        - name: posts_dev
-          class: App\Entity\Post
+# not possible ATM
 ```
 
 Mapping
