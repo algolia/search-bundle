@@ -21,6 +21,9 @@
             <argument type="service" id="algolia_client" />
         </service>
 
+        <service id="algolia_searchable_array_normalizer" class="Algolia\SearchBundle\Normalizer\SearchableArrayNormalizer" public="true">
+        </service>
+
     </services>
 
 </container>

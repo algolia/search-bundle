@@ -62,9 +62,10 @@ algolia_search:
     - name: comments
       class: App\Entity\Comment
       normalizers:
-        - App\Normalizers\CommentNormalizer
-        - Symfony\Component\Serializer\Normalizer\CustomNormalizer
-        - Algolia\SearchBundle\Normalizer\SearchableArrayNormalizer
+        # service id of normalizers
+        - comment_normalizer
+        - datetime_normalizer
+        - algolia_searchable_array_normalizer
 
 ```
 
@@ -222,6 +223,8 @@ class CommentNormalizer implements NormalizerInterface
     }
 }
 ```
+
+You have to register your normalizer as a service and expose your service a a public one. (`public=true`)
 
 ## Engine
 

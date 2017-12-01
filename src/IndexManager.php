@@ -196,6 +196,11 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
             $normalizerServices[] = $this->container->get($normalizerServiceId);
         }
 
+        // if no normalizer service found, we grab the default normalizer
+        if (count($normalizerServices) == 0) {
+            $normalizerServices = $this->container->get('algolia_searchable_array_normalizer');
+        }
+
         return $normalizerServices;
     }
 
