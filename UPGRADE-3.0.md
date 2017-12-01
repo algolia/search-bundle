@@ -74,3 +74,19 @@ After:
 protected $description;
 ```
 
+
+Command
+-------
+
+The indexation command has been renamed.
+
+Before:
+```
+bin/console algolia:reindex
+```
+
+After:
+```
+bin/console search:import
+```
+
