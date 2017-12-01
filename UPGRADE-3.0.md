@@ -50,6 +50,21 @@ algolia_search:
           class: App\Entity\Post
 ```
 
+Note that if you previously had a `prefix` configured, you have to change the prefix:
+
+Before:
+
+```yml
+algolia:
+    prefix: foo
+```
+
+After:
+
+```yml
+algolia_search:
+    prefix: foo_
+```
 
 Mapping
 ------- 
@@ -89,4 +104,6 @@ After:
 ```
 bin/console search:import
 ```
+
+
 
