@@ -226,6 +226,15 @@ class CommentNormalizer implements NormalizerInterface
 
 You have to register your normalizer as a service and expose your service a a public one. (`public=true`)
 
+If you want to use built-in `Normalizer` from Symfony, you have to redefine their service to expose them as public:
+
+```xml
+<service public="true" id="serializer.normalizer.datetime" class="Symfony\Component\Serializer\Normalizer\DateTimeNormalizer">
+      <!-- Run before serializer.normalizer.object -->
+      <tag name="serializer.normalizer" priority="-910" />
+</service>
+```
+
 ## Engine
 
 ### The `NullEngine`
