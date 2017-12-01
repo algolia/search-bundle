@@ -66,11 +66,37 @@ algolia_search:
     prefix: foo_
 ```
 
+The "Per environment indexing" was dropped. If you relied on this to separate your index (ex: prod vs dev) you need to apply this changes:
+
+Before:
+
+```yml
+# the per environment indexing feature was enabled by default
+```
+
+After:
+
+```yml
+// config.yml
+algolia_search:
+    indices:
+        - name: posts
+          class: App\Entity\Post
+```
+
+```yml
+// config_dev.yml
+algolia_search:
+    indices:
+        - name: posts_dev
+          class: App\Entity\Post
+```
+
 Mapping
 ------- 
 
 The data is normalized using the Symfony Serializer component. You should read the [documentation](README.md) to learn how to create/use normalizer.
-Because of that change, you have to remove all annotations you previously put on your entities.
+Because of that change, you have to **remove all `@Algolia` annotations** you previously put on your entities.
 
 Before:
 ```php
