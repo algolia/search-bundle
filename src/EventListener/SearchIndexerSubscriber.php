@@ -2,7 +2,6 @@
 
 namespace Algolia\SearchBundle\EventListener;
 
-
 use Algolia\SearchBundle\IndexManager;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
@@ -39,13 +38,17 @@ class SearchIndexerSubscriber implements EventSubscriber
         $object = $args->getObject();
         $objectManager = $args->getObjectManager();
 
-        $this->indexManager->index($object, $objectManager);
+        if ($this->indexManager->isSearchable($object)) {
+            $this->indexManager->index($object, $objectManager);
+        }
     }
 
     public function preRemove(LifecycleEventArgs $args)
     {
         $object = $args->getObject();
 
-        $this->indexManager->remove($object, $args->getObjectManager());
+        if ($this->indexManager->isSearchable($object)) {
+            $this->indexManager->remove($object, $args->getObjectManager());
+        }
     }
 }
