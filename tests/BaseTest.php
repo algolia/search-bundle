@@ -56,7 +56,8 @@ class BaseTest extends TestCase
         return new SearchableEntity(
             $config['prefix'].'posts',
             $post,
-            $om->getClassMetadata(Post::class)
+            $om->getClassMetadata(Post::class),
+            $this->container->get('serializer')
         );
     }
 

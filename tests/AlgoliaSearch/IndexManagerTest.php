@@ -31,7 +31,7 @@ class IndexManagerTest extends BaseTest
         $indexManager->index(new Post, $om);
     }
 
-    public function testNonPersistedDataAreIndexed()
+    public function testIndexedDataAreSearchable()
     {
         $om = $this->getObjectManager();
         $indexManager = $this->createIndexManager('algolia-sync');
