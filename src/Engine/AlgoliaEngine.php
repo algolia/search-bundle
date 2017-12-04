@@ -25,7 +25,7 @@ class AlgoliaEngine implements EngineInterface
 
     public function update($searchableEntities)
     {
-        if ($searchableEntities instanceof SearchableEntityInterface) {
+        if ($searchableEntities instanceof SearchableEntityInterface && !empty($searchableEntities->getSearchableArray())) {
             return [
                 $searchableEntities->getIndexName() => $this->algolia
                     ->initIndex($searchableEntities->getIndexName())
@@ -40,7 +40,7 @@ class AlgoliaEngine implements EngineInterface
 
     public function remove($searchableEntities)
     {
-        if ($searchableEntities instanceof SearchableEntityInterface) {
+        if ($searchableEntities instanceof SearchableEntityInterface && !empty($searchableEntities->getSearchableArray())) {
             return [
                 $searchableEntities->getIndexName() => $this->algolia
                     ->initIndex($searchableEntities->getIndexName())
@@ -93,6 +93,10 @@ class AlgoliaEngine implements EngineInterface
     {
         $data = [];
         foreach ($searchableEntities as $entity) {
+            if (empty($entity->getSearchableArray())) {
+                continue;
+            }
+
             $indexName = $entity->getIndexName();
 
             if (! isset($data[$indexName])) {
@@ -118,6 +122,9 @@ class AlgoliaEngine implements EngineInterface
     {
         $data = [];
         foreach ($searchableEntities as $entity) {
+            if (empty($entity->getSearchableArray())) {
+                continue;
+            }
             $indexName = $entity->getIndexName();
 
             if (! isset($data[$indexName])) {
