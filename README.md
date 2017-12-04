@@ -27,6 +27,7 @@ You're looking at the new major version of this package. If your looking for the
     - [Using a dedicated normalizer](#using-a-dedicated-normalizer)
     - [Using `normalize` method in entity](#using-normalize-method-in-entity)
     - [Create Normalizer for `Algolia\SearchBundle` only](#create-normalizer-for-algoliasearchbundle-only)
+  - [Using `@Groups` annotation](#leveraging-group)
 - [Engine](#engine)
   - [The `NullEngine`](#the-nullengine)
   - [Using another engine](#using-another-engine)
@@ -225,7 +226,7 @@ class UserNormalizer implements NormalizerInterface
 }
 ```
 
-Don't forget to create the new services for your newly created `Normalizers`. You can find an example on the 
+Don't forget to create the new services for your newly created `Normalizers` (if you don't rely on autowiring). You can find an example on the 
 (Symfony documentation)[http://symfony.com/doc/current/serializer.html#adding-normalizers-and-encoders].
 
 In our case, it will be:
@@ -271,7 +272,7 @@ When you create your `Normalizers`, you can add an additionnal check for the for
 ```php
 <?php
 
-use Algolia\SearchBundle\SearchFormat; 
+use Algolia\SearchBundle\Searchable; 
 
 class UserNormalizer implements NormalizerInterface
 {
@@ -279,7 +280,7 @@ class UserNormalizer implements NormalizerInterface
 
     public function supportsNormalization($data, $format = null)
     {
-        return $data instanceof User && $format == SearchFormat::NORMALIZATION_FORMAT;
+        return $data instanceof User && $format == Searchable::NORMALIZATION_FORMAT;
     }
 }
 ```
@@ -289,13 +290,13 @@ Though it's not really encouraged to add this kind of logic inside the normalize
 ```php
 <?php 
 
-use Algolia\SearchBundle\SearchFormat; 
+use Algolia\SearchBundle\Searchable; 
 
 class UserNormalizer implements NormalizerInterface
 {
     public function normalize($object, $format = null, array $context = array())
     {
-        if ($format == SearchFormat::NORMALIZATION_FORMAT) {
+        if ($format == Searchable::NORMALIZATION_FORMAT) {
             // 'id' of user will be provided only in Algolia usage
             return ['id' => $object->getId()];
         }
@@ -310,6 +311,44 @@ class UserNormalizer implements NormalizerInterface
 }
 ```
 
+### Leveraging groups
+
+You can also rely on (`@Group` annotation)[https://symfony.com/doc/current/components/serializer.html].
+The name of the group is `searchable`.
+
+In the example below, `$comment`, `$author` and `$createdAt` data will be sent to Algolia.
+
+```php
+<?php
+
+namespace App\Entity;
+
+use Symfony\Component\Serializer\Annotation\Groups;
+
+class Comment
+{
+    public $createdAt;
+    public $reviewer;
+
+    /**
+     * @Groups({"searchable"})
+     */
+    public $comment;
+    
+    /**
+     * @Groups({"searchable"})
+     */
+    public $author;
+    
+    /**
+     * @Groups({"searchable"})
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+}
+```
 
 ## Engine
 

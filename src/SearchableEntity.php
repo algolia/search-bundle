@@ -31,9 +31,9 @@ class SearchableEntity implements SearchableEntityInterface
 
     public function getSearchableArray()
     {
-        return $this->normalizer->normalize($this->entity, SearchFormat::NORMALIZATION_FORMAT, [
+        return $this->normalizer->normalize($this->entity, Searchable::NORMALIZATION_FORMAT, [
             'fieldsMapping' => $this->entityMetadata->fieldMappings,
-        ]);
+        ], ['groups' => [Searchable::NORMALIZATION_GROUP]]);
     }
 
     private function setId()
