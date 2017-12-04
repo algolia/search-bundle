@@ -66,6 +66,8 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
                     $objectManager->getClassMetadata($className),
                     $this->getNormalizer($className)
                 );
+
+                $objectManager->detach($entity);
             }
 
             $this->engine->update($searchableEntities);
@@ -92,6 +94,8 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
                     $objectManager->getClassMetadata($className),
                     $this->getNormalizer($className)
                 );
+
+                $objectManager->detach($entity);
             }
 
             $this->engine->delete($searchableEntities);
