@@ -29,7 +29,7 @@ class BaseTest extends TestCase
 
         $engine = $this->createEngine($engine);
 
-        $indexManager = new IndexManager($engine, $config['indices'], $config['prefix'], $config['nbResults']);
+        $indexManager = new IndexManager($this->container->get('serializer'), $engine, $config['indices'], $config['prefix'], $config['nbResults']);
 
         return $indexManager;
     }
@@ -40,7 +40,7 @@ class BaseTest extends TestCase
         $post->setTitle('Test');
         $post->setContent('Test content');
 
-        if (! is_null($id)) {
+        if (!is_null($id)) {
             $post->setId($id);
         }
 
@@ -56,7 +56,8 @@ class BaseTest extends TestCase
         return new SearchableEntity(
             $config['prefix'].'posts',
             $post,
-            $om->getClassMetadata(Post::class)
+            $om->getClassMetadata(Post::class),
+            $this->container->get('serializer')
         );
     }
 
@@ -65,7 +66,7 @@ class BaseTest extends TestCase
         $comment = new Comment;
         $comment->setContent('Comment content');
 
-        if (! is_null($id)) {
+        if (!is_null($id)) {
             $comment->setId($id);
         }
 

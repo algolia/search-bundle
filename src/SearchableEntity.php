@@ -2,24 +2,26 @@
 
 namespace Algolia\SearchBundle;
 
-use Algolia\SearchBundle\Normalizer\SearchableArrayNormalizer;
 use Symfony\Component\Config\Definition\Exception\Exception;
-use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 class SearchableEntity implements SearchableEntityInterface
 {
-    private $id;
     protected $indexName;
     protected $entity;
     protected $entityMetadata;
-    protected $normalizers;
+    protected $useSerializerGroups;
 
-    public function __construct($indexName, $entity, $entityMetadata, array $normalizers = [])
+    private $id;
+    private $normalizer;
+
+    public function __construct($indexName, $entity, $entityMetadata, NormalizerInterface $normalizer, array $extra = [])
     {
-        $this->indexName = $indexName;
-        $this->entity = $entity;
-        $this->entityMetadata = $entityMetadata;
-        $this->normalizers = $normalizer ?? [new SearchableArrayNormalizer()];
+        $this->indexName           = $indexName;
+        $this->entity              = $entity;
+        $this->entityMetadata      = $entityMetadata;
+        $this->normalizer          = $normalizer;
+        $this->useSerializerGroups = isset($extra['useSerializerGroup']) && $extra['useSerializerGroup'];
 
         $this->setId();
     }
@@ -31,11 +33,15 @@ class SearchableEntity implements SearchableEntityInterface
 
     public function getSearchableArray()
     {
-        $serializer = new Serializer($this->normalizers);
-
-        return $serializer->normalize($this->entity, 'searchableArray', [
+        $context = [
             'fieldsMapping' => $this->entityMetadata->fieldMappings,
-        ]);
+        ];
+
+        if ($this->useSerializerGroups) {
+            $context['groups'] = [Searchable::NORMALIZATION_GROUP];
+        }
+
+        return $this->normalizer->normalize($this->entity, Searchable::NORMALIZATION_FORMAT, $context);
     }
 
     private function setId()

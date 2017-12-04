@@ -25,13 +25,14 @@ class AlgoliaEngine implements EngineInterface
 
     public function update($searchableEntities)
     {
-        if ($searchableEntities instanceof SearchableEntityInterface && !empty($searchableEntities->getSearchableArray())) {
+        if (
+            $searchableEntities instanceof SearchableEntityInterface
+            && !empty($record = $searchableEntities->getSearchableArray())
+        ) {
             return [
                 $searchableEntities->getIndexName() => $this->algolia
                     ->initIndex($searchableEntities->getIndexName())
-                    ->addObject(
-                        $searchableEntities->getSearchableArray(), $searchableEntities->getId()
-                    )
+                    ->addObject($record, $searchableEntities->getId())
             ];
         }
 
@@ -40,7 +41,7 @@ class AlgoliaEngine implements EngineInterface
 
     public function remove($searchableEntities)
     {
-        if ($searchableEntities instanceof SearchableEntityInterface && !empty($searchableEntities->getSearchableArray())) {
+        if ($searchableEntities instanceof SearchableEntityInterface) {
             return [
                 $searchableEntities->getIndexName() => $this->algolia
                     ->initIndex($searchableEntities->getIndexName())
