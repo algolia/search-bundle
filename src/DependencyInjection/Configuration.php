@@ -41,6 +41,7 @@ class Configuration implements ConfigurationInterface
                                 ->cannotBeEmpty()
                             ->end()
                             ->booleanNode('enable_serializer_groups')
+                                ->info('When set to true, it will call normalize method with an extra groups parameter "groups" => [Searchable::NORMALIZATION_GROUP]')
                                 ->defaultFalse()
                             ->end()
                         ->end()

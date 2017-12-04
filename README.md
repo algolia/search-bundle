@@ -27,7 +27,7 @@ You're looking at the new major version of this package. If your looking for the
     - [Using a dedicated normalizer](#using-a-dedicated-normalizer)
     - [Using `normalize` method in entity](#using-normalize-method-in-entity)
     - [Create Normalizer for `Algolia\SearchBundle` only](#create-normalizer-for-algoliasearchbundle-only)
-  - [Using `@Groups` annotation](#leveraging-group)
+  - [Using `@Groups` annotation](#using-normalizer-groups)
 - [Engine](#engine)
   - [The `NullEngine`](#the-nullengine)
   - [Using another engine](#using-another-engine)
@@ -63,6 +63,7 @@ algolia_search:
 
     - name: comments
       class: App\Entity\Comment
+      enable_serializer_groups: true
 ```
 
 ### Credentials
@@ -311,10 +312,24 @@ class UserNormalizer implements NormalizerInterface
 }
 ```
 
-### Leveraging groups
+### Using normalizer groups
 
 You can also rely on (`@Group` annotation)[https://symfony.com/doc/current/components/serializer.html].
 The name of the group is `searchable`.
+
+You have to explicitly enable this feature on your configuration: 
+
+```yaml
+algolia_search:
+  prefix: demoapp_
+  indices:
+    - name: posts
+      class: App\Entity\Post
+
+    - name: comments
+      class: App\Entity\Comment
+      enable_serializer_groups: true
+```
 
 In the example below, `$comment`, `$author` and `$createdAt` data will be sent to Algolia.
 
