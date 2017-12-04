@@ -94,7 +94,7 @@ class AlgoliaEngine implements EngineInterface
         $data = [];
         foreach ($searchableEntities as $entity) {
             if (empty($entity->getSearchableArray())) {
-                break;
+                continue;
             }
 
             $indexName = $entity->getIndexName();
@@ -123,7 +123,7 @@ class AlgoliaEngine implements EngineInterface
         $data = [];
         foreach ($searchableEntities as $entity) {
             if (empty($entity->getSearchableArray())) {
-                break;
+                continue;
             }
             $indexName = $entity->getIndexName();
 
