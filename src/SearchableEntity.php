@@ -19,7 +19,7 @@ class SearchableEntity implements SearchableEntityInterface
         $this->indexName = $indexName;
         $this->entity = $entity;
         $this->entityMetadata = $entityMetadata;
-        $this->normalizers = $normalizer ?? [new SearchableArrayNormalizer()];
+        $this->normalizers = $normalizers;
 
         $this->setId();
     }

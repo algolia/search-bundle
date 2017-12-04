@@ -62,9 +62,10 @@ algolia_search:
     - name: comments
       class: App\Entity\Comment
       normalizers:
-        - App\Normalizers\CommentNormalizer
-        - Symfony\Component\Serializer\Normalizer\CustomNormalizer
-        - Algolia\SearchBundle\Normalizer\SearchableArrayNormalizer
+        # service id of normalizers
+        - comment_normalizer
+        - datetime_normalizer
+        - algolia_searchable_array_normalizer
 
 ```
 
@@ -218,6 +219,17 @@ class CommentNormalizer implements NormalizerInterface
         return $data instanceof Comment;
     }
 }
+```
+
+You have to register your normalizer as a service and expose your service a a public one. (`public=true`)
+
+If you want to use built-in `Normalizer` from Symfony, you have to redefine their service to expose them as public:
+
+```xml
+<service public="true" id="serializer.normalizer.datetime" class="Symfony\Component\Serializer\Normalizer\DateTimeNormalizer">
+      <!-- Run before serializer.normalizer.object -->
+      <tag name="serializer.normalizer" priority="-910" />
+</service>
 ```
 
 ## Engine

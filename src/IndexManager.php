@@ -7,9 +7,12 @@ use Algolia\SearchBundle\Engine\EngineInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\Util\ClassUtils;
 use Symfony\Component\Config\Definition\Exception\Exception;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
 class IndexManager implements IndexingManagerInterface, SearchManagerInterface
 {
+    use ContainerAwareTrait;
+
     protected $engine;
 
     protected $indexConfiguration;
@@ -22,7 +25,7 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
 
     private $classToIndexMapping;
 
-    public function __construct(EngineInterface $engine, array $indexConfiguration, $prefix, $nbResults)
+    public function __construct(EngineInterface $engine, $indexConfiguration, $prefix, $nbResults)
     {
         $this->engine = $engine;
         $this->indexConfiguration = $indexConfiguration;
@@ -31,6 +34,7 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
 
         $this->setSearchableEntities();
         $this->setClassToIndexMapping();
+
     }
 
     public function isSearchable($className)
@@ -178,11 +182,26 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
 
     private function getNormalizer($className)
     {
+        $normalizerServiceIds = [];
         if (isset($this->indexConfiguration[$this->classToIndexMapping[$className]]['normalizers'])) {
-            return $this->indexConfiguration[$this->classToIndexMapping[$className]]['normalizers'];
+            $normalizerServiceIds = $this->indexConfiguration[$this->classToIndexMapping[$className]]['normalizers'];
         }
 
-        return [];
+        $normalizerServices = [];
+        foreach ($normalizerServiceIds as $normalizerServiceId) {
+            // skip if the service is not found in the container
+            if (!$this->container->has($normalizerServiceId)) {
+                break;
+            }
+            $normalizerServices[] = $this->container->get($normalizerServiceId);
+        }
+
+        // if no normalizer service found, we grab the default normalizer
+        if (count($normalizerServices) == 0) {
+            $normalizerServices = $this->container->get('algolia_searchable_array_normalizer');
+        }
+
+        return $normalizerServices;
     }
 
     private function assertIsSearchable($className)
