@@ -18,6 +18,7 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
 
     private $searchableEntities;
     private $classToIndexMapping;
+    private $classToSerializerGroupMapping;
     private $normalizer;
 
     public function __construct(NormalizerInterface $normalizer, EngineInterface $engine, array $indexConfiguration, $prefix, $nbResults)
@@ -30,6 +31,7 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
 
         $this->setSearchableEntities();
         $this->setClassToIndexMapping();
+        $this->setClassToSerializerGroupMapping();
     }
 
     public function isSearchable($className)
@@ -39,13 +41,6 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
         }
 
         return in_array($className, $this->searchableEntities);
-    }
-
-    public function canUseSerializerGroup($className)
-    {
-        $configKey = array_search($className, array_column($indexConfiguration, 'class'));
-
-        return $this->indexConfiguration[$configKey]['enable_serializer_groups'];
     }
 
     public function getSearchableEntities()
@@ -71,7 +66,7 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
                     $entity,
                     $objectManager->getClassMetadata($className),
                     $this->normalizer,
-                    $this->canUseSerializerGroup($className)
+                    ['useSerializerGroup' => $this->canUseSerializerGroup($className)]
                 );
             }
 
@@ -97,8 +92,7 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
                     $this->getFullIndexName($className),
                     $entity,
                     $objectManager->getClassMetadata($className),
-                    $this->normalizer,
-                    $this->canUseSerializerGroup($className)
+                    $this->normalizer
                 );
             }
 
@@ -158,6 +152,11 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
         return $this->engine->count($query, $this->getFullIndexName($className));
     }
 
+    private function canUseSerializerGroup($className)
+    {
+        return $this->classToSerializerGroupMapping[$className];
+    }
+
     private function setClassToIndexMapping()
     {
         $mapping = [];
@@ -189,5 +188,15 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
         if (!$this->isSearchable($className)) {
             throw new Exception('Class '.$className.' is not searchable.');
         }
+    }
+
+    private function setClassToSerializerGroupMapping()
+    {
+        $mapping = [];
+        foreach ($this->indexConfiguration as $indexDetails) {
+            $mapping[$indexDetails['class']] = $indexDetails['enable_serializer_groups'];
+        }
+
+        $this->classToSerializerGroupMapping = $mapping;
     }
 }
