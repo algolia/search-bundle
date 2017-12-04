@@ -10,16 +10,18 @@ class SearchableEntity implements SearchableEntityInterface
     protected $indexName;
     protected $entity;
     protected $entityMetadata;
+    protected $useSerializerGroups;
 
     private $id;
     private $normalizer;
 
-    public function __construct($indexName, $entity, $entityMetadata, NormalizerInterface $normalizer)
+    public function __construct($indexName, $entity, $entityMetadata, NormalizerInterface $normalizer, $useSerializerGroups)
     {
-        $this->indexName      = $indexName;
-        $this->entity         = $entity;
-        $this->entityMetadata = $entityMetadata;
-        $this->normalizer     = $normalizer;
+        $this->indexName           = $indexName;
+        $this->entity              = $entity;
+        $this->entityMetadata      = $entityMetadata;
+        $this->normalizer          = $normalizer;
+        $this->useSerializerGroups = $useSerializerGroups;
 
         $this->setId();
     }
@@ -31,9 +33,11 @@ class SearchableEntity implements SearchableEntityInterface
 
     public function getSearchableArray()
     {
+        $groups = true === $this->useSerializerGroups ? ['groups' => [Searchable::NORMALIZATION_GROUP]] : [];
+
         return $this->normalizer->normalize($this->entity, Searchable::NORMALIZATION_FORMAT, [
             'fieldsMapping' => $this->entityMetadata->fieldMappings,
-        ], ['groups' => [Searchable::NORMALIZATION_GROUP]]);
+        ], $groups);
     }
 
     private function setId()

@@ -40,6 +40,9 @@ class Configuration implements ConfigurationInterface
                                 ->isRequired()
                                 ->cannotBeEmpty()
                             ->end()
+                            ->booleanNode('enable_serializer_groups')
+                                ->defaultFalse()
+                            ->end()
                         ->end()
                     ->end()
                 ->end() // indices
