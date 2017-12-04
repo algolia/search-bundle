@@ -27,7 +27,6 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
         $this->prefix              = $prefix;
         $this->nbResults           = $nbResults;
         $this->normalizer          = $normalizer;
-        $this->useSerializerGroups = $indexConfiguration['enable_serializer_groups'];
 
         $this->setSearchableEntities();
         $this->setClassToIndexMapping();
@@ -40,6 +39,13 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
         }
 
         return in_array($className, $this->searchableEntities);
+    }
+
+    public function canUseSerializerGroup($className)
+    {
+        $configKey = array_search($className, array_column($indexConfiguration, 'class'));
+
+        return $this->indexConfiguration[$configKey]['enable_serializer_groups'];
     }
 
     public function getSearchableEntities()
@@ -65,7 +71,7 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
                     $entity,
                     $objectManager->getClassMetadata($className),
                     $this->normalizer,
-                    $this->useSerializerGroups
+                    $this->canUseSerializerGroup($className)
                 );
             }
 
@@ -92,7 +98,7 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
                     $entity,
                     $objectManager->getClassMetadata($className),
                     $this->normalizer,
-                    $this->useSerializerGroups
+                    $this->canUseSerializerGroup($className)
                 );
             }
 
