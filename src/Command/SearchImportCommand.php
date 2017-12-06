@@ -2,21 +2,21 @@
 
 namespace Algolia\SearchBundle\Command;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class SearchImportCommand extends ContainerAwareCommand
+class SearchImportCommand extends IndexCommand
 {
     protected function configure()
     {
         $this
             ->setName('search:import')
             ->setDescription('Import given entity into search engine')
-            ->addArgument('entities', InputArgument::IS_ARRAY | InputArgument::OPTIONAL, 'Entities to reindex')
-            ->addOption('all', false, InputOption::VALUE_NONE, 'Reindex everything?');
+            ->addArgument('indexNames', InputArgument::IS_ARRAY | InputArgument::OPTIONAL, 'Name of the index to reindex (without prefix)')
+            ->addOption('all', false, InputOption::VALUE_NONE, 'Reindex all indices');
         ;
     }
 
@@ -24,7 +24,7 @@ class SearchImportCommand extends ContainerAwareCommand
     {
         $indexManager = $this->getContainer()->get('search.index_manager');
         $doctrine = $this->getContainer()->get('doctrine');
-        $entitiesToIndex = $this->getEntitiesToIndex($input, $indexManager);
+        $entitiesToIndex = $this->getEntitiesFromArgs($input, $output, $indexManager);
 
         foreach ($entitiesToIndex as $entityClassName) {
             $repository = $doctrine->getRepository($entityClassName);
@@ -38,14 +38,5 @@ class SearchImportCommand extends ContainerAwareCommand
         }
 
         $output->writeln('<info>Done!</info>');
-    }
-
-    private function getEntitiesToIndex($input, $indexManager)
-    {
-        if ($input->getOption('all')) {
-            return $indexManager->getSearchableEntities();
-        }
-
-        return $input->getArgument('entities');
     }
 }

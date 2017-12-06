@@ -3,28 +3,27 @@
 namespace Algolia\SearchBundle\Command;
 
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class SearchClearCommand extends ContainerAwareCommand
+class SearchClearCommand extends IndexCommand
 {
     protected function configure()
     {
         $this
             ->setName('search:clear')
             ->setDescription('Clear index (remove all)')
-            ->addArgument('indexNames', InputArgument::IS_ARRAY | InputArgument::OPTIONAL, 'Index to clear')
-            ->addOption('all', false, InputOption::VALUE_NONE, 'Reindex everything?');
+            ->addArgument('indexNames', InputArgument::IS_ARRAY | InputArgument::OPTIONAL, 'Name of the index to clear (without prefix)')
+            ->addOption('all', false, InputOption::VALUE_NONE, 'Clear all indices');
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $indexManager = $this->getContainer()->get('search.index_manager');
-        $indexToClear = $this->getIndexToClear($input, $indexManager);
+        $indexToClear = $this->getEntitiesFromArgs($input, $output, $indexManager);
 
         foreach ($indexToClear as $indexName) {
             $indexManager->clear($indexName);
@@ -33,14 +32,5 @@ class SearchClearCommand extends ContainerAwareCommand
         }
 
         $output->writeln('<info>Done!</info>');
-    }
-
-    private function getIndexToClear($input, $indexManager)
-    {
-        if ($input->getOption('all')) {
-            return array_keys($indexManager->getIndexConfiguration());
-        }
-
-        return $input->getArgument('indexNames');
     }
 }
