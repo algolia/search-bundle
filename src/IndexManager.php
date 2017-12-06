@@ -11,9 +11,7 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 class IndexManager implements IndexingManagerInterface, SearchManagerInterface
 {
     protected $engine;
-    protected $indexConfiguration;
-    protected $prefix;
-    protected $nbResults;
+    protected $configuration;
     protected $useSerializerGroups;
 
     private $searchableEntities;
@@ -21,13 +19,11 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
     private $classToSerializerGroupMapping;
     private $normalizer;
 
-    public function __construct(NormalizerInterface $normalizer, EngineInterface $engine, array $indexConfiguration, $prefix, $nbResults)
+    public function __construct(NormalizerInterface $normalizer, EngineInterface $engine, array $configuration)
     {
-        $this->engine              = $engine;
-        $this->indexConfiguration  = $indexConfiguration;
-        $this->prefix              = $prefix;
-        $this->nbResults           = $nbResults;
         $this->normalizer          = $normalizer;
+        $this->engine              = $engine;
+        $this->configuration       = $configuration;
 
         $this->setSearchableEntities();
         $this->setClassToIndexMapping();
@@ -46,6 +42,11 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
     public function getSearchableEntities()
     {
         return $this->searchableEntities;
+    }
+
+    public function getConfiguration()
+    {
+        return $this->configuration;
     }
 
     public function index($entities, ObjectManager $objectManager)
@@ -120,7 +121,7 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
         $this->assertIsSearchable($className);
 
         if (!is_int($nbResults)) {
-            $nbResults = $this->nbResults;
+            $nbResults = $this->configuration['nbResults'];
         }
 
         $repo = $objectManager->getRepository($className);
@@ -139,7 +140,7 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
         $this->assertIsSearchable($className);
 
         if (!is_int($nbResults)) {
-            $nbResults = $this->nbResults;
+            $nbResults = $this->configuration['nbResults'];
         }
 
         return $this->engine->search($query, $this->getFullIndexName($className), $page,  $nbResults, $parameters);
@@ -160,7 +161,7 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
     private function setClassToIndexMapping()
     {
         $mapping = [];
-        foreach ($this->indexConfiguration as $indexName => $indexDetails) {
+        foreach ($this->configuration['indices'] as $indexName => $indexDetails) {
             $mapping[$indexDetails['class']] = $indexName;
         }
 
@@ -171,7 +172,7 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
     {
         $searchable = [];
 
-        foreach ($this->indexConfiguration as $name => $index) {
+        foreach ($this->configuration['indices'] as $name => $index) {
             $searchable[] = $index['class'];
         }
 
@@ -180,7 +181,7 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
 
     public function getFullIndexName($className)
     {
-        return $this->prefix.$this->classToIndexMapping[$className];
+        return $this->configuration['prefix'].$this->classToIndexMapping[$className];
     }
 
     private function assertIsSearchable($className)
@@ -193,7 +194,7 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
     private function setClassToSerializerGroupMapping()
     {
         $mapping = [];
-        foreach ($this->indexConfiguration as $indexDetails) {
+        foreach ($this->configuration['indices'] as $indexDetails) {
             $mapping[$indexDetails['class']] = $indexDetails['enable_serializer_groups'];
         }
 

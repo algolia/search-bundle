@@ -28,9 +28,8 @@ class AlgoliaSearchExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        $prefix = $config['prefix'];
-        if (is_null($prefix)) {
-            $prefix = $container->getParameter("kernel.environment").'_';
+        if (is_null($config['prefix'])) {
+            $config['prefix'] = $container->getParameter("kernel.environment").'_';
         }
 
         $container->setParameter('algolia_search.doctrineSubscribedEvents', $config['doctrineSubscribedEvents']);
@@ -40,9 +39,7 @@ class AlgoliaSearchExtension extends Extension
             [
                 new Reference('serializer'),
                 new Reference('search.engine'),
-                $config['indices'],
-                $prefix,
-                $config['nbResults']
+                $config
             ]
         ))->setPublic(true);
 
