@@ -2,14 +2,13 @@
 
 namespace Algolia\SearchBundle\Command;
 
-use Algolia\SearchBundle\IndexingManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class SearchImportCommand extends ContainerAwareCommand
+class SearchImportCommand extends IndexCommand
 {
     protected function configure()
     {
@@ -25,7 +24,7 @@ class SearchImportCommand extends ContainerAwareCommand
     {
         $indexManager = $this->getContainer()->get('search.index_manager');
         $doctrine = $this->getContainer()->get('doctrine');
-        $entitiesToIndex = $this->getEntitiesToIndex($input, $output, $indexManager);
+        $entitiesToIndex = $this->getEntitiesFromArgs($input, $output, $indexManager);
 
         foreach ($entitiesToIndex as $entityClassName) {
             $repository = $doctrine->getRepository($entityClassName);
@@ -39,26 +38,5 @@ class SearchImportCommand extends ContainerAwareCommand
         }
 
         $output->writeln('<info>Done!</info>');
-    }
-
-    private function getEntitiesToIndex(InputInterface $input, OutputInterface $output, IndexingManagerInterface $indexManager)
-    {
-        if ($input->getOption('all')) {
-            return $indexManager->getSearchableEntities();
-        }
-
-        $entities = [];
-        $indexNames = $input->getArgument('indexNames');
-        $config = $indexManager->getConfiguration();
-
-        foreach ($indexNames as $name) {
-            if (isset($config['indices'][$name])) {
-                $entities[] = $config['indices'][$name]['class'];
-            } else {
-                $output->writeln('<comment>No index named <info>'.$name.'</info> was found. Check you configuration.</comment>');
-            }
-        }
-
-        return $entities;
     }
 }
