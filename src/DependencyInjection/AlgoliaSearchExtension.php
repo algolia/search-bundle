@@ -3,6 +3,7 @@
 namespace Algolia\SearchBundle\DependencyInjection;
 
 use Algolia\SearchBundle\IndexManager;
+use Algolia\SearchBundle\Settings\AlgoliaSettingsManager;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Definition;
@@ -43,6 +44,15 @@ class AlgoliaSearchExtension extends Extension
             ]
         ))->setPublic(true);
 
+        $settingsManagerDefinition = (new Definition(
+            AlgoliaSettingsManager::class,
+            [
+                new Reference('algolia_client'),
+                $config
+            ]
+        ))->setPublic(true);
+
         $container->setDefinition('search.index_manager', $indexManagerDefinition);
+        $container->setDefinition('search.settings_manager', $settingsManagerDefinition);
     }
 }
