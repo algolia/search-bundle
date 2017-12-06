@@ -5,6 +5,11 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
+
+        <prototype namespace="Algolia\SearchBundle\Command\" resource="../../Command">
+            <tag name="console.command" />
+        </prototype>
+
         <service id="search.search_indexer_subscriber" class="Algolia\SearchBundle\EventListener\SearchIndexerSubscriber" public="true">
             <argument type="service" id="search.index_manager" />
             <argument key="$subscribedEvents">%algolia_search.doctrineSubscribedEvents%</argument>
