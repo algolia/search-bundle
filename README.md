@@ -154,8 +154,7 @@ $indexManager->index($post, $em);
 
 ## Normalizers
 
-By default all entities are converted to an array with the built-in (Symfony Normalizers)[https://symfony.com/doc/current/components/serializer.html#normalizers] 
-(GetSetMethodNormalizer, DateTimeNormalizer, ObjectNormalizer...) which should be enough for simple use case, but we encourage you to write your own Normalizer to have more control on what you send to Algolia or to simply avoid (circular references)[https://symfony.com/doc/current/components/serializer.html#handling-circular-references].
+By default all entities are converted to an array with the built-in [Symfony Normalizers](https://symfony.com/doc/current/components/serializer.html#normalizers) (GetSetMethodNormalizer, DateTimeNormalizer, ObjectNormalizer...) which should be enough for simple use case, but we encourage you to write your own Normalizer to have more control on what you send to Algolia or to simply avoid [circular references](https://symfony.com/doc/current/components/serializer.html#handling-circular-references).
 
 Symfony will use the first one to support your entity or format.
 
