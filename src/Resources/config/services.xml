@@ -26,6 +26,11 @@
             <argument type="service" id="algolia_client" />
         </service>
 
+        <!-- CustomNormalizer is not registered by framework-bundle -->
+        <service class="Symfony\Component\Serializer\Normalizer\CustomNormalizer">
+            <tag name="serializer.normalizer" priority="-800" />
+        </service>
+
     </services>
 
 </container>
