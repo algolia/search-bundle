@@ -2,11 +2,9 @@
 
 namespace Algolia\SearchBundle\Settings;
 
-
-
 interface SettingsManagerInterface
 {
-    public function backup($settingsDir, array $params);
+    public function backup(array $params);
 
-    public function push($settingsDir, array $params);
+    public function push(array $params);
 }

@@ -2,7 +2,6 @@
 
 namespace Algolia\SearchBundle\Settings;
 
-
 use AlgoliaSearch\Client;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -17,20 +16,20 @@ class AlgoliaSettingsManager implements SettingsManagerInterface
         $this->config = $config;
     }
 
-    public function backup($settingsDir, array $params)
+    public function backup(array $params)
     {
         $indices = $this->getIndexNames($params['indices']);
         $fs = new Filesystem();
         $output = [];
 
-        if (!$fs->exists($settingsDir)) {
-            $fs->mkdir($settingsDir);
+        if (!$fs->exists($this->config['settingsDirectory'])) {
+            $fs->mkdir($this->config['settingsDirectory']);
         }
 
         foreach ($indices as $indexName) {
             $index = $this->algolia->initIndex($indexName);
             $settings = $index->getSettings();
-            $filename = $this->getFileName($settingsDir, $indexName, 'settings');
+            $filename = $this->getFileName($indexName, 'settings');
 
             $fs->dumpFile($filename, json_encode($settings, JSON_PRETTY_PRINT));
 
@@ -40,13 +39,13 @@ class AlgoliaSettingsManager implements SettingsManagerInterface
         return $output;
     }
 
-    public function push($settingsDir, array $params)
+    public function push(array $params)
     {
         $indices = $this->getIndexNames($params['indices']);
         $output = [];
 
         foreach ($indices as $indexName) {
-            $filename = $this->getFileName($settingsDir, $indexName, 'settings');
+            $filename = $this->getFileName($indexName, 'settings');
 
             if (is_readable($filename)) {
                 $index = $this->algolia->initIndex($indexName);
@@ -74,8 +73,8 @@ class AlgoliaSettingsManager implements SettingsManagerInterface
         return $indices;
     }
 
-    private function getFileName($settingsDir, $indexName, $type)
+    private function getFileName($indexName, $type)
     {
-        return "$settingsDir/$indexName-$type.json";
+        return sprintf('%s/%s-%s.json', $this->config['settingsDirectory'], $indexName, $type);
     }
 }

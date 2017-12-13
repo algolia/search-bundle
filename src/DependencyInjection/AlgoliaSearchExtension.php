@@ -10,6 +10,7 @@ use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
+use Symfony\Component\HttpKernel\Kernel;
 
 /**
  * This is the class that loads and manages your bundle configuration.
@@ -32,6 +33,17 @@ class AlgoliaSearchExtension extends Extension
         if (is_null($config['prefix'])) {
             $config['prefix'] = $container->getParameter("kernel.environment").'_';
         }
+
+        if (is_null($config['settingsDirectory'])) {
+            if (3 == Kernel::MAJOR_VERSION) {
+                $config['settingsDirectory'] = '/app/Resources/SearchBundle/settings/';
+            } else {
+                $config['settingsDirectory'] = '/config/settings/algolia_search/';
+            }
+        }
+
+        $root = $container->getParameterBag()->get('kernel.project_dir');
+        $config['settingsDirectory'] = $root.$config['settingsDirectory'];
 
         $container->setParameter('algolia_search.doctrineSubscribedEvents', $config['doctrineSubscribedEvents']);
 

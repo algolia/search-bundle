@@ -2,7 +2,6 @@
 
 namespace Algolia\SearchBundle\Command;
 
-
 use Algolia\SearchBundle\Settings\SettingsManagerInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -22,8 +21,8 @@ class SearchSettingsPushCommand extends SearchSettingsCommand
             );
     }
 
-    protected function handle(SettingsManagerInterface $settingsManager, $settingsDir, $params)
+    protected function handle(SettingsManagerInterface $settingsManager, $params)
     {
-        return $settingsManager->push($settingsDir, $params);
+        return $settingsManager->push($params);
     }
 }
