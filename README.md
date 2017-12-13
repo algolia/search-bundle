@@ -33,6 +33,7 @@ You're looking at the new major version of this package. If your looking for the
   - [Using another engine](#using-another-engine)
 - [Using the Algolia Client (Advanced)](#using-the-algolia-client-advanced)
   - [Example](#example)
+- [Managing settings](#managing-settings)
 - [Tests](#tests)
   - [About `AlgoliaSyncEngine`](#about-algoliasyncengine)
 
@@ -441,6 +442,36 @@ class TestController extends Controller
     }
 }
 ```
+
+## Managing settings
+
+This bundle has a simple approach to settings management, everything is centralized in json files. Each
+engine must provide a `SettingsManager` class that can backup settings from the engine and push them back.
+
+The bundle offers 2 commands to easily backup and restore settings
+
+```sh
+php bin/console search:settings:backup --indices:posts,comments
+php bin/console search:settings:push --indices:posts,comments
+```
+
+The `--indices` option take a comma-separated list of index names (without prefix, as defined in configuration).
+If no options is passed **all indices** will be processed.
+
+### Settings directory
+
+Depending on your version of Symfony, the settings will be saved in different locations:
+
+- **Symfony4**: /config/settings/algolia_search/
+- **Symfony3**: /app/Resources/SearchBundle/settings/
+
+The settings directory can also be set in the configuration if you have a non-standard setup or if you
+wish to save them elsewhere. The project directory will automatically be prepended.
+
+```yaml
+algolia_search:
+    settingsDirectory: app/search-settings/
+``` 
 
 ## Tests
 
