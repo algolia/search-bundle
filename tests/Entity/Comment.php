@@ -47,9 +47,12 @@ class Comment
      */
     private $publishedAt;
 
-    public function __construct()
+    public function __construct(array $attributes = [])
     {
-        $this->publishedAt = new \DateTime();
+        $this->id = isset($attributes['id']) ? $attributes['id'] : null;
+        $this->content = isset($attributes['content']) ? $attributes['content'] : null;
+        $this->publishedAt = isset($attributes['publishedAt']) ? $attributes['publishedAt'] : new \DateTime();
+        $this->post = isset($attributes['posts']) ? $attributes['posts'] : null;
     }
 
     public function getId()

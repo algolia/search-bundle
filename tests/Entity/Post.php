@@ -6,6 +6,7 @@ namespace Algolia\SearchBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity
@@ -19,6 +20,10 @@ class Post
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     *
+     * @Groups({"searchable"})
+     * ^ Note that Groups work on private properties
+     *
      */
     private $id;
 
@@ -55,10 +60,13 @@ class Post
      */
     private $comments;
 
-    public function __construct()
+    public function __construct(array $attributes = [])
     {
-        $this->publishedAt = new \DateTime();
-        $this->comments = new ArrayCollection();
+        $this->id = isset($attributes['id']) ? $attributes['id'] : null;
+        $this->title = isset($attributes['title']) ? $attributes['title'] : null;
+        $this->content = isset($attributes['content']) ? $attributes['content'] : null;
+        $this->publishedAt = isset($attributes['publishedAt']) ? $attributes['publishedAt'] : new \DateTime();
+        $this->comments = isset($attributes['comments']) ? new ArrayCollection($attributes['comments']) : new ArrayCollection();
     }
 
     public function getId()
@@ -71,6 +79,9 @@ class Post
         $this->id = $id;
     }
 
+    /**
+     * @Groups({"searchable"})
+     */
     public function getTitle()
     {
         return $this->title;
@@ -91,6 +102,9 @@ class Post
         $this->content = $content;
     }
 
+    /**
+     * @Groups({"searchable"})
+     */
     public function getPublishedAt()
     {
         return $this->publishedAt;
