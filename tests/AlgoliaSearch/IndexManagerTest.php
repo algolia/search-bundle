@@ -2,7 +2,6 @@
 
 namespace Algolia\SearchBundle;
 
-
 use Algolia\SearchBundle\Doctrine\NullObjectManager;
 use Algolia\SearchBundle\Entity\Comment;
 use Algolia\SearchBundle\Entity\Post;

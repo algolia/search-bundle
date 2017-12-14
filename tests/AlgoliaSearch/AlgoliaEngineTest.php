@@ -2,7 +2,6 @@
 
 namespace Algolia\SearchBundle;
 
-
 class AlgoliaEngineTest extends BaseTest
 {
     public function testIndexing()
