@@ -17,4 +17,5 @@ before_script:
     - composer install
 
 script:
+    - composer lint
     - php vendor/bin/phpunit -v
