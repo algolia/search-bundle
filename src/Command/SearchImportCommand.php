@@ -15,8 +15,12 @@ class SearchImportCommand extends IndexCommand
         $this
             ->setName('search:import')
             ->setDescription('Import given entity into search engine')
-            ->addArgument('indexNames', InputArgument::IS_ARRAY | InputArgument::OPTIONAL, 'Name of the index to reindex (without prefix)')
-            ->addOption('all', false, InputOption::VALUE_NONE, 'Reindex all indices');
+            ->addOption('indices', 'i', InputOption::VALUE_OPTIONAL, 'Comma-separated list of index names')
+            ->addArgument(
+                'extra',
+                InputArgument::IS_ARRAY | InputArgument::OPTIONAL,
+                'Check your engine documentation for available options'
+            );
         ;
     }
 
@@ -26,7 +30,7 @@ class SearchImportCommand extends IndexCommand
         $doctrine = $this->getContainer()->get('doctrine');
         $entitiesToIndex = $this->getEntitiesFromArgs($input, $output, $indexManager);
 
-        foreach ($entitiesToIndex as $entityClassName) {
+        foreach ($entitiesToIndex as $indexName => $entityClassName) {
             $repository = $doctrine->getRepository($entityClassName);
             $manager = $doctrine->getManager();
 
@@ -34,7 +38,12 @@ class SearchImportCommand extends IndexCommand
 
             $indexManager->index($entities, $manager);
 
-            $output->writeln('Indexed <comment>'.count($entities).'</comment> '.$entityClassName);
+            $output->writeln(sprintf(
+                'Indexed %s %s entities into %s index',
+                '<comment>'.count($entities).'</comment>',
+                $entityClassName,
+                '<info>'.$indexName.'</info>'
+            ));
         }
 
         $output->writeln('<info>Done!</info>');

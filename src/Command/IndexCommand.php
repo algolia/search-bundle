@@ -12,17 +12,22 @@ abstract class IndexCommand extends ContainerAwareCommand
 {
     protected function getEntitiesFromArgs(InputInterface $input, OutputInterface $output, IndexingManagerInterface $indexManager)
     {
-        if ($input->getOption('all')) {
+        $entities = [];
+        $indexNames = [];
+
+        if ($indexList = $input->getOption('indices')) {
+            $indexNames = explode(',', $indexList);
+        }
+
+        if (empty($indexNames)) {
             return $indexManager->getSearchableEntities();
         }
 
-        $entities = [];
-        $indexNames = $input->getArgument('indexNames');
         $config = $indexManager->getConfiguration();
 
         foreach ($indexNames as $name) {
             if (isset($config['indices'][$name])) {
-                $entities[] = $config['indices'][$name]['class'];
+                $entities[$name] = $config['indices'][$name]['class'];
             } else {
                 $output->writeln('<comment>No index named <info>'.$name.'</info> was found. Check you configuration.</comment>');
             }
