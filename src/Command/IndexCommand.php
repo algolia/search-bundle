@@ -2,7 +2,6 @@
 
 namespace Algolia\SearchBundle\Command;
 
-
 use Algolia\SearchBundle\IndexingManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
