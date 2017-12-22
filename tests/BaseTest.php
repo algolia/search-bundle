@@ -29,7 +29,7 @@ class BaseTest extends TestCase
 
         $engine = $this->createEngine($engine);
 
-        $indexManager = new IndexManager($this->container->get('serializer'), $engine, $config['indices'], $config['prefix'], $config['nbResults']);
+        $indexManager = new IndexManager($this->container->get('serializer'), $engine, $config);
 
         return $indexManager;
     }

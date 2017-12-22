@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'prefix' => 'testing_',
+    'prefix' => 'TRAVIS_sf_',
     'nbResults' => 12,
     'indices' => [
         'posts' => [

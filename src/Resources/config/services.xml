@@ -27,7 +27,7 @@
         </service>
 
         <!-- CustomNormalizer is not registered by framework-bundle -->
-        <service class="Symfony\Component\Serializer\Normalizer\CustomNormalizer">
+        <service id="custom_normalizer" class="Symfony\Component\Serializer\Normalizer\CustomNormalizer" public="false">
             <tag name="serializer.normalizer" priority="-800" />
         </service>
 

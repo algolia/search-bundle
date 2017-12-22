@@ -15,3 +15,8 @@ doctrine:
                 dir: '%kernel.project_dir%/tests/Entity'
                 prefix: 'Algolia\SearchBundle\Entity'
                 alias: App
+
+services:
+    algolia.client:
+        alias: algolia_client
+        public: true
