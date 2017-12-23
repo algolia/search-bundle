@@ -97,7 +97,7 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
                 );
             }
 
-            $this->engine->delete($searchableEntities);
+            $this->engine->remove($searchableEntities);
         }
 
     }
