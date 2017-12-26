@@ -1,39 +1,45 @@
 {
-    "name": "algolia/algolia-search-bundle",
+    "name": "algolia/search-bundle",
     "type": "symfony-bundle",
-    "description": "Seamless integration of Algolia Search into your Symfony project.",
     "license": "MIT",
-    "require": {
-        "php": "^5.6 || ^7.0",
-        "symfony/framework-bundle": "~2.8|~3.0",
-        "symfony/property-access": "~3.2",
-        "symfony/yaml": "^3.2",
-        "algolia/algoliasearch-client-php": "~1.6"
-    },
-    "require-dev": {
-        "doctrine/orm": "^2.2.3",
-        "doctrine/doctrine-bundle": "~1.2",
-        "doctrine/mongodb-odm": "~1.1",
-        "doctrine/mongodb-odm-bundle": "~3.1",
-        "phpunit/phpunit": "^5.7|^6.0"
-    },
-    "suggests": {
-        "doctrine/doctrine-bundle": "Provides integration with Doctrine ORM",
-        "doctrine/mongodb-odm-bundle": "Provides integration with Doctrine MongoDB ODM"
-    },
     "authors": [
         {
-            "name": "Algolia Team",
-            "email": "support@algolia.com"
+            "name": "Julien Bourdeau",
+            "email": "julien@sigerr.org"
         },
         {
-            "name": "François-Marie de Jouvencel",
-            "email": "fm.de.jouvencel@gmail.com"
+            "name": "Algolia Team",
+            "email": "contact@algolia.com"
         }
     ],
+    "prefer-stable": true,
+    "require": {
+        "algolia/algoliasearch-client-php": "^1.23",
+        "symfony/serializer": "^3.4.0 || ^4.0.0",
+        "symfony/property-access": "^3.4.0 || ^4.0.0",
+        "symfony/filesystem": "^3.4.0 || ^4.0.0"
+    },
     "autoload": {
         "psr-4": {
-            "Algolia\\AlgoliaSearchBundle\\": ""
+            "Algolia\\SearchBundle\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Algolia\\SearchBundle\\": "tests/"
+        }
+    },
+    "require-dev": {
+        "symfony/framework-bundle": "^3.4.0 || ^4.0.0",
+        "phpunit/phpunit": "^5.7 || ^6.5",
+        "symfony/doctrine-bridge": "^3.4.0 || ^4.0.0",
+        "doctrine/orm": "^2.5",
+        "symfony/var-dumper": "^3.4.0 || ^4.0.0",
+        "doctrine/doctrine-bundle": "^1.8"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "3.0.x-dev"
         }
     }
 }

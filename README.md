@@ -18,32 +18,48 @@ You can find the full reference on [Algolia's website](https://www.algolia.com/d
 ## Table of Contents
 
 
-1. **[Setup](#setup)**
 
-    * [Install](#install)
-    * [Register the bundle](#register-the-bundle)
-    * [Fill in your Algolia credentials](#fill-in-your-algolia-credentials)
+1. **[Introduction](#introduction)**
 
-1. **[Mapping entities to Algolia indexes](#mapping-entities-to-algolia-indexes)**
 
-    * [Indexing entity properties or methods](#indexing-entity-properties-or-methods)
-    * [Autoindexing vs Manual Indexing](#autoindexing-vs-manual-indexing)
-    * [Per environment indexing](#per-environment-indexing)
-    * [Conditional indexing](#conditional-indexing)
-    * [Index settings](#index-settings)
+1. **[Install](#install)**
 
-1. **[Retrieving entities](#retrieving-entities)**
 
-    * [Performing a raw search](#performing-a-raw-search)
-    * [Performing a native search](#performing-a-native-search)
+1. **[Register the bundle](#register-the-bundle)**
 
-1. **[Reindexing](#reindexing)**
 
-    * [Reindexing whole collections](#reindexing-whole-collections)
+1. **[Fill in your Algolia credentials](#fill-in-your-algolia-credentials)**
+
+
+1. **[Indexing entity properties or methods](#indexing-entity-properties-or-methods)**
+
+
+1. **[Autoindexing vs Manual Indexing](#autoindexing-vs-manual-indexing)**
+
+
+1. **[Per environment indexing](#per-environment-indexing)**
+
+
+1. **[Conditional indexing](#conditional-indexing)**
+
+
+1. **[Index settings](#index-settings)**
+
+
+1. **[Performing a raw search](#performing-a-raw-search)**
+
+
+1. **[Performing a native search](#performing-a-native-search)**
+
+
+1. **[Reindexing whole collections](#reindexing-whole-collections)**
+
 
 1. **[Running the tests](#running-the-tests)**
 
-    * [Running the tests](#running-the-tests)
+
+
+
 
 
 
@@ -51,6 +67,10 @@ You can find the full reference on [Algolia's website](https://www.algolia.com/d
 # Setup
 
 
+
+## Introduction
+
+This Symfony bundle provides an easy way to integrate Algolia Search into your Symfony2 with Doctrine2 application.
 
 ## Install
 
@@ -103,11 +123,14 @@ algolia:
 * **connection_timeout**: If set, this will set connection timeout to Algolia (in seconds)
 
 
+
 # Mapping entities to Algolia indexes
 
 
 
-Mapping an entity type to an Algolia index allows you to keep it in sync with Algolia, i.e. the operations involving mapped entities on your local database are mirrored on the Algolia indexes. Indexation is automatic by default, but can be made manual if needed.
+Mapping an entity type to an Algolia index allows you to keep it in sync with Algolia, i.e.
+the operations involving mapped entities on your local database are mirrored on the Algolia indexes.
+Indexation is automatic by default, but can be made manual if needed.
 
 Currently, mapping is only possible with annotations.
 
@@ -242,7 +265,7 @@ class Product
 
 In this example id will not be use as the objectId, instead name will be use.
 
-**When you make changes to the mappings, you need to [re-index your entities](#reindexing-whole-collections) to reflect the changes in Algolia.**
+**When you make changes to the mappings, you need to [re-index your entities](https://www.algolia.com/doc/api-client/symfony/reindexing#reindexing-whole-collections) to reflect the changes in Algolia.**
 
 ## Autoindexing vs Manual Indexing
 By default, mapped entities are automatically indexed on Algolia's servers using Doctrine's lifecycle events (synchronization is made during the onFlush and postFlush events).
@@ -358,6 +381,7 @@ php app/console algolia:settings --push # push the configuration changes to Algo
 ```
 
 
+
 # Retrieving entities
 
 
@@ -392,13 +416,16 @@ Hits will be instance of the `Product` class, fetched from the local database.
 Please note that since we need to access the local database here contrary to the `rawSearch` call you need to pass the `EntityManager`, which adds an argument.
 
 
+
 # Reindexing
 
 
 
 ## Reindexing whole collections
 
-You can re-index collections programmatically using the `reIndex` method of the `ManualIndexer` class (`$this->get('algolia.indexer')->getManualIndexer($this->getEntityManager())->reIndex('SomeBundle:EntityName')`), but you can also very easily do it using a simple console command:
+You can re-index collections programmatically using the `reIndex` method of the `ManualIndexer` class
+(`$this->get('algolia.indexer')->getManualIndexer($this->getEntityManager())->reIndex('SomeBundle:EntityName')`),
+but you can also very easily do it using a simple console command:
 
 ```bash
 php app/console algolia:reindex SomeBundle:EntityName
@@ -407,6 +434,7 @@ php app/console algolia:reindex SomeBundle:EntityName
 By default, a temporary index is created, the indexation is performed on the temporary index, and then the index is moved atomically to the target index.
 
 You can re-index in place by passing the `--unsafe` option. Please note that in unsafe mode outdated entities will not be un-indexed.
+
 
 
 # Running the tests
@@ -424,6 +452,5 @@ Then run:
 ```bash
 php vendor/bin/phpunit -c Tests
 ```
-
 
 
