@@ -62,7 +62,6 @@ class SearchableEntity implements SearchableEntityInterface
 
             $this->id = rtrim($objectID, '_');
         }
-
     }
 
     public function getId()

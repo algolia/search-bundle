@@ -35,11 +35,16 @@
         "symfony/doctrine-bridge": "^3.4.0 || ^4.0.0",
         "doctrine/orm": "^2.5",
         "symfony/var-dumper": "^3.4.0 || ^4.0.0",
-        "doctrine/doctrine-bundle": "^1.8"
+        "doctrine/doctrine-bundle": "^1.8",
+        "friendsofphp/php-cs-fixer": "^2.9"
     },
     "extra": {
         "branch-alias": {
             "dev-master": "3.0.x-dev"
         }
+    },
+    "scripts": {
+        "lint": "php-cs-fixer fix src --dry-run --diff",
+        "lint:fix": "php-cs-fixer fix src"
     }
 }

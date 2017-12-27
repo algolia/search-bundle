@@ -73,7 +73,6 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
 
             $this->engine->update($searchableEntities);
         }
-
     }
 
     public function remove($entities, ObjectManager $objectManager)
@@ -99,7 +98,6 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
 
             $this->engine->remove($searchableEntities);
         }
-
     }
 
     public function clear($className)
@@ -143,7 +141,7 @@ class IndexManager implements IndexingManagerInterface, SearchManagerInterface
             $nbResults = $this->configuration['nbResults'];
         }
 
-        return $this->engine->search($query, $this->getFullIndexName($className), $page,  $nbResults, $parameters);
+        return $this->engine->search($query, $this->getFullIndexName($className), $page, $nbResults, $parameters);
     }
 
     public function count($query, $className, array $parameters = [])
