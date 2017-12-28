@@ -153,6 +153,29 @@ $indexManager->index($post, $em);
 
 ```
 
+### With commands
+
+The bundle ships with two commands to import data into an index or to clear it.
+
+```
+# Import all data
+php bin/console search:import
+
+# Select what data to import
+php bin/console search:import --indices=posts,comments
+```
+
+It works the same way to clear data
+
+
+```
+# Clear all indices
+php bin/console search:clear
+
+# Select what indices to clear
+php bin/console search:clear --indices=posts,comments
+```
+
 ## Normalizers
 
 By default all entities are converted to an array with the built-in [Symfony Normalizers](https://symfony.com/doc/current/components/serializer.html#normalizers) (GetSetMethodNormalizer, DateTimeNormalizer, ObjectNormalizer...) which should be enough for simple use case, but we encourage you to write your own Normalizer to have more control on what you send to Algolia or to simply avoid [circular references](https://symfony.com/doc/current/components/serializer.html#handling-circular-references).
