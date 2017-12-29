@@ -3,14 +3,14 @@
 namespace Algolia\SearchBundle\Command;
 
 
-use Algolia\SearchBundle\IndexingManagerInterface;
+use Algolia\SearchBundle\IndexManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 abstract class IndexCommand extends ContainerAwareCommand
 {
-    protected function getEntitiesFromArgs(InputInterface $input, OutputInterface $output, IndexingManagerInterface $indexManager)
+    protected function getEntitiesFromArgs(InputInterface $input, OutputInterface $output, IndexManagerInterface $indexManager)
     {
         $entities = [];
         $indexNames = [];

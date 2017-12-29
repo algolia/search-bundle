@@ -8,7 +8,7 @@ use Doctrine\Common\Util\ClassUtils;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-class IndexManager implements IndexingManagerInterface, SearchManagerInterface
+class IndexManager implements IndexManagerInterface
 {
     protected $engine;
     protected $configuration;
