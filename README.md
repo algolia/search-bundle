@@ -197,6 +197,8 @@ namespace App\Serializer\Normalizers;
 
 use App\Entity\Comment;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use Symfony\Component\Serializer\SerializerAwareInterface;
+use Symfony\Component\Serializer\SerializerAwareTrait;
 
 class CommentNormalizer implements NormalizerInterface, SerializerAwareInterface
 {
