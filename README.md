@@ -1,515 +1,456 @@
-# Symfony Search Bundle
+# Algolia Search API Client for Symfony
 
-This package will help you get your data indexed in a dedicated Search Engine
+[Algolia Search](https://www.algolia.com) is a hosted full-text, numerical, and faceted search engine capable of delivering realtime results from the first keystroke.
 
----
-### New package
+[![Build Status](https://travis-ci.org/algolia/AlgoliaSearchBundle.svg?branch=master)](https://travis-ci.org/algolia/AlgoliaSearchBundle) [![Latest Stable Version](https://poser.pugx.org/algolia/algolia-search-bundle/v/stable)](https://packagist.org/packages/algolia/algolia-search-bundle) [![License](https://poser.pugx.org/algolia/algolia-search-bundle/license)](https://packagist.org/packages/algolia/algolia-search-bundle)
 
-You're looking at the new major version of this package. If your looking for the previous one, it was moved to the [`2.x` branch](https://github.com/algolia/search-bundle/tree/2.x).
 
----
+This Symfony bundle provides an easy way to integrate Algolia Search into your Symfony2 with Doctrine2 application.
 
-**Table of Contents**
 
-- [Compatibility](#compatibility)
-- [Install](#install)
-- [Configuration](#configuration)
-  - [Credentials](#credentials)
-- [Search](#search)
-  - [Pagination](#pagination)
-  - [Count](#count)
-  - [Advanced search](#advanced-search)
-- [Index entities](#index-entities)
-  - [Automatically](#automatically)
-  - [Manually](#manually)
-- [Normalizers](#normalizers)
-  - [Custom Normalizers](#custom-normalizers)
-    - [Using a dedicated normalizer](#using-a-dedicated-normalizer)
-    - [Using `normalize` method in entity](#using-normalize-method-in-entity)
-    - [Create Normalizer for `Algolia\SearchBundle` only](#create-normalizer-for-algoliasearchbundle-only)
-  - [Using `@Groups` annotation](#using-normalizer-groups)
-- [Engine](#engine)
-  - [The `NullEngine`](#the-nullengine)
-  - [Using another engine](#using-another-engine)
-- [Using the Algolia Client (Advanced)](#using-the-algolia-client-advanced)
-  - [Example](#example)
-- [Managing settings](#managing-settings)
-- [Tests](#tests)
-  - [About `AlgoliaSyncEngine`](#about-algoliasyncengine)
 
-## Compatibility
 
-This package is compatible with Symfony 3.4 and higher.
+## API Documentation
 
-If your app runs an older version, you can use the previous version, [available on the 2.x branch](https://github.com/algolia/search-bundle/tree/2.x).
+You can find the full reference on [Algolia's website](https://www.algolia.com/doc/api-client/symfony/).
+
+
+## Table of Contents
+
+
+
+1. **[Introduction](#introduction)**
+
+
+1. **[Install](#install)**
+
+
+1. **[Register the bundle](#register-the-bundle)**
+
+
+1. **[Fill in your Algolia credentials](#fill-in-your-algolia-credentials)**
+
+
+1. **[Indexing entity properties or methods](#indexing-entity-properties-or-methods)**
+
+
+1. **[Autoindexing vs Manual Indexing](#autoindexing-vs-manual-indexing)**
+
+
+1. **[Per environment indexing](#per-environment-indexing)**
+
+
+1. **[Conditional indexing](#conditional-indexing)**
+
+
+1. **[Index settings](#index-settings)**
+
+
+1. **[Performing a raw search](#performing-a-raw-search)**
+
+
+1. **[Performing a native search](#performing-a-native-search)**
+
+
+1. **[Reindexing whole collections](#reindexing-whole-collections)**
+
+
+1. **[Running the tests](#running-the-tests)**
+
+
+
+
+
+
+
+
+# Setup
+
+
+
+## Introduction
+
+This Symfony bundle provides an easy way to integrate Algolia Search into your Symfony2 with Doctrine2 application.
 
 ## Install
 
-With composer
+#### With composer
 
+```bash
+composer require algolia/algolia-search-bundle
 ```
-composer require algolia/search-bundle
+
+## Register the bundle
+
+Add `Algolia\AlgoliaSearchBundle\AlgoliaAlgoliaSearchBundle()` to your application Kernel:
+```php
+$bundles = array(
+    new Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
+    new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
+    new Algolia\AlgoliaSearchBundle\AlgoliaAlgoliaSearchBundle(),
+);
 ```
 
-## Configuration
+## Fill in your Algolia credentials
 
-The following configuration assume you are using [Symfony/demo](http://github.com/Symfony/demo) project.
+Add your Algolia application ID and API key to your `parameters.yml` file:
 
 ```yaml
-algolia_search:
-  prefix: demoapp_
-  indices:
-    - name: posts
-      class: App\Entity\Post
-
-    - name: comments
-      class: App\Entity\Comment
-      enable_serializer_groups: true
-```
-
-### Credentials
-
-You will also need to provide Algolia App ID and Admin API key. By default they are loaded from env variables `ALGOLIA_APP_ID` and `ALGOLIA_API_KEY`.
-
-If you don't use env variable, you can set them in your `parameters.yml`.
-
-```yml
 parameters:
-    env(ALGOLIA_APP_ID): K7MLRQH1JG
-    env(ALGOLIA_API_KEY): 0d7036b75416ad0c811f30536134b313
+    database_driver: pdo_mysql
+    database_host: 127.0.0.1
+    # ...
+    algolia.application_id: YOUR_APP_ID
+    algolia.api_key: YOUR_API_KEY
 ```
 
-## Search
-
-In this example we'll search for posts.
-
-```php
-$em           = $this->getDoctrine()->getManager();
-$indexManager = $this->get('search.index_manager');
-
-$posts = $indexManager->search('query', Post::class, $em);
-```
-
-Note that this method will return an array of entities retrieved by Doctrine object manager (data are pulled from the database).
-
-If you want to get the raw result from Algolia, use the `rawSearch` method.
-
-
-```php
-$indexManager = $this->get('search.index_manager');
-
-$posts = $indexManager->rawSearch('query', Post::class);
-```
-
-### Pagination
-
-To get a specific page, define the `page` (and `nbResults` if you want).
-
-```php
-$em           = $this->getDoctrine()->getManager();
-$indexManager = $this->get('search.index_manager');
-
-$posts = $indexManager->search('query', Post::class, $em, 2);
-// Or
-$posts = $indexManager->search('query', Post::class, $em, 2, 100);
-```
-
-### Count
-
-```php
-$indexManager = $this->get('search.index_manager');
-
-$posts = $indexManager->count('query', Post::class);
-```
-
-### Advanced search
-
-Pass anything you want in the `parameters` array. You can pass it in any search-related method.
-
-
-```php
-$indexManager = $this->get('search.index_manager');
-
-$posts = $indexManager->count('query', Post::class, 0, 10, ['filters' => 'comment_count>10']);
-```
-
-
-## Index entities
-
-### Automatically
-
-The bundle will listen to `postPersist` and `preRemove` doctrine events to keep your data in sync. You have nothing to do.
-
-### Manually
-
-If you want to update a post manually, you can get the `IndexManager` from the container and call the `index` method manually.
-
-```php
-$em           = $this->getDoctrine()->getManager();
-$indexManager = $this->get('search.index_manager');
-$post         = $em->getRepository(Post::class)->findBy(['author' => 1]);
-
-$indexManager->index($post, $em);
-
-```
-
-### With commands
-
-The bundle ships with two commands to import data into an index or to clear it.
-
-```
-# Import all data
-php bin/console search:import
-
-# Select what data to import
-php bin/console search:import --indices=posts,comments
-```
-
-It works the same way to clear data
-
-
-```
-# Clear all indices
-php bin/console search:clear
-
-# Select what indices to clear
-php bin/console search:clear --indices=posts,comments
-```
-
-## Normalizers
-
-By default all entities are converted to an array with the built-in [Symfony Normalizers](https://symfony.com/doc/current/components/serializer.html#normalizers) (GetSetMethodNormalizer, DateTimeNormalizer, ObjectNormalizer...) which should be enough for simple use case, but we encourage you to write your own Normalizer to have more control on what you send to Algolia or to simply avoid [circular references](https://symfony.com/doc/current/components/serializer.html#handling-circular-references).
-
-Symfony will use the first one to support your entity or format.
-
-Note that the normalizer is called with _searchableArray_ format.
-
-### Custom Normalizers
-
-#### Using a dedicated normalizer
-
-You can create a custom normalizer for any entity. The following snippet shows a simple CommentNormalizer. Normalizer must implement `Symfony\Component\Serializer\Normalizer\NormalizerInterface` interface.
-
-```php
-<?php
-
-namespace App\Serializer\Normalizers;
-
-use App\Entity\Comment;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Symfony\Component\Serializer\SerializerAwareInterface;
-use Symfony\Component\Serializer\SerializerAwareTrait;
-
-class CommentNormalizer implements NormalizerInterface, SerializerAwareInterface
-{
-    use SerializerAwareTrait;
-    
-    /**
-     * Normalizes an Comment into a set of arrays/scalars.
-     */
-    public function normalize($object, $format = null, array $context = array())
-    {
-        return [
-            'post_id'   => $object->getPost()->getId(),
-            'content'   => $object->getContent(),
-            'createdAt' => $this->serializer->normalize($object->getCreatedAt(), $format, $context),
-            'author'    => $this->serializer->normalize($object->getAuthor(), $format, $context),
-        ];
-    }
-
-    public function supportsNormalization($data, $format = null)
-    {
-        return $data instanceof Comment;
-    }
-}
-```
-
-```php
-<?php
-
-namespace App\Serializer\Normalizers;
-
-use App\Entity\User;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-
-class UserNormalizer implements NormalizerInterface
-{
-    /**
-     * Normalizes an Comment into a set of arrays/scalars.
-     */
-    public function normalize($object, $format = null, array $context = array())
-    {
-        return [
-            'username' => $object->getUsername(),
-            'id'       => $object->getAuthor()->getFullName(),
-        ];
-    }
-
-    public function supportsNormalization($data, $format = null)
-    {
-        return $data instanceof User;
-    }
-}
-```
-
-Don't forget to create the new services for your newly created `Normalizers` (if you don't rely on autowiring). You can find an example on the 
-(Symfony documentation)[http://symfony.com/doc/current/serializer.html#adding-normalizers-and-encoders].
-
-In our case, it will be:
-
-```xml
-<service id="comment_normalizer" class="App\Serializer\Normalizer\CommentNormalizer" public="false">
-    <tag name="serializer.normalizer" />
-</service>
-<service id="comment_normalizer" class="App\Serializer\Normalizer\UserNormalizer" public="false">
-    <tag name="serializer.normalizer" />
-</service>
-```
-
-
-#### Using `normalize` method in entity
-
-To define the `normalize` method in the entity class.
-
-1. Implement `Symfony\Component\Serializer\Normalizer\NormalizableInterface`
-2. Define `normalize` method
-
-**Example**
-
-```php
-<?php
-
-public function normalize(NormalizerInterface $normalizer, $format = null, array $context = array()): array
-{
-	return [
-		'title'   => $this->getTitle(),
-		'content' => $this->getContent(),
-		'author'  => $this->getAuthor()->getFullName(),
-	];
-}
-```
-
-#### Create Normalizer for `Algolia\SearchBundle` only
-
-Sometimes, you want to create a specific `Normalizer` just to send data to Algolia. But what happens if you have 2 normalizers for the same class ?
-Well you can add a condition so your `Normalizer` will only be called when Indexing through Algolia.
-
-When you create your `Normalizers`, you can add an additionnal check for the format :
-```php
-<?php
-
-use Algolia\SearchBundle\Searchable; 
-
-class UserNormalizer implements NormalizerInterface
-{
-    ... 
-
-    public function supportsNormalization($data, $format = null)
-    {
-        return $data instanceof User && $format == Searchable::NORMALIZATION_FORMAT;
-    }
-}
-```
-
-Though it's not really encouraged to add this kind of logic inside the normalize method, you could also add/remove some specific fields on your entity for Algolia this way:
-
-```php
-<?php 
-
-use Algolia\SearchBundle\Searchable; 
-
-class UserNormalizer implements NormalizerInterface
-{
-    public function normalize($object, $format = null, array $context = array())
-    {
-        if ($format == Searchable::NORMALIZATION_FORMAT) {
-            // 'id' of user will be provided only in Algolia usage
-            return ['id' => $object->getId()];
-        }
-        
-        return [
-            'username' => $object->getUsername(),
-            'email'    => $object->getEmail(),
-        ];
-    }
-    
-    ...
-}
-```
-
-### Using normalizer groups
-
-You can also rely on (`@Group` annotation)[https://symfony.com/doc/current/components/serializer.html].
-The name of the group is `searchable`.
-
-You have to explicitly enable this feature on your configuration: 
-
+You can also define those credentials directly in your `config.yml` file:
 ```yaml
-algolia_search:
-  prefix: demoapp_
-  indices:
-    - name: posts
-      class: App\Entity\Post
-
-    - name: comments
-      class: App\Entity\Comment
-      enable_serializer_groups: true
+algolia:
+    application_id: YOUR_APP_ID
+    api_key: YOUR_API_KEY
 ```
 
-In the example below, `$comment`, `$author` and `$createdAt` data will be sent to Algolia.
+There's two optional parameters you can add to this file:
+```yaml
+algolia:
+    catch_log_exceptions: true
+    index_name_prefix: staging
+    connection_timeout: 2
+```
+* **catch_log_exceptions**: If set to true, all exceptions thrown in the doctrine event subscriber will be caught and logged.
+* **index_name_prefix**: If set, this will add a prefix to all the index names (Useful if you want to setup multiple environments within the same Algolia app)
+* **connection_timeout**: If set, this will set connection timeout to Algolia (in seconds)
+
+
+
+# Mapping entities to Algolia indexes
+
+
+
+Mapping an entity type to an Algolia index allows you to keep it in sync with Algolia, i.e.
+the operations involving mapped entities on your local database are mirrored on the Algolia indexes.
+Indexation is automatic by default, but can be made manual if needed.
+
+Currently, mapping is only possible with annotations.
+
+## Indexing entity properties or methods
+
+The `Attribute` annotation marks a field or method for indexing by Algolia.
+
+All annotations are defined in the `Algolia\AlgoliaSearchBundle\Mapping\Annotation` namespace.
+
+Below is an example of an indexed field and an indexed property:
 
 ```php
-<?php
+namespace MyCoolAppBundle\Entity;
 
-namespace App\Entity;
+use Doctrine\ORM\Mapping as ORM;
+use Algolia\AlgoliaSearchBundle\Mapping\Annotation as Algolia;
 
-use Symfony\Component\Serializer\Annotation\Groups;
-
-class Comment
+/**
+ * Product
+ *
+ * @ORM\Entity
+ *
+ */
+class Product
 {
-    public $createdAt;
-    public $reviewer;
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    protected $id;
 
     /**
-     * @Groups({"searchable"})
+     * @var string
+     *
+     * @ORM\Column(name="name", type="string", length=255)
+     *
+     * @Algolia\Attribute
+     *
      */
-    public $comment;
-    
+    protected $name;
+
     /**
-     * @Groups({"searchable"})
+     * @var float
+     *
+     * @ORM\Column(name="price", type="decimal", nullable=true)
+     *
      */
-    public $author;
-    
+    protected $price;
+
     /**
-     * @Groups({"searchable"})
+     * @Algolia\Attribute
      */
-    public function getCreatedAt()
+    public function getNameAndPrice()
     {
-        return $this->createdAt;
+        return $this->name . " - " . $this->price;
     }
 }
 ```
 
-## Engine
+For optimal performance, please note that:
+- the properties you index should be mapped properties, i.e. properties that Doctrine is aware of.
+- the methods you index should be cheap to compute (simple concatenations, simple conditions...) *and* depend only on properties that Doctrine is aware of or on other methods that satisfy this second condition.
 
-### The `NullEngine`
+Abiding by the two rules above ensures that no useless update operations on Algolia servers are performed, and that all useful updates are performed.
+If you map something that is not known to Doctrine to an Algolia field, then the engine has no way to know when it changed, which may lead to useless updates and/or unexpected results.
 
-The package ships with a NullEngine. This engine implements the `EngineInterface` and return an empty array, zero or null depending on the method.
+Since we can't enforce the 2 conditions above automatically it is the programmer's responsibility to verify them.
 
-You can use it for your test for instance but also in dev environment.
+The names of the fields to be used on Algolia's servers are deduced automatically from the names of the fields or properties being indexed:
+- for indexed properties, the Algolia name is the name of the property
+- for indexed methods, the Algolia name is the name of the method, minus the leading "get" if the method starts with "get" then an uppercase letter. The first letter of the resulting name is converted to lower case.
 
-### Using another engine
-
-Let's say you want to use the `NullEngine` in your dev environment. You can override the service
-definition in your `config/dev/serices.yaml` this way:
-
-```yaml
-services:
-    search.engine:
-        class: Algolia\SearchBundle\Engine\NullEngine
-```
-
-Or in XML
-
-```xml
-<services>
-    <service id="search.engine" class="Algolia\SearchBundle\Engine\NullEngine" />
-</services>
-```
-
-This is also how you can use a custom engine, to handle another search engine or extend Algolia' default engine.
-
-## Using the Algolia Client (Advanced)
-
-In some cases, you may want to access the Algolia client directly to perform advanced operations
-(like manage API keys, manage indices and such).
-
-By default the `AlgoliaSearch\Client` in not public in the container, but you can easily expose it.
-In the service file of your project, `config/serices.yaml` in a typical Symfony4 app,
-you can alias it and make it public with the following code:
-
-```yaml
-services:
-    algolia.client:
-        alias: algolia_client
-        public: true
-```
-
-Or in XML
-
-```xml
-<services>
-    <service id="algolia.client" alias="algolia_client" public="true" />
-</services>
-```
-
-### Example
-
-Here is an example of how to use the client after your registered it publicly.
+You can override the Algolia name by setting the `algoliaName` argument in the annotation declaration, like this:
 
 ```php
-class TestController extends Controller
-{
-    public function testAction()
+    /**
+     * @Algolia\Attribute(algoliaName="myCustomFieldName")
+     */
+    public function getNameAndPrice()
     {
-        $algoliaClient = $this->get('algolia.client');
-        var_dump($algoliaClient->listIndexes());
+        return $this->name . " - " . $this->price;
+    }
+```
 
-        $indexManager = $this->get('search.index_manager');
-        $index = $algoliaClient->initIndex(
-            $indexManager->getFullIndexName(Post::class)
-        );
+By default the bundle will take the primary keys of your model to create the algolia objectID if you want to override this you can use one or more Id annotations.
 
-        var_dump($index->listApiKeys());
+```php
+namespace MyCoolAppBundle\Entity;
 
-        die;
+use Doctrine\ORM\Mapping as ORM;
+use Algolia\AlgoliaSearchBundle\Mapping\Annotation as Algolia;
+
+/**
+ * Product
+ *
+ * @ORM\Entity
+ *
+ */
+class Product
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    protected $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="name", type="string", length=255)
+     * @Algolia\Id
+     * @Algolia\Attribute
+     *
+     */
+    protected $name;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="price", type="decimal", nullable=true)
+     *
+     */
+    protected $price;
+}
+```
+
+In this example id will not be use as the objectId, instead name will be use.
+
+**When you make changes to the mappings, you need to [re-index your entities](https://www.algolia.com/doc/api-client/symfony/reindexing#reindexing-whole-collections) to reflect the changes in Algolia.**
+
+## Autoindexing vs Manual Indexing
+By default, mapped entities are automatically indexed on Algolia's servers using Doctrine's lifecycle events (synchronization is made during the onFlush and postFlush events).
+
+You can change this behaviour with the `Index` annotation and the `autoIndex` parameter, like this:
+
+```php
+/**
+ * Product
+ *
+ * @ORM\Entity
+ * @Algolia\Index(autoIndex=false)
+ *
+ */
+class Product
+{
+    // ...
+}
+```
+
+Now, to index a `Product` entity, you will need to manually index it, example:
+
+```php
+// This assumes we're in a Controller,
+// the Algolia indexer is provided as a Service.
+$product = new Product();
+$product->setName("Searching With Algolia");
+$em = $this->getEntityManager();
+$em->persist($product);
+$em->flush();
+$this->get('algolia.indexer')->getManualIndexer($em)->index($product);
+```
+
+(With autoindexing enabled, the product would have been indexed by the `$em->flush()` call)
+
+The `ManualIndexer` class also provides the `unIndex` method to manually un-index entities and the `reIndex` method to re-index a whole collection.
+Please see [the methods' comments](https://github.com/algolia/AlgoliaSearchBundle/blob/master/Indexer/ManualIndexer.php) for more info.
+
+## Per environment indexing
+
+By default, Algolia index names are suffixed with the name of the current application environment.
+
+To disable this feature, use the `perEnvironment` option of the `Index` annotation:
+
+```php
+/**
+ * Product
+ *
+ * @ORM\Entity
+ * @Algolia\Index(perEnvironment=false)
+ *
+ */
+class Product
+{
+    // ...
+}
+```
+
+## Conditional indexing
+
+It is often useful to skip indexing an entity based on some condition.
+
+To this end, we provide the `IndexIf` annotation. This annotation can only be used on methods, and the methods should only depend on fields the ORM is aware of. Example:
+
+```php
+/**
+ * Product
+ *
+ * @ORM\Entity
+ * @Algolia\Index(perEnvironment=false)
+ *
+ */
+class Product
+{
+    /**
+     * @Algolia\IndexIf
+     */
+    public function isPublished()
+    {
+        return $this->published;
     }
 }
 ```
 
-## Managing settings
+You can have several `IndexIf` conditions, in which case the record is indexed if they *all* return true. It may be better for readability to keep only one such annotation though.
 
-This bundle has a simple approach to settings management, everything is centralized in json files. Each
-engine must provide a `SettingsManager` class that can backup settings from the engine and push them back.
+## Index settings
 
-The bundle offers 2 commands to easily backup and restore settings
+You can optionally specify your index settings directly in the `Index` annotation.
 
-```sh
-php bin/console search:settings:backup --indices:posts,comments
-php bin/console search:settings:push --indices:posts,comments
+```php
+/**
+ *
+ * @ORM\Entity
+ *
+ * @Algolia\Index(
+ *     searchableAttributes = {"name", "description", "url"},
+ *     customRanking = {"desc(vote_count)", "asc(name)" }
+ *     [...]
+ * )
+ *
+ */
+class Product
+{
+}
 ```
 
-The `--indices` option take a comma-separated list of index names (without prefix, as defined in configuration).
-If no options is passed **all indices** will be processed.
+The index settings are **not** automatically synchronized with Algolia but we provide a command line command to do it:
 
-### Settings directory
-
-Depending on your version of Symfony, the settings will be saved in different locations:
-
-- **Symfony4**: /config/settings/algolia_search/
-- **Symfony3**: /app/Resources/SearchBundle/settings/
-
-The settings directory can also be set in the configuration if you have a non-standard setup or if you
-wish to save them elsewhere. The project directory will automatically be prepended.
-
-```yaml
-algolia_search:
-    settingsDirectory: app/search-settings/
-``` 
-
-## Tests
-
-The tests require `ALGOLIA_APP_ID` and `ALGOLIA_API_KEY` to be defined in the environment variables.
-
-```
-ALGOLIA_APP_ID=XXXXXXXXXX ALGOLIA_API_KEY=4b31300d70d70b75811f413366ad0c ./vendor/bin/phpunit
+```bash
+php app/console algolia:settings # show the local settings that are not applied to the Algolia indexes
+php app/console algolia:settings --push # push the configuration changes to Algolia servers
 ```
 
-### About `AlgoliaSyncEngine`
 
-In Algolia, all indexing operations are asynchronous. The API will return a taskID and you can check
-if this task is completed or not via another API endpoint.
 
-For test purposes, we use the AlgoliaSyncEngine. It will always wait for task to be completed
-before returning. This engine is only autoloaded during in the tests, if you will to use it in your
-project, you can copy it into your app and modify the `search.engine` service definition.
+# Retrieving entities
+
+
+
+## Performing a raw search
+
+You can retrieve raw results from Algolia indexes using the `rawSearch` method of the indexer:
+
+```php
+$this->get('algolia.indexer')->rawSearch('SomeIndexName', 'a query string');
+```
+
+This will return an array of hits, wrapped inside of a [SearchResult](https://github.com/algolia/AlgoliaSearchBundle/blob/master/SearchResult/SearchResult.php) instance.
+
+This will not connect to the local database.
+
+## Performing a native search
+
+You can retrieve Doctrine entities from Algolia indexes using the `search` method of the indexer:
+
+```php
+$this->get('algolia.indexer')->search(
+    $this->getEntityManager(),
+    'MyCoolBundle:Product',
+    'a query string'
+);
+```
+
+This will return an array of hits, wrapped inside of a [SearchResult](https://github.com/algolia/AlgoliaSearchBundle/blob/master/SearchResult/SearchResult.php) instance.
+Hits will be instance of the `Product` class, fetched from the local database.
+
+Please note that since we need to access the local database here contrary to the `rawSearch` call you need to pass the `EntityManager`, which adds an argument.
+
+
+
+# Reindexing
+
+
+
+## Reindexing whole collections
+
+You can re-index collections programmatically using the `reIndex` method of the `ManualIndexer` class
+(`$this->get('algolia.indexer')->getManualIndexer($this->getEntityManager())->reIndex('SomeBundle:EntityName')`),
+but you can also very easily do it using a simple console command:
+
+```bash
+php app/console algolia:reindex SomeBundle:EntityName
+```
+
+By default, a temporary index is created, the indexation is performed on the temporary index, and then the index is moved atomically to the target index.
+
+You can re-index in place by passing the `--unsafe` option. Please note that in unsafe mode outdated entities will not be un-indexed.
+
+
+
+# Running the tests
+
+
+
+## Running the tests
+
+Rename the test `parameters.yml.travis` file to `parameters.yml`, customize the settings with the correct database settings and Algolia API settings.
+
+Please note that by default Algolia credentials are loaded from environment variable (see `algolia.get_credentials_from_env`).
+
+Then run:
+
+```bash
+php vendor/bin/phpunit -c Tests
+```
+
+
