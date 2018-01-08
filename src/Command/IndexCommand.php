@@ -19,11 +19,11 @@ abstract class IndexCommand extends ContainerAwareCommand
             $indexNames = explode(',', $indexList);
         }
 
-        if (empty($indexNames)) {
-            return $indexManager->getSearchableEntities();
-        }
-
         $config = $indexManager->getConfiguration();
+
+        if (empty($indexNames)) {
+            $indexNames = array_keys($config['indices']);
+        }
 
         foreach ($indexNames as $name) {
             if (isset($config['indices'][$name])) {
