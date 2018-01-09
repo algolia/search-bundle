@@ -22,29 +22,12 @@ class AlgoliaEngine implements EngineInterface
 
     public function update($searchableEntities)
     {
-        if (
-            $searchableEntities instanceof SearchableEntityInterface
-            && !empty($record = $searchableEntities->getSearchableArray())
-        ) {
-            return [
-                $searchableEntities->getIndexName() => $this->algolia
-                    ->initIndex($searchableEntities->getIndexName())
-                    ->addObject($record, $searchableEntities->getId())
-            ];
-        }
 
         return $this->batchUpdate($searchableEntities);
     }
 
     public function remove($searchableEntities)
     {
-        if ($searchableEntities instanceof SearchableEntityInterface) {
-            return [
-                $searchableEntities->getIndexName() => $this->algolia
-                    ->initIndex($searchableEntities->getIndexName())
-                    ->deleteObject($searchableEntities->getId())
-            ];
-        }
 
         return $this->batchRemove($searchableEntities);
     }
@@ -97,6 +80,10 @@ class AlgoliaEngine implements EngineInterface
 
     protected function batchUpdate($searchableEntities)
     {
+        if ($searchableEntities instanceof SearchableEntityInterface) {
+            $searchableEntities = [$searchableEntities];
+        }
+
         $data = [];
         foreach ($searchableEntities as $entity) {
             if (empty($entity->getSearchableArray())) {
@@ -126,6 +113,10 @@ class AlgoliaEngine implements EngineInterface
 
     protected function batchRemove($searchableEntities)
     {
+        if ($searchableEntities instanceof SearchableEntityInterface) {
+            $searchableEntities = [$searchableEntities];
+        }
+
         $data = [];
         foreach ($searchableEntities as $entity) {
             if (empty($entity->getSearchableArray())) {
