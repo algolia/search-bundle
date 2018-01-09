@@ -22,14 +22,16 @@ class AlgoliaEngine implements EngineInterface
 
     public function update($searchableEntities)
     {
+        $batch = $this->doUpdate($searchableEntities);
 
-        return $this->batchUpdate($searchableEntities);
+        return $this->formatIndexingResponse($batch);
     }
 
     public function remove($searchableEntities)
     {
+        $batch = $this->doRemove($searchableEntities);
 
-        return $this->batchRemove($searchableEntities);
+        return $this->formatIndexingResponse($batch);
     }
 
     public function clear($indexName)
@@ -78,7 +80,7 @@ class AlgoliaEngine implements EngineInterface
         return (int) $results['nbHits'];
     }
 
-    protected function batchUpdate($searchableEntities)
+    protected function doUpdate($searchableEntities)
     {
         if ($searchableEntities instanceof SearchableEntityInterface) {
             $searchableEntities = [$searchableEntities];
@@ -111,7 +113,7 @@ class AlgoliaEngine implements EngineInterface
         return $result;
     }
 
-    protected function batchRemove($searchableEntities)
+    protected function doRemove($searchableEntities)
     {
         if ($searchableEntities instanceof SearchableEntityInterface) {
             $searchableEntities = [$searchableEntities];
@@ -153,5 +155,15 @@ class AlgoliaEngine implements EngineInterface
         return [
             $indexName => $this->algolia->deleteIndex($indexName)
         ];
+    }
+
+    protected function formatIndexingResponse($batch)
+    {
+        $response = [];
+        foreach ($batch as $indexName => $res) {
+            $response[$indexName] = count($res['objectIDs']);
+        }
+
+        return $response;
     }
 }
