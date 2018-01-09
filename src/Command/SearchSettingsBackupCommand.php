@@ -21,8 +21,8 @@ class SearchSettingsBackupCommand extends SearchSettingsCommand
             );
     }
 
-    protected function handle(SettingsManagerInterface $settingsManager, $params)
+    protected function handle($params)
     {
-        return $settingsManager->backup($params);
+        return $this->settingsManager->backup($params);
     }
 }

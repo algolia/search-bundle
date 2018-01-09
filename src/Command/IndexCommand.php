@@ -4,13 +4,22 @@ namespace Algolia\SearchBundle\Command;
 
 
 use Algolia\SearchBundle\IndexManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-abstract class IndexCommand extends ContainerAwareCommand
+abstract class IndexCommand extends Command
 {
-    protected function getEntitiesFromArgs(InputInterface $input, OutputInterface $output, IndexManagerInterface $indexManager)
+    protected $indexManager;
+
+    public function __construct(IndexManagerInterface $indexManager)
+    {
+        $this->indexManager = $indexManager;
+
+        parent::__construct();
+    }
+
+    protected function getEntitiesFromArgs(InputInterface $input, OutputInterface $output)
     {
         $entities = [];
         $indexNames = [];
@@ -19,11 +28,11 @@ abstract class IndexCommand extends ContainerAwareCommand
             $indexNames = explode(',', $indexList);
         }
 
-        if (empty($indexNames)) {
-            return $indexManager->getSearchableEntities();
-        }
+        $config = $this->indexManager->getConfiguration();
 
-        $config = $indexManager->getConfiguration();
+        if (empty($indexNames)) {
+            $indexNames = array_keys($config['indices']);
+        }
 
         foreach ($indexNames as $name) {
             if (isset($config['indices'][$name])) {

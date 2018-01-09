@@ -21,8 +21,8 @@ class SearchSettingsPushCommand extends SearchSettingsCommand
             );
     }
 
-    protected function handle(SettingsManagerInterface $settingsManager, $params)
+    protected function handle($params)
     {
-        return $settingsManager->push($params);
+        return $this->settingsManager->push($params);
     }
 }
