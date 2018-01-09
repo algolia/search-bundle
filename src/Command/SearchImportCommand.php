@@ -26,9 +26,8 @@ class SearchImportCommand extends IndexCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $indexManager = $this->getContainer()->get('search.index_manager');
         $doctrine = $this->getContainer()->get('doctrine');
-        $entitiesToIndex = $this->getEntitiesFromArgs($input, $output, $indexManager);
+        $entitiesToIndex = $this->getEntitiesFromArgs($input, $output);
 
         foreach ($entitiesToIndex as $indexName => $entityClassName) {
             $repository = $doctrine->getRepository($entityClassName);
@@ -36,7 +35,7 @@ class SearchImportCommand extends IndexCommand
 
             $entities = $repository->findAll();
 
-            $indexManager->index($entities, $manager);
+            $this->indexManager->index($entities, $manager);
 
             $output->writeln(sprintf(
                 'Indexed %s %s entities into %s index',

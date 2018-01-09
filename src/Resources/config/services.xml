@@ -6,7 +6,7 @@
 
     <services>
 
-        <prototype namespace="Algolia\SearchBundle\Command\" resource="../../Command">
+        <prototype namespace="Algolia\SearchBundle\Command\" resource="../../Command" autowire="true">
             <tag name="console.command" />
         </prototype>
 

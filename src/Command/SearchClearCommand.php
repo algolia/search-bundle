@@ -25,11 +25,10 @@ class SearchClearCommand extends IndexCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $indexManager = $this->getContainer()->get('search.index_manager');
-        $indexToClear = $this->getEntitiesFromArgs($input, $output, $indexManager);
+        $indexToClear = $this->getEntitiesFromArgs($input, $output);
 
         foreach ($indexToClear as $indexName => $className) {
-            $indexManager->clear($className);
+            $this->indexManager->clear($className);
 
             $output->writeln('Cleared <info>'.$indexName.'</info> index of <comment>'.$className.'</comment> ');
         }

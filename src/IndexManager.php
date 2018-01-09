@@ -73,7 +73,6 @@ class IndexManager implements IndexManagerInterface
 
             $this->engine->update($searchableEntities);
         }
-
     }
 
     public function remove($entities, ObjectManager $objectManager)
