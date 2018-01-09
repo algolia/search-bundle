@@ -15,6 +15,7 @@
     "prefer-stable": true,
     "require": {
         "algolia/algoliasearch-client-php": "^1.23",
+        "doctrine/common": "^2.5",
         "symfony/serializer": "^3.4.0 || ^4.0.0",
         "symfony/property-access": "^3.4.0 || ^4.0.0",
         "symfony/filesystem": "^3.4.0 || ^4.0.0"
@@ -30,12 +31,11 @@
         }
     },
     "require-dev": {
-        "symfony/framework-bundle": "^3.4.0 || ^4.0.0",
+        "doctrine/doctrine-bundle": "^1.8",
+        "doctrine/orm": "^2.5",
         "phpunit/phpunit": "^5.7 || ^6.5",
         "symfony/doctrine-bridge": "^3.4.0 || ^4.0.0",
-        "doctrine/orm": "^2.5",
-        "symfony/var-dumper": "^3.4.0 || ^4.0.0",
-        "doctrine/doctrine-bundle": "^1.8"
+        "symfony/framework-bundle": "^3.4.0 || ^4.0.0"
     },
     "extra": {
         "branch-alias": {
