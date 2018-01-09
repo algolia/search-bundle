@@ -28,6 +28,7 @@ class SearchImportCommand extends IndexCommand
     {
         $doctrine = $this->getContainer()->get('doctrine');
         $entitiesToIndex = $this->getEntitiesFromArgs($input, $output);
+        $config = $this->indexManager->getConfiguration();
 
         foreach ($entitiesToIndex as $indexName => $entityClassName) {
             $repository = $doctrine->getRepository($entityClassName);
@@ -35,13 +36,14 @@ class SearchImportCommand extends IndexCommand
 
             $entities = $repository->findAll();
 
-            $this->indexManager->index($entities, $manager);
+            $response = $this->indexManager->index($entities, $manager);
 
             $output->writeln(sprintf(
-                'Indexed %s %s entities into %s index',
-                '<comment>'.count($entities).'</comment>',
+                'Indexed <comment>%s / %s</comment> %s entities into %s index',
+                $response[$indexName],
+                count($entities),
                 $entityClassName,
-                '<info>'.$indexName.'</info>'
+                '<info>'.$config['prefix'].$indexName.'</info>'
             ));
         }
 
