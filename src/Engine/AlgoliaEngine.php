@@ -95,7 +95,7 @@ class AlgoliaEngine implements EngineInterface
         return (int) $results['nbHits'];
     }
 
-    private function batchUpdate($searchableEntities)
+    protected function batchUpdate($searchableEntities)
     {
         $data = [];
         foreach ($searchableEntities as $entity) {
@@ -124,7 +124,7 @@ class AlgoliaEngine implements EngineInterface
         return $result;
     }
 
-    private function batchRemove($searchableEntities)
+    protected function batchRemove($searchableEntities)
     {
         $data = [];
         foreach ($searchableEntities as $entity) {
