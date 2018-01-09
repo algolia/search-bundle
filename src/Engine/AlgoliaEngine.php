@@ -51,16 +51,24 @@ class AlgoliaEngine implements EngineInterface
 
     public function clear($indexName)
     {
-        return [
-            $indexName => $this->algolia->initIndex($indexName)->clearIndex()
-        ];
+        try {
+            $this->doClear($indexName);
+        } catch (\Exception $e) {
+            return false;
+        }
+
+        return true;
     }
 
     public function delete($indexName)
     {
-        return [
-            $indexName => $this->algolia->deleteIndex($indexName)
-        ];
+        try {
+            $this->doDelete($indexName);
+        } catch (\Exception $e) {
+            return false;
+        }
+
+        return true;
     }
 
     public function search($query, $indexName, $page = 1, $nbResults = null, array $parameters = [])
@@ -140,5 +148,19 @@ class AlgoliaEngine implements EngineInterface
         }
 
         return $result;
+    }
+
+    protected function doClear($indexName)
+    {
+        return [
+            $indexName => $this->algolia->initIndex($indexName)->clearIndex()
+        ];
+    }
+
+    protected function doDelete($indexName)
+    {
+        return [
+            $indexName => $this->algolia->deleteIndex($indexName)
+        ];
     }
 }
