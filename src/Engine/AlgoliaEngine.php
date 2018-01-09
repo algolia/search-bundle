@@ -4,7 +4,6 @@ namespace Algolia\SearchBundle\Engine;
 
 use Algolia\SearchBundle\SearchableEntityInterface;
 use AlgoliaSearch\Client;
-use AlgoliaSearch\Version;
 
 class AlgoliaEngine implements EngineInterface
 {
@@ -13,8 +12,6 @@ class AlgoliaEngine implements EngineInterface
 
     public function __construct(Client $algolia)
     {
-        Version::addSuffixUserAgentSegment('Symfony Search Bundle', '3.0.0-BETA');
-
         $this->algolia = $algolia;
     }
 
