@@ -46,7 +46,7 @@ class AlgoliaEngine implements EngineInterface
             ];
         }
 
-        return $this->batchDelete($searchableEntities);
+        return $this->batchRemove($searchableEntities);
     }
 
     public function clear($indexName)
@@ -116,7 +116,7 @@ class AlgoliaEngine implements EngineInterface
         return $result;
     }
 
-    private function batchDelete($searchableEntities)
+    private function batchRemove($searchableEntities)
     {
         $data = [];
         foreach ($searchableEntities as $entity) {
