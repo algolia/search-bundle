@@ -22,45 +22,38 @@ class AlgoliaEngine implements EngineInterface
 
     public function update($searchableEntities)
     {
-        if (
-            $searchableEntities instanceof SearchableEntityInterface
-            && !empty($record = $searchableEntities->getSearchableArray())
-        ) {
-            return [
-                $searchableEntities->getIndexName() => $this->algolia
-                    ->initIndex($searchableEntities->getIndexName())
-                    ->addObject($record, $searchableEntities->getId())
-            ];
-        }
+        $batch = $this->doUpdate($searchableEntities);
 
-        return $this->batchUpdate($searchableEntities);
+        return $this->formatIndexingResponse($batch);
     }
 
     public function remove($searchableEntities)
     {
-        if ($searchableEntities instanceof SearchableEntityInterface) {
-            return [
-                $searchableEntities->getIndexName() => $this->algolia
-                    ->initIndex($searchableEntities->getIndexName())
-                    ->deleteObject($searchableEntities->getId())
-            ];
-        }
+        $batch = $this->doRemove($searchableEntities);
 
-        return $this->batchDelete($searchableEntities);
+        return $this->formatIndexingResponse($batch);
     }
 
     public function clear($indexName)
     {
-        return [
-            $indexName => $this->algolia->initIndex($indexName)->clearIndex()
-        ];
+        try {
+            $this->doClear($indexName);
+        } catch (\Exception $e) {
+            return false;
+        }
+
+        return true;
     }
 
     public function delete($indexName)
     {
-        return [
-            $indexName => $this->algolia->deleteIndex($indexName)
-        ];
+        try {
+            $this->doDelete($indexName);
+        } catch (\Exception $e) {
+            return false;
+        }
+
+        return true;
     }
 
     public function search($query, $indexName, $page = 1, $nbResults = null, array $parameters = [])
@@ -87,8 +80,12 @@ class AlgoliaEngine implements EngineInterface
         return (int) $results['nbHits'];
     }
 
-    private function batchUpdate($searchableEntities)
+    protected function doUpdate($searchableEntities)
     {
+        if ($searchableEntities instanceof SearchableEntityInterface) {
+            $searchableEntities = [$searchableEntities];
+        }
+
         $data = [];
         foreach ($searchableEntities as $entity) {
             if (empty($entity->getSearchableArray())) {
@@ -116,8 +113,12 @@ class AlgoliaEngine implements EngineInterface
         return $result;
     }
 
-    private function batchDelete($searchableEntities)
+    protected function doRemove($searchableEntities)
     {
+        if ($searchableEntities instanceof SearchableEntityInterface) {
+            $searchableEntities = [$searchableEntities];
+        }
+
         $data = [];
         foreach ($searchableEntities as $entity) {
             if (empty($entity->getSearchableArray())) {
@@ -140,5 +141,29 @@ class AlgoliaEngine implements EngineInterface
         }
 
         return $result;
+    }
+
+    protected function doClear($indexName)
+    {
+        return [
+            $indexName => $this->algolia->initIndex($indexName)->clearIndex()
+        ];
+    }
+
+    protected function doDelete($indexName)
+    {
+        return [
+            $indexName => $this->algolia->deleteIndex($indexName)
+        ];
+    }
+
+    protected function formatIndexingResponse($batch)
+    {
+        $response = [];
+        foreach ($batch as $indexName => $res) {
+            $response[$indexName] = count($res['objectIDs']);
+        }
+
+        return $response;
     }
 }

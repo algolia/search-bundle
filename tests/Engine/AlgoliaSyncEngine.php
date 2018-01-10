@@ -7,45 +7,58 @@ class AlgoliaSyncEngine extends AlgoliaEngine
 {
     public function add($searchableEntities)
     {
-        $res = parent::add($searchableEntities);
-
-        foreach ($res as $indexName => $response) {
-            $this->algolia->initIndex($indexName)->waitTask($response['taskID']);
-        }
-
-        return $res;
+        return $this->update($searchableEntities);
     }
 
     public function update($searchableEntities)
     {
-        $res = parent::update($searchableEntities);
+        $batch = $this->doUpdate($searchableEntities);
 
-        foreach ($res as $indexName => $response) {
+        foreach ($batch as $indexName => $response) {
             $this->algolia->initIndex($indexName)->waitTask($response['taskID']);
         }
 
-        return $res;
+        return $this->formatIndexingResponse($batch);
     }
 
     public function remove($searchableEntities)
     {
-        $res = parent::remove($searchableEntities);
+        $batch = $this->doRemove($searchableEntities);
 
-        foreach ($res as $indexName => $response) {
+        foreach ($batch as $indexName => $response) {
             $this->algolia->initIndex($indexName)->waitTask($response['taskID']);
         }
 
-        return $res;
+        return $this->formatIndexingResponse($batch);
     }
 
     public function clear($indexName)
     {
-        $res = parent::clear($indexName);
+        try {
+            $batch = $this->doClear($indexName);
 
-        foreach ($res as $indexName => $response) {
-            $this->algolia->initIndex($indexName)->waitTask($response['taskID']);
+            foreach ($batch as $indexName => $response) {
+                $this->algolia->initIndex($indexName)->waitTask($response['taskID']);
+            }
+        } catch (\Exception $e) {
+            return false;
         }
 
-        return $res;
+        return true;
+    }
+
+    public function delete($indexName)
+    {
+        try {
+            $batch = $this->doDelete($indexName);
+
+            foreach ($batch as $indexName => $response) {
+                $this->algolia->initIndex($indexName)->waitTask($response['taskID']);
+            }
+        } catch (\Exception $e) {
+            return false;
+        }
+
+        return true;
     }
 }

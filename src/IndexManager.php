@@ -55,6 +55,7 @@ class IndexManager implements IndexManagerInterface
             $entities = [$entities];
         }
 
+        $batch = [];
         foreach (array_chunk($entities, 500) as $chunk) {
             $searchableEntities = [];
 
@@ -71,8 +72,10 @@ class IndexManager implements IndexManagerInterface
                 );
             }
 
-            $this->engine->update($searchableEntities);
+            $batch[] = $this->engine->update($searchableEntities);
         }
+
+        return $this->formatBatchResponse($batch);
     }
 
     public function remove($entities, ObjectManager $objectManager)
@@ -81,6 +84,7 @@ class IndexManager implements IndexManagerInterface
             $entities = [$entities];
         }
 
+        $batch = [];
         foreach (array_chunk($entities, 500) as $chunk) {
             $searchableEntities = [];
 
@@ -96,23 +100,24 @@ class IndexManager implements IndexManagerInterface
                 );
             }
 
-            $this->engine->remove($searchableEntities);
+            $batch[] = $this->engine->remove($searchableEntities);
         }
 
+        return $this->formatBatchResponse($batch);
     }
 
     public function clear($className)
     {
         $this->assertIsSearchable($className);
 
-        $this->engine->clear($this->getFullIndexName($className));
+        return $this->engine->clear($this->getFullIndexName($className));
     }
 
     public function delete($className)
     {
         $this->assertIsSearchable($className);
 
-        $this->engine->delete($this->getFullIndexName($className));
+        return $this->engine->delete($this->getFullIndexName($className));
     }
 
     public function search($query, $className, ObjectManager $objectManager, $page = 1, $nbResults = null, array $parameters = [])
@@ -198,5 +203,28 @@ class IndexManager implements IndexManagerInterface
         }
 
         $this->classToSerializerGroupMapping = $mapping;
+    }
+
+    private function formatBatchResponse(array $batch)
+    {
+        $formattedResponse = [];
+        foreach ($batch as $response) {
+            foreach ($response as $fullIndexName => $count) {
+                $indexName = $this->removePrefixFromIndexName($fullIndexName);
+
+                if (!isset($formattedResponse[$indexName])) {
+                    $formattedResponse[$indexName] = 0;
+                }
+
+                $formattedResponse[$indexName] += $count;
+            }
+        }
+
+        return $formattedResponse;
+    }
+
+    private function removePrefixFromIndexName($fullIndexName)
+    {
+        return substr($fullIndexName, strlen($this->configuration['prefix']));
     }
 }
