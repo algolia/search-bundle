@@ -223,8 +223,8 @@ class IndexManager implements IndexManagerInterface
         return $formattedResponse;
     }
 
-    private function removePrefixFromIndexName($fullIndexName)
+    private function removePrefixFromIndexName($indexName)
     {
-        return substr($fullIndexName, strlen($this->configuration['prefix']));
+        return preg_replace('/^'.preg_quote($this->configuration['prefix'], '/').'/', '', $indexName);
     }
 }

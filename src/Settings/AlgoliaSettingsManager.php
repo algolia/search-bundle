@@ -75,6 +75,13 @@ class AlgoliaSettingsManager implements SettingsManagerInterface
 
     private function getFileName($indexName, $type)
     {
+        $indexName = $this->removePrefixFromIndexName($indexName);
+
         return sprintf('%s/%s-%s.json', $this->config['settingsDirectory'], $indexName, $type);
+    }
+
+    private function removePrefixFromIndexName($indexName)
+    {
+        return preg_replace('/^'.preg_quote($this->config['prefix'], '/').'/', '', $indexName);
     }
 }

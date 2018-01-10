@@ -47,10 +47,10 @@ class SettingsTest extends BaseTest
         $message = $this->settingsManager->backup(['indices' => ['posts']]);
 
         $this->assertContains('Saved settings for', $message[0]);
-        $this->assertTrue(file_exists($this->settingsDir.'/TRAVIS_sf_settings_posts-settings.json'));
+        $this->assertTrue(file_exists($this->settingsDir.'/posts-settings.json'));
 
         $savedSettings = json_decode(file_get_contents(
-            $this->settingsDir.'/TRAVIS_sf_settings_posts-settings.json'
+            $this->settingsDir.'/posts-settings.json'
         ), true);
 
         $this->assertArraySubset($settingsToUpdate, $savedSettings);
@@ -74,7 +74,7 @@ class SettingsTest extends BaseTest
         $this->assertContains('Pushed settings for', $message[0]);
 
         $savedSettings = json_decode(file_get_contents(
-            $this->settingsDir.'/TRAVIS_sf_settings_posts-settings.json'
+            $this->settingsDir.'/posts-settings.json'
         ), true);
 
         for ($i=0;$i<5;$i++) {
