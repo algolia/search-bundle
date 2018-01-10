@@ -14,15 +14,15 @@ class AlgoliaEngineTest extends BaseTest
         // Indexing
         $result = $engine->add($searchablePost);
         $this->assertArrayHasKey($searchablePost->getIndexName(), $result);
-        $this->assertArrayHasKey('taskID', $result[$searchablePost->getIndexName()]);
+        $this->assertEquals(1, $result[$searchablePost->getIndexName()]);
 
         $result = $engine->remove($searchablePost);
         $this->assertArrayHasKey($searchablePost->getIndexName(), $result);
-        $this->assertArrayHasKey('taskID', $result[$searchablePost->getIndexName()]);
+        $this->assertEquals(1, $result[$searchablePost->getIndexName()]);
 
         $result = $engine->update($searchablePost);
         $this->assertArrayHasKey($searchablePost->getIndexName(), $result);
-        $this->assertArrayHasKey('taskID', $result[$searchablePost->getIndexName()]);
+        $this->assertEquals(1, $result[$searchablePost->getIndexName()]);
 
         // Search
         $result = $engine->search('query', $searchablePost->getIndexName());
@@ -40,12 +40,10 @@ class AlgoliaEngineTest extends BaseTest
 
         // Cleanup
         $result = $engine->clear($searchablePost->getIndexName());
-        $this->assertArrayHasKey($searchablePost->getIndexName(), $result);
-        $this->assertArrayHasKey('taskID', $result[$searchablePost->getIndexName()]);
+        $this->assertTrue($result);
 
         // Delete index
         $result = $engine->delete($searchablePost->getIndexName());
-        $this->assertArrayHasKey($searchablePost->getIndexName(), $result);
-        $this->assertArrayHasKey('taskID', $result[$searchablePost->getIndexName()]);
+        $this->assertTrue($result);
     }
 }
