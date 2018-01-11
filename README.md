@@ -113,7 +113,7 @@ any other engine, not just Algolia.
 ### Require the dependency (with Composer)
 
 ```bash
-composer require algolia/search-bundle ^3.0.0
+composer require algolia/search-bundle ^3.0
 ```
 
 ### Register the bundle
