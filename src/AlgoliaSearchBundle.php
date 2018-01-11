@@ -13,6 +13,6 @@ class AlgoliaSearchBundle extends Bundle
         parent::boot();
 
         Version::addSuffixUserAgentSegment('Symfony', SfKernel::VERSION);
-        Version::addSuffixUserAgentSegment('Symfony Search Bundle', '3.0.0-BETA');
+        Version::addSuffixUserAgentSegment('Symfony Search Bundle', '3.0.1');
     }
 }
