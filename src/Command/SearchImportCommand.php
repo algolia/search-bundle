@@ -31,8 +31,8 @@ class SearchImportCommand extends IndexCommand
         $config = $this->indexManager->getConfiguration();
 
         foreach ($entitiesToIndex as $indexName => $entityClassName) {
-            $repository = $doctrine->getRepository($entityClassName);
-            $manager = $doctrine->getManager();
+            $manager = $doctrine->getManagerForClass($entityClassName);
+            $repository = $manager->getRepository($entityClassName);
 
             $entities = $repository->findAll();
 
