@@ -11,6 +11,7 @@ class SearchableEntity implements SearchableEntityInterface
     protected $entity;
     protected $entityMetadata;
     protected $useSerializerGroups;
+    protected $objectIDGetter;
 
     private $id;
     private $normalizer;
@@ -22,6 +23,7 @@ class SearchableEntity implements SearchableEntityInterface
         $this->entityMetadata      = $entityMetadata;
         $this->normalizer          = $normalizer;
         $this->useSerializerGroups = isset($extra['useSerializerGroup']) && $extra['useSerializerGroup'];
+        $this->objectIDGetter      = isset($extra['objectID']) ? $extra['objectID'] : null;
 
         $this->setId();
     }
@@ -46,10 +48,20 @@ class SearchableEntity implements SearchableEntityInterface
 
     private function setId()
     {
+        if ($this->objectIDGetter !== null && method_exists($this->entity, $this->objectIDGetter)) {
+            $this->id = $this->entity->{$this->objectIDGetter}();
+
+            if ($this->id === null) {
+                throw new Exception(sprintf('Entity %s has no valid key', get_class($this->entity)));
+            }
+
+            return;
+        }
+
         $ids = $this->entityMetadata->getIdentifierValues($this->entity);
 
         if (empty($ids)) {
-            throw new Exception('Entity has no primary key');
+            throw new Exception(sprintf('Entity %s has no valid primary key', get_class($this->entity)));
         }
 
         if (1 == count($ids)) {

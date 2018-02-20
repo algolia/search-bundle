@@ -64,11 +64,13 @@ class ConfigurationTest extends BaseTest
                     "indices" => [
                         'posts' => [
                             'class' => 'App\Entity\Post',
-                            'enable_serializer_groups' => false
+                            'enable_serializer_groups' => false,
+                            'object_id' => null,
                         ],
                         'tags' => [
                             'class' => 'App\Entity\Tag',
-                            'enable_serializer_groups' => true
+                            'enable_serializer_groups' => true,
+                            'object_id' => null,
                         ],
                     ],
                 ]

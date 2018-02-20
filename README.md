@@ -302,6 +302,23 @@ algolia_search:
 
 Checkout the [indexing documentation](https://www.algolia.com/doc/api-client/symfony/indexing/) to learn how to send data to Algolia.
 
+
+#### object_id
+
+By default, the bundle populates ObjectID index retrieving ids from entities metadata.
+But you could totally use a different property of your entity to do that. So you can
+provide in your configuration the getter which will be used to populate the ObjectID
+index in Algolia.
+
+Example:
+```yaml
+algolia_search:
+  indices:
+    - name: posts
+      class: App\Entity\Post
+      object_id: getSlug
+```
+
 ## Per environment setup
 
 Usually, you need different configurations per environment, at least to avoid

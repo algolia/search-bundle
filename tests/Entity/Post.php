@@ -37,6 +37,13 @@ class Post
     /**
      * @var string
      *
+     * @ORM\Column(type="string")
+     */
+    private $slug;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(type="text")
      */
     private $content;
@@ -63,6 +70,7 @@ class Post
     public function __construct(array $attributes = [])
     {
         $this->id = isset($attributes['id']) ? $attributes['id'] : null;
+        $this->slug = isset($attributes['slug']) ? $attributes['slug'] : null;
         $this->title = isset($attributes['title']) ? $attributes['title'] : null;
         $this->content = isset($attributes['content']) ? $attributes['content'] : null;
         $this->publishedAt = isset($attributes['publishedAt']) ? $attributes['publishedAt'] : new \DateTime();
@@ -90,6 +98,19 @@ class Post
     public function setTitle($title)
     {
         $this->title = $title;
+    }
+
+    /**
+     * @Groups({"searchable"})
+     */
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+
+    public function setSlug($slug)
+    {
+        return $this->slug = $slug;
     }
 
     public function getContent()

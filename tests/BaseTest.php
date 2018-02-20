@@ -38,9 +38,11 @@ class BaseTest extends TestCase
     {
         $post = new Post;
         $post->setTitle('Test');
+        $post->setSlug('test');
         $post->setContent('Test content');
 
         if (!is_null($id)) {
+            $post->setSlug('test-'.$id);
             $post->setId($id);
         }
 

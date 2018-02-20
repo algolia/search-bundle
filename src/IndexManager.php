@@ -17,6 +17,7 @@ class IndexManager implements IndexManagerInterface
     private $searchableEntities;
     private $classToIndexMapping;
     private $classToSerializerGroupMapping;
+    private $objectIDGetters;
     private $normalizer;
 
     public function __construct(NormalizerInterface $normalizer, EngineInterface $engine, array $configuration)
@@ -28,6 +29,7 @@ class IndexManager implements IndexManagerInterface
         $this->setSearchableEntities();
         $this->setClassToIndexMapping();
         $this->setClassToSerializerGroupMapping();
+        $this->setObjectIDGetters();
     }
 
     public function isSearchable($className)
@@ -68,7 +70,10 @@ class IndexManager implements IndexManagerInterface
                     $entity,
                     $objectManager->getClassMetadata($className),
                     $this->normalizer,
-                    ['useSerializerGroup' => $this->canUseSerializerGroup($className)]
+                    [
+                        'useSerializerGroup' => $this->canUseSerializerGroup($className),
+                        'objectID' => $this->retrieveObjectIDGetter($className),
+                    ]
                 );
             }
 
@@ -162,6 +167,11 @@ class IndexManager implements IndexManagerInterface
         return $this->classToSerializerGroupMapping[$className];
     }
 
+    private function retrieveObjectIDGetter($className)
+    {
+        return $this->objectIDGetters[$className];
+    }
+
     private function setClassToIndexMapping()
     {
         $mapping = [];
@@ -203,6 +213,14 @@ class IndexManager implements IndexManagerInterface
         }
 
         $this->classToSerializerGroupMapping = $mapping;
+    }
+
+    private function setObjectIDGetters()
+    {
+        $this->objectIDGetters = [];
+        foreach ($this->configuration['indices'] as $indexDetails) {
+            $this->objectIDGetters[$indexDetails['class']] = $indexDetails['object_id'];
+        }
     }
 
     private function formatBatchResponse(array $batch)

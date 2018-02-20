@@ -39,6 +39,7 @@ class SerializationTest extends BaseTest
         $post = new Post([
             'id' => 12,
             'title' => 'a simple post',
+            'slug' => 'a-simple-post',
             'content' => 'some text',
             'publishedAt' => $datetime,
             'comments' => [new Comment([
@@ -58,6 +59,7 @@ class SerializationTest extends BaseTest
         $expected = [
             "id" => 12,
             "title" => "a simple post",
+            "slug" => "a-simple-post",
             "content" => "some text",
             "publishedAt" => $serializedDateTime,
             "comments" => [
@@ -84,6 +86,7 @@ class SerializationTest extends BaseTest
         $post = new Post([
             'id' => 12,
             'title' => 'a simple post',
+            'slug' => 'a-simple-post',
             'content' => 'some text',
             'publishedAt' => $datetime,
             'comments' => [new Comment([
@@ -105,6 +108,7 @@ class SerializationTest extends BaseTest
             "id" => 12,
             "title" => "a simple post",
             "publishedAt" => $serializedDateTime,
+            "slug" => "a-simple-post",
         ];
 
         $this->assertEquals($expected, $searchablePost->getSearchableArray());

@@ -47,6 +47,11 @@ class Configuration implements ConfigurationInterface
                                 ->info('When set to true, it will call normalize method with an extra groups parameter "groups" => [Searchable::NORMALIZATION_GROUP]')
                                 ->defaultFalse()
                             ->end()
+                            ->scalarNode('object_id')
+                                ->info('When set, it will search the given getter in the class')
+                                ->cannotBeEmpty()
+                                ->defaultNull()
+                            ->end()
                         ->end()
                     ->end()
                 ->end() // indices
