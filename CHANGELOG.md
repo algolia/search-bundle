@@ -1,6 +1,14 @@
 CHANGELOG
 =========
 
+3.1.0
+-----
+
+- Introduce `batchSize` config key (default: 500) - PR [#208](https://github.com/algolia/search-bundle/pull/203)
+    
+    This config allow you create smaller or bigger batch calls to Algolia. The same config is used by doctrine in the ImportCommand.
+    
+
 2.2.0
 -----
 
