@@ -34,16 +34,17 @@ class AlgoliaSearchExtension extends Extension
             $config['prefix'] = $container->getParameter("kernel.environment").'_';
         }
 
+        $rootDir = $container->getParameterBag()->get('kernel.project_dir');
+
         if (is_null($config['settingsDirectory'])) {
-            if (3 == Kernel::MAJOR_VERSION) {
+            if (3 == Kernel::MAJOR_VERSION && !is_dir($rootDir.'/config/')) {
                 $config['settingsDirectory'] = '/app/Resources/SearchBundle/settings/';
             } else {
                 $config['settingsDirectory'] = '/config/settings/algolia_search/';
             }
         }
 
-        $root = $container->getParameterBag()->get('kernel.project_dir');
-        $config['settingsDirectory'] = $root.$config['settingsDirectory'];
+        $config['settingsDirectory'] = $rootDir.$config['settingsDirectory'];
 
         $container->setParameter('algolia_search.doctrineSubscribedEvents', $config['doctrineSubscribedEvents']);
 
