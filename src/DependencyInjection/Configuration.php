@@ -51,7 +51,7 @@ class Configuration implements ConfigurationInterface
                                 ->defaultFalse()
                             ->end()
                             ->scalarNode('index_if')
-                                ->info('Name of the method in the entity used to decide if an entry should be indexed or not.')
+                                ->info('Property accessor path (like method or property name) used to decide if an entry should be indexed.')
                                 ->defaultNull()
                             ->end()
                         ->end()

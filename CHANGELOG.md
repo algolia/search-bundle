@@ -11,8 +11,8 @@ CHANGELOG
 * Feature: Index entities conditionally (using a dedicated method)
 
     Add new `index_if` configuration key for indices.
-    This should be the name of a method in the entity that
-    returns true if the item should be index (false to bypass indexing).
+    This should be the path to a property in the entity which
+    evaluates to true if the item should be index (false to bypass indexing).
 
     Example:
         - indices:

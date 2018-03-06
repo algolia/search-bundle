@@ -6,6 +6,7 @@ use Algolia\SearchBundle\Engine\EngineInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\Util\ClassUtils;
 use Symfony\Component\Config\Definition\Exception\Exception;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 class IndexManager implements IndexManagerInterface
@@ -25,6 +26,7 @@ class IndexManager implements IndexManagerInterface
         $this->normalizer          = $normalizer;
         $this->engine              = $engine;
         $this->configuration       = $configuration;
+        $this->propertyAccessor    = PropertyAccess::createPropertyAccessor();
 
         $this->setSearchableEntities();
         $this->setClassToIndexMapping();
@@ -165,9 +167,10 @@ class IndexManager implements IndexManagerInterface
 
     protected function shouldBeIndexed($className, &$entity)
     {
-        if ($methodName = $this->indexIfMapping[$className]) {
-            if (method_exists($entity, $methodName)) {
-                return (bool) $entity->{$methodName}();
+
+        if ($propertyPath = $this->indexIfMapping[$className]) {
+            if ($this->propertyAccessor->isReadable($entity, $propertyPath)) {
+                return (bool) $this->propertyAccessor->getValue($entity, $propertyPath);
             }
         }
 
