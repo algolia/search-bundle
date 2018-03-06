@@ -17,6 +17,7 @@ class IndexManager implements IndexManagerInterface
     private $searchableEntities;
     private $classToIndexMapping;
     private $classToSerializerGroupMapping;
+    private $indexIfMapping;
     private $normalizer;
 
     public function __construct(NormalizerInterface $normalizer, EngineInterface $engine, array $configuration)
@@ -28,6 +29,7 @@ class IndexManager implements IndexManagerInterface
         $this->setSearchableEntities();
         $this->setClassToIndexMapping();
         $this->setClassToSerializerGroupMapping();
+        $this->setIndexIfMapping();
     }
 
     public function isSearchable($className)
@@ -62,6 +64,10 @@ class IndexManager implements IndexManagerInterface
             foreach ($chunk as $entity) {
                 $className = ClassUtils::getClass($entity);
                 $this->assertIsSearchable($className);
+
+                if (!$this->shouldBeIndexed($className, $entity)) {
+                    continue;
+                }
 
                 $searchableEntities[] = new SearchableEntity(
                     $this->getFullIndexName($className),
@@ -157,6 +163,17 @@ class IndexManager implements IndexManagerInterface
         return $this->engine->count($query, $this->getFullIndexName($className));
     }
 
+    protected function shouldBeIndexed($className, &$entity)
+    {
+        if ($methodName = $this->indexIfMapping[$className]) {
+            if (method_exists($entity, $methodName)) {
+                return (bool) $entity->{$methodName}();
+            }
+        }
+
+        return true;
+    }
+
     private function canUseSerializerGroup($className)
     {
         return $this->classToSerializerGroupMapping[$className];
@@ -203,6 +220,16 @@ class IndexManager implements IndexManagerInterface
         }
 
         $this->classToSerializerGroupMapping = $mapping;
+    }
+
+    private function setIndexIfMapping()
+    {
+        $mapping = [];
+        foreach ($this->configuration['indices'] as $indexDetails) {
+            $mapping[$indexDetails['class']] = $indexDetails['index_if'];
+        }
+
+        $this->indexIfMapping = $mapping;
     }
 
     private function formatBatchResponse(array $batch)

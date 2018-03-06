@@ -50,6 +50,10 @@ class Configuration implements ConfigurationInterface
                                 ->info('When set to true, it will call normalize method with an extra groups parameter "groups" => [Searchable::NORMALIZATION_GROUP]')
                                 ->defaultFalse()
                             ->end()
+                            ->scalarNode('index_if')
+                                ->info('Name of the method in the entity used to decide if an entry should be indexed or not.')
+                                ->defaultNull()
+                            ->end()
                         ->end()
                     ->end()
                 ->end() // indices
