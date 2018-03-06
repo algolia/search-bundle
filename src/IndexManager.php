@@ -172,6 +172,8 @@ class IndexManager implements IndexManagerInterface
             if ($this->propertyAccessor->isReadable($entity, $propertyPath)) {
                 return (bool) $this->propertyAccessor->getValue($entity, $propertyPath);
             }
+
+            return false;
         }
 
         return true;
