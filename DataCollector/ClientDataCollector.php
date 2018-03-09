@@ -21,6 +21,7 @@ class ClientDataCollector extends DataCollector
     public function __construct(Client $client)
     {
         $this->client = $client;
+        $this->reset();
     }
 
     /**
@@ -28,11 +29,6 @@ class ClientDataCollector extends DataCollector
      */
     public function collect(Request $request, Response $response, \Exception $exception = null)
     {
-        $this->data = [
-            'transactions' => [],
-            'transactionCount' => [],
-        ];
-
         if (! $this->client instanceof DebugClientInterface) {
             return;
         }
@@ -81,5 +77,13 @@ class ClientDataCollector extends DataCollector
     public function getName()
     {
         return 'algolia.client_data_collector';
+    }
+
+    public function reset()
+    {
+        $this->data = [
+            'transactions' => [],
+            'transactionCount' => [],
+        ];
     }
 }
