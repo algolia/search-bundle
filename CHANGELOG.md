@@ -12,7 +12,8 @@ CHANGELOG
 
     Add new `index_if` configuration key for indices.
     This should be the path to a property in the entity which
-    evaluates to true if the item should be index (false to bypass indexing).
+    evaluates to true if the item should be indexed and false to 
+    bypass indexing or remove existing object from the index.
 
     Example:
         - indices:
