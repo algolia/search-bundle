@@ -4,7 +4,7 @@
 [Algolia Search](https://www.algolia.com) is a hosted full-text, numerical,
 and faceted search engine capable of delivering realtime results from the first keystroke.
 
-[![Build Status](https://travis-ci.org/algolia/AlgoliaSearchBundle.svg?branch=master)](https://travis-ci.org/algolia/AlgoliaSearchBundle) [![Latest Stable Version](https://poser.pugx.org/algolia/algolia-search-bundle/v/stable)](https://packagist.org/packages/algolia/algolia-search-bundle) [![License](https://poser.pugx.org/algolia/algolia-search-bundle/license)](https://packagist.org/packages/algolia/algolia-search-bundle)
+[![Build Status](https://travis-ci.org/algolia/search-bundle.svg?branch=master)](https://travis-ci.org/algolia/search-bundle) [![Latest Stable Version](https://poser.pugx.org/algolia/search-bundle/v/stable)](https://packagist.org/packages/algolia/search-bundle) [![License](https://poser.pugx.org/algolia/search-bundle/license)](https://packagist.org/packages/algolia/search-bundle)
 
 
 This bundle provides an easy way to integrate Algolia Search into your Symfony application (using Doctrine). It allows you to index your data, keep it in sync, and search through it.
@@ -35,7 +35,7 @@ You can find the full reference on [Algolia's website](https://www.algolia.com/d
 
 1. **[Indexing](#indexing)**
     * [Prerequisite](#prerequisite)
-    * [Indexing manually via CLI](#indexing-manually-via-cli)
+    * [Indexing manually](#indexing-manually)
     * [Indexing automatically via Doctrine Events](#indexing-automatically-via-doctrine-events)
 
 1. **[Customizing](#customizing)**
@@ -113,7 +113,7 @@ any other engine, not just Algolia.
 ### Require the dependency (with Composer)
 
 ```bash
-composer require algolia/search-bundle ^3.0
+composer require algolia/search-bundle
 ```
 
 ### Register the bundle
@@ -175,9 +175,9 @@ Most of the time, you will be using the `IndexManager` object to either:
 
 ### Symfony 4
 
-Symfony 4 ships with a lighter container where only some core much-needed services
-are registered. If your controller will be responsible of some search-related task,
-you need to inject it via the contructor. Good news, by simply type-hinting the variable
+Symfony 4 ships with a lighter container where only some much-needed core services
+are registered. If your controller will be responsible for some search-related task,
+you need to inject it via the contructor. Good news, by simply type-hinting the variable,
 Symfony will handle everything for you, thanks to auto-wiring.
 
 ```php
@@ -203,12 +203,12 @@ be very handy if you ever need to implement your own IndexManager.
 
 ### Symfony 3
 
-Symfony 3 still use a container holding all public services and services are
+Symfony 3 still uses a container holding all public services, and services are
 public by default. This way, you can easily get the `search.index_manager` from
 the container.
 
 Although, it's not considered a best practice by Symfony anymore, and in order to
-get ready for Symfony 4, I'd recommend to use the previously shown method.
+get ready for Symfony 4, I'd recommend using the previously shown method.
 
 ```php
 // In a Container-Aware class
@@ -376,7 +376,9 @@ algolia_search:
       class: App\Entity\Comment
 ```
 
-## Indexing manually via CLI
+## Indexing manually
+  
+### Via CLI
 
 Once your `indices` config is ready, you can use the built-in console command
 to batch import all existing data.
@@ -387,6 +389,21 @@ php bin/console search:import
 
 # Choose what indices to reindex by passing the index name
 php bin/console search:import --indices=posts,comments
+```
+  
+### Programmatically
+  
+To index any entities in your code, you will need to use 
+[the IndexManager service](https://www.algolia.com/doc/api-client/symfony/getting-started/#injecting-services). You need to pass
+it the objects to index and their ObjectManager. Objects can be a single entity, an array of entities or 
+even an array of different entities as long as they are using the same ObjectManager.
+
+```php
+$indexManager->index($post, $entityManager);
+
+$indexManager->index($posts, $entityManager);
+
+$indexManager->index($postsAndComments, $entityManager);
 ```
 
 ## Indexing automatically via Doctrine Events
@@ -687,14 +704,33 @@ $posts = $this->indexManager->count('query', Post::class);
 
 ## Advanced search
 
-Pass anything you want in the `parameters` array. You can pass it in any search-related method.
+Search-related methods have take a `$parameters` array as the last arguments. You can pass any search parameters (in the Algolia sense).
 
+  
 ```php
 $em = $this->getDoctrine()->getManagerForClass(Post::class);
 
 $posts = $this->indexManager->search('query', Post::class, $em, 0, 10, ['filters' => 'comment_count>10']);
 // Or
 $posts = $this->indexManager->rawSearch('query', Post::class, 0, 10, ['filters' => 'comment_count>10']);
+```
+  
+Note that `search` will only take IDs and use doctrine to create a collection of entities so you can only pass parameters
+  to modify what to search, not to modify the type of response.
+
+If you want to modify the attributes to retrieve or retrieve data like `facets`, `facets_stats`, `_rankingInfo` you will need to use the `rawSearch` method.
+  
+```php
+$results = $this->indexManager->rawSearch('query', Post::class, 0, 10, [
+  'facets' => ['*'], // Retrieve all facets
+  'getRankingInfo' => true,
+]);
+  
+$results = $this->indexManager->rawSearch('query', Post::class, 0, 10, [
+  'facets' => ['tags', 'year'],
+  'attributesToRetrieve' => ['title', 'author_name'],
+' => true,
+]);
 ```
 
 
@@ -719,7 +755,7 @@ php bin/console search:settings:push --indices:posts,comments
 
 The `--indices` option take a comma-separated list of index names (without
 prefix, as defined in configuration).
-If no options is passed **all indices** will be processed.
+If no options are passed **all indices** will be processed.
 
 ### Settings directory
 
@@ -859,7 +895,7 @@ There are 2 main reasons you might need to extend this package:
 - You have specific needs with Algolia
 - You want to use another search engine
 
-**Warning:** To help you get started, we recommend you to use [our skeleton project](https://github.com/algolia/search-bundle-skeleton).
+**Warning:** To help you get started, we recommend using [our skeleton project](https://github.com/algolia/search-bundle-skeleton).
 
 ## Create your own _engine_
 
@@ -1002,7 +1038,7 @@ own configuration, unless you know what you're doing.
 
 ## The group annotation was not taken into account
 
-Make sure the serializer annotation are enabled in your configuration. You
+Make sure the serializer annotation is enabled in your configuration. You
 can enable it in your `app/config/services.yml` file:
 
 ```yaml
