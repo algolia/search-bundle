@@ -56,7 +56,7 @@ class IndexManager implements IndexManagerInterface
         }
 
         $batch = [];
-        foreach (array_chunk($entities, 500) as $chunk) {
+        foreach (array_chunk($entities, $this->configuration['batchSize']) as $chunk) {
             $searchableEntities = [];
 
             foreach ($chunk as $entity) {
@@ -85,7 +85,7 @@ class IndexManager implements IndexManagerInterface
         }
 
         $batch = [];
-        foreach (array_chunk($entities, 500) as $chunk) {
+        foreach (array_chunk($entities, $this->configuration['batchSize']) as $chunk) {
             $searchableEntities = [];
 
             foreach ($chunk as $entity) {

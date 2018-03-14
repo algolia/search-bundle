@@ -34,18 +34,30 @@ class SearchImportCommand extends IndexCommand
             $manager = $doctrine->getManagerForClass($entityClassName);
             $repository = $manager->getRepository($entityClassName);
 
-            $entities = $repository->findAll();
+            $page = 0;
+            do {
+                $entities = $repository->findBy(
+                    [],
+                    null,
+                    $config['batchSize'],
+                    $config['batchSize'] * $page
+                );
+                $response = $this->indexManager->index($entities, $manager);
 
-            $response = $this->indexManager->index($entities, $manager);
+                $output->writeln(sprintf(
+                    'Indexed <comment>%s / %s</comment> %s entities into %s index',
+                    $response[$indexName],
+                    count($entities),
+                    $entityClassName,
+                    '<info>' . $config['prefix'] . $indexName . '</info>'
+                ));
 
-            $output->writeln(sprintf(
-                'Indexed <comment>%s / %s</comment> %s entities into %s index',
-                $response[$indexName],
-                count($entities),
-                $entityClassName,
-                '<info>'.$config['prefix'].$indexName.'</info>'
-            ));
+                $page++;
+                $repository->clear();
+            } while (count($entities) >= $config['batchSize']);
         }
+
+        $repository->clear();
 
         $output->writeln('<info>Done!</info>');
     }

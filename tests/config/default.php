@@ -3,6 +3,7 @@
 return [
     'prefix' => 'TRAVIS_sf_',
     'nbResults' => 12,
+    'batchSize' => 100,
     'indices' => [
         'posts' => [
             'class' => 'Algolia\SearchBundle\Entity\Post',
