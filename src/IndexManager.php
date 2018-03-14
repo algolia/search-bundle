@@ -67,7 +67,7 @@ class IndexManager implements IndexManagerInterface
                 $className = ClassUtils::getClass($entity);
                 $this->assertIsSearchable($className);
 
-                if (!$this->shouldBeIndexed($className, $entity)) {
+                if (!$this->shouldBeIndexed($entity)) {
                     continue;
                 }
 
@@ -165,8 +165,9 @@ class IndexManager implements IndexManagerInterface
         return $this->engine->count($query, $this->getFullIndexName($className));
     }
 
-    protected function shouldBeIndexed($className, &$entity)
+    public function shouldBeIndexed($entity)
     {
+        $className = ClassUtils::getClass($entity);
 
         if ($propertyPath = $this->indexIfMapping[$className]) {
             if ($this->propertyAccessor->isReadable($entity, $propertyPath)) {
