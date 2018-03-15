@@ -25,20 +25,30 @@ class SearchIndexerSubscriber implements EventSubscriber
 
     public function postUpdate(LifecycleEventArgs $args)
     {
-        $this->index($args);
+        $object = $args->getObject();
+        $objectManager = $args->getObjectManager();
+
+        if (!$this->indexManager->isSearchable($object)) {
+            return;
+        }
+
+        if ($this->indexManager->shouldBeIndexed($object)) {
+            $this->indexManager->index($object, $objectManager);
+        } else {
+            $this->indexManager->remove($object, $objectManager);
+        }
     }
 
     public function postPersist(LifecycleEventArgs $args)
     {
-        $this->index($args);
-    }
-
-    public function index(LifecycleEventArgs $args)
-    {
         $object = $args->getObject();
         $objectManager = $args->getObjectManager();
 
-        if ($this->indexManager->isSearchable($object)) {
+        if (!$this->indexManager->isSearchable($object)) {
+            return;
+        }
+
+        if ($this->indexManager->shouldBeIndexed($object)) {
             $this->indexManager->index($object, $objectManager);
         }
     }

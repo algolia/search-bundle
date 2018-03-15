@@ -6,6 +6,7 @@ use Algolia\SearchBundle\Engine\EngineInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\Util\ClassUtils;
 use Symfony\Component\Config\Definition\Exception\Exception;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 class IndexManager implements IndexManagerInterface
@@ -17,6 +18,7 @@ class IndexManager implements IndexManagerInterface
     private $searchableEntities;
     private $classToIndexMapping;
     private $classToSerializerGroupMapping;
+    private $indexIfMapping;
     private $normalizer;
 
     public function __construct(NormalizerInterface $normalizer, EngineInterface $engine, array $configuration)
@@ -24,10 +26,12 @@ class IndexManager implements IndexManagerInterface
         $this->normalizer          = $normalizer;
         $this->engine              = $engine;
         $this->configuration       = $configuration;
+        $this->propertyAccessor    = PropertyAccess::createPropertyAccessor();
 
         $this->setSearchableEntities();
         $this->setClassToIndexMapping();
         $this->setClassToSerializerGroupMapping();
+        $this->setIndexIfMapping();
     }
 
     public function isSearchable($className)
@@ -62,6 +66,10 @@ class IndexManager implements IndexManagerInterface
             foreach ($chunk as $entity) {
                 $className = ClassUtils::getClass($entity);
                 $this->assertIsSearchable($className);
+
+                if (!$this->shouldBeIndexed($entity)) {
+                    continue;
+                }
 
                 $searchableEntities[] = new SearchableEntity(
                     $this->getFullIndexName($className),
@@ -157,6 +165,21 @@ class IndexManager implements IndexManagerInterface
         return $this->engine->count($query, $this->getFullIndexName($className));
     }
 
+    public function shouldBeIndexed($entity)
+    {
+        $className = ClassUtils::getClass($entity);
+
+        if ($propertyPath = $this->indexIfMapping[$className]) {
+            if ($this->propertyAccessor->isReadable($entity, $propertyPath)) {
+                return (bool) $this->propertyAccessor->getValue($entity, $propertyPath);
+            }
+
+            return false;
+        }
+
+        return true;
+    }
+
     private function canUseSerializerGroup($className)
     {
         return $this->classToSerializerGroupMapping[$className];
@@ -203,6 +226,16 @@ class IndexManager implements IndexManagerInterface
         }
 
         $this->classToSerializerGroupMapping = $mapping;
+    }
+
+    private function setIndexIfMapping()
+    {
+        $mapping = [];
+        foreach ($this->configuration['indices'] as $indexDetails) {
+            $mapping[$indexDetails['class']] = $indexDetails['index_if'];
+        }
+
+        $this->indexIfMapping = $mapping;
     }
 
     private function formatBatchResponse(array $batch)

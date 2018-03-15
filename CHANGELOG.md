@@ -4,10 +4,22 @@ CHANGELOG
 3.1.0
 -----
 
-- Introduce `batchSize` config key (default: 500) - PR [#208](https://github.com/algolia/search-bundle/pull/203)
+* Introduce `batchSize` config key (default: 500) - PR [#208](https://github.com/algolia/search-bundle/pull/203)
     
     This config allow you create smaller or bigger batch calls to Algolia. The same config is used by doctrine in the ImportCommand.
     
+* Feature: Index entities conditionally (using a dedicated method)
+
+    Add new `index_if` configuration key for indices.
+    This should be the path to a property in the entity which
+    evaluates to true if the item should be indexed and false to 
+    bypass indexing or remove existing object from the index.
+
+    Example:
+        - indices:
+            - name: posts
+              class: App\Entity\Post
+              index_if: isPublished
 
 2.2.0
 -----
