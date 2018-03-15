@@ -10,12 +10,14 @@ use Symfony\Component\HttpKernel\Kernel as SfKernel;
 
 class AlgoliaSearchBundle extends Bundle
 {
+    const VERSION = '3.1.0';
+
     public function boot()
     {
         parent::boot();
 
         Version::addSuffixUserAgentSegment('Symfony', SfKernel::VERSION);
-        Version::addSuffixUserAgentSegment('Symfony Search Bundle', '3.0.1');
+        Version::addSuffixUserAgentSegment('Symfony Search Bundle', self::VERSION);
     }
     
     public function build(ContainerBuilder $container)
