@@ -2,16 +2,16 @@
 
 namespace Algolia\SearchBundle\Command;
 
-use Algolia\SearchBundle\Settings\SettingsManagerInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
 class SearchSettingsPushCommand extends SearchSettingsCommand
 {
+    protected static $defaultName = 'search:settings:push';
+
     protected function configure()
     {
         $this
-            ->setName('search:settings:push')
             ->setDescription('Push settings from your project to the search engine')
             ->addOption('indices', 'i', InputOption::VALUE_OPTIONAL, 'Comma-separated list of index names')
             ->addArgument(

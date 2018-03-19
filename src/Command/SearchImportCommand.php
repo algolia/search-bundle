@@ -10,10 +10,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class SearchImportCommand extends IndexCommand
 {
+    protected static $defaultName = 'search:import';
+
     protected function configure()
     {
         $this
-            ->setName('search:import')
             ->setDescription('Import given entity into search engine')
             ->addOption('indices', 'i', InputOption::VALUE_OPTIONAL, 'Comma-separated list of index names')
             ->addArgument(

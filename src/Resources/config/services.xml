@@ -6,9 +6,7 @@
 
     <services>
 
-        <prototype namespace="Algolia\SearchBundle\Command\" resource="../../Command" autowire="true">
-            <tag name="console.command" />
-        </prototype>
+        <prototype namespace="Algolia\SearchBundle\Command\" resource="../../Command" autowire="true" autoconfigure="true" />
 
         <service id="search.search_indexer_subscriber" class="Algolia\SearchBundle\EventListener\SearchIndexerSubscriber" public="true">
             <argument type="service" id="search.index_manager" />
