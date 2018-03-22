@@ -1,6 +1,21 @@
 CHANGELOG
 =========
 
+3.1.1
+-----
+
+* Lazy load commands - PR [#218](https://github.com/algolia/search-bundle/pull/218)
+
+    Symfony 3.4 introduced an easy way to lazy load all commands. We can avoid instantiating
+    the Algolia Client if it's not necessary.
+    This should fix #199
+
+* Do not register Event Subscriber if there are no event to listen to - PR [#219](https://github.com/algolia/search-bundle/pull/219)
+
+    If you don't listen to any doctrine event using `doctrineSubscribedEvents: []`,
+    the subscriber will not be registered to avoid instantiation the IndexManager and 
+    the Algolia client.
+
 3.1.0
 -----
 
