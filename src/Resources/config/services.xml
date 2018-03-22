@@ -10,7 +10,7 @@
 
         <service id="search.search_indexer_subscriber" class="Algolia\SearchBundle\EventListener\SearchIndexerSubscriber" public="true">
             <argument type="service" id="search.index_manager" />
-            <argument key="$subscribedEvents">%algolia_search.doctrineSubscribedEvents%</argument>
+            <argument type="collection" /> <!-- doctrine subscribed events -->
             <tag name="doctrine.event_subscriber" connection="default" />
             <tag name="doctrine_mongodb.odm.event_subscriber" connection="default" />
         </service>
