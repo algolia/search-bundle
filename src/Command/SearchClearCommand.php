@@ -10,10 +10,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class SearchClearCommand extends IndexCommand
 {
+    protected static $defaultName = 'search:clear';
+
     protected function configure()
     {
         $this
-            ->setName('search:clear')
             ->setDescription('Clear index (remove all data but keep index and settings)')
             ->addOption('indices', 'i', InputOption::VALUE_OPTIONAL, 'Comma-separated list of index names')
             ->addArgument(
