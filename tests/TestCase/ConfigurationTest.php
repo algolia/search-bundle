@@ -33,6 +33,7 @@ class ConfigurationTest extends BaseTest
                     "prefix" => null,
                     "nbResults" => 20,
                     "batchSize" => 500,
+                    'serializer' => 'serializer',
                     "settingsDirectory" => null,
                     "doctrineSubscribedEvents" => ["postPersist", "postUpdate", "preRemove"],
                     "indices" => [],
@@ -47,6 +48,7 @@ class ConfigurationTest extends BaseTest
                     "prefix" => "sf_",
                     "nbResults" => 40,
                     "batchSize" => 100,
+                    'serializer' => 'serializer',
                     "settingsDirectory" => null,
                     "doctrineSubscribedEvents" => ["postPersist", "postUpdate", "preRemove"],
                     "indices" => [],
@@ -63,6 +65,7 @@ class ConfigurationTest extends BaseTest
                     "prefix" => "sf_",
                     "nbResults" => 20,
                     "batchSize" => 500,
+                    'serializer' => 'serializer',
                     "settingsDirectory" => null,
                     "doctrineSubscribedEvents" => ["postPersist", "postUpdate", "preRemove"],
                     "indices" => [

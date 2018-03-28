@@ -21,7 +21,7 @@ class IndexManager implements IndexManagerInterface
     private $indexIfMapping;
     private $normalizer;
 
-    public function __construct(NormalizerInterface $normalizer, EngineInterface $engine, array $configuration)
+    public function __construct($normalizer, EngineInterface $engine, array $configuration)
     {
         $this->normalizer          = $normalizer;
         $this->engine              = $engine;

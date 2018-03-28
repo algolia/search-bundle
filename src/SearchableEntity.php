@@ -2,6 +2,7 @@
 
 namespace Algolia\SearchBundle;
 
+use JMS\Serializer\ArrayTransformerInterface;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
@@ -15,7 +16,7 @@ class SearchableEntity implements SearchableEntityInterface
     private $id;
     private $normalizer;
 
-    public function __construct($indexName, $entity, $entityMetadata, NormalizerInterface $normalizer, array $extra = [])
+    public function __construct($indexName, $entity, $entityMetadata, $normalizer, array $extra = [])
     {
         $this->indexName           = $indexName;
         $this->entity              = $entity;
@@ -41,7 +42,11 @@ class SearchableEntity implements SearchableEntityInterface
             $context['groups'] = [Searchable::NORMALIZATION_GROUP];
         }
 
-        return $this->normalizer->normalize($this->entity, Searchable::NORMALIZATION_FORMAT, $context);
+        if ($this->normalizer instanceof NormalizerInterface) {
+            return $this->normalizer->normalize($this->entity, Searchable::NORMALIZATION_FORMAT, $context);
+        } elseif ($this->normalizer instanceof ArrayTransformerInterface) {
+            return $this->normalizer->toArray($this->entity);
+        }
     }
 
     private function setId()
