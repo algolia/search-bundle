@@ -16,7 +16,7 @@ This bundle provides an easy way to integrate Algolia Search into your Symfony a
 You can find the full reference on [Algolia's website](https://www.algolia.com/doc/api-client/symfony/).
 
 
-## Table of Contents
+## In this page
 
 
 
@@ -37,6 +37,7 @@ You can find the full reference on [Algolia's website](https://www.algolia.com/d
     * [Prerequisite](#prerequisite)
     * [Indexing manually](#indexing-manually)
     * [Indexing automatically via Doctrine Events](#indexing-automatically-via-doctrine-events)
+    * [Indexing conditionally](#indexing-conditionally)
 
 1. **[Customizing](#customizing)**
     * [Normalizers](#normalizers)
@@ -302,6 +303,19 @@ algolia_search:
 
 Checkout the [indexing documentation](https://www.algolia.com/doc/api-client/symfony/indexing/) to learn how to send data to Algolia.
 
+#### Batching
+
+By default, calls to algolia to index or remove data are batched per 500 items. You can easily
+modify the batch size in your configuration.
+
+```yaml
+algolia_search:
+  batchSize: 250
+```
+
+The import command also follow this parameter to retrieve data via Doctrine. If you are running out of
+memory while importing your data, use a smaller `batchSize` value.
+
 ## Per environment setup
 
 Usually, you need different configurations per environment, at least to avoid
@@ -428,6 +442,71 @@ algolia_search:
 algolia_search:
   doctrineSubscribedEvents: []
 
+```
+
+## Indexing conditionally
+
+Most of the time, there are some of your items that you don't want to index. For instance, you may want
+to only index a post if it's published.
+
+In your configuration, you can specify when a post should be indexed via
+the `index_if` key. Because we rely on the [PropertyAccess component](http://symfony.com/doc/current/components/property_access.html)
+you can pass a method name, a class property name or even a nested key in an property array.
+
+The property must evaluate to true to index the entity and false to bypass indexing. 
+If you're updating an entity via doctrine and this property evaluates to false, the entity will be removed.
+
+**Example with a method or a property**
+
+```yaml
+algolia_search:
+  indices:
+    - name: posts
+      class: App\Entity\Post
+      index_if: isPublished
+```
+
+In this case, `isPublished` could be a method or a class property.
+  
+With a method:
+  
+```php
+class Post
+{
+    public function isPublished()
+    {
+        return !is_null($this->published_at);
+    }
+}
+```
+  
+  
+With a property:
+  
+```php
+class Post
+{
+    public $isPublished = true;
+}
+```
+
+**Example with an array**
+
+```yaml
+algolia_search:
+  indices:
+    - name: posts
+      class: App\Entity\Post
+      index_if: config.indexable
+```
+
+In this case, the bundle will read this value.
+
+```php
+class Post 
+{
+    public $config = ['indexable' => false];
+} 
 ```
 
 
