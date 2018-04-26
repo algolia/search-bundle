@@ -16,9 +16,6 @@ This bundle provides an easy way to integrate Algolia Search into your Symfony a
 You can find the full reference on [Algolia's website](https://www.algolia.com/doc/api-client/symfony/).
 
 
-## In this page
-
-
 
 1. **[Getting Started](#getting-started)**
     * [Introduction](#introduction)
@@ -36,6 +33,7 @@ You can find the full reference on [Algolia's website](https://www.algolia.com/d
 1. **[Indexing](#indexing)**
     * [Prerequisite](#prerequisite)
     * [Indexing manually](#indexing-manually)
+    * [Removing manually](#removing-manually)
     * [Indexing automatically via Doctrine Events](#indexing-automatically-via-doctrine-events)
     * [Indexing conditionally](#indexing-conditionally)
 
@@ -391,7 +389,7 @@ algolia_search:
 ```
 
 ## Indexing manually
-  
+
 ### Via CLI
 
 Once your `indices` config is ready, you can use the built-in console command
@@ -404,12 +402,15 @@ php bin/console search:import
 # Choose what indices to reindex by passing the index name
 php bin/console search:import --indices=posts,comments
 ```
-  
+
+Before re-indexing everything, you may want to clear the index first,
+see [how to remove data](#removing-manually).
+
 ### Programmatically
-  
-To index any entities in your code, you will need to use 
+
+To index any entities in your code, you will need to use
 [the IndexManager service](https://www.algolia.com/doc/api-client/symfony/getting-started/#injecting-services). You need to pass
-it the objects to index and their ObjectManager. Objects can be a single entity, an array of entities or 
+it the objects to index and their ObjectManager. Objects can be a single entity, an array of entities or
 even an array of different entities as long as they are using the same ObjectManager.
 
 ```php
@@ -418,6 +419,34 @@ $indexManager->index($post, $entityManager);
 $indexManager->index($posts, $entityManager);
 
 $indexManager->index($postsAndComments, $entityManager);
+```
+
+## Removing manually
+
+### Via CLI
+
+You may want to completely clear your indices (before reindexing for example),
+you can use the `search:clear` command.
+
+```sh
+# Import all indices
+php bin/console search:clear
+
+# Choose what indices to reindex by passing the index name
+php bin/console search:clear --indices=posts,comments
+```
+
+### Programmatically
+
+The same way you [index data](#indexing-manually), you can use the `remove` method
+to delete entries from the Algolia index.
+
+```php
+$indexManager->remove($post, $entityManager);
+
+$indexManager->remove($posts, $entityManager);
+
+$indexManager->remove($postsAndComments, $entityManager);
 ```
 
 ## Indexing automatically via Doctrine Events
@@ -453,7 +482,7 @@ In your configuration, you can specify when a post should be indexed via
 the `index_if` key. Because we rely on the [PropertyAccess component](http://symfony.com/doc/current/components/property_access.html)
 you can pass a method name, a class property name or even a nested key in an property array.
 
-The property must evaluate to true to index the entity and false to bypass indexing. 
+The property must evaluate to true to index the entity and false to bypass indexing.
 If you're updating an entity via doctrine and this property evaluates to false, the entity will be removed.
 
 **Example with a method or a property**
@@ -467,9 +496,9 @@ algolia_search:
 ```
 
 In this case, `isPublished` could be a method or a class property.
-  
+
 With a method:
-  
+
 ```php
 class Post
 {
@@ -479,10 +508,9 @@ class Post
     }
 }
 ```
-  
-  
+
 With a property:
-  
+
 ```php
 class Post
 {
@@ -503,10 +531,10 @@ algolia_search:
 In this case, the bundle will read this value.
 
 ```php
-class Post 
+class Post
 {
     public $config = ['indexable' => false];
-} 
+}
 ```
 
 
