@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+3.1.2
+-----
+
+* Fix circular reference issue when removing entities - PR [#227](https://github.com/algolia/search-bundle/pull/227)
+
 3.1.1
 -----
 
