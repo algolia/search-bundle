@@ -104,7 +104,8 @@ class IndexManager implements IndexManagerInterface
                     $this->getFullIndexName($className),
                     $entity,
                     $objectManager->getClassMetadata($className),
-                    $this->normalizer
+                    $this->normalizer,
+                    ['useSerializerGroup' => $this->canUseSerializerGroup($className)]
                 );
             }
 
