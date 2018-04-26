@@ -36,12 +36,17 @@
         "phpunit/phpunit": "^5.7 || ^6.5",
         "symfony/doctrine-bridge": "^3.4.0 || ^4.0.0",
         "symfony/framework-bundle": "^3.4.0 || ^4.0.0",
-        "symfony/yaml": "^3.4.0 || ^4.0.0"
+        "symfony/yaml": "^3.4.0 || ^4.0.0",
+        "friendsofphp/php-cs-fixer": "^2.11"
     },
     "extra": {
         "branch-alias": {
             "dev-master": "3.0.x-dev"
         }
+    },
+    "scripts": {
+        "lint": "php-cs-fixer fix src --dry-run --diff",
+        "lint:fix": "php-cs-fixer fix src"
     },
     "sort-packages": true
 }
