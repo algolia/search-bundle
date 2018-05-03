@@ -2,7 +2,7 @@
 
 namespace Algolia\SearchBundle\EventListener;
 
-use Algolia\SearchBundle\IndexManager;
+use Algolia\SearchBundle\IndexManagerInterface;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
 
