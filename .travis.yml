@@ -6,24 +6,9 @@ php:
     - 7.1
     - 7.2
 
-env:
-  global:
-      - MONGODB_DRIVER_VERSION="stable"
-      - MONGODB_ADAPTER_VERSION="1.1.3"
-
-services: mongodb
-
-before_install:
-    - curl -sS https://getcomposer.org/installer | php
-
-install:
-    - if [[ ${TRAVIS_PHP_VERSION:0:2} == "5." ]]; then yes '' | pecl -q install -f mongo-${MONGODB_DRIVER_VERSION}; fi
-    - if [[ ${TRAVIS_PHP_VERSION:0:2} == "7." ]]; then pecl install -f mongodb-${MONGODB_DRIVER_VERSION}; fi
-    - if [[ ${TRAVIS_PHP_VERSION:0:2} == "7." ]]; then composer require "alcaeus/mongo-php-adapter=${MONGODB_ADAPTER_VERSION}" --prefer-lowest --ignore-platform-reqs; fi
-    - php composer.phar update
-
 before_script:
-    - mv Tests/config/parameters.yml.travis Tests/config/parameters.yml
+    - wget https://alg.li/algolia-keys && chmod +x algolia-keys
+    - composer install
 
 script:
-    - php vendor/bin/phpunit -v
+    - eval $(./algolia-keys export) && php vendor/bin/phpunit -v
