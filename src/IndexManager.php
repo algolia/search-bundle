@@ -243,6 +243,10 @@ class IndexManager implements IndexManagerInterface
     {
         $formattedResponse = [];
         foreach ($batch as $response) {
+            if (!is_array($response)) {
+                continue;
+            }
+
             foreach ($response as $fullIndexName => $count) {
                 $indexName = $this->removePrefixFromIndexName($fullIndexName);
 
