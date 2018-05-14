@@ -164,4 +164,47 @@ class SerializationTest extends BaseTest
 
         $this->assertEquals($expected, $searchableComment->getSearchableArray());
     }
+
+    public function testSimpleEntityWithJMSSerializer()
+    {
+        $datetime = new \DateTime();
+        // The format is defined in the framework configuration (see tests/config/config.yml)
+        $serializedDateTime = $datetime->format("Y-m-d\\TH:i:sP");
+
+        $post = new Post([
+            'id' => 12,
+            'title' => 'a simple post',
+            'content' => 'some text',
+            'publishedAt' => $datetime,
+            'comments' => [new Comment([
+                'content' => 'a great comment',
+                'publishedAt' => $datetime,
+            ])],
+        ]);
+        $postMeta = $this->get('doctrine')->getManager()->getClassMetadata(Post::class);
+
+        $searchablePost = new SearchableEntity(
+            'posts',
+            $post,
+            $postMeta,
+            $this->get('jms_serializer')
+        );
+
+        $expected = [
+            "id" => 12,
+            "title" => "a simple post",
+            "content" => "some text",
+            "publishedAt" => $serializedDateTime,
+            "comments" => [
+                [
+                    "id" => null,
+                    "content" => "a great comment",
+                    "publishedAt" => $serializedDateTime,
+                    "post" => null,
+                ]
+            ],
+        ];
+
+        $this->assertEquals($expected, $searchablePost->getSearchableArray());
+    }
 }
