@@ -8,3 +8,16 @@ services:
     algolia.client:
         alias: algolia_client
         public: true
+
+    search.search_indexer_subscriber:
+        class: Algolia\SearchBundle\EventListener\SearchIndexerSubscriber
+        public: true
+        arguments:
+            - '@search.index_manager'
+            # For some reason this parameter is not passed in the
+            # test environment (look at AlgoliaSearchExtension.php)
+            # So the service is redefined here
+            - ['postPersist', 'postUpdate', 'preRemove']
+        tags:
+            - name: "doctrine.event_subscriber"
+            - name: "doctrine_mongodb.odm.event_subscriber"
