@@ -28,7 +28,7 @@ class IndexManagerTest extends BaseTest
         $this->assertTrue($this->indexManager->isSearchable(Post::class));
         $this->assertTrue($this->indexManager->isSearchable(Comment::class));
 
-        $this->assertFalse($this->indexManager->isSearchable(Tag::class));
+        $this->assertFalse($this->indexManager->isSearchable(BaseTest::class));
     }
 
     /**

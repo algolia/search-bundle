@@ -9,3 +9,6 @@ algolia_search:
           enable_serializer_groups: true
         - name: comments
           class: 'Algolia\SearchBundle\Entity\Comment'
+        - name: tags
+          class: 'Algolia\SearchBundle\Entity\Tag'
+          index_if: isPublic

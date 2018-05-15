@@ -5,6 +5,7 @@ namespace Algolia\SearchBundle\AlgoliaSearch;
 use Algolia\SearchBundle\BaseTest;
 use Algolia\SearchBundle\Entity\Comment;
 use Algolia\SearchBundle\Entity\Post;
+use Algolia\SearchBundle\Entity\Tag;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -25,8 +26,9 @@ class DoctrineTest extends BaseTest
 
     public function tearDown()
     {
-        $this->syncIndexManager->delete(Post::class);
+//        $this->syncIndexManager->delete(Post::class);
         $this->syncIndexManager->delete(Comment::class);
+        $this->syncIndexManager->delete(Tag::class);
     }
 
     public function testDoctrineEventManagement()
@@ -52,6 +54,25 @@ class DoctrineTest extends BaseTest
         foreach ($posts as $p) {
             $this->assertInstanceOf(Post::class, $p);
         }
+
+        $em->remove($posts[0]);
+        $this->assertEquals(4, $this->syncIndexManager->count('', Post::class));
+    }
+
+    public function testIndexIfFeature()
+    {
+        $tags = [
+            new Tag(['id' => 1, 'name' => 'Tag #1']),
+            new Tag(['id' => 2, 'name' => 'Tag #2']),
+            new Tag(['id' => rand(10, 42), 'public' => false]),
+        ];
+        $em = $this->get('doctrine')->getManager();
+
+        $this->syncIndexManager->index($tags, $em);
+        $this->assertEquals(2, $this->syncIndexManager->count('', Tag::class));
+
+        $this->syncIndexManager->index($tags[2]->setPublic(true), $em);
+        $this->assertEquals(3, $this->syncIndexManager->count('', Tag::class));
     }
 
     private function refreshDb()
