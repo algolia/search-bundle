@@ -2,6 +2,7 @@
 
 namespace Algolia\SearchBundle;
 
+use Algolia\SearchBundle\Entity\Post;
 use Algolia\SearchBundle\Settings\AlgoliaSettingsManager;
 use Algolia\SearchBundle\Settings\SettingsManagerInterface;
 use AlgoliaSearch\Client;
@@ -20,18 +21,14 @@ class SettingsTest extends BaseTest
     {
         parent::setUp();
 
-        $this->client = $this->container->get('algolia.client');
+        $this->client = $this->get('algolia.client');
 
-        $this->settingsManager = new AlgoliaSettingsManager($this->client, [
-            'prefix' => 'TRAVIS_sf_settings_',
-            'settingsDirectory' => $this->settingsDir,
-            'indices' => [
-                'posts' => [
-                    'class' => 'Algolia\SearchBundle\Entity\Post',
-                    'enable_serializer_groups' => false,
-                ],
-            ],
-        ]);
+        $this->settingsManager = $this->get('search.settings_manager');
+    }
+
+    public function tearDown()
+    {
+        $this->get('search.index_manager')->delete(Post::class);
     }
 
     public function testBackup()
@@ -40,7 +37,7 @@ class SettingsTest extends BaseTest
             'hitsPerPage' => 51,
             'maxValuesPerFacet' => 99,
         ];
-        $index = $this->client->initIndex('TRAVIS_sf_settings_posts');
+        $index = $this->client->initIndex($this->getPrefix().'posts');
         $task = $index->setSettings($settingsToUpdate);
         $index->waitTask($task['taskID']);
 
@@ -65,7 +62,7 @@ class SettingsTest extends BaseTest
             'hitsPerPage' => 12,
             'maxValuesPerFacet' => 100,
         ];
-        $index = $this->client->initIndex('TRAVIS_sf_settings_posts');
+        $index = $this->client->initIndex($this->getPrefix().'posts');
         $task = $index->setSettings($settingsToUpdate);
         $index->waitTask($task['taskID']);
 

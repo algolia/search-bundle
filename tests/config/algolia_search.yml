@@ -1,0 +1,11 @@
+algolia_search:
+    prefix: '%env(ALGOLIA_PREFIX)%'
+    nbResults: 12
+    batchSize: 100
+    settingsDirectory: '/tests/cache/settings'
+    indices:
+        - name: posts
+          class: 'Algolia\SearchBundle\Entity\Post'
+          enable_serializer_groups: true
+        - name: comments
+          class: 'Algolia\SearchBundle\Entity\Comment'

@@ -5,8 +5,9 @@ namespace Algolia\SearchBundle;
 
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\HttpKernel\Bundle\BundleInterface;
+use Symfony\Component\HttpKernel\Kernel as HttpKernel;
 
-class Kernel extends \Symfony\Component\HttpKernel\Kernel
+class Kernel extends HttpKernel
 {
 
     /**
@@ -33,5 +34,9 @@ class Kernel extends \Symfony\Component\HttpKernel\Kernel
         $loader->load(__DIR__.'/config/config.yml');
 
         $loader->load(__DIR__.'/../src/Resources/config/services.xml');
+
+        $loader->load(__DIR__.'/config/algolia_search.yml');
+
+        $loader->load(__DIR__.'/config/services.yml');
     }
 }

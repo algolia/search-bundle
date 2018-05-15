@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit colors="true" bootstrap="vendor/autoload.php">
+    <php>
+        <env name="KERNEL_CLASS" value="Algolia\SearchBundle\Kernel" />
+        <env name="APP_ENV" value="test" />
+        <env name="APP_DEBUG" value="false" />
+        <env name="ALGOLIA_PREFIX" value="TRAVIS_sf_" />
+    </php>
     <testsuites>
-        <testsuite name="AlgoliaSearch">
-            <directory suffix=".php">tests/AlgoliaSearch/</directory>
+        <testsuite name="TestCase">
+            <directory suffix=".php">tests/TestCase/</directory>
         </testsuite>
     </testsuites>
 </phpunit>

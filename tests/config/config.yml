@@ -1,9 +1,12 @@
 framework:
-  secret: 67d829bf61dc5f87a73fd814e2c9f629
+    secret: 67d829bf61dc5f87a73fd814e2c9f629
 
 doctrine:
     dbal:
-        url: sqlite:///%kernel.project_dir%/var/data/blog.sqlite
+        connections:
+            default:
+                url: sqlite:///%kernel.project_dir%/tests/cache/blog.sqlite
+                logging: false
     orm:
         auto_generate_proxy_classes: true
         naming_strategy: doctrine.orm.naming_strategy.underscore
@@ -15,8 +18,3 @@ doctrine:
                 dir: '%kernel.project_dir%/tests/Entity'
                 prefix: 'Algolia\SearchBundle\Entity'
                 alias: App
-
-services:
-    algolia.client:
-        alias: algolia_client
-        public: true

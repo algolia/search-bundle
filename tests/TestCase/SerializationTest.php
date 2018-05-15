@@ -12,7 +12,7 @@ class SerializationTest extends BaseTest
 {
     public function testSerializerHasRequiredNormalizers()
     {
-        $serializer = $this->container->get('serializer');
+        $serializer = $this->get('serializer');
 
         $refl = new \ReflectionClass($serializer);
         $normalizersProperty = $refl->getProperty('normalizers');
@@ -46,13 +46,13 @@ class SerializationTest extends BaseTest
                 'publishedAt' => $datetime,
             ])],
         ]);
-        $postMeta = $this->getObjectManager()->getClassMetadata(Post::class);
+        $postMeta = $this->get('doctrine')->getManager()->getClassMetadata(Post::class);
 
         $searchablePost = new SearchableEntity(
             'posts',
             $post,
             $postMeta,
-            $this->container->get('serializer')
+            $this->get('serializer')
         );
 
         $expected = [
@@ -91,13 +91,13 @@ class SerializationTest extends BaseTest
                 'publishedAt' => $datetime,
             ])],
         ]);
-        $postMeta = $this->getObjectManager()->getClassMetadata(Post::class);
+        $postMeta = $this->get('doctrine')->getManager()->getClassMetadata(Post::class);
 
         $searchablePost = new SearchableEntity(
             'posts',
             $post,
             $postMeta,
-            $this->container->get('serializer'),
+            $this->get('serializer'),
             ['useSerializerGroup' => true]
         );
 
@@ -109,6 +109,7 @@ class SerializationTest extends BaseTest
 
         $this->assertEquals($expected, $searchablePost->getSearchableArray());
     }
+
     public function testNormalizableEntityToSearchableArray()
     {
         $datetime = new \DateTime();
@@ -121,13 +122,13 @@ class SerializationTest extends BaseTest
             'id' => 123,
             'publishedAt' => $datetime,
         ]);
-        $tagMeta = $this->getObjectManager()->getClassMetadata(Tag::class);
+        $tagMeta = $this->get('doctrine')->getManager()->getClassMetadata(Tag::class);
 
         $searchableTag = new SearchableEntity(
             'tags',
             $tag,
             $tagMeta,
-            $this->container->get('serializer'),
+            $this->get('serializer'),
             ['useSerializerGroup' => true] // This should have no influence
         );
 

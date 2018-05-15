@@ -1,0 +1,10 @@
+services:
+    search.engine:
+        class: Algolia\SearchBundle\Engine\AlgoliaSyncEngine
+        arguments:
+            - '@algolia.client'
+        public: true
+
+    algolia.client:
+        alias: algolia_client
+        public: true
