@@ -21,3 +21,8 @@ services:
         tags:
             - name: "doctrine.event_subscriber"
             - name: "doctrine_mongodb.odm.event_subscriber"
+
+    serializer.commentnormalizer:
+        class: Algolia\SearchBundle\Normalizer\CommentNormalizer
+        tags: [serializer.normalizer]
+#        priority: -88
