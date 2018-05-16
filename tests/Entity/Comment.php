@@ -52,7 +52,7 @@ class Comment
         $this->id = isset($attributes['id']) ? $attributes['id'] : null;
         $this->content = isset($attributes['content']) ? $attributes['content'] : null;
         $this->publishedAt = isset($attributes['publishedAt']) ? $attributes['publishedAt'] : new \DateTime();
-        $this->post = isset($attributes['posts']) ? $attributes['posts'] : null;
+        $this->post = isset($attributes['post']) ? $attributes['post'] : null;
     }
 
     public function getId()

@@ -6,7 +6,8 @@ class AlgoliaEngineTest extends BaseTest
 {
     public function testIndexing()
     {
-        $engine = $this->createEngine('algolia-sync');
+        $engine = $this->get('search.engine');
+
         $searchablePost = $this->createSearchablePost();
         // Delete index in case there is already something
         $engine->delete($searchablePost->getIndexName());

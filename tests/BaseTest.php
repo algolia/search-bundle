@@ -9,29 +9,15 @@ use Algolia\SearchBundle\Engine\NullEngine;
 use Algolia\SearchBundle\Entity\Comment;
 use AlgoliaSearch\Client;
 use Algolia\SearchBundle\Entity\Post;
-use PHPUnit\Framework\TestCase;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\Yaml\Yaml;
 
-class BaseTest extends TestCase
+class BaseTest extends KernelTestCase
 {
-    protected $container;
-
     public function setUp()
     {
-        $kernel = new Kernel('test', true);
-        $kernel->boot();
-
-        $this->container = $kernel->getContainer();
-    }
-
-    protected function createIndexManager($engine = null, $config = 'default')
-    {
-        $config = $this->getConfig();
-
-        $engine = $this->createEngine($engine);
-
-        $indexManager = new IndexManager($this->container->get('serializer'), $engine, $config);
-
-        return $indexManager;
+        $this->bootKernel();
     }
 
     protected function createPost($id = null)
@@ -49,15 +35,13 @@ class BaseTest extends TestCase
 
     protected function createSearchablePost()
     {
-        $config = $this->getConfig();
         $post = $this->createPost(rand(100, 300));
-        $om = $this->getObjectManager();
 
         return new SearchableEntity(
-            $config['prefix'].'posts',
+            $this->getPrefix().'posts',
             $post,
-            $om->getClassMetadata(Post::class),
-            $this->container->get('serializer')
+            $this->get('doctrine')->getManager()->getClassMetadata(Post::class),
+            $this->get('serializer')
         );
     }
 
@@ -65,6 +49,7 @@ class BaseTest extends TestCase
     {
         $comment = new Comment;
         $comment->setContent('Comment content');
+        $comment->setPost(new Post(['title' => 'What a post!']));
 
         if (!is_null($id)) {
             $comment->setId($id);
@@ -73,36 +58,13 @@ class BaseTest extends TestCase
         return $comment;
     }
 
-    protected function getObjectManager()
+    protected function getPrefix()
     {
-        return $this->container->get('doctrine.orm.entity_manager');
+        return getenv('ALGOLIA_PREFIX');
     }
 
-    /**
-     * @param $engine
-     * @return AlgoliaEngine|AlgoliaSyncEngine|NullEngine
-     */
-    protected function createEngine($engine)
+    protected function get($id)
     {
-        if ('algolia' == $engine) {
-            $engine = new AlgoliaEngine(new Client(
-                getenv('ALGOLIA_APP_ID'),
-                getenv('ALGOLIA_API_KEY')
-            ));
-        } elseif ('algolia-sync' == $engine) {
-            $engine = new AlgoliaSyncEngine(new Client(
-                getenv('ALGOLIA_APP_ID'),
-                getenv('ALGOLIA_API_KEY')
-            ));
-        } else {
-            $engine = new NullEngine;
-        }
-
-        return $engine;
-    }
-
-    protected function getConfig($config = 'default')
-    {
-        return require __DIR__.'/config/'.$config.'.php';
+        return self::$kernel->getContainer()->get($id);
     }
 }

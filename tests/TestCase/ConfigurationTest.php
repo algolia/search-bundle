@@ -7,12 +7,12 @@ use Algolia\SearchBundle\DependencyInjection\Configuration;
 class ConfigurationTest extends BaseTest
 {
     /**
-     * @dataProvider dataTestConfiguration
+     * @dataProvider dataTestConfigurationTree
      *
      * @param mixed $inputConfig
      * @param mixed $expectedConfig
      */
-    public function testConfiguration($inputConfig, $expectedConfig)
+    public function testConfigurationTree($inputConfig, $expectedConfig)
     {
         $configuration = new Configuration();
 
@@ -24,7 +24,7 @@ class ConfigurationTest extends BaseTest
         $this->assertEquals($expectedConfig, $finalizedConfig);
     }
 
-    public function dataTestConfiguration()
+    public function dataTestConfigurationTree()
     {
         return [
             'test empty config for default value' => [

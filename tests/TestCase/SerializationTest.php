@@ -5,6 +5,7 @@ namespace Algolia\SearchBundle;
 use Algolia\SearchBundle\Entity\Comment;
 use Algolia\SearchBundle\Entity\Post;
 use Algolia\SearchBundle\Entity\Tag;
+use Algolia\SearchBundle\Normalizer\CommentNormalizer;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Serializer;
 
@@ -12,7 +13,7 @@ class SerializationTest extends BaseTest
 {
     public function testSerializerHasRequiredNormalizers()
     {
-        $serializer = $this->container->get('serializer');
+        $serializer = $this->get('serializer');
 
         $refl = new \ReflectionClass($serializer);
         $normalizersProperty = $refl->getProperty('normalizers');
@@ -24,8 +25,9 @@ class SerializationTest extends BaseTest
         }, $normalizers);
 
         $this->assertContains('ObjectNormalizer', end($classes));
-        $this->assertContains('CustomNormalizer', reset($classes));
-        $this->assertGreaterThan(2, count($classes));
+        $this->assertContains('CustomNormalizer', $classes[1]);
+        $this->assertEquals(CommentNormalizer::class, $classes[0]);
+        $this->assertGreaterThan(3, count($classes));
     }
 
     public function testSimpleEntityToSearchableArray()
@@ -41,18 +43,19 @@ class SerializationTest extends BaseTest
             'title' => 'a simple post',
             'content' => 'some text',
             'publishedAt' => $datetime,
-            'comments' => [new Comment([
-                'content' => 'a great comment',
-                'publishedAt' => $datetime,
-            ])],
         ]);
-        $postMeta = $this->getObjectManager()->getClassMetadata(Post::class);
+        $post->addComment(new Comment([
+            'content' => 'a great comment',
+            'publishedAt' => $datetime,
+            'post' => $post,
+        ]));
+        $postMeta = $this->get('doctrine')->getManager()->getClassMetadata(Post::class);
 
         $searchablePost = new SearchableEntity(
             'posts',
             $post,
             $postMeta,
-            $this->container->get('serializer')
+            $this->get('serializer')
         );
 
         $expected = [
@@ -62,10 +65,8 @@ class SerializationTest extends BaseTest
             "publishedAt" => $serializedDateTime,
             "comments" => [
                 [
-                    "id" => null,
                     "content" => "a great comment",
-                    "publishedAt" => $serializedDateTime,
-                    "post" => null,
+                    "post_title" => "a simple post",
                 ]
             ],
         ];
@@ -91,13 +92,13 @@ class SerializationTest extends BaseTest
                 'publishedAt' => $datetime,
             ])],
         ]);
-        $postMeta = $this->getObjectManager()->getClassMetadata(Post::class);
+        $postMeta = $this->get('doctrine')->getManager()->getClassMetadata(Post::class);
 
         $searchablePost = new SearchableEntity(
             'posts',
             $post,
             $postMeta,
-            $this->container->get('serializer'),
+            $this->get('serializer'),
             ['useSerializerGroup' => true]
         );
 
@@ -109,6 +110,7 @@ class SerializationTest extends BaseTest
 
         $this->assertEquals($expected, $searchablePost->getSearchableArray());
     }
+
     public function testNormalizableEntityToSearchableArray()
     {
         $datetime = new \DateTime();
@@ -121,13 +123,13 @@ class SerializationTest extends BaseTest
             'id' => 123,
             'publishedAt' => $datetime,
         ]);
-        $tagMeta = $this->getObjectManager()->getClassMetadata(Tag::class);
+        $tagMeta = $this->get('doctrine')->getManager()->getClassMetadata(Tag::class);
 
         $searchableTag = new SearchableEntity(
             'tags',
             $tag,
             $tagMeta,
-            $this->container->get('serializer'),
+            $this->get('serializer'),
             ['useSerializerGroup' => true] // This should have no influence
         );
 
@@ -139,5 +141,27 @@ class SerializationTest extends BaseTest
         ];
 
         $this->assertEquals($expected, $searchableTag->getSearchableArray());
+    }
+
+    public function testDedicatedNormalizer()
+    {
+        $comment = new Comment([
+            'id' => 99,
+            'content' => 'hey, this is a comment',
+            'post' => new Post(['title' => 'Another super post'])
+        ]);
+
+        $searchableComment = new SearchableEntity(
+            'comments',
+            $comment,
+            $this->get('doctrine')->getManager()->getClassMetadata(Comment::class),
+            $this->get('serializer')
+        );
+        $expected = [
+            "content" => "hey, this is a comment",
+            "post_title" => "Another super post",
+        ];
+
+        $this->assertEquals($expected, $searchableComment->getSearchableArray());
     }
 }
