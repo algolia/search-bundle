@@ -1,6 +1,16 @@
 CHANGELOG
 =========
 
+Unreleased
+----------
+
+* Support JMS Serializer - PR [#225](https://github.com/algolia/search-bundle/pull/225)
+
+    If you'd rather use the JMS Serializer instead of the default Symfony serializer,
+    you can set `serializer: jms_serializer` in `config/packages/algolia_search.yaml`.
+    Note that the @Groups annotation isn't supported.
+
+
 3.1.2
 -----
 

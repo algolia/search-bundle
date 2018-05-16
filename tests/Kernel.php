@@ -20,6 +20,7 @@ class Kernel extends HttpKernel
         return [
             new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new \Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
+            new \JMS\SerializerBundle\JMSSerializerBundle(),
             new AlgoliaSearchBundle(),
         ];
     }

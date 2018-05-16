@@ -19,11 +19,4 @@ class AlgoliaSearchBundle extends Bundle
         Version::addSuffixUserAgentSegment('Symfony', SfKernel::VERSION);
         Version::addSuffixUserAgentSegment('Symfony Search Bundle', self::VERSION);
     }
-    
-    public function build(ContainerBuilder $container)
-    {
-        parent::build($container);
-
-        $container->addCompilerPass(new SearchRequirementsPass());
-    }
 }

@@ -18,3 +18,18 @@ doctrine:
                 dir: '%kernel.project_dir%/tests/Entity'
                 prefix: 'Algolia\SearchBundle\Entity'
                 alias: App
+
+jms_serializer:
+    handlers:
+        datetime:
+            default_format: "Y-m-d\\TH:i:sP"
+    property_naming:
+        id: 'jms_serializer.identical_property_naming_strategy'
+    default_context:
+        serialization:
+            serialize_null: true
+
+services:
+    algolia.client:
+        alias: algolia_client
+        public: true
