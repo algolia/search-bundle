@@ -299,7 +299,7 @@ algolia_search:
       enable_serializer_groups: true
 ```
 
-Checkout the [indexing documentation](https://www.algolia.com/doc/api-client/symfony/indexing/) to learn how to send data to Algolia.
+Check out the [indexing documentation](https://www.algolia.com/doc/api-client/symfony/indexing/) to learn how to send data to Algolia.
 
 #### Batching
 
@@ -311,8 +311,21 @@ algolia_search:
   batchSize: 250
 ```
 
-The import command also follow this parameter to retrieve data via Doctrine. If you are running out of
+The import command also follows this parameter to retrieve data via Doctrine. If you are running out of
 memory while importing your data, use a smaller `batchSize` value.
+
+#### Using JMS Serializer
+
+The bundle also provides basic support for the JMS Serializer. Note that not all features are supported (like the @Groups annotation).
+In your config, pass the name of the JMS Serializer service (`jms_serializer` by default).
+
+```yaml
+algolia_search:
+  serializer: jms_serializer
+  indices:
+    - name: posts
+      class: App\Entity\Post
+```
 
 ## Per environment setup
 
@@ -324,24 +337,24 @@ touching prod data while developing.
 While working locally you might want to bypass all calls to Algolia and this
 bundle has introduced new ways to do so.
 
-1. You can [unsubscribe from Doctrine events](https://www.algolia.com/doc/api-client/symfony/indexing/#indexing-automatically-via-doctrine-events) to avoid calls on data update.
+1. You can [unsubscribe from Doctrine events](https://www.algolia.com/doc/api-client/symfony/indexing/#indexing-automatically-via-doctrine-events) to avoid calls on data updates.
 2. You can [use the `NullEngine`](https://www.algolia.com/doc/api-client/symfony/advanced/#other-engines) to mute all calls.
 
 ### Prefix
 
-The first thing to do is to set a prefix per environment. There are 2 ways of
-to do that: either you create 2 config files or you rely on environment variables.
+The first thing to do is to set a prefix per environment. There are 2 ways to do that: 
+either you create 2 config files or you rely on environment variables.
 
 #### Env variables
 
-In your config file, you set the prefix to the environment variable.
+In your config file, you set the prefix in an environment variable.
 
 ```yaml
 algolia_search:
   prefix: %env(SEARCH_PREFIX)%
 ```
 
-Then you define your prefix in your `.env` or your Apache/Nginx configuration.
+Then you define your prefix in your `.env`, or your Apache/Nginx configuration.
 Symfony makes it easy to concatenate environment variables in the `.env` file.
 
 Assuming APP_ENV is an environment variable:
@@ -546,7 +559,7 @@ class Post
 
 ## Normalizers
 
-By default all entities are converted to an array with the built-in [Symfony Normalizers](https://symfony.com/doc/current/components/serializer.html#normalizers) (GetSetMethodNormalizer, DateTimeNormalizer, ObjectNormalizer...) which should be enough for simple use cases, but we encourage you to write your own Normalizer to have more control over what you send to Algolia or to simply avoid [circular references](https://symfony.com/doc/current/components/serializer.html#handling-circular-references).
+By default all entities are converted to an array with the built-in [Symfony Normalizers](https://symfony.com/doc/current/components/serializer.html#normalizers) (GetSetMethodNormalizer, DateTimeNormalizer, ObjectNormalizer...) which should be enough for simple use cases, but we encourage you to write your own Normalizer to have more control over what you send to Algolia, or to simply avoid [circular references](https://symfony.com/doc/current/components/serializer.html#handling-circular-references).
 
 Symfony will use the first Normalizer in the array to support your entity or format. You can [change the
 order](/doc/api-client/symfony/customizing/#ordering-normalizers) in your service declaration.
@@ -558,6 +571,8 @@ You have many choices on how to customize your records:
 * [Use annotations in entity](https://www.algolia.com/doc/api-client/symfony/customizing/#using-annotations) (similar to how you did it with previous version of the bundle).
 * [Write custom method in entity](https://www.algolia.com/doc/api-client/symfony/customizing/#using-normalize)
 * [Write custom Normalizer class](https://www.algolia.com/doc/api-client/symfony/customizing/#using-a-custom-normalizer)
+
+The following features are only supported with the [default Symfony serializer](http://symfony.com/doc/current/components/serializer.html), not with [JMS serializer](http://jmsyst.com/libs/serializer).
 
 ## Using annotations
 
