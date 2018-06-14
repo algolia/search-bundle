@@ -581,6 +581,9 @@ annotation. If you used the bundle before version 3, it's very similar. This fea
 
 Example based on a simplified version of [this Post entity](https://gist.github.com/julienbourdeau/3d17304951028cf370ed5fe95d104911):
 
+Annotations requires `enable_serializer_groups` to be true in the configuration. [Read more](https://www.algolia.com/doc/api-client/symfony/configuration/#enableserialisergroups)
+
+    
 ```php
 <?php
 
