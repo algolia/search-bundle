@@ -176,7 +176,7 @@ Most of the time, you will be using the `IndexManager` object to either:
 
 Symfony 4 ships with a lighter container where only some much-needed core services
 are registered. If your controller will be responsible for some search-related task,
-you need to inject it via the contructor. Good news, by simply type-hinting the variable,
+you need to inject it via the constructor. Good news, by simply type-hinting the variable,
 Symfony will handle everything for you, thanks to auto-wiring.
 
 ```php
@@ -911,7 +911,7 @@ In some cases, you may want to access the Algolia client directly to perform adv
 (like manage API keys, manage indices and such).
 
 By default, the `AlgoliaSearch\Client` is not public in the container, but you can easily expose it.
-In the service file of your project, `config/serices.yaml` in a typical Symfony4 app,
+In the service file of your project, `config/services.yaml` in a typical Symfony 4 app,
 you can alias it and make it public with the following code:
 
 ```yaml
