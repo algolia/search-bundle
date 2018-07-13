@@ -28,4 +28,9 @@ interface IndexManagerInterface
     public function rawSearch($query, $className, $page = 0, $nbResults = null, array $parameters = []);
 
     public function count($query, $className, array $parameters = []);
+
+    /*
+     * TODO: shouldBeIndexed method will be added in v4.0
+     */
+    //public function shouldBeIndexed($entity);
 }

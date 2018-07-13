@@ -2,7 +2,7 @@
 
 namespace Algolia\SearchBundle\Settings;
 
-use AlgoliaSearch\Client;
+use Algolia\AlgoliaSearch\Client;
 use Symfony\Component\Filesystem\Filesystem;
 
 class AlgoliaSettingsManager implements SettingsManagerInterface
@@ -27,7 +27,7 @@ class AlgoliaSettingsManager implements SettingsManagerInterface
         }
 
         foreach ($indices as $indexName) {
-            $index = $this->algolia->initIndex($indexName);
+            $index = $this->algolia->index($indexName);
             $settings = $index->getSettings();
             $filename = $this->getFileName($indexName, 'settings');
 
@@ -48,7 +48,7 @@ class AlgoliaSettingsManager implements SettingsManagerInterface
             $filename = $this->getFileName($indexName, 'settings');
 
             if (is_readable($filename)) {
-                $index = $this->algolia->initIndex($indexName);
+                $index = $this->algolia->index($indexName);
                 $settings = json_decode(file_get_contents($filename));
                 $index->setSettings($settings);
 

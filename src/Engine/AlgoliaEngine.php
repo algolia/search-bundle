@@ -3,7 +3,7 @@
 namespace Algolia\SearchBundle\Engine;
 
 use Algolia\SearchBundle\SearchableEntityInterface;
-use AlgoliaSearch\Client;
+use Algolia\AlgoliaSearch\Client;
 
 class AlgoliaEngine implements EngineInterface
 {
@@ -58,12 +58,14 @@ class AlgoliaEngine implements EngineInterface
 
     public function search($query, $indexName, $page = 1, $nbResults = null, array $parameters = [])
     {
-        $params = array_merge($parameters, [
-            'hitsPerPage' => $nbResults,
+        $parameters += [
             'page' => $page - 1,
-        ]);
+        ];
+        if ($nbResults) {
+            $parameters['hitsPerPage'] = $nbResults;
+        }
 
-        return $this->algolia->initIndex($indexName)->search($query, $params);
+        return $this->algolia->index($indexName)->search($query, $parameters);
     }
 
     public function searchIds($query, $indexName, $page = 1, $nbResults = null, array $parameters = [])
@@ -75,7 +77,7 @@ class AlgoliaEngine implements EngineInterface
 
     public function count($query, $indexName)
     {
-        $results = $this->algolia->initIndex($indexName)->search($query);
+        $results = $this->algolia->index($indexName)->search($query);
 
         return (int) $results['nbHits'];
     }
@@ -106,8 +108,8 @@ class AlgoliaEngine implements EngineInterface
         $result = [];
         foreach ($data as $indexName => $objects) {
             $result[$indexName] = $this->algolia
-                ->initIndex($indexName)
-                ->addObjects($objects);
+                ->index($indexName)
+                ->saveObjects($objects);
         }
 
         return $result;
@@ -134,10 +136,10 @@ class AlgoliaEngine implements EngineInterface
         }
 
         $result = [];
-        foreach ($data as $indexName => $objects) {
+        foreach ($data as $indexName => $objectsIds) {
             $result[$indexName] = $this->algolia
-                ->initIndex($indexName)
-                ->deleteObjects($objects);
+                ->index($indexName)
+                ->deleteObjects($objectsIds);
         }
 
         return $result;
@@ -146,7 +148,7 @@ class AlgoliaEngine implements EngineInterface
     protected function doClear($indexName)
     {
         return [
-            $indexName => $this->algolia->initIndex($indexName)->clearIndex()
+            $indexName => $this->algolia->clearIndex($indexName)
         ];
     }
 

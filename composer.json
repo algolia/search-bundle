@@ -14,7 +14,7 @@
     ],
     "prefer-stable": true,
     "require": {
-        "algolia/algoliasearch-client-php": "^1.23",
+        "algolia/algoliasearch-client-php": "2.0.0-alpha",
         "doctrine/common": "^2.5",
         "symfony/serializer": "^3.4.0 || ^4.0.0",
         "symfony/property-access": "^3.4.0 || ^4.0.0",

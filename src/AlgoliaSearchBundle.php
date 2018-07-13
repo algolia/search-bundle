@@ -2,8 +2,7 @@
 
 namespace Algolia\SearchBundle;
 
-use AlgoliaSearch\Version;
-use Algolia\SearchBundle\DependencyInjection\SearchRequirementsPass;
+use Algolia\AlgoliaSearch\Support\Config;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\HttpKernel\Kernel as SfKernel;
 
@@ -15,7 +14,9 @@ class AlgoliaSearchBundle extends Bundle
     {
         parent::boot();
 
-        Version::addSuffixUserAgentSegment('Symfony Search Bundle', self::VERSION);
-        Version::addSuffixUserAgentSegment('Symfony', SfKernel::VERSION);
+        if (class_exists('Algolia\AlgoliaSearch\Support\Config')) {
+            Config::addCustomUserAgent('Symfony Search Bundle', self::VERSION);
+            Config::addCustomUserAgent('Symfony', SfKernel::VERSION);
+        }
     }
 }

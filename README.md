@@ -949,7 +949,7 @@ class TestController extends Controller
         $algoliaClient = $this->get('algolia.client');
         var_dump($algoliaClient->listIndexes());
 
-        $index = $algoliaClient->initIndex(
+        $index = $algoliaClient->index(
             $this->indexManager->getFullIndexName(Post::class)
         );
 
