@@ -988,7 +988,7 @@ Or in XML
 
 ### About the `NullEngine`
 
-The package ships with a NullEngine. This engine implements the `EngineInterface`
+The package ships with a `\Algolia\SearchBundle\Engine\NullEngine` engine class. This engine implements the `EngineInterface`
 interface and returns an empty array, zero or null depending on the methods.
 This is a great way to make sure everything works, without having to call Algolia.
 
