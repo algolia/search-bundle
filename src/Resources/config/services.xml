@@ -11,8 +11,8 @@
         <service id="search.search_indexer_subscriber" class="Algolia\SearchBundle\EventListener\SearchIndexerSubscriber" public="true">
             <argument type="service" id="search.index_manager" />
             <argument type="collection" /> <!-- doctrine subscribed events -->
-            <tag name="doctrine.event_subscriber" connection="default" />
-            <tag name="doctrine_mongodb.odm.event_subscriber" connection="default" />
+            <tag name="doctrine.event_subscriber" />
+            <tag name="doctrine_mongodb.odm.event_subscriber" />
         </service>
 
         <service id="algolia_client" class="AlgoliaSearch\Client" public="false" lazy="true">
