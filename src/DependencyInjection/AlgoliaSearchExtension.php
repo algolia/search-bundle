@@ -26,6 +26,7 @@ class AlgoliaSearchExtension extends Extension
     {
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
+        $loader->load('default_parameters.xml');
 
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
