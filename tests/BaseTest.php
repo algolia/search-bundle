@@ -2,19 +2,26 @@
 
 namespace Algolia\SearchBundle;
 
-use Algolia\SearchBundle\Doctrine\NullConnection;
-use Algolia\SearchBundle\Engine\AlgoliaEngine;
-use Algolia\SearchBundle\Engine\AlgoliaSyncEngine;
-use Algolia\SearchBundle\Engine\NullEngine;
 use Algolia\SearchBundle\Entity\Comment;
-use AlgoliaSearch\Client;
 use Algolia\SearchBundle\Entity\Post;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\Yaml\Yaml;
 
 class BaseTest extends KernelTestCase
 {
+    public static function setUpBeforeClass()
+    {
+        /*
+         * Older version of PHPUnit (<6.0) load
+         * env variables differently, we override them
+         * here to make sure they're coming from the
+         * env rather than the XML config
+         */
+        if (class_exists('\PHPUnit_Runner_Version')) {
+            $_ENV['ALGOLIA_PREFIX'] = getenv('ALGOLIA_PREFIX');
+            $_ENV['TRAVIS_JOB_NUMBER'] = getenv('TRAVIS_JOB_NUMBER');
+        }
+    }
+
     public function setUp()
     {
         $this->bootKernel();
@@ -60,7 +67,7 @@ class BaseTest extends KernelTestCase
 
     protected function getPrefix()
     {
-        return getenv('ALGOLIA_PREFIX');
+        return $this->get('search.index_manager')->getConfiguration()['prefix'];
     }
 
     protected function get($id)

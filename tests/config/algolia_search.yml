@@ -1,5 +1,5 @@
 algolia_search:
-    prefix: '%env(ALGOLIA_PREFIX)%'
+    prefix: '%env(ALGOLIA_PREFIX)%%env(TRAVIS_JOB_NUMBER)%_'
     nbResults: 12
     batchSize: 100
     settingsDirectory: '/tests/cache/settings'
