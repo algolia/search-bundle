@@ -1,6 +1,20 @@
 CHANGELOG
 =========
 
+UNRELEASED
+----------
+
+* Make Algolia Client lazy - PR [#251](https://github.com/algolia/search-bundle/pull/251)
+    
+    If you didn't set the `ALGOLIA_APP_ID` and `ALGOLIA_API_KEY` env variables
+    you will only get an error message when the client is used (a method is called),
+    not when its injected and not used.
+    
+    Note: This requires that you install `ocramius/proxy-manager` and 
+    `symfony/proxy-manager-bridge` packages 
+    
+    
+
 3.2.0
 ----------
 

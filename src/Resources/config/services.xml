@@ -15,7 +15,7 @@
             <tag name="doctrine_mongodb.odm.event_subscriber" connection="default" />
         </service>
 
-        <service id="algolia_client" class="AlgoliaSearch\Client" public="false">
+        <service id="algolia_client" class="AlgoliaSearch\Client" public="false" lazy="true">
             <argument key="$applicationID">%env(ALGOLIA_APP_ID)%</argument>
             <argument key="$apiKey">%env(ALGOLIA_API_KEY)%</argument>
         </service>
