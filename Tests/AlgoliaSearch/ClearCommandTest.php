@@ -2,15 +2,17 @@
 
 namespace Algolia\AlgoliaSearchBundle\Tests\AlgoliaSearch;
 
-use Algolia\AlgoliaSearchBundle\Command\ReindexCommand;
+use Algolia\AlgoliaSearchBundle\Command\ClearCommand;
 use Algolia\AlgoliaSearchBundle\Tests\BaseTest;
 use Algolia\AlgoliaSearchBundle\Tests\Entity;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
-use Symfony\Component\Console\Output\BufferedOutput;
-use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\BufferedOutput;
+use Symfony\Component\Console\Output\NullOutput;
 
-abstract class ReindexCommandTest extends BaseTest
+use Algolia\AlgoliaSearchBundle\Command\ReindexCommand;
+
+abstract class ClearCommandTest extends BaseTest
 {
     /**
      * Here we really want to test the full integration
@@ -61,67 +63,25 @@ abstract class ReindexCommandTest extends BaseTest
 
         global $kernel;
         $app = new Application($kernel);
-        $command = new ReindexCommand();
-        $app->add($command);
-
-        $this->command = $command;
+        $this->clearCommand = new ClearCommand();
+        $app->add($this->clearCommand);
+        $this->reindexCommand = new ReindexCommand();
+        $app->add($this->reindexCommand);
     }
 
-    public function reIndex($use_entity_alias, $safe = true)
+    public function testClearBySkippingNonAlgoliaMappedEntities()
     {
-        $entityName = $use_entity_alias ?
-            'AlgoliaSearchBundle:ProductForReindexTest' :
-            'Algolia\AlgoliaSearchBundle\Tests\Entity\ProductForReindexTest'
-        ;
-
-        $options = $this->getCommandOptions() + [
-            'entityName' => $entityName,
-            '--batch-size' => 8, // not a divisor of static::$nProducts, on purpose
-            '--sync' => ' '
-        ];
-
-        if (!$safe) {
-            $options['--unsafe'] = ' ';
-        }
-
-        $input = new ArrayInput($options);
-
-        $this->command->run($input, new ConsoleOutput());
+        $input = new ArrayInput($this->getCommandOptions() + ['entityName' => 'Algolia\AlgoliaSearchBundle\Tests\Entity\ProductForReindexTest']);
+        $this->reindexCommand->run($input, new NullOutput());
+        $this->getIndexer()->waitForAlgoliaTasks();
 
         $result = $this->getIndexer()->rawSearch('ProductForReindexTest', 'Product');
         $this->assertEquals(static::$nProducts, $result->getNbHits());
-    }
 
-    public function testSafeReindex()
-    {
-        $this->reIndex($use_entity_alias = false, $safe = true);
-
-        $this->getIndexer()->deleteIndex('ProductForReindexTest');
-        $this->getIndexer()->waitForAlgoliaTasks();
-    }
-
-    public function testReindexCommandUnderstandsEntityAliases()
-    {
-        $this->reIndex($use_entity_alias = true, $safe = true);
-
-        $this->getIndexer()->deleteIndex('ProductForReindexTest');
-        $this->getIndexer()->waitForAlgoliaTasks();
-    }
-
-    public function testUnSafeReindex()
-    {
-        $this->reIndex($use_entity_alias = false, $safe = false);
-
-        $this->getIndexer()->deleteIndex('ProductForReindexTest');
-        $this->getIndexer()->waitForAlgoliaTasks();
-    }
-
-    public function testReindexBySkippingNonAlgoliaMappedEntities()
-    {
         $input = new ArrayInput($this->getCommandOptions());
         $bufferedOutput = new BufferedOutput();
-        $this->command->run($input, $bufferedOutput);
+        $this->clearCommand->run($input, $bufferedOutput);
 
-        $this->assertRegExp('/\d+ entities indexed/', $bufferedOutput->fetch());
+        $this->assertRegExp('/\d+ entities cleared/', $bufferedOutput->fetch());
     }
 }

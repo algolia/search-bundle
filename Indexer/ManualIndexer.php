@@ -169,7 +169,7 @@ class ManualIndexer
 
         if (!$this->indexer->discoverEntity($className, $this->objectManager)) {
             throw new NotAnAlgoliaEntity(
-                'Tried to index entity of class `'.get_class($className).'`, which is not recognized as an entity to index.'
+                'Tried to clear index for entity of class `'.$className.'`, which is not recognized as an entity to index.'
             );
         }
 
@@ -208,7 +208,7 @@ class ManualIndexer
 
         if (!$this->indexer->discoverEntity($className, $this->objectManager)) {
             throw new NotAnAlgoliaEntity(
-                'Tried to index entity of class `'.$className.'`, which is not recognized as an entity to index.'
+                'Tried to reindex entity of class `'.$className.'`, which is not recognized as an entity to index.'
             );
         }
 
