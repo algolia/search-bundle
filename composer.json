@@ -38,7 +38,9 @@
         "symfony/phpunit-bridge": "^3.4.0 || ^4.0",
         "symfony/yaml": "^3.4.0 || ^4.0.0",
         "friendsofphp/php-cs-fixer": "^2.11",
-        "jms/serializer-bundle": "^2.3"
+        "jms/serializer-bundle": "^2.3",
+        "ocramius/proxy-manager": "*",
+        "symfony/proxy-manager-bridge": "*"
     },
     "extra": {
         "branch-alias": {
