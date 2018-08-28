@@ -667,7 +667,7 @@ on the format to return different arrays.
 ```php
 public function normalize(NormalizerInterface $serializer, $format = null, array $context = array()): array
 {
-    if (\Algolia\SearchBundle\Searchable::NORMALIZATION_FORMAT == $format) {
+    if (\Algolia\SearchBundle\Searchable::NORMALIZATION_FORMAT === $format) {
         return [
             'title' => $this->getTitle(),
             'content' => $this->getContent(),
@@ -712,7 +712,7 @@ class UserNormalizer implements NormalizerInterface
         return $data instanceof User;
 
         // Or if you want to use it only for indexing
-        // return $data instanceof User && Searchable::NORMALIZATION_FORMAT == $format;
+        // return $data instanceof User && Searchable::NORMALIZATION_FORMAT === $format;
     }
 }
 ```
