@@ -13,7 +13,10 @@ UNRELEASED
     Note: This requires that you install `ocramius/proxy-manager` and 
     `symfony/proxy-manager-bridge` packages 
     
-    
+
+* Removed connection attribute for Doctrine Event Subscribers - PR [#248](https://github.com/algolia/search-bundle/pull/248)
+
+
 
 3.2.0
 ----------
