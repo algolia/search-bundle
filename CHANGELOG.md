@@ -4,6 +4,12 @@ CHANGELOG
 UNRELEASED
 ----------
 
+ * <Add new entries here>
+
+
+3.3.0
+----------
+
 * Make Algolia Client lazy - PR [#251](https://github.com/algolia/search-bundle/pull/251)
     
     If you didn't set the `ALGOLIA_APP_ID` and `ALGOLIA_API_KEY` env variables
