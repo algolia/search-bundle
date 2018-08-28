@@ -29,6 +29,9 @@ class Configuration implements ConfigurationInterface
             ->end()
             ->booleanNode('catch_log_exceptions')
               ->defaultFalse()
+            ->end()
+            ->booleanNode('disable_doctrine_listeners')
+              ->defaultFalse()
             ->end();
 
         // Here you should define the parameters that are allowed to
