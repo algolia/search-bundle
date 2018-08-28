@@ -1,6 +1,21 @@
 CHANGELOG
 =========
 
+2.3.0
+-----
+
+- Add a DataCollector with debug toolbar integration - PR [#57](https://github.com/algolia/search-bundle/pull/57)
+
+    Note: I'll add this feature to the 3.x branch as well, this is great.
+    
+- Add disable Algolia call feature (part of previous PR)
+
+- Fix entity discovery for discriminated entities - PR [#133](https://github.com/algolia/search-bundle/pull/133)
+
+- Allow skipping non Algolia entities in commands - PR [#109](https://github.com/algolia/search-bundle/pull/109)
+
+- Catch exception when indexing which allows you to index entities with soft-deleted relationship - PR [#119](https://github.com/algolia/search-bundle/pull/119)
+
 2.2.0
 -----
 
