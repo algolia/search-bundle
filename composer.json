@@ -3,6 +3,9 @@
     "type": "symfony-bundle",
     "description": "Seamless integration of Algolia Search into your Symfony project.",
     "license": "MIT",
+    "conflict": {
+        "algolia/algoliasearch-client-php": "1.23.0"
+    },
     "require": {
         "php": "^5.6 || ^7.0",
         "symfony/framework-bundle": "~2.8|~3.0",

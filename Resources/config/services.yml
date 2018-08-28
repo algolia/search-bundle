@@ -5,12 +5,36 @@ parameters:
     algolia.indexer_subscriber.mongodb_odm.class: Algolia\AlgoliaSearchBundle\EventListener\AlgoliaSearchDoctrineMongoDBODMEventSubscriber
 
 services:
+    algolia.client:
+        class: AlgoliaSearch\Client
+        arguments:
+            - "%algolia.application_id%"
+            - "%algolia.api_key%"
+
+    algolia.debug_client:
+        class: Algolia\AlgoliaSearchBundle\Debug\DebugClient
+        arguments:
+            - "%algolia.application_id%"
+            - "%algolia.api_key%"
+        calls:
+            - [disableRequests, ["%algolia.disable_requests%"]]
+            - [setStopwatch, ["@debug.stopwatch"]]
+
+    algolia.client_data_collector:
+        class: Algolia\AlgoliaSearchBundle\DataCollector\ClientDataCollector
+        public: false
+        arguments:
+            - "@algolia.client"
+        tags:
+            - {name: data_collector, template: "@AlgoliaAlgoliaSearch/Collector/algolia.html.twig", id: "algolia.client_data_collector"}
+
     algolia.indexer:
         class: "%algolia.indexer.class%"
         calls:
             - [setEnvironment, ["%kernel.environment%"]]
             - [setIndexNamePrefix, ["%algolia.index_name_prefix%"]]
             - [setApiSettings, ["%algolia.application_id%", "%algolia.api_key%", "%algolia.connection_timeout%"]]
+            - [setClient, ["@algolia.client"]]
 
     algolia.indexer_subscriber.abstract:
         abstract: true
