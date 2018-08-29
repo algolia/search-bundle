@@ -324,7 +324,7 @@ class Indexer
                 }
 
                 return $this->getFieldsForAlgolia($val, null, $depth + 1);
-            }, $value->toArray());
+            }, $value->getValues());
         }
 
         if (is_object($value) && $this->isEntity($this->objectManager, $value)) {
