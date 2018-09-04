@@ -7,6 +7,12 @@ UNRELEASED
  * <Add new entries here>
 
 
+3.3.1
+----------
+
+* Little optimization, AlgoliaEngine will serialize an Entity only once - PR [#255](https://github.com/algolia/search-bundle/pull/255) 
+
+
 3.3.0
 ----------
 
