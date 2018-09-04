@@ -88,7 +88,8 @@ class AlgoliaEngine implements EngineInterface
 
         $data = [];
         foreach ($searchableEntities as $entity) {
-            if (empty($entity->getSearchableArray())) {
+            $searchableArray = $entity->getSearchableArray();
+            if (empty($searchableArray)) {
                 continue;
             }
 
@@ -98,7 +99,7 @@ class AlgoliaEngine implements EngineInterface
                 $data[$indexName] = [];
             }
 
-            $data[$indexName][] = $entity->getSearchableArray() + [
+            $data[$indexName][] = $searchableArray + [
                 'objectID' => $entity->getId()
             ];
         }
