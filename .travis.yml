@@ -16,4 +16,5 @@ before_script:
     - composer install
 
 script:
+    - ./vendor/bin/phpstan analyse src --level=1
     - eval $(./algolia-keys export) && ./vendor/bin/simple-phpunit -v
