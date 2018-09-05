@@ -11,6 +11,8 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 class IndexManager implements IndexManagerInterface
 {
+    public $propertyAccessor;
+
     protected $engine;
     protected $configuration;
     protected $useSerializerGroups;
