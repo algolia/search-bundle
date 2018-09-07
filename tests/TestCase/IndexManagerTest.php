@@ -4,6 +4,7 @@ namespace Algolia\SearchBundle;
 
 use Algolia\SearchBundle\Doctrine\NullObjectManager;
 use Algolia\SearchBundle\Entity\Comment;
+use Algolia\SearchBundle\Entity\ContentAggregator;
 use Algolia\SearchBundle\Entity\Post;
 use Algolia\SearchBundle\Entity\Tag;
 
@@ -22,13 +23,16 @@ class IndexManagerTest extends BaseTest
     {
         $this->indexManager->delete(Post::class);
         $this->indexManager->delete(Comment::class);
+        $this->indexManager->delete(ContentAggregator::class);
     }
+
+
     public function testIsSearchableMethod()
     {
         $this->assertTrue($this->indexManager->isSearchable(Post::class));
         $this->assertTrue($this->indexManager->isSearchable(Comment::class));
-
         $this->assertFalse($this->indexManager->isSearchable(BaseTest::class));
+        $this->assertTrue($this->indexManager->isSearchable(ContentAggregator::class));
     }
 
     /**
@@ -46,7 +50,7 @@ class IndexManagerTest extends BaseTest
         $om = $this->get('doctrine')->getManager();
 
         $posts = [];
-        for ($i=0; $i<3; $i++) {
+        for ($i = 0; $i < 3; $i++) {
             $posts[] = $this->createPost($i);
         }
 
@@ -66,12 +70,94 @@ class IndexManagerTest extends BaseTest
         $searchComment = $this->indexManager->rawSearch('', Comment::class);
         $this->assertCount(1, $searchComment['hits']);
 
+        $searchPost = $this->indexManager->rawSearch('test', ContentAggregator::class);
+        $this->assertCount(4, $searchPost['hits']);
+
+        $searchPost = $this->indexManager->rawSearch('Comment content', ContentAggregator::class);
+        $this->assertCount(1, $searchPost['hits']);
+
         // Count
         $this->assertEquals(4, $this->indexManager->count('test', Post::class));
         $this->assertEquals(1, $this->indexManager->count('content', Comment::class));
+        $this->assertEquals(5, $this->indexManager->count('', ContentAggregator::class));
 
         // Cleanup
         $this->indexManager->delete(Post::class);
         $this->indexManager->delete(Comment::class);
+        $this->indexManager->delete(ContentAggregator::class);
+    }
+
+    public function testIndexedDataCanBeRemoved()
+    {
+        $om = $this->get('doctrine')->getManager();
+
+        $posts = [];
+        for ($i = 0; $i < 3; $i++) {
+            $posts[] = $this->createPost($i);
+        }
+
+        $comment = $this->createComment(1);
+
+        // index Data
+        $this->indexManager->index(array_merge($posts, [$comment]), $om);
+
+        // Remove the last one.
+        $this->indexManager->remove(end($posts), $om);
+
+        // Expects 2 posts and 1 comment.
+        $this->assertEquals(2, $this->indexManager->count('', Post::class));
+        $this->assertEquals(1, $this->indexManager->count('', Comment::class));
+
+        // The content aggregator expects 2 + 1.
+        $this->assertEquals(3, $this->indexManager->count('', ContentAggregator::class));
+
+        // Remove the only comment that exists.
+        $this->indexManager->remove($comment, $om);
+
+        // Expects 2 posts and 0 comments.
+        $this->assertEquals(2, $this->indexManager->count('', Post::class));
+        $this->assertEquals(0, $this->indexManager->count('', Comment::class));
+
+        // The content aggregator expects 2 + 0.
+        $this->assertEquals(2, $this->indexManager->count('', ContentAggregator::class));
+    }
+
+    public function testRawSearchRawContent()
+    {
+        $om = $this->get('doctrine')->getManager();
+
+        $postIndexed = $this->createPost(10);
+        $postIndexed->setTitle('Foo Bar');
+
+        $this->indexManager->index($postIndexed, $om);
+
+        // Using entity.
+        $results = $this->indexManager->rawSearch('Foo Bar', Post::class);
+        $this->assertEquals($results['hits'][0]['title'], $postIndexed->getTitle());
+
+        // Using aggregator.
+        $results = $this->indexManager->rawSearch('Foo Bar', ContentAggregator::class);
+        $this->assertEquals($results['hits'][0]['title'], $postIndexed->getTitle());
+    }
+
+    public function testIndexIfCondition()
+    {
+        $om = $this->get('doctrine')->getManager();
+
+        $posts = [];
+        for ($i = 0; $i < 3; $i++) {
+            $posts[] = $this->createPost($i);
+        }
+
+        $post = $this->createPost(10);
+        $post->setTitle('Foo');
+
+        $posts[] = $post;
+
+        // index Data: Total 4 posts.
+        $this->indexManager->index($posts, $om);
+
+        // The content aggregator expects 3 ( not 4, because of the index_if condition ).
+        $this->assertEquals(3, $this->indexManager->count('', ContentAggregator::class));
     }
 }

@@ -26,30 +26,18 @@ class SearchIndexerSubscriber implements EventSubscriber
     public function postUpdate(LifecycleEventArgs $args)
     {
         $object = $args->getObject();
-        $objectManager = $args->getObjectManager();
 
-        if (!$this->indexManager->isSearchable($object)) {
-            return;
-        }
-
-        if ($this->indexManager->shouldBeIndexed($object)) {
-            $this->indexManager->index($object, $objectManager);
-        } else {
-            $this->indexManager->remove($object, $objectManager);
+        if ($this->indexManager->isSearchable($object) || (method_exists($this->indexManager, 'belongsToOneAggregator') && $this->indexManager->belongsToOneAggregator($object))) {
+            $this->indexManager->index($object, $args->getObjectManager());
         }
     }
 
     public function postPersist(LifecycleEventArgs $args)
     {
         $object = $args->getObject();
-        $objectManager = $args->getObjectManager();
 
-        if (!$this->indexManager->isSearchable($object)) {
-            return;
-        }
-
-        if ($this->indexManager->shouldBeIndexed($object)) {
-            $this->indexManager->index($object, $objectManager);
+        if ($this->indexManager->isSearchable($object) || (method_exists($this->indexManager, 'belongsToOneAggregator') && $this->indexManager->belongsToOneAggregator($object))) {
+            $this->indexManager->index($object, $args->getObjectManager());
         }
     }
 
@@ -57,7 +45,7 @@ class SearchIndexerSubscriber implements EventSubscriber
     {
         $object = $args->getObject();
 
-        if ($this->indexManager->isSearchable($object)) {
+        if ($this->indexManager->isSearchable($object) || (method_exists($this->indexManager, 'belongsToOneAggregator') && $this->indexManager->belongsToOneAggregator($object))) {
             $this->indexManager->remove($object, $args->getObjectManager());
         }
     }
