@@ -7,7 +7,6 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\Util\ClassUtils;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\PropertyAccess\PropertyAccess;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use ReflectionClass;
 
 class IndexManager implements IndexManagerInterface
@@ -78,14 +77,32 @@ class IndexManager implements IndexManagerInterface
 
     public function index($entities, ObjectManager $objectManager)
     {
-        return $this->forEachChunk($objectManager, $entities, function ($chunk) {
+        $entities = $this->filterEntitiesBySearchableEntities($entities);
+
+        $entitiesToBeIndexed = array_merge($entities, $this->getAggregatorsFromEntities($objectManager, $entities));
+
+        $entitiesToBeRemoved = [];
+        foreach ($entitiesToBeIndexed as $key => $entity) {
+            if (! $this->shouldBeIndexed($entity)) {
+                unset($entitiesToBeIndexed[$key]);
+                $entitiesToBeRemoved[] = $entity;
+            }
+        }
+
+        $this->remove($entitiesToBeRemoved, $objectManager);
+
+        return $this->forEachChunk($objectManager, $entitiesToBeIndexed, function ($chunk) {
             return $this->engine->update($chunk);
         });
     }
 
     public function remove($entities, ObjectManager $objectManager)
     {
-        return $this->forEachChunk($objectManager, $entities, function ($chunk) {
+        $entities = $this->filterEntitiesBySearchableEntities($entities);
+
+        $entitiesToBeIndexed = array_merge($entities, $this->getAggregatorsFromEntities($objectManager, $entities));
+
+        return $this->forEachChunk($objectManager, $entitiesToBeIndexed, function ($chunk) {
             return $this->engine->remove($chunk);
         });
     }
@@ -201,7 +218,7 @@ class IndexManager implements IndexManagerInterface
             if ($reflect->implementsInterface(AggregatorInterface::class)) {
                 foreach ($index['class']::getEntities() as $entityClass) {
 
-                    if (!isset($this->entitiesAggregators[$entityClass])) {
+                    if (! isset($this->entitiesAggregators[$entityClass])) {
                         $this->entitiesAggregators[$entityClass] = [];
                     }
 
@@ -247,32 +264,15 @@ class IndexManager implements IndexManagerInterface
     }
 
     /**
-     * For each chunk:
-     *      1. Retrieves the aggregators of the provided entities, if any.
-     *      2. Validates entities/aggregators and pass them to the provided operation.
-     *      3. And returns a batch response.
+     * For each chunk performs the provided operation.
      *
      * @param  \Doctrine\Common\Persistence\ObjectManager $objectManager
-     * @param  object|array $entities
+     * @param  array $entities
      * @param  callable $operation
      * @return array
      */
-    private function forEachChunk(ObjectManager $objectManager, $entities, $operation)
+    private function forEachChunk(ObjectManager $objectManager, array $entities, $operation)
     {
-        if (!is_array($entities)) {
-            $entities = [$entities];
-        }
-
-        foreach ($entities as $entity) {
-            $entityClassName = ClassUtils::getClass($entity);
-
-            if (array_key_exists($entityClassName, $this->entitiesAggregators)) {
-                foreach ($this->entitiesAggregators[$entityClassName] as $aggregator) {
-                    $entities[] = new $aggregator($entity, $objectManager->getClassMetadata($entityClassName)->getIdentifierValues($entity));
-                }
-            }
-        }
-
         $batch = [];
         foreach (array_chunk($entities, $this->configuration['batchSize']) as $chunk) {
             $searchableEntitiesChunk = [];
@@ -280,34 +280,58 @@ class IndexManager implements IndexManagerInterface
             foreach ($chunk as $entity) {
                 $entityClassName = ClassUtils::getClass($entity);
 
-                if (!$this->isSearchable($entityClassName)) {
-                    continue;
-                }
-
-                $searchableEntity = new SearchableEntity(
+                $searchableEntitiesChunk[] = new SearchableEntity(
                     $this->getFullIndexName($entityClassName),
                     $entity,
                     $objectManager->getClassMetadata($entityClassName),
                     $this->normalizer,
                     ['useSerializerGroup' => $this->canUseSerializerGroup($entityClassName)]
                 );
-
-                /**
-                 * If the entity shouldn't be indexed because the validation "index_if" didn't
-                 * pass, then we should remove the entity from the index because maybe
-                 * the entity was previously indexed.
-                 */
-                if (!$this->shouldBeIndexed($entity)) {
-                    $this->engine->remove([$searchableEntity]);
-                } else {
-                    $searchableEntitiesChunk[] = $searchableEntity;
-                }
             }
 
             $batch[] = $operation($searchableEntitiesChunk);
         }
 
         return $this->formatBatchResponse($batch);
+    }
+
+    /**
+     * Filters the provided set of entities by searchable entities.
+     *
+     * @param  array|object $entities
+     * @return array
+     */
+    private function filterEntitiesBySearchableEntities($entities)
+    {
+        $entities = is_array($entities) ? $entities : [$entities];
+
+        return array_filter($entities, function ($entity) {
+            return $this->isSearchable($entity);
+        });
+    }
+
+    /**
+     * Returns the aggregators instances of the provided entities.
+     *
+     * @param  Doctrine\Common\Persistence\ObjectManager $objectManager
+     * @param  array $entities
+     * @return array
+     */
+    private function getAggregatorsFromEntities(ObjectManager $objectManager, $entities)
+    {
+        $aggregators = [];
+
+        foreach ($entities as $entity) {
+            $entityClassName = ClassUtils::getClass($entity);
+
+            if (array_key_exists($entityClassName, $this->entitiesAggregators)) {
+                foreach ($this->entitiesAggregators[$entityClassName] as $aggregator) {
+                    $aggregators[] = new $aggregator($entity, $objectManager->getClassMetadata($entityClassName)->getIdentifierValues($entity));
+                }
+            }
+        }
+
+        return $aggregators;
     }
 
     private function formatBatchResponse(array $batch)
