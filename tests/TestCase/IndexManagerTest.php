@@ -6,7 +6,7 @@ use Algolia\SearchBundle\Doctrine\NullObjectManager;
 use Algolia\SearchBundle\Entity\Comment;
 use Algolia\SearchBundle\Entity\ContentAggregator;
 use Algolia\SearchBundle\Entity\Post;
-use Algolia\SearchBundle\Entity\Tag;
+use Algolia\SearchBundle\Entity\Image;
 
 class IndexManagerTest extends BaseTest
 {
@@ -32,6 +32,7 @@ class IndexManagerTest extends BaseTest
         $this->assertTrue($this->indexManager->isSearchable(Post::class));
         $this->assertTrue($this->indexManager->isSearchable(Comment::class));
         $this->assertFalse($this->indexManager->isSearchable(BaseTest::class));
+        $this->assertFalse($this->indexManager->isSearchable(Image::class));
         $this->assertTrue($this->indexManager->isSearchable(ContentAggregator::class));
     }
 
@@ -56,7 +57,7 @@ class IndexManagerTest extends BaseTest
 
         // index Data
         $this->indexManager->index($this->createPost(10), $om);
-        $this->indexManager->index(array_merge($posts, [$this->createComment(1)]), $om);
+        $this->indexManager->index(array_merge($posts, [$this->createComment(1), $this->createImage(1)]), $om);
 
         // RawSearch
         $searchPost = $this->indexManager->rawSearch('', Post::class);
@@ -79,7 +80,7 @@ class IndexManagerTest extends BaseTest
         // Count
         $this->assertEquals(4, $this->indexManager->count('test', Post::class));
         $this->assertEquals(1, $this->indexManager->count('content', Comment::class));
-        $this->assertEquals(5, $this->indexManager->count('', ContentAggregator::class));
+        $this->assertEquals(6, $this->indexManager->count('', ContentAggregator::class));
 
         // Cleanup
         $this->indexManager->delete(Post::class);
@@ -97,19 +98,20 @@ class IndexManagerTest extends BaseTest
         }
 
         $comment = $this->createComment(1);
+        $image   = $this->createImage(1);
 
         // index Data
-        $this->indexManager->index(array_merge($posts, [$comment]), $om);
+        $this->indexManager->index(array_merge($posts, [$comment, $image]), $om);
 
-        // Remove the last one.
+        // Remove the last post.
         $this->indexManager->remove(end($posts), $om);
 
         // Expects 2 posts and 1 comment.
         $this->assertEquals(2, $this->indexManager->count('', Post::class));
         $this->assertEquals(1, $this->indexManager->count('', Comment::class));
 
-        // The content aggregator expects 2 + 1.
-        $this->assertEquals(3, $this->indexManager->count('', ContentAggregator::class));
+        // The content aggregator expects 2 + 1 + 1.
+        $this->assertEquals(4, $this->indexManager->count('', ContentAggregator::class));
 
         // Remove the only comment that exists.
         $this->indexManager->remove($comment, $om);
@@ -118,7 +120,13 @@ class IndexManagerTest extends BaseTest
         $this->assertEquals(2, $this->indexManager->count('', Post::class));
         $this->assertEquals(0, $this->indexManager->count('', Comment::class));
 
-        // The content aggregator expects 2 + 0.
+        // The content aggregator expects 2 + 0 + 1.
+        $this->assertEquals(3, $this->indexManager->count('', ContentAggregator::class));
+
+        // Remove the only image that exists.
+        $this->indexManager->remove($image, $om);
+
+        // The content aggregator expects 2 + 0 + 0.
         $this->assertEquals(2, $this->indexManager->count('', ContentAggregator::class));
     }
 

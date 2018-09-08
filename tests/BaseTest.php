@@ -3,6 +3,7 @@
 namespace Algolia\SearchBundle;
 
 use Algolia\SearchBundle\Entity\Comment;
+use Algolia\SearchBundle\Entity\Image;
 use Algolia\SearchBundle\Entity\Post;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
@@ -57,6 +58,17 @@ class BaseTest extends KernelTestCase
         $comment = new Comment;
         $comment->setContent('Comment content');
         $comment->setPost(new Post(['title' => 'What a post!']));
+
+        if (!is_null($id)) {
+            $comment->setId($id);
+        }
+
+        return $comment;
+    }
+
+    protected function createImage($id = null)
+    {
+        $comment = new Image;
 
         if (!is_null($id)) {
             $comment->setId($id);

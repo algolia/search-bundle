@@ -48,23 +48,6 @@ class IndexManager implements IndexManagerInterface
         return in_array($className, $this->searchableEntities);
     }
 
-    /**
-     * Checks if the provived entity class name belongs
-     * at least to one aggregator.
-     *
-     * @param  object|string $entityClassName
-     *
-     * @return bool
-     */
-    public function belongsToOneAggregator($entityClassName)
-    {
-        if (is_object($entityClassName)) {
-            $entityClassName = ClassUtils::getClass($entityClassName);
-        }
-
-        return isset($this->entitiesAggregators[$entityClassName]);
-    }
-
     public function getSearchableEntities()
     {
         return $this->searchableEntities;
@@ -77,9 +60,12 @@ class IndexManager implements IndexManagerInterface
 
     public function index($entities, ObjectManager $objectManager)
     {
-        $entities = $this->filterEntitiesBySearchableEntities($entities);
+        $entities = is_array($entities) ? $entities : [$entities];
+        $entities = array_merge($entities, $this->getAggregatorsFromEntities($objectManager, $entities));
 
-        $entitiesToBeIndexed = array_merge($entities, $this->getAggregatorsFromEntities($objectManager, $entities));
+        $entitiesToBeIndexed = array_filter($entities, function ($entity) {
+            return $this->isSearchable($entity);
+        });
 
         $entitiesToBeRemoved = [];
         foreach ($entitiesToBeIndexed as $key => $entity) {
@@ -98,9 +84,12 @@ class IndexManager implements IndexManagerInterface
 
     public function remove($entities, ObjectManager $objectManager)
     {
-        $entities = $this->filterEntitiesBySearchableEntities($entities);
+        $entities = is_array($entities) ? $entities : [$entities];
+        $entities = array_merge($entities, $this->getAggregatorsFromEntities($objectManager, $entities));
 
-        $entitiesToBeIndexed = array_merge($entities, $this->getAggregatorsFromEntities($objectManager, $entities));
+        $entitiesToBeIndexed = array_filter($entities, function ($entity) {
+            return $this->isSearchable($entity);
+        });
 
         return $this->forEachChunk($objectManager, $entitiesToBeIndexed, function ($chunk) {
             return $this->engine->remove($chunk);
@@ -296,28 +285,13 @@ class IndexManager implements IndexManagerInterface
     }
 
     /**
-     * Filters the provided set of entities by searchable entities.
-     *
-     * @param  array|object $entities
-     * @return array
-     */
-    private function filterEntitiesBySearchableEntities($entities)
-    {
-        $entities = is_array($entities) ? $entities : [$entities];
-
-        return array_filter($entities, function ($entity) {
-            return $this->isSearchable($entity);
-        });
-    }
-
-    /**
      * Returns the aggregators instances of the provided entities.
      *
      * @param  Doctrine\Common\Persistence\ObjectManager $objectManager
      * @param  array $entities
      * @return array
      */
-    private function getAggregatorsFromEntities(ObjectManager $objectManager, $entities)
+    private function getAggregatorsFromEntities(ObjectManager $objectManager, array $entities)
     {
         $aggregators = [];
 

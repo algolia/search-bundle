@@ -17,8 +17,6 @@ class ContentAggregator extends Aggregator
 {
     /**
      * @var bool
-     *
-     * @ORM\Column(type="boolean")
      */
     private $isVisible;
 
@@ -43,6 +41,7 @@ class ContentAggregator extends Aggregator
         return [
             Post::class,
             Comment::class,
+            Image::class
         ];
     }
 }
