@@ -33,13 +33,12 @@ UNRELEASED
     }
     ```
 
-* Fix: Problem in `index_if` functionality in update cases.
+* Fix: Issue in `index_if` functionality in update cases.
 
     Previously, if the developer used the `IndexManager` directly,
     there was a risk that the entity may not be removed from the remote
     index. Now, the verification is done directly in the `IndexManager`,
     correcting exactly this same problem.
-
 
 3.3.1
 ----------
