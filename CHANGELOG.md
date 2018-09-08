@@ -4,7 +4,41 @@ CHANGELOG
 UNRELEASED
 ----------
 
- * <Add new entries here>
+* Feature: Aggregators - Multiple entities in the same index.
+
+    An aggregator object allows to aggregate more than
+    one entity type in the same index. With aggregators,
+    you can easily provide a better search experience 
+    since the search results will contain content from
+    various sources (entities).
+
+    Usage:
+
+    ```
+        - indices:
+            - name: contents
+              class: App\Search\Content
+    ```
+
+    ```
+    class ContentAggregator extends Aggregator
+    {
+        public static function getEntities()
+        {
+            return [
+                Post::class,
+                Comment::class,
+            ];
+        }
+    }
+    ```
+
+* Fix: Problem in `index_if` functionality in update cases.
+
+    Previously, if the developer used the `IndexManager` directly,
+    there was a risk that the entity may not be removed from the remote
+    index. Now, the verification is done directly in the `IndexManager`,
+    correcting exactly this same problem.
 
 
 3.3.1
