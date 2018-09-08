@@ -17,7 +17,7 @@ UNRELEASED
     ```
         - indices:
             - name: contents
-              class: App\Search\Content
+              class: App\Search\ContentAggregator
     ```
 
     ```
