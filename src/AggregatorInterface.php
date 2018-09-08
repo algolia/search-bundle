@@ -28,7 +28,7 @@ interface AggregatorInterface
     public static function getEntities();
 
     /**
-     * Returns the unique Algolia object id. Should
+     * Returns the unique object id. Should
      * contain information about the entity class and
      * about the entity id.
      *
