@@ -41,7 +41,7 @@ abstract class Aggregator implements AggregatorInterface, NormalizableInterface
     protected static $resolvedEntitiesShortNames = [];
 
     /**
-     * Holds the Algolia ObjectID.
+     * Holds the ObjectID.
      *
      * Typically also contains information concerning the
      * entity class name, and concerning the entity id.
@@ -140,7 +140,7 @@ abstract class Aggregator implements AggregatorInterface, NormalizableInterface
      */
     protected static function getClassShortName($entityClassName)
     {
-        if (!array_key_exists($entityClassName, static::$resolvedEntitiesShortNames)) {
+        if (! array_key_exists($entityClassName, static::$resolvedEntitiesShortNames)) {
             static::$resolvedEntitiesShortNames[$entityClassName] = (new ReflectionClass($entityClassName))->getShortName();
         }
 
