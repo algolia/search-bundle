@@ -4,6 +4,7 @@ namespace Algolia\SearchBundle\AlgoliaSearch;
 
 use Algolia\SearchBundle\BaseTest;
 use Algolia\SearchBundle\Entity\Comment;
+use Algolia\SearchBundle\Entity\ContentAggregator;
 use Algolia\SearchBundle\Entity\Post;
 use Algolia\SearchBundle\Entity\Tag;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
@@ -51,6 +52,11 @@ class DoctrineTest extends BaseTest
 
         $posts = $this->syncIndexManager->search('', Post::class, $em);
         $this->assertTrue(is_array($posts));
+        foreach ($posts as $p) {
+            $this->assertInstanceOf(Post::class, $p);
+        }
+
+        $posts = $this->syncIndexManager->search('', ContentAggregator::class, $em);
         foreach ($posts as $p) {
             $this->assertInstanceOf(Post::class, $p);
         }

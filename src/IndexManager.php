@@ -122,7 +122,7 @@ class IndexManager implements IndexManagerInterface
 
         $results = [];
         foreach ($ids as $objectID) {
-            if (array_key_exists($className, $this->aggregators)) {
+            if (in_array($className, $this->aggregators)) {
                 $entityClass = $className::getEntityClassFromObjectID($objectID);
                 $id = $className::getEntityIdFromObjectID($objectID);
             } else {
