@@ -176,8 +176,8 @@ Most of the time, you will be using the `IndexManager` object to either:
 
 Symfony 4 ships with a lighter container where only some much-needed core services
 are registered. If your controller will be responsible for some search-related task,
-you need to inject it via the constructor. Good news, by simply type-hinting the variable,
-Symfony will handle everything for you, thanks to auto-wiring.
+you need to inject it via the constructor. Good news: by type-hinting the variable,
+Symfony will handle everything for you thanks to auto-wiring.
 
 ```php
 namespace App\Controller;
@@ -559,7 +559,7 @@ class Post
 
 ## Normalizers
 
-By default all entities are converted to an array with the built-in [Symfony Normalizers](https://symfony.com/doc/current/components/serializer.html#normalizers) (GetSetMethodNormalizer, DateTimeNormalizer, ObjectNormalizer...) which should be enough for simple use cases, but we encourage you to write your own Normalizer to have more control over what you send to Algolia, or to simply avoid [circular references](https://symfony.com/doc/current/components/serializer.html#handling-circular-references).
+By default all entities are converted to an array with the built-in [Symfony Normalizers](https://symfony.com/doc/current/components/serializer.html#normalizers) (GetSetMethodNormalizer, DateTimeNormalizer, ObjectNormalizer...) which should be enough for simple use cases, but we encourage you to write your own Normalizer to have more control over what you send to Algolia, or to avoid [circular references](https://symfony.com/doc/current/components/serializer.html#handling-circular-references).
 
 Symfony will use the first Normalizer in the array to support your entity or format. You can [change the
 order](/doc/api-client/symfony/customizing/#ordering-normalizers) in your service declaration.
@@ -1089,7 +1089,7 @@ class CustomEngine implements EngineInterface
 
 ### Override the service definition
 
-The engine is injected in the `IndexManager` simply by changing the service definition
+The engine is injected in the `IndexManager` by changing the service definition
 of `search.engine`. It will use your brand new class.
 
 ```yaml
@@ -1129,7 +1129,7 @@ class CustomSettingsManager implements EngineInterface
 
 ### Override the service definition
 
-The engine is injected in the `IndexManager` simply by changing the service definition
+The engine is injected in the `IndexManager` by changing the service definition
 of `search.engine`. It will use your brand new class.
 
 ```yaml
