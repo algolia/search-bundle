@@ -51,6 +51,8 @@ class AlgoliaEngineTest extends BaseTest
         $this->assertEquals(1, $result);
         $result = $engine->count('This should not have results', $searchablePost->getIndexName());
         $this->assertEquals(0, $result);
+        $result = $engine->count('', $searchablePost->getIndexName(), ['tagFilters' => 'test']);
+        $this->assertEquals(0, $result);
 
         // Cleanup
         $result = $engine->clear($searchablePost->getIndexName());

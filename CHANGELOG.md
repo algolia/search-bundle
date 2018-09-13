@@ -4,7 +4,10 @@ CHANGELOG
 UNRELEASED
 ----------
 
- * <Add new entries here>
+ * Fix bug in `IndexManager::count` to take parameters into account
+ 
+    Note that this bug fix is backward compatible but should be clean up
+    when we release a next major version.
 
 
 3.3.1
