@@ -9,7 +9,7 @@ use Symfony\Component\HttpKernel\Kernel as SfKernel;
 
 class AlgoliaSearchBundle extends Bundle
 {
-    const VERSION = '3.3.1';
+    const VERSION = '3.3.2';
 
     public function boot()
     {

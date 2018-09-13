@@ -4,11 +4,14 @@ CHANGELOG
 UNRELEASED
 ----------
 
- * Fix bug in `IndexManager::count` to take parameters into account
+
+3.3.2
+----------
+
+ * Fix bug in `IndexManager::count` to take parameters into account - PR [#260](https://github.com/algolia/search-bundle/pull/260)
  
     Note that this bug fix is backward compatible but should be clean up
     when we release a next major version.
-
 
 3.3.1
 ----------
