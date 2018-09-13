@@ -73,9 +73,14 @@ class AlgoliaEngine implements EngineInterface
         return array_column($result['hits'], 'objectID');
     }
 
-    public function count($query, $indexName)
+    public function count($query, $indexName /*, array $parameters = [] */)
     {
-        $results = $this->algolia->initIndex($indexName)->search($query);
+        $parameters = [];
+        if (3 === func_num_args() && is_array(func_get_arg(2))) {
+            $parameters = func_get_arg(2);
+        }
+        
+        $results = $this->algolia->initIndex($indexName)->search($query, $parameters);
 
         return (int) $results['nbHits'];
     }
