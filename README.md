@@ -835,9 +835,9 @@ Search-related methods have take a `$parameters` array as the last arguments. Yo
 ```php
 $em = $this->getDoctrine()->getManagerForClass(Post::class);
 
-$posts = $this->indexManager->search('query', Post::class, $em, 0, 10, ['filters' => 'comment_count>10']);
+$posts = $this->indexManager->search('query', Post::class, $em, 1, 10, ['filters' => 'comment_count>10']);
 // Or
-$posts = $this->indexManager->rawSearch('query', Post::class, 0, 10, ['filters' => 'comment_count>10']);
+$posts = $this->indexManager->rawSearch('query', Post::class, 1, 10, ['filters' => 'comment_count>10']);
 ```
   
 Note that `search` will only take IDs and use doctrine to create a collection of entities so you can only pass parameters
@@ -846,15 +846,15 @@ Note that `search` will only take IDs and use doctrine to create a collection of
 If you want to modify the attributes to retrieve or retrieve data like `facets`, `facets_stats`, `_rankingInfo` you will need to use the `rawSearch` method.
   
 ```php
-$results = $this->indexManager->rawSearch('query', Post::class, 0, 10, [
+$results = $this->indexManager->rawSearch('query', Post::class, 1, 10, [
   'facets' => ['*'], // Retrieve all facets
   'getRankingInfo' => true,
 ]);
   
-$results = $this->indexManager->rawSearch('query', Post::class, 0, 10, [
+$results = $this->indexManager->rawSearch('query', Post::class, 1, 10, [
   'facets' => ['tags', 'year'],
   'attributesToRetrieve' => ['title', 'author_name'],
-' => true,
+  'getRankingInfo' => true,
 ]);
 ```
 
