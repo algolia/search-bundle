@@ -9,7 +9,6 @@ use Symfony\Component\HttpKernel\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
 {
-
     /**
      * Returns an array of bundles to register.
      *

@@ -3,6 +3,7 @@ algolia_search:
     nbResults: 12
     batchSize: 100
     settingsDirectory: '/tests/cache/settings'
+    index_manager: 'Algolia\SearchBundle\AlgoliaIndexManager'
     indices:
         - name: posts
           class: 'Algolia\SearchBundle\Entity\Post'

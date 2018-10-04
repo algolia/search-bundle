@@ -4,6 +4,24 @@ CHANGELOG
 UNRELEASED
 ----------
 
+* Introduce AlgoliaIndexManager
+
+    By default, the bundle will use the IndexManager, in which, you can inject
+    any engine class. The point is to use this bundle with other search engine,
+    not only Algolia.
+    
+    In some cases, we want to provide extra features for Algolia users, this is why
+    this AlgoliaIndexManager class was introduced. The first feature is the ability 
+    to override the credentials. This is useful if you are using multiple algolia app
+    or if you want to use another API key for some users/use cases.
+    
+    To use the AlgoliaIndexManager, update your configuration as shown below, then
+    `$container->get('search.index_manager)` will return an AlgoliaIndexManager instance.
+    
+    ```yml
+    algolia_search:
+        index_manager: 'Algolia\SearchBundle\AlgoliaIndexManager'
+    ```
 
 3.3.2
 ----------

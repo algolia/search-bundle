@@ -2,6 +2,7 @@
 
 namespace Algolia\SearchBundle\DependencyInjection;
 
+use Algolia\SearchBundle\IndexManager;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -40,6 +41,9 @@ class Configuration implements ConfigurationInterface
                 ->end()
                 ->scalarNode('serializer')
                     ->defaultValue('serializer')
+                ->end()
+                ->scalarNode('index_manager')
+                    ->defaultValue(IndexManager::class)
                 ->end()
                 ->arrayNode('indices')
                     ->useAttributeAsKey('name')

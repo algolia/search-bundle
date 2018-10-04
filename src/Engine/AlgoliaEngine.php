@@ -15,6 +15,23 @@ class AlgoliaEngine implements EngineInterface
         $this->algolia = $algolia;
     }
 
+    /**
+     * Set appId and ApiKey for underlying Algolia Client.
+     * This allow developers to use multiple app within the
+     * same Symfony application.
+     *
+     * @param string $appId
+     * @param string $apiKey
+     * @return $this
+     */
+    public function setCredentials($appId, $apiKey)
+    {
+        $this->algolia->getContext()->applicationID = $appId;
+        $this->algolia->getContext()->apiKey = $apiKey;
+
+        return $this;
+    }
+
     public function add($searchableEntities)
     {
         return $this->update($searchableEntities);

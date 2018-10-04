@@ -2,6 +2,7 @@
 
 namespace Algolia\SearchBundle\DependencyInjection;
 
+use Algolia\SearchBundle\AlgoliaIndexManager;
 use Algolia\SearchBundle\IndexManager;
 use Algolia\SearchBundle\Settings\AlgoliaSettingsManager;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -53,7 +54,7 @@ class AlgoliaSearchExtension extends Extension
         }
 
         $indexManagerDefinition = (new Definition(
-            IndexManager::class,
+            $config['index_manager'],
             [
                 new Reference($config['serializer']),
                 new Reference('search.engine'),

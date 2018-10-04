@@ -2,10 +2,9 @@
 
 namespace Algolia\SearchBundle;
 
-use Algolia\SearchBundle\Doctrine\NullObjectManager;
 use Algolia\SearchBundle\Entity\Comment;
 use Algolia\SearchBundle\Entity\Post;
-use Algolia\SearchBundle\Entity\Tag;
+use Symfony\Component\Yaml\Yaml;
 
 class IndexManagerTest extends BaseTest
 {
@@ -23,6 +22,15 @@ class IndexManagerTest extends BaseTest
         $this->indexManager->delete(Post::class);
         $this->indexManager->delete(Comment::class);
     }
+
+    public function testIndexManagerIsSetAccordingToConfig()
+    {
+        $config = Yaml::parse(file_get_contents(__DIR__.'/../config/algolia_search.yml'));
+        $indexManagerClass = $config['algolia_search']['index_manager'];
+
+        $this->assertInstanceOf($indexManagerClass, $this->indexManager);
+    }
+
     public function testIsSearchableMethod()
     {
         $this->assertTrue($this->indexManager->isSearchable(Post::class));
