@@ -37,6 +37,7 @@ class ConfigurationTest extends BaseTest
                     "settingsDirectory" => null,
                     "doctrineSubscribedEvents" => ["postPersist", "postUpdate", "preRemove"],
                     "indices" => [],
+                    "index_manager" => "Algolia\\SearchBundle\\IndexManager",
                 ]
             ],
             'Simple config' => [
@@ -52,6 +53,7 @@ class ConfigurationTest extends BaseTest
                     "settingsDirectory" => null,
                     "doctrineSubscribedEvents" => ["postPersist", "postUpdate", "preRemove"],
                     "indices" => [],
+                    "index_manager" => "Algolia\\SearchBundle\\IndexManager",
                 ]
             ],
             'Index config' => [
@@ -80,6 +82,7 @@ class ConfigurationTest extends BaseTest
                             'index_if' => null,
                         ],
                     ],
+                    "index_manager" => "Algolia\\SearchBundle\\IndexManager",
                 ]
             ],
         ];
