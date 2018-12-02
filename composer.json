@@ -33,7 +33,6 @@
     "require-dev": {
         "doctrine/doctrine-bundle": "^1.8",
         "doctrine/orm": "^2.5",
-        "friendsofphp/php-cs-fixer": "^2.11",
         "jms/serializer-bundle": "^2.3",
         "ocramius/proxy-manager": "*",
         "symfony/doctrine-bridge": "^3.4.0 || ^4.0.0",
@@ -46,10 +45,6 @@
         "branch-alias": {
             "dev-master": "3.2.x-dev"
         }
-    },
-    "scripts": {
-        "lint": "php-cs-fixer fix src --dry-run --diff",
-        "lint:fix": "php-cs-fixer fix src"
     },
     "config": {
         "sort-packages": true
