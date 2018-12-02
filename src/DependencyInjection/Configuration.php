@@ -4,6 +4,7 @@ namespace Algolia\SearchBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
+use function method_exists;
 
 /**
  * This is the class that validates and merges configuration from your app/config files.
@@ -17,8 +18,13 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('algolia_search');
+        if (method_exists(TreeBuilder::class, 'getRootNode')) {
+            $treeBuilder = new TreeBuilder('algolia_search');
+            $rootNode    = $treeBuilder->getRootNode();
+        } else {
+            $treeBuilder = new TreeBuilder();
+            $rootNode    = $treeBuilder->root('algolia_search');
+        }
 
         $rootNode
             ->children()
