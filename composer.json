@@ -40,8 +40,7 @@
         "friendsofphp/php-cs-fixer": "^2.11",
         "jms/serializer-bundle": "^2.3",
         "ocramius/proxy-manager": "*",
-        "symfony/proxy-manager-bridge": "*",
-        "phpstan/phpstan": "^0.10.3"
+        "symfony/proxy-manager-bridge": "*"
     },
     "extra": {
         "branch-alias": {
