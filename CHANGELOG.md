@@ -4,36 +4,15 @@ CHANGELOG
 UNRELEASED
 ----------
 
-* Feature: Aggregators - Multiple entities in the same index.
+* Feature: Aggregators - Multiple entities in the same index - PR [#257](https://github.com/algolia/search-bundle/pull/257)
 
     An aggregator object allows to aggregate more than
     one entity type in the same index. With aggregators,
     you can easily provide a better search experience
     since the search results will contain content from
-    various sources (entities).
+    various entities.
 
-    Usage:
-
-    ```
-        - indices:
-            - name: contents
-              class: App\Search\ContentAggregator
-    ```
-
-    ```
-    class ContentAggregator extends Aggregator
-    {
-        public static function getEntities()
-        {
-            return [
-                Post::class,
-                Comment::class,
-            ];
-        }
-    }
-    ```
-
-* Fix: Issue in `index_if` functionality in update cases.
+* Fix: Issue in `index_if` functionality in update cases - PR [#257](https://github.com/algolia/search-bundle/pull/257)
 
     Previously, if the developer used the `IndexManager` directly,
     there was a risk that the entity may not be removed from the remote
