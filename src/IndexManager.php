@@ -121,6 +121,7 @@ class IndexManager implements IndexManagerInterface
         $ids = $this->engine->searchIds($query, $this->getFullIndexName($className), $page, $nbResults, $parameters);
 
         $results = [];
+
         foreach ($ids as $objectID) {
             if (in_array($className, $this->aggregators, true)) {
                 $entityClass = $className::getEntityClassFromObjectID($objectID);
@@ -131,6 +132,7 @@ class IndexManager implements IndexManagerInterface
             }
 
             $repo = $objectManager->getRepository($entityClass);
+
             $results[] = $repo->findOneBy(['id' => $id]);
         }
 
