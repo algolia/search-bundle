@@ -176,8 +176,8 @@ Most of the time, you will be using the `IndexManager` object to either:
 
 Symfony 4 ships with a lighter container where only some much-needed core services
 are registered. If your controller will be responsible for some search-related task,
-you need to inject it via the constructor. Good news, by simply type-hinting the variable,
-Symfony will handle everything for you, thanks to auto-wiring.
+you need to inject it via the constructor. Good news: by type-hinting the variable,
+Symfony will handle everything for you thanks to auto-wiring.
 
 ```php
 namespace App\Controller;
@@ -559,7 +559,7 @@ class Post
 
 ## Normalizers
 
-By default all entities are converted to an array with the built-in [Symfony Normalizers](https://symfony.com/doc/current/components/serializer.html#normalizers) (GetSetMethodNormalizer, DateTimeNormalizer, ObjectNormalizer...) which should be enough for simple use cases, but we encourage you to write your own Normalizer to have more control over what you send to Algolia, or to simply avoid [circular references](https://symfony.com/doc/current/components/serializer.html#handling-circular-references).
+By default all entities are converted to an array with the built-in [Symfony Normalizers](https://symfony.com/doc/current/components/serializer.html#normalizers) (GetSetMethodNormalizer, DateTimeNormalizer, ObjectNormalizer...) which should be enough for simple use cases, but we encourage you to write your own Normalizer to have more control over what you send to Algolia, or to avoid [circular references](https://symfony.com/doc/current/components/serializer.html#handling-circular-references).
 
 Symfony will use the first Normalizer in the array to support your entity or format. You can [change the
 order](/doc/api-client/symfony/customizing/#ordering-normalizers) in your service declaration.
@@ -835,9 +835,9 @@ Search-related methods have take a `$parameters` array as the last arguments. Yo
 ```php
 $em = $this->getDoctrine()->getManagerForClass(Post::class);
 
-$posts = $this->indexManager->search('query', Post::class, $em, 0, 10, ['filters' => 'comment_count>10']);
+$posts = $this->indexManager->search('query', Post::class, $em, 1, 10, ['filters' => 'comment_count>10']);
 // Or
-$posts = $this->indexManager->rawSearch('query', Post::class, 0, 10, ['filters' => 'comment_count>10']);
+$posts = $this->indexManager->rawSearch('query', Post::class, 1, 10, ['filters' => 'comment_count>10']);
 ```
   
 Note that `search` will only take IDs and use doctrine to create a collection of entities so you can only pass parameters
@@ -846,15 +846,15 @@ Note that `search` will only take IDs and use doctrine to create a collection of
 If you want to modify the attributes to retrieve or retrieve data like `facets`, `facets_stats`, `_rankingInfo` you will need to use the `rawSearch` method.
   
 ```php
-$results = $this->indexManager->rawSearch('query', Post::class, 0, 10, [
+$results = $this->indexManager->rawSearch('query', Post::class, 1, 10, [
   'facets' => ['*'], // Retrieve all facets
   'getRankingInfo' => true,
 ]);
   
-$results = $this->indexManager->rawSearch('query', Post::class, 0, 10, [
+$results = $this->indexManager->rawSearch('query', Post::class, 1, 10, [
   'facets' => ['tags', 'year'],
   'attributesToRetrieve' => ['title', 'author_name'],
-' => true,
+  'getRankingInfo' => true,
 ]);
 ```
 
@@ -1089,7 +1089,7 @@ class CustomEngine implements EngineInterface
 
 ### Override the service definition
 
-The engine is injected in the `IndexManager` simply by changing the service definition
+The engine is injected in the `IndexManager` by changing the service definition
 of `search.engine`. It will use your brand new class.
 
 ```yaml
@@ -1129,7 +1129,7 @@ class CustomSettingsManager implements EngineInterface
 
 ### Override the service definition
 
-The engine is injected in the `IndexManager` simply by changing the service definition
+The engine is injected in the `IndexManager` by changing the service definition
 of `search.engine`. It will use your brand new class.
 
 ```yaml

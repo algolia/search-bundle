@@ -18,5 +18,9 @@ interface EngineInterface
 
     public function searchIds($query, $indexName, $page = 0, $nbResults = null, array $parameters = []);
 
-    public function count($query, $indexName);
+    // TODO: Add $parameters argument
+    // The 3 arguments named $parameters will be added to this interface
+    // when we release the next major version
+    // See https://github.com/algolia/search-bundle/issues/259
+    public function count($query, $indexName /*, array $parameters = [] */);
 }

@@ -152,7 +152,7 @@ class IndexManager implements IndexManagerInterface
     {
         $this->assertIsSearchable($className);
 
-        return $this->engine->count($query, $this->getFullIndexName($className));
+        return $this->engine->count($query, $this->getFullIndexName($className), $parameters);
     }
 
     public function shouldBeIndexed($entity)

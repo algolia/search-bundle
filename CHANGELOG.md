@@ -40,6 +40,20 @@ UNRELEASED
     index. Now, the verification is done directly in the `IndexManager`,
     fixing that issue.
 
+
+3.3.3
+----------
+
+ * Fix deprecation notices with Symfony 4.2 - PR [#273](https://github.com/algolia/search-bundle/pull/273)
+
+3.3.2
+----------
+
+ * Fix bug in `IndexManager::count` to take parameters into account - PR [#260](https://github.com/algolia/search-bundle/pull/260)
+
+    Note that this bug fix is backward compatible but should be clean up
+    when we release a next major version.
+
 3.3.1
 ----------
 
@@ -61,8 +75,6 @@ UNRELEASED
 
 * Removed connection attribute for Doctrine Event Subscribers - PR [#248](https://github.com/algolia/search-bundle/pull/248)
 
-
-
 3.2.0
 ----------
 
@@ -75,7 +87,6 @@ UNRELEASED
 * `NullEngine` was improved to remove warning - Issue [#234](https://github.com/algolia/search-bundle/issues/234)
 
 * The entire test suite was refactored - PR [#236](https://github.com/algolia/search-bundle/pull/236)
-
 
 3.1.2
 -----

@@ -41,7 +41,7 @@ class NullEngine implements EngineInterface
         return [];
     }
 
-    public function count($query, $indexName)
+    public function count($query, $indexName /*, array $parameters = [] */)
     {
         return 0;
     }
