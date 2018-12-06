@@ -10,12 +10,11 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class IndexManager implements IndexManagerInterface
 {
-    public $propertyAccessor;
-
     protected $engine;
     protected $configuration;
     protected $useSerializerGroups;
 
+    private $propertyAccessor;
     private $searchableEntities;
     private $aggregators;
     private $entitiesAggregators;
