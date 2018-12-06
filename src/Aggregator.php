@@ -22,6 +22,8 @@ abstract class Aggregator implements NormalizableInterface
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="string")
+     *
+     * @internal
      */
     protected $objectID;
 
