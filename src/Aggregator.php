@@ -2,18 +2,16 @@
 
 namespace Algolia\SearchBundle;
 
-
 use Algolia\SearchBundle\Exception\EntityNotFoundInObjectID;
 use Algolia\SearchBundle\Exception\InvalidEntityForAggregator;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Normalizer\NormalizableInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use ReflectionClass;
 
 /**
  * @ORM\MappedSuperclass
  */
-abstract class Aggregator implements AggregatorInterface, NormalizableInterface
+abstract class Aggregator implements NormalizableInterface
 {
     /**
      * Holds an doctrine {@ORM\Entity} object.
@@ -21,24 +19,6 @@ abstract class Aggregator implements AggregatorInterface, NormalizableInterface
      * @var object
      */
     protected $entity;
-
-    /**
-     * Holds the entity identifier values.
-     *
-     * Keep in mind that entity aggregators do not support
-     * entities with more than one primary key.
-     *
-     * @var array
-     */
-    protected $entityIdentifierValues;
-
-    /**
-     * Holds an array of entities where the short names
-     * got already resolved. Acts as a cache strategy.
-     *
-     * @var string[]
-     */
-    protected static $resolvedEntitiesShortNames = [];
 
     /**
      * Holds the ObjectID.
@@ -63,15 +43,16 @@ abstract class Aggregator implements AggregatorInterface, NormalizableInterface
         $this->entity = $entity;
 
         if (count($entityIdentifierValues) > 1) {
-            throw new InvalidEntityForAggregator("Aggregators don't support more than one primary key");
+            throw new InvalidEntityForAggregator("Aggregators don't support more than one primary key.");
         }
 
-        $this->entityIdentifierValues = $entityIdentifierValues;
-        $this->objectID = $this->getObjectID();
+        $this->objectID = get_class($this->entity) . '::' . reset($entityIdentifierValues);
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the entities class names that should be aggregated.
+     *
+     * @return string[]
      */
     public static function getEntities()
     {
@@ -79,71 +60,38 @@ abstract class Aggregator implements AggregatorInterface, NormalizableInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Returns an entity id from the provided object id.
+     *
+     * @param  string $objectID
+     * @return object
      */
     public static function getEntityIdFromObjectID($objectID)
     {
-        $partsOfObjectID = explode('_', $objectID);
-
-        return \end($partsOfObjectID);
+        return explode('::', $objectID)[1];
     }
 
     /**
-     * {@inheritdoc}
+     * Returns an entity class name from the provided object id.
+     *
+     * @param  string $objectID
+     * @return object
      */
     public static function getEntityClassFromObjectID($objectID)
     {
-        $partsOfObjectID = explode('_', $objectID);
+        $type = explode('::', $objectID)[0];
 
-        $type = \current($partsOfObjectID);
-
-        foreach (static::getEntities() as $entityClassName) {
-            if (static::getClassShortName($entityClassName) === $type) {
-                return $entityClassName;
-            }
+        if (in_array($type, static::getEntities(), true)) {
+            return $type;
         }
 
-        throw new EntityNotFoundInObjectID("Entity from ObjectID {$objectID} couldn't be retrieved");
+        throw new EntityNotFoundInObjectID("Entity class from ObjectID {$objectID} not found.");
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getObjectID()
+    public function normalize(NormalizerInterface $normalizer, $format = null, array $context = [])
     {
-        $id = reset($this->entityIdentifierValues);
-
-        $entityClassName = get_class($this->entity);
-
-        return static::getClassShortName($entityClassName) . '_' . $id;
-    }
-
-
-    /**
-     * {@inheritdoc}
-     */
-    public function normalize(NormalizerInterface $normalizer, $format = null, array $context = array())
-    {
-        return array_merge(
-            ['objectID' => $this->getObjectID()],
-            $normalizer->normalize($this->entity)
-        );
-    }
-
-    /**
-     * Resolves the class short name from the provided entity class name.
-     *
-     * @param  string $entityClassName
-     * @return string
-     *
-     * @throws \ReflectionException If provided entity class name do not exist.
-     */
-    protected static function getClassShortName($entityClassName)
-    {
-        if (! array_key_exists($entityClassName, static::$resolvedEntitiesShortNames)) {
-            static::$resolvedEntitiesShortNames[$entityClassName] = (new ReflectionClass($entityClassName))->getShortName();
-        }
-
-        return static::$resolvedEntitiesShortNames[$entityClassName];
+        return array_merge(['objectID' => $this->objectID], $normalizer->normalize($this->entity));
     }
 }

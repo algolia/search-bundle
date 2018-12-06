@@ -75,7 +75,9 @@ class IndexManager implements IndexManagerInterface
             }
         }
 
-        $this->remove($entitiesToBeRemoved, $objectManager);
+        if (! empty($entitiesToBeRemoved)) {
+            $this->remove($entitiesToBeRemoved, $objectManager);
+        }
 
         return $this->forEachChunk($objectManager, $entitiesToBeIndexed, function ($chunk) {
             return $this->engine->update($chunk);
@@ -91,7 +93,7 @@ class IndexManager implements IndexManagerInterface
             return $this->isSearchable($entity);
         });
 
-        return $this->forEachChunk($objectManager, $entitiesToBeIndexed, function ($chunk) {
+        return $this->forEachChunk($objectManager, $entities, function ($chunk) {
             return $this->engine->remove($chunk);
         });
     }
@@ -122,7 +124,7 @@ class IndexManager implements IndexManagerInterface
 
         $results = [];
         foreach ($ids as $objectID) {
-            if (in_array($className, $this->aggregators)) {
+            if (in_array($className, $this->aggregators, true)) {
                 $entityClass = $className::getEntityClassFromObjectID($objectID);
                 $id = $className::getEntityIdFromObjectID($objectID);
             } else {
@@ -202,9 +204,7 @@ class IndexManager implements IndexManagerInterface
         $this->aggregators = [];
 
         foreach ($this->configuration['indices'] as $name => $index) {
-
-            $reflect = new ReflectionClass($index['class']);
-            if ($reflect->implementsInterface(AggregatorInterface::class)) {
+            if (is_subclass_of($index['class'], Aggregator::class)) {
                 foreach ($index['class']::getEntities() as $entityClass) {
 
                     if (! isset($this->entitiesAggregators[$entityClass])) {
@@ -265,7 +265,6 @@ class IndexManager implements IndexManagerInterface
         $batch = [];
         foreach (array_chunk($entities, $this->configuration['batchSize']) as $chunk) {
             $searchableEntitiesChunk = [];
-
             foreach ($chunk as $entity) {
                 $entityClassName = ClassUtils::getClass($entity);
 
@@ -297,7 +296,6 @@ class IndexManager implements IndexManagerInterface
 
         foreach ($entities as $entity) {
             $entityClassName = ClassUtils::getClass($entity);
-
             if (array_key_exists($entityClassName, $this->entitiesAggregators)) {
                 foreach ($this->entitiesAggregators[$entityClassName] as $aggregator) {
                     $aggregators[] = new $aggregator($entity, $objectManager->getClassMetadata($entityClassName)->getIdentifierValues($entity));

@@ -8,7 +8,7 @@ UNRELEASED
 
     An aggregator object allows to aggregate more than
     one entity type in the same index. With aggregators,
-    you can easily provide a better search experience 
+    you can easily provide a better search experience
     since the search results will contain content from
     various sources (entities).
 
@@ -38,26 +38,26 @@ UNRELEASED
     Previously, if the developer used the `IndexManager` directly,
     there was a risk that the entity may not be removed from the remote
     index. Now, the verification is done directly in the `IndexManager`,
-    correcting exactly this same problem.
+    fixing that issue.
 
 3.3.1
 ----------
 
-* Little optimization, AlgoliaEngine will serialize an Entity only once - PR [#255](https://github.com/algolia/search-bundle/pull/255) 
+* Little optimization, AlgoliaEngine will serialize an Entity only once - PR [#255](https://github.com/algolia/search-bundle/pull/255)
 
 
 3.3.0
 ----------
 
 * Make Algolia Client lazy - PR [#251](https://github.com/algolia/search-bundle/pull/251)
-    
+
     If you didn't set the `ALGOLIA_APP_ID` and `ALGOLIA_API_KEY` env variables
     you will only get an error message when the client is used (a method is called),
     not when its injected and not used.
-    
-    Note: This requires that you install `ocramius/proxy-manager` and 
-    `symfony/proxy-manager-bridge` packages 
-    
+
+    Note: This requires that you install `ocramius/proxy-manager` and
+    `symfony/proxy-manager-bridge` packages
+
 
 * Removed connection attribute for Doctrine Event Subscribers - PR [#248](https://github.com/algolia/search-bundle/pull/248)
 
@@ -71,7 +71,7 @@ UNRELEASED
     If you'd rather use the JMS Serializer instead of the default Symfony serializer,
     you can set `serializer: jms_serializer` in `config/packages/algolia_search.yaml`.
     Note that the @Groups annotation isn't supported.
-    
+
 * `NullEngine` was improved to remove warning - Issue [#234](https://github.com/algolia/search-bundle/issues/234)
 
 * The entire test suite was refactored - PR [#236](https://github.com/algolia/search-bundle/pull/236)
@@ -94,21 +94,21 @@ UNRELEASED
 * Do not register Event Subscriber if there are no event to listen to - PR [#219](https://github.com/algolia/search-bundle/pull/219)
 
     If you don't listen to any doctrine event using `doctrineSubscribedEvents: []`,
-    the subscriber will not be registered to avoid instantiation the IndexManager and 
+    the subscriber will not be registered to avoid instantiation the IndexManager and
     the Algolia client.
 
 3.1.0
 -----
 
 * Introduce `batchSize` config key (default: 500) - PR [#208](https://github.com/algolia/search-bundle/pull/208)
-    
+
     This config allow you create smaller or bigger batch calls to Algolia. The same config is used by doctrine in the ImportCommand.
-    
+
 * Feature: Index entities conditionally (using a dedicated method) - PR [#210](https://github.com/algolia/search-bundle/pull/210)
 
     Add new `index_if` configuration key for indices.
     This should be the path to a property in the entity which
-    evaluates to true if the item should be indexed and false to 
+    evaluates to true if the item should be indexed and false to
     bypass indexing or remove existing object from the index.
 
     Example:
