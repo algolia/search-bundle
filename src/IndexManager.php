@@ -132,8 +132,11 @@ class IndexManager implements IndexManagerInterface
             }
 
             $repo = $objectManager->getRepository($entityClass);
+            $entity = $repo->findOneBy(['id' => $id]);
 
-            $results[] = $repo->findOneBy(['id' => $id]);
+            if ($entity !== null) {
+                $results[] = $entity;
+            }
         }
 
         return $results;
