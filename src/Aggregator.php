@@ -14,13 +14,6 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 abstract class Aggregator implements NormalizableInterface
 {
     /**
-     * Holds an doctrine {@ORM\Entity} object.
-     *
-     * @var object
-     */
-    protected $entity;
-
-    /**
      * Holds the ObjectID.
      *
      * Typically also contains information concerning the
@@ -31,6 +24,13 @@ abstract class Aggregator implements NormalizableInterface
      * @ORM\Column(type="string")
      */
     protected $objectID;
+
+    /**
+     * Holds an doctrine {@ORM\Entity} object.
+     *
+     * @var object
+     */
+    private $entity;
 
     /**
      * Aggregator constructor.
@@ -63,7 +63,10 @@ abstract class Aggregator implements NormalizableInterface
      * Returns an entity id from the provided object id.
      *
      * @param  string $objectID
+     *
      * @return object
+     *
+     * @internal
      */
     public static function getEntityIdFromObjectID($objectID)
     {
@@ -74,7 +77,10 @@ abstract class Aggregator implements NormalizableInterface
      * Returns an entity class name from the provided object id.
      *
      * @param  string $objectID
+     *
      * @return object
+     *
+     * @internal
      */
     public static function getEntityClassFromObjectID($objectID)
     {
