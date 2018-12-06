@@ -87,7 +87,7 @@ class IndexManager implements IndexManagerInterface
         $entities = is_array($entities) ? $entities : [$entities];
         $entities = array_merge($entities, $this->getAggregatorsFromEntities($objectManager, $entities));
 
-        $entitiesToBeIndexed = array_filter($entities, function ($entity) {
+        $entities = array_filter($entities, function ($entity) {
             return $this->isSearchable($entity);
         });
 
