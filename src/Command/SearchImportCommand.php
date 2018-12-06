@@ -2,6 +2,7 @@
 
 namespace Algolia\SearchBundle\Command;
 
+use Algolia\SearchBundle\Aggregator;
 use Algolia\SearchBundle\IndexManagerInterface;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Symfony\Component\Console\Input\InputArgument;
@@ -47,6 +48,15 @@ class SearchImportCommand extends IndexCommand
     {
         $entitiesToIndex = $this->getEntitiesFromArgs($input, $output);
         $config = $this->indexManager->getConfiguration();
+
+        foreach ($entitiesToIndex as $key => $entity) {
+            if (is_subclass_of($entity, Aggregator::class)) {
+                unset($entitiesToIndex[$key]);
+                $entitiesToIndex = array_merge($entitiesToIndex, $entity::getEntities());
+            }
+        }
+
+        $entitiesToIndex = array_unique($entitiesToIndex);
 
         foreach ($entitiesToIndex as $indexName => $entityClassName) {
             $manager = $this->getManagerRegistry()->getManagerForClass($entityClassName);
