@@ -290,7 +290,7 @@ class IndexManager implements IndexManagerInterface
      * Returns the aggregators instances of the provided entities.
      *
      * @param  \Doctrine\Common\Persistence\ObjectManager $objectManager
-     * @param  array $entities
+     * @param  object[] $entities
      * @return array
      */
     private function getAggregatorsFromEntities(ObjectManager $objectManager, array $entities)
