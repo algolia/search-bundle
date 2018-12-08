@@ -2,13 +2,8 @@
 
 namespace Algolia\SearchBundle\Entity;
 
-
 use Algolia\SearchBundle\Aggregator;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity

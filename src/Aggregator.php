@@ -8,9 +8,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Normalizer\NormalizableInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-/**
- * @ORM\MappedSuperclass
- */
 abstract class Aggregator implements NormalizableInterface
 {
     /**
