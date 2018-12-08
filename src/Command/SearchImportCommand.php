@@ -49,10 +49,10 @@ class SearchImportCommand extends IndexCommand
         $entitiesToIndex = $this->getEntitiesFromArgs($input, $output);
         $config = $this->indexManager->getConfiguration();
 
-        foreach ($entitiesToIndex as $key => $entity) {
-            if (is_subclass_of($entity, Aggregator::class)) {
+        foreach ($entitiesToIndex as $key => $entityClassName) {
+            if (is_subclass_of($entityClassName, Aggregator::class)) {
                 unset($entitiesToIndex[$key]);
-                $entitiesToIndex = array_merge($entitiesToIndex, $entity::getEntities());
+                $entitiesToIndex = array_merge($entitiesToIndex, $entityClassName::getEntities());
             }
         }
 
