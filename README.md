@@ -281,7 +281,7 @@ algolia_search:
       class: App\Entity\Post
 ```
 
-#### enable_serialiser_groups
+#### enable_serializer_groups
 
 Before sending your data to Algolia, each entity will be converted to an array
 using the Symfony built-in serializer. This option lets you define what
