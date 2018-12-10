@@ -19,8 +19,6 @@ abstract class Aggregator implements NormalizableInterface
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="string")
-     *
-     * @internal
      */
     protected $objectID;
 
@@ -29,7 +27,7 @@ abstract class Aggregator implements NormalizableInterface
      *
      * @var object
      */
-    private $entity;
+    protected $entity;
 
     /**
      * Aggregator constructor.
@@ -64,8 +62,6 @@ abstract class Aggregator implements NormalizableInterface
      * @param  string $objectID
      *
      * @return object
-     *
-     * @internal
      */
     public static function getEntityIdFromObjectID($objectID)
     {
@@ -78,8 +74,6 @@ abstract class Aggregator implements NormalizableInterface
      * @param  string $objectID
      *
      * @return object
-     *
-     * @internal
      */
     public static function getEntityClassFromObjectID($objectID)
     {
