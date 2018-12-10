@@ -3,10 +3,10 @@
 namespace Algolia\SearchBundle;
 
 use Algolia\SearchBundle\Doctrine\NullObjectManager;
-use Algolia\SearchBundle\Entity\Comment;
-use Algolia\SearchBundle\Entity\ContentAggregator;
-use Algolia\SearchBundle\Entity\Post;
-use Algolia\SearchBundle\Entity\Image;
+use Algolia\SearchBundle\TestApp\Entity\Comment;
+use Algolia\SearchBundle\TestApp\Entity\ContentAggregator;
+use Algolia\SearchBundle\TestApp\Entity\Post;
+use Algolia\SearchBundle\TestApp\Entity\Image;
 
 class IndexManagerTest extends BaseTest
 {

@@ -5,13 +5,13 @@ algolia_search:
     settingsDirectory: '/tests/cache/settings'
     indices:
         - name: posts
-          class: 'Algolia\SearchBundle\Entity\Post'
+          class: 'Algolia\SearchBundle\TestApp\Entity\Post'
           enable_serializer_groups: true
         - name: comments
-          class: 'Algolia\SearchBundle\Entity\Comment'
+          class: 'Algolia\SearchBundle\TestApp\Entity\Comment'
         - name: contents
-          class: 'Algolia\SearchBundle\Entity\ContentAggregator'
+          class: 'Algolia\SearchBundle\TestApp\Entity\ContentAggregator'
           index_if: isVisible
         - name: tags
-          class: 'Algolia\SearchBundle\Entity\Tag'
+          class: 'Algolia\SearchBundle\TestApp\Entity\Tag'
           index_if: isPublic

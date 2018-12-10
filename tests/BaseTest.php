@@ -2,9 +2,9 @@
 
 namespace Algolia\SearchBundle;
 
-use Algolia\SearchBundle\Entity\Comment;
-use Algolia\SearchBundle\Entity\Image;
-use Algolia\SearchBundle\Entity\Post;
+use Algolia\SearchBundle\TestApp\Entity\Comment;
+use Algolia\SearchBundle\TestApp\Entity\Image;
+use Algolia\SearchBundle\TestApp\Entity\Post;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class BaseTest extends KernelTestCase

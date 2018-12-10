@@ -2,9 +2,9 @@
 
 namespace Algolia\SearchBundle;
 
-use Algolia\SearchBundle\Entity\Comment;
-use Algolia\SearchBundle\Entity\Post;
-use Algolia\SearchBundle\Entity\Tag;
+use Algolia\SearchBundle\TestApp\Entity\Comment;
+use Algolia\SearchBundle\TestApp\Entity\Post;
+use Algolia\SearchBundle\TestApp\Entity\Tag;
 use Algolia\SearchBundle\Normalizer\CommentNormalizer;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Serializer;

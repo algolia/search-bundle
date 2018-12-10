@@ -1,10 +1,9 @@
 <?php
 
-namespace Algolia\SearchBundle;
+namespace Algolia\SearchBundle\Entity;
 
 use Algolia\SearchBundle\Exception\EntityNotFoundInObjectID;
 use Algolia\SearchBundle\Exception\InvalidEntityForAggregator;
-use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Normalizer\NormalizableInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
@@ -16,9 +15,7 @@ abstract class Aggregator implements NormalizableInterface
      * Typically also contains information concerning the
      * entity class name, and concerning the entity id.
      *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="string")
+     * @var string
      */
     protected $objectID;
 
@@ -43,7 +40,7 @@ abstract class Aggregator implements NormalizableInterface
             throw new InvalidEntityForAggregator("Aggregators don't support more than one primary key.");
         }
 
-        $this->objectID = get_class($this->entity) . '::' . reset($entityIdentifierValues);
+        $this->objectID = get_class($this->entity).'::'.reset($entityIdentifierValues);
     }
 
     /**

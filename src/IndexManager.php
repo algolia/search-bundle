@@ -2,6 +2,7 @@
 
 namespace Algolia\SearchBundle;
 
+use Algolia\SearchBundle\Entity\Aggregator;
 use Algolia\SearchBundle\Engine\EngineInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\Util\ClassUtils;

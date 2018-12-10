@@ -2,7 +2,7 @@
 
 namespace Algolia\SearchBundle\Command;
 
-use Algolia\SearchBundle\Aggregator;
+use Algolia\SearchBundle\Entity\Aggregator;
 use Algolia\SearchBundle\IndexManagerInterface;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Symfony\Component\Console\Input\InputArgument;

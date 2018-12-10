@@ -1,8 +1,8 @@
 <?php
 
-namespace Algolia\SearchBundle\Entity;
+namespace Algolia\SearchBundle\TestApp\Entity;
 
-use Algolia\SearchBundle\Aggregator;
+use Algolia\SearchBundle\Entity\Aggregator;
 use Doctrine\ORM\Mapping as ORM;
 
 /**

@@ -3,14 +3,13 @@
 namespace Algolia\SearchBundle\AlgoliaSearch;
 
 use Algolia\SearchBundle\BaseTest;
-use Algolia\SearchBundle\Entity\Comment;
-use Algolia\SearchBundle\Entity\ContentAggregator;
-use Algolia\SearchBundle\Entity\Post;
-use Algolia\SearchBundle\Entity\Tag;
+use Algolia\SearchBundle\TestApp\Entity\Comment;
+use Algolia\SearchBundle\TestApp\Entity\ContentAggregator;
+use Algolia\SearchBundle\TestApp\Entity\Post;
+use Algolia\SearchBundle\TestApp\Entity\Tag;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
-use Symfony\Component\Console\Output\NullOutput;
 
 class DoctrineTest extends BaseTest
 {
