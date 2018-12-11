@@ -22,4 +22,4 @@ before_script:
     - composer install
 
 script:
-    - rm -rf var && eval $(./algolia-keys export) && ./vendor/bin/simple-phpunit -v
+    - eval $(./algolia-keys export) && ./vendor/bin/simple-phpunit -v
