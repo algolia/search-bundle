@@ -5,8 +5,6 @@
                         http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping.xsd">
 
     <mapped-superclass name="Algolia\SearchBundle\Entity\Aggregator">
-        <id name="objectID" type="string">
-             <generator strategy="AUTO"/>
-        </id>
+        <field name="objectID" id="true" />
     </mapped-superclass>
 </doctrine-mongo-mapping>

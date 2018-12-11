@@ -25,6 +25,9 @@
             "Algolia\\SearchBundle\\": "src/"
         }
     },
+    "conflict": {
+        "doctrine/mongodb-odm": ">= 2.0"
+    },
     "autoload-dev": {
         "psr-4": {
             "Algolia\\SearchBundle\\": "tests/"
