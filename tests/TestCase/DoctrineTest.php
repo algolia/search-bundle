@@ -88,12 +88,10 @@ class DoctrineTest extends BaseTest
                 '--full-database' => true,
                 '--force' => true,
                 '--quiet' => true,
-                '-vvv' => true,
             ]),
             new ArrayInput([
                 'command' => 'doctrine:schema:create',
                 '--quiet' => true,
-                '-vvv' => true,
             ])
         ];
 
