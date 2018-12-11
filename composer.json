@@ -17,8 +17,8 @@
         "algolia/algoliasearch-client-php": "^1.23",
         "doctrine/common": "^2.5",
         "symfony/filesystem": "^3.4.0 || ^4.0.0",
-        "symfony/serializer": "^3.4.0 || ^4.0.0",
-        "symfony/property-access": "^3.4.0 || ^4.0.0"
+        "symfony/property-access": "^3.4.0 || ^4.0.0",
+        "symfony/serializer": "^3.4.0 || ^4.0.0"
     },
     "autoload": {
         "psr-4": {
