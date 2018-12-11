@@ -1,7 +1,10 @@
 <?php
 
-namespace Algolia\SearchBundle;
+namespace Algolia\SearchBundle\TestCase;
 
+use Algolia\SearchBundle\BaseTest;
+use Algolia\SearchBundle\Searchable;
+use Algolia\SearchBundle\SearchableEntity;
 use Algolia\SearchBundle\TestApp\Entity\Comment;
 use Algolia\SearchBundle\TestApp\Entity\Post;
 use Algolia\SearchBundle\TestApp\Entity\Tag;

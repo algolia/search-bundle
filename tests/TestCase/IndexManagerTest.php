@@ -1,7 +1,8 @@
 <?php
 
-namespace Algolia\SearchBundle;
+namespace Algolia\SearchBundle\TestCase;
 
+use Algolia\SearchBundle\BaseTest;
 use Algolia\SearchBundle\Doctrine\NullObjectManager;
 use Algolia\SearchBundle\TestApp\Entity\Comment;
 use Algolia\SearchBundle\TestApp\Entity\ContentAggregator;
