@@ -1,3 +1,5 @@
 /vendor/
 /tests/cache/
 /composer.lock
+.php_cs.cache
+/var/

@@ -2,7 +2,7 @@
 
 namespace Algolia\SearchBundle\Normalizer;
 
-use Algolia\SearchBundle\Entity\Comment;
+use Algolia\SearchBundle\TestApp\Entity\Comment;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 class CommentNormalizer implements NormalizerInterface

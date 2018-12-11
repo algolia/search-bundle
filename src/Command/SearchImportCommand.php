@@ -2,6 +2,7 @@
 
 namespace Algolia\SearchBundle\Command;
 
+use Algolia\SearchBundle\Entity\Aggregator;
 use Algolia\SearchBundle\IndexManagerInterface;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Symfony\Component\Console\Input\InputArgument;
@@ -48,7 +49,16 @@ class SearchImportCommand extends IndexCommand
         $entitiesToIndex = $this->getEntitiesFromArgs($input, $output);
         $config = $this->indexManager->getConfiguration();
 
-        foreach ($entitiesToIndex as $indexName => $entityClassName) {
+        foreach ($entitiesToIndex as $key => $entityClassName) {
+            if (is_subclass_of($entityClassName, Aggregator::class)) {
+                unset($entitiesToIndex[$key]);
+                $entitiesToIndex = array_merge($entitiesToIndex, $entityClassName::getEntities());
+            }
+        }
+
+        $entitiesToIndex = array_unique($entitiesToIndex);
+
+        foreach ($entitiesToIndex as $entityClassName) {
             $manager = $this->getManagerRegistry()->getManagerForClass($entityClassName);
             $repository = $manager->getRepository($entityClassName);
 
@@ -60,15 +70,16 @@ class SearchImportCommand extends IndexCommand
                     $config['batchSize'],
                     $config['batchSize'] * $page
                 );
-                $response = $this->indexManager->index($entities, $manager);
-
-                $output->writeln(sprintf(
-                    'Indexed <comment>%s / %s</comment> %s entities into %s index',
-                    isset($response[$indexName]) ? $response[$indexName] : 0,
-                    count($entities),
-                    $entityClassName,
-                    '<info>' . $config['prefix'] . $indexName . '</info>'
-                ));
+                $responses = $this->indexManager->index($entities, $manager);
+                foreach ($responses as $indexName => $numberOfRecords) {
+                    $output->writeln(sprintf(
+                        'Indexed <comment>%s / %s</comment> %s entities into %s index',
+                        $numberOfRecords,
+                        count($entities),
+                        $entityClassName,
+                        '<info>' . $config['prefix'] . $indexName . '</info>'
+                    ));
+                }
 
                 $page++;
                 $repository->clear();

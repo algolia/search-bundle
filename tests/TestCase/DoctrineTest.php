@@ -3,13 +3,13 @@
 namespace Algolia\SearchBundle\AlgoliaSearch;
 
 use Algolia\SearchBundle\BaseTest;
-use Algolia\SearchBundle\Entity\Comment;
-use Algolia\SearchBundle\Entity\Post;
-use Algolia\SearchBundle\Entity\Tag;
+use Algolia\SearchBundle\TestApp\Entity\Comment;
+use Algolia\SearchBundle\TestApp\Entity\ContentAggregator;
+use Algolia\SearchBundle\TestApp\Entity\Post;
+use Algolia\SearchBundle\TestApp\Entity\Tag;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
-use Symfony\Component\Console\Output\NullOutput;
 
 class DoctrineTest extends BaseTest
 {
@@ -51,6 +51,11 @@ class DoctrineTest extends BaseTest
 
         $posts = $this->syncIndexManager->search('', Post::class, $em);
         $this->assertTrue(is_array($posts));
+        foreach ($posts as $p) {
+            $this->assertInstanceOf(Post::class, $p);
+        }
+
+        $posts = $this->syncIndexManager->search('', ContentAggregator::class, $em);
         foreach ($posts as $p) {
             $this->assertInstanceOf(Post::class, $p);
         }

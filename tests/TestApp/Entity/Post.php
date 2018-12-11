@@ -1,7 +1,6 @@
 <?php
 
-namespace Algolia\SearchBundle\Entity;
-
+namespace Algolia\SearchBundle\TestApp\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;

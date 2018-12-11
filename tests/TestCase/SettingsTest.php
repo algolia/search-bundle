@@ -2,8 +2,7 @@
 
 namespace Algolia\SearchBundle;
 
-use Algolia\SearchBundle\Entity\Post;
-use Algolia\SearchBundle\Settings\AlgoliaSettingsManager;
+use Algolia\SearchBundle\TestApp\Entity\Post;
 use Algolia\SearchBundle\Settings\SettingsManagerInterface;
 use AlgoliaSearch\Client;
 

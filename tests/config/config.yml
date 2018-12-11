@@ -15,8 +15,8 @@ doctrine:
             App:
                 is_bundle: false
                 type: annotation
-                dir: '%kernel.project_dir%/tests/Entity'
-                prefix: 'Algolia\SearchBundle\Entity'
+                dir: '%kernel.project_dir%/tests/TestApp/Entity'
+                prefix: 'Algolia\SearchBundle\TestApp\Entity'
                 alias: App
 
 jms_serializer:

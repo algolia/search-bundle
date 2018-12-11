@@ -4,6 +4,21 @@ CHANGELOG
 UNRELEASED
 ----------
 
+* Feature: Aggregators - Multiple entities in the same index - PR [#257](https://github.com/algolia/search-bundle/pull/257)
+
+    An aggregator object allows to aggregate more than
+    one entity type in the same index. With aggregators,
+    you can easily provide a better search experience
+    since the search results will contain content from
+    various entities.
+
+* Fix: Issue in `index_if` functionality in update cases - PR [#257](https://github.com/algolia/search-bundle/pull/257)
+
+    Previously, if the developer used the `IndexManager` directly,
+    there was a risk that the entity may not be removed from the remote
+    index. Now, the verification is done directly in the `IndexManager`,
+    fixing that issue.
+
 
 3.3.3
 ----------
@@ -39,8 +54,6 @@ UNRELEASED
 
 * Removed connection attribute for Doctrine Event Subscribers - PR [#248](https://github.com/algolia/search-bundle/pull/248)
 
-
-
 3.2.0
 ----------
 
@@ -53,7 +66,6 @@ UNRELEASED
 * `NullEngine` was improved to remove warning - Issue [#234](https://github.com/algolia/search-bundle/issues/234)
 
 * The entire test suite was refactored - PR [#236](https://github.com/algolia/search-bundle/pull/236)
-
 
 3.1.2
 -----
