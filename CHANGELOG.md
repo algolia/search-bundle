@@ -4,6 +4,9 @@ CHANGELOG
 UNRELEASED
 ----------
 
+3.4.0
+----------
+
 * Feature: Aggregators - Multiple entities in the same index - PR [#257](https://github.com/algolia/search-bundle/pull/257)
 
     An aggregator object allows to aggregate more than
