@@ -17,8 +17,8 @@
         "algolia/algoliasearch-client-php": "^1.23",
         "doctrine/common": "^2.5",
         "symfony/filesystem": "^3.4.0 || ^4.0.0",
-        "symfony/serializer": "^3.4.0 || ^4.0.0",
-        "symfony/property-access": "^3.4.0 || ^4.0.0"
+        "symfony/property-access": "^3.4.0 || ^4.0.0",
+        "symfony/serializer": "^3.4.0 || ^4.0.0"
     },
     "autoload": {
         "psr-4": {
@@ -38,6 +38,7 @@
         "doctrine/orm": "^2.5",
         "jms/serializer-bundle": "^2.3",
         "ocramius/proxy-manager": "*",
+        "phpunit/phpunit": "^5.7.21 || ^6.4 || ^7.0",
         "symfony/doctrine-bridge": "^3.4.0 || ^4.0.0",
         "symfony/framework-bundle": "^3.4.0 || ^4.0.0",
         "symfony/phpunit-bridge": "^3.4.0 || ^4.0",

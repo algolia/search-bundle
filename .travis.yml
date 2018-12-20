@@ -17,9 +17,16 @@ branches:
         - master
         - 2.x
 
-before_script:
+jobs:
+    include:
+        - stage: phpstan
+          php: 7.2
+          before_install: composer require --no-update phpstan/phpstan "^0.10.6"
+          script: vendor/bin/phpstan analyse
+
+install:
     - wget https://alg.li/algolia-keys && chmod +x algolia-keys
     - composer install
 
 script:
-    - eval $(./algolia-keys export) && ./vendor/bin/simple-phpunit -v
+    - eval $(./algolia-keys export) && ./vendor/bin/phpunit -v

@@ -1,7 +1,8 @@
 <?php
 
-namespace Algolia\SearchBundle;
+namespace Algolia\SearchBundle\TestCase;
 
+use Algolia\SearchBundle\BaseTest;
 use Algolia\SearchBundle\TestApp\Entity\Post;
 use Algolia\SearchBundle\Settings\SettingsManagerInterface;
 use AlgoliaSearch\Client;

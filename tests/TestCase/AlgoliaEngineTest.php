@@ -1,6 +1,8 @@
 <?php
 
-namespace Algolia\SearchBundle;
+namespace Algolia\SearchBundle\TestCase;
+
+use Algolia\SearchBundle\BaseTest;
 
 class AlgoliaEngineTest extends BaseTest
 {

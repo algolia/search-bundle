@@ -1,6 +1,6 @@
 <?php
 
-namespace Algolia\SearchBundle\AlgoliaSearch;
+namespace Algolia\SearchBundle\TestCase;
 
 use Algolia\SearchBundle\BaseTest;
 use Algolia\SearchBundle\TestApp\Entity\Comment;
