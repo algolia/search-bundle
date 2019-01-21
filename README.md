@@ -13,7 +13,7 @@ This bundle provides an easy way to integrate Algolia Search into your Symfony a
 
 ## API Documentation
 
-You can find the full reference on [Algolia's website](https://www.algolia.com/doc/api-client/symfony/).
+You can find the full reference on [Algolia's website](https://www.algolia.com/doc/framework-integration/symfony/getting-started/).
 
 
 
