@@ -287,7 +287,7 @@ Before sending your data to Algolia, each entity will be converted to an array
 using the Symfony built-in serializer. This option lets you define what
 attribute you want to index using the annotation `@Groups({"searchable"})`.
 
-Read more about [how entities are serialized here](https://www.algolia.com/doc/api-client/symfony/customizing/).
+Read more about [how entities are serialized here](https://www.algolia.com/doc/framework-integration/symfony/customizing/).
 
 Example:
 
@@ -299,7 +299,7 @@ algolia_search:
       enable_serializer_groups: true
 ```
 
-Check out the [indexing documentation](https://www.algolia.com/doc/api-client/symfony/indexing/) to learn how to send data to Algolia.
+Check out the [indexing documentation](https://www.algolia.com/doc/framework-integration/symfony/indexing/) to learn how to send data to Algolia.
 
 #### Batching
 
@@ -337,12 +337,12 @@ touching prod data while developing.
 While working locally you might want to bypass all calls to Algolia and this
 bundle has introduced new ways to do so.
 
-1. You can [unsubscribe from Doctrine events](https://www.algolia.com/doc/api-client/symfony/indexing/#indexing-automatically-via-doctrine-events) to avoid calls on data updates.
-2. You can [use the `NullEngine`](https://www.algolia.com/doc/api-client/symfony/advanced/#other-engines) to mute all calls.
+1. You can [unsubscribe from Doctrine events](https://www.algolia.com/doc/framework-integration/symfony/indexing/#indexing-automatically-via-doctrine-events) to avoid calls on data updates.
+2. You can [use the `NullEngine`](https://www.algolia.com/doc/framework-integration/symfony/advanced/#other-engines) to mute all calls.
 
 ### Prefix
 
-The first thing to do is to set a prefix per environment. There are 2 ways to do that: 
+The first thing to do is to set a prefix per environment. There are 2 ways to do that:
 either you create 2 config files or you rely on environment variables.
 
 #### Env variables
@@ -422,7 +422,7 @@ see [how to remove data](#removing-manually).
 ### Programmatically
 
 To index any entities in your code, you will need to use
-[the IndexManager service](https://www.algolia.com/doc/api-client/symfony/getting-started/#injecting-services). You need to pass
+[the IndexManager service](https://www.algolia.com/doc/framework-integration/symfony/getting-started/#injecting-services). You need to pass
 it the objects to index and their ObjectManager. Objects can be a single entity, an array of entities or
 even an array of different entities as long as they are using the same ObjectManager.
 
@@ -568,9 +568,9 @@ order](/doc/api-client/symfony/customizing/#ordering-normalizers) in your servic
 
 You have many choices on how to customize your records:
 
-* [Use annotations in entity](https://www.algolia.com/doc/api-client/symfony/customizing/#using-annotations) (similar to how you did it with previous version of the bundle).
-* [Write custom method in entity](https://www.algolia.com/doc/api-client/symfony/customizing/#using-normalize)
-* [Write custom Normalizer class](https://www.algolia.com/doc/api-client/symfony/customizing/#using-a-custom-normalizer)
+* [Use annotations in entity](https://www.algolia.com/doc/framework-integration/symfony/customizing/#using-annotations) (similar to how you did it with previous version of the bundle).
+* [Write custom method in entity](https://www.algolia.com/doc/framework-integration/symfony/customizing/#using-normalize)
+* [Write custom Normalizer class](https://www.algolia.com/doc/framework-integration/symfony/customizing/#using-a-custom-normalizer)
 
 The following features are only supported with the [default Symfony serializer](http://symfony.com/doc/current/components/serializer.html), not with [JMS serializer](http://jmsyst.com/libs/serializer).
 
@@ -581,9 +581,9 @@ annotation. If you used the bundle before version 3, it's very similar. This fea
 
 Example based on a simplified version of [this Post entity](https://gist.github.com/julienbourdeau/3d17304951028cf370ed5fe95d104911):
 
-Annotations requires `enable_serializer_groups` to be true in the configuration. [Read more](https://www.algolia.com/doc/api-client/symfony/configuration/#enableserialisergroups)
+Annotations requires `enable_serializer_groups` to be true in the configuration. [Read more](https://www.algolia.com/doc/framework-integration/symfony/configuration/#enableserialisergroups)
 
-    
+
 ```php
 <?php
 
@@ -791,7 +791,7 @@ to get matching results and then will create a doctrine collection. The data are
 pulled from the database (that's why you need to pass the Doctrine Manager).
 
 Notice that I use `$this->indexManager` here because your IndexManager must be
-injected in your class. [Read how to inject the IndexManager here](https://www.algolia.com/doc/api-client/symfony/getting-started/#injecting-services).
+injected in your class. [Read how to inject the IndexManager here](https://www.algolia.com/doc/framework-integration/symfony/getting-started/#injecting-services).
 
 ```php
 $em = $this->getDoctrine()->getManagerForClass(Post::class);
@@ -831,7 +831,7 @@ $posts = $this->indexManager->count('query', Post::class);
 
 Search-related methods have take a `$parameters` array as the last arguments. You can pass any search parameters (in the Algolia sense).
 
-  
+
 ```php
 $em = $this->getDoctrine()->getManagerForClass(Post::class);
 
@@ -839,18 +839,18 @@ $posts = $this->indexManager->search('query', Post::class, $em, 1, 10, ['filters
 // Or
 $posts = $this->indexManager->rawSearch('query', Post::class, 1, 10, ['filters' => 'comment_count>10']);
 ```
-  
+
 Note that `search` will only take IDs and use doctrine to create a collection of entities so you can only pass parameters
   to modify what to search, not to modify the type of response.
 
 If you want to modify the attributes to retrieve or retrieve data like `facets`, `facets_stats`, `_rankingInfo` you will need to use the `rawSearch` method.
-  
+
 ```php
 $results = $this->indexManager->rawSearch('query', Post::class, 1, 10, [
   'facets' => ['*'], // Retrieve all facets
   'getRankingInfo' => true,
 ]);
-  
+
 $results = $this->indexManager->rawSearch('query', Post::class, 1, 10, [
   'facets' => ['tags', 'year'],
   'attributesToRetrieve' => ['title', 'author_name'],
@@ -1170,6 +1170,3 @@ can enable it in your `app/config/services.yml` file:
 framework:
   serializer: { enabled: true, enable_annotations: true }
 ```
-
-
-
