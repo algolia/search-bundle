@@ -1,8 +1,7 @@
 
 # Algolia Search API Client for Symfony
 
-[Algolia Search](https://www.algolia.com) is a hosted full-text, numerical,
-and faceted search engine capable of delivering realtime results from the first keystroke.
+[Algolia Search](https://www.algolia.com) is a hosted search engine capable of delivering real-time results from the first keystroke.
 
 [![Build Status](https://travis-ci.org/algolia/search-bundle.svg?branch=master)](https://travis-ci.org/algolia/search-bundle) [![Latest Stable Version](https://poser.pugx.org/algolia/search-bundle/v/stable)](https://packagist.org/packages/algolia/search-bundle) [![License](https://poser.pugx.org/algolia/search-bundle/license)](https://packagist.org/packages/algolia/search-bundle)
 
@@ -13,7 +12,7 @@ This bundle provides an easy way to integrate Algolia Search into your Symfony a
 
 ## API Documentation
 
-You can find the full reference on [Algolia's website](https://www.algolia.com/doc/framework-integration/symfony/getting-started/).
+You can find the full reference on [Algolia's website](https://www.algolia.com/doc/framework-integration/symfony/).
 
 
 
@@ -55,6 +54,7 @@ You can find the full reference on [Algolia's website](https://www.algolia.com/d
     * [Backup and restore settings](#backup-and-restore-settings)
 
 1. **[Advanced](#advanced)**
+    * [Aggregators - multiple entities types in the one index](#aggregators---multiple-entities-types-in-the-one-index)
     * [Using Algolia Client](#using-algolia-client)
     * [Other engines](#other-engines)
 
@@ -66,7 +66,6 @@ You can find the full reference on [Algolia's website](https://www.algolia.com/d
 1. **[Troubleshooting](#troubleshooting)**
     * [No <code>serializer</code> service found](#no-codeserializercode-service-found)
     * [The group annotation was not taken into account](#the-group-annotation-was-not-taken-into-account)
-
 
 
 
@@ -220,7 +219,6 @@ $indexManager = $this->get('search.index_manager');
 
 
 
-
 # Configuration
 
 
@@ -342,7 +340,7 @@ bundle has introduced new ways to do so.
 
 ### Prefix
 
-The first thing to do is to set a prefix per environment. There are 2 ways to do that:
+The first thing to do is to set a prefix per environment. There are 2 ways to do that: 
 either you create 2 config files or you rely on environment variables.
 
 #### Env variables
@@ -378,7 +376,6 @@ algolia_search:
 algolia_search:
   prefix: app_dev_
 ```
-
 
 
 
@@ -552,7 +549,6 @@ class Post
 
 
 
-
 # Customizing
 
 
@@ -562,7 +558,7 @@ class Post
 By default all entities are converted to an array with the built-in [Symfony Normalizers](https://symfony.com/doc/current/components/serializer.html#normalizers) (GetSetMethodNormalizer, DateTimeNormalizer, ObjectNormalizer...) which should be enough for simple use cases, but we encourage you to write your own Normalizer to have more control over what you send to Algolia, or to avoid [circular references](https://symfony.com/doc/current/components/serializer.html#handling-circular-references).
 
 Symfony will use the first Normalizer in the array to support your entity or format. You can [change the
-order](/doc/api-client/symfony/customizing/#ordering-normalizers) in your service declaration.
+order](/doc/framework-integration/symfony/customizing/#ordering-normalizers) in your service declaration.
 
 **Note:** Note that the normalizer is called with _searchableArray_ format.
 
@@ -581,9 +577,9 @@ annotation. If you used the bundle before version 3, it's very similar. This fea
 
 Example based on a simplified version of [this Post entity](https://gist.github.com/julienbourdeau/3d17304951028cf370ed5fe95d104911):
 
-Annotations requires `enable_serializer_groups` to be true in the configuration. [Read more](https://www.algolia.com/doc/framework-integration/symfony/configuration/#enableserialisergroups)
+Annotations requires `enable_serializer_groups` to be true in the configuration. [Read more](https://www.algolia.com/doc/framework-integration/symfony/configuration/#enableserializergroups)
 
-
+    
 ```php
 <?php
 
@@ -779,7 +775,6 @@ In XML:
 
 
 
-
 # Search
 
 
@@ -831,7 +826,7 @@ $posts = $this->indexManager->count('query', Post::class);
 
 Search-related methods have take a `$parameters` array as the last arguments. You can pass any search parameters (in the Algolia sense).
 
-
+  
 ```php
 $em = $this->getDoctrine()->getManagerForClass(Post::class);
 
@@ -839,25 +834,24 @@ $posts = $this->indexManager->search('query', Post::class, $em, 1, 10, ['filters
 // Or
 $posts = $this->indexManager->rawSearch('query', Post::class, 1, 10, ['filters' => 'comment_count>10']);
 ```
-
+  
 Note that `search` will only take IDs and use doctrine to create a collection of entities so you can only pass parameters
   to modify what to search, not to modify the type of response.
 
 If you want to modify the attributes to retrieve or retrieve data like `facets`, `facets_stats`, `_rankingInfo` you will need to use the `rawSearch` method.
-
+  
 ```php
 $results = $this->indexManager->rawSearch('query', Post::class, 1, 10, [
   'facets' => ['*'], // Retrieve all facets
   'getRankingInfo' => true,
 ]);
-
+  
 $results = $this->indexManager->rawSearch('query', Post::class, 1, 10, [
   'facets' => ['tags', 'year'],
   'attributesToRetrieve' => ['title', 'author_name'],
   'getRankingInfo' => true,
 ]);
 ```
-
 
 
 
@@ -900,10 +894,101 @@ algolia_search:
 
 
 
-
 # Advanced
 
 
+
+## Aggregators - multiple entities types in the one index
+
+An Aggregator is a clean way to implement site-wide search
+amongst multiple entities. In other words, it allows you
+to have multiple entities types in the one index.
+
+### Defining Aggregators
+
+To create a new aggregator, add a new class to your entities directory, `App\Entity` in this example, with the following content:
+```php
+namespace App\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use Algolia\SearchBundle\Entity\Aggregator;
+
+/**
+ * @ORM\Entity
+ */
+class News extends Aggregator
+{
+    /**
+     * Returns the entities class names that should be aggregated.
+     *
+     * @return string[]
+     */
+    public static function getEntities()
+    {
+        return [
+            Post::class,
+            Comment::class,
+        ];
+    }
+}
+```
+
+**Warning:** Remember, the method `getEntities` should return the entities classes names that should be aggregated.
+
+Finally, add the new aggregator class name into the algolia configuration file `algolia_search.yml`:
+```yaml
+- indices:
+    - name: news
+      class: App\Entity\News
+```
+
+### Searching
+
+An aggregator is a standard entity class, and, as usual, you may begin searching entities on the aggregator using the `search` on
+your [Index Manager](https://www.algolia.com/doc/framework-integration/symfony/getting-started/#injecting-services) service:
+```php
+$indexManager->index($post, $objectManager);
+$indexManager->index($comment, $objectManager);
+
+$results = $indexManager->search('query', News::class, $objectManager);
+
+// $results[0] contains a \App\Entity\Post.
+// $results[1] contain a \App\Entity\Comment.
+```
+
+**Warning:** Be careful, the `$result` array may contain different types of entities instances.
+
+If you want to get the raw results from Algolia, use the `rawSearch` method. However, this time, each
+result may contain a different structure:
+```php
+$results = $indexManager->rawSearch('', News::class);
+```
+
+```json
+{
+    "hits": [
+        {
+            "id": 1,
+            "title": "Article title",
+            "slug": "article-title",
+            "content": "Article content",
+            "objectID": "App\\Entity\\Article::1",
+            ...
+        },
+        {
+            "id": 1,
+            "content": "Comment content",
+            "objectID": "App\\Entity\\Comment::1",
+            ...
+        },
+        ...
+    ]
+}
+```
+
+To ensure that each result has a similar structure, you may need to implement
+the method [`normalize`](https://www.algolia.com/doc/framework-integration/symfony/customizing/#using-normalize)
+on each entity or override it on the aggregator class.
 
 ## Using Algolia Client
 
@@ -1002,7 +1087,6 @@ if this task is completed or not, via another API endpoint.
 For test purposes, we use the AlgoliaSyncEngine. It will always wait for task to be completed
 before returning. This engine is only auto-loaded during the tests. If you use it in your
 project, you can copy it into your app and modify the `search.engine` service definition.
-
 
 
 
@@ -1140,7 +1224,6 @@ search.settings_manager:
 
 
 
-
 # Troubleshooting
 
 
@@ -1170,3 +1253,6 @@ can enable it in your `app/config/services.yml` file:
 framework:
   serializer: { enabled: true, enable_annotations: true }
 ```
+
+
+
