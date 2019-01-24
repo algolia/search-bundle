@@ -136,11 +136,11 @@ return [
 Add Algolia to your `app/Kernel.php`:
 
 ```php
-$bundles = array(
+$bundles = [
     new Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
     // ... Other bundles ...
     new Algolia\SearchBundle\AlgoliaSearchBundle(),
-);
+];
 ```
 
 ## Algolia credentials
@@ -637,7 +637,7 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 class Post implements NormalizableInterface
 {
-    public function normalize(NormalizerInterface $serializer, $format = null, array $context = array()): array
+    public function normalize(NormalizerInterface $serializer, $format = null, array $context = []): array
     {
         return [
             'title' => $this->getTitle(),
@@ -661,7 +661,7 @@ In case you are already using this method for something else, like encoding enti
 on the format to return different arrays.
 
 ```php
-public function normalize(NormalizerInterface $serializer, $format = null, array $context = array()): array
+public function normalize(NormalizerInterface $serializer, $format = null, array $context = []): array
 {
     if (\Algolia\SearchBundle\Searchable::NORMALIZATION_FORMAT === $format) {
         return [
@@ -695,7 +695,7 @@ class UserNormalizer implements NormalizerInterface
     /**
      * Normalize a user into a set of arrays/scalars.
      */
-    public function normalize($object, $format = null, array $context = array())
+    public function normalize($object, $format = null, array $context = [])
     {
         return [
             'id'       => $object->getId(),
