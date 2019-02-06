@@ -579,7 +579,6 @@ Example based on a simplified version of [this Post entity](https://gist.github.
 
 Annotations requires `enable_serializer_groups` to be true in the configuration. [Read more](https://www.algolia.com/doc/framework-integration/symfony/configuration/#enableserializergroups)
 
-    
 ```php
 <?php
 
