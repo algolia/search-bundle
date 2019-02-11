@@ -989,6 +989,40 @@ To ensure that each result has a similar structure, you may need to implement
 the method [`normalize`](https://www.algolia.com/doc/framework-integration/symfony/customizing/#using-normalize)
 on each entity or override it on the aggregator class.
 
+### Indexing conditionally
+
+Conditional indexing on Aggregators works just like a normal entity, using the `index_if` key. You
+may want to use `$this->entity` to have access to the current entity being aggregated. Here is an example using the method approach:
+```yaml
+- indices:
+    - name: news
+      class: App\Entity\News
+      index_if: isPublished
+```
+
+```php
+/**
+ * @ORM\Entity
+ */
+class News extends Aggregator
+{
+    // ...
+
+    public function isPublished()
+    {
+        // Index only published articles.
+        if ($this->entity instanceof Article) {
+            return $this->entity->isPublished();
+        }
+
+        // If is not an article, index anyway.
+        return true;
+    }
+}
+```
+
+For more information on conditional indexing, check out the [`documentation`](https://www.algolia.com/doc/framework-integration/symfony/indexing/#indexing-conditionally).
+
 ## Using Algolia Client
 
 In some cases, you may want to access the Algolia client directly to perform advanced operations
