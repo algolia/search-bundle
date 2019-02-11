@@ -10,25 +10,13 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class ContentAggregator extends Aggregator
 {
-    /**
-     * @var bool
-     */
-    private $isVisible;
-
-    public function __construct($entity, array $entityIdentifierValues)
-    {
-        parent::__construct($entity, $entityIdentifierValues);
-
-        $this->isVisible = true;
-
-        if ($entity instanceof Post && $entity->getTitle() === 'Foo') {
-            $this->isVisible = false;
-        }
-    }
-
     public function getIsVisible()
     {
-        return $this->isVisible;
+        if ($this->entity instanceof Post) {
+            return $this->entity->getTitle() !== 'Foo';
+        }
+
+        return true;
     }
 
     public static function getEntities()
