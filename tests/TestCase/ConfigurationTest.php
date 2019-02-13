@@ -60,7 +60,19 @@ class ConfigurationTest extends BaseTest
                     "prefix" => "sf_",
                     "indices" => [
                         ['name' => 'posts', 'class' => 'App\Entity\Post', 'index_if' => null],
-                        ['name' => 'tags', 'class' => 'App\Entity\Tag', 'enable_serializer_groups' => true, 'index_if' => null],
+                        [
+                            'name' => 'tags',
+                            'class' => 'App\Entity\Tag',
+                            'enable_serializer_groups' => true,
+                            'index_if' => null,
+                        ],
+                        [
+                            'name' => 'comments',
+                            'class' => 'App\Entity\Comment',
+                            'enable_serializer_groups' => true,
+                            'serializer_groups' => ['foo', 'bar'],
+                            'index_if' => null,
+                        ],
                     ],
                 ],[
                     "prefix" => "sf_",
@@ -73,11 +85,19 @@ class ConfigurationTest extends BaseTest
                         'posts' => [
                             'class' => 'App\Entity\Post',
                             'enable_serializer_groups' => false,
+                            'serializer_groups' => ['searchable'],
                             'index_if' => null,
                         ],
                         'tags' => [
                             'class' => 'App\Entity\Tag',
                             'enable_serializer_groups' => true,
+                            'serializer_groups' => ['searchable'],
+                            'index_if' => null,
+                        ],
+                        'comments' => [
+                            'class' => 'App\Entity\Comment',
+                            'enable_serializer_groups' => true,
+                            'serializer_groups' => ['foo', 'bar'],
                             'index_if' => null,
                         ],
                     ],

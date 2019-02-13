@@ -20,6 +20,10 @@ class IndexManager implements IndexManagerInterface
     private $aggregators;
     private $entitiesAggregators;
     private $classToIndexMapping;
+
+    /**
+     * @var array<string, string[]> Maps indexed classes to their groups (if configured for the index)
+     */
     private $classToSerializerGroupMapping;
     private $indexIfMapping;
     private $normalizer;
@@ -176,8 +180,17 @@ class IndexManager implements IndexManagerInterface
         return true;
     }
 
-    private function canUseSerializerGroup($className)
+    /**
+     * @param string $className
+     *
+     * @return string[]|null List of groups or null for entity with groups disabled
+     */
+    private function getSerializerGroup($className)
     {
+        if (!isset($this->classToSerializerGroupMapping[$className])) {
+            return null;
+        }
+
         return $this->classToSerializerGroupMapping[$className];
     }
 
@@ -240,7 +253,9 @@ class IndexManager implements IndexManagerInterface
     {
         $mapping = [];
         foreach ($this->configuration['indices'] as $indexDetails) {
-            $mapping[$indexDetails['class']] = $indexDetails['enable_serializer_groups'];
+            if ($indexDetails['enable_serializer_groups']) {
+                $mapping[$indexDetails['class']] = $indexDetails['serializer_groups'];
+            }
         }
 
         $this->classToSerializerGroupMapping = $mapping;
@@ -271,13 +286,16 @@ class IndexManager implements IndexManagerInterface
             $searchableEntitiesChunk = [];
             foreach ($chunk as $entity) {
                 $entityClassName = ClassUtils::getClass($entity);
+                $groups = $this->getSerializerGroup($entityClassName);
 
                 $searchableEntitiesChunk[] = new SearchableEntity(
                     $this->getFullIndexName($entityClassName),
                     $entity,
                     $objectManager->getClassMetadata($entityClassName),
                     $this->normalizer,
-                    ['useSerializerGroup' => $this->canUseSerializerGroup($entityClassName)]
+                    $groups === null
+                        ? ['useSerializerGroup' => false]
+                        : ['useSerializerGroup' => true, 'serializerGroups' => $groups]
                 );
             }
 

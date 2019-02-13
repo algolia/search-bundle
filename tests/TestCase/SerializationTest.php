@@ -6,6 +6,7 @@ use Algolia\SearchBundle\BaseTest;
 use Algolia\SearchBundle\Searchable;
 use Algolia\SearchBundle\SearchableEntity;
 use Algolia\SearchBundle\TestApp\Entity\Comment;
+use Algolia\SearchBundle\TestApp\Entity\Image;
 use Algolia\SearchBundle\TestApp\Entity\Post;
 use Algolia\SearchBundle\TestApp\Entity\Tag;
 use Algolia\SearchBundle\Normalizer\CommentNormalizer;
@@ -70,8 +71,9 @@ class SerializationTest extends BaseTest
                 [
                     "content" => "a great comment",
                     "post_title" => "a simple post",
+                    "original_class" => \md5(Post::class)
                 ]
-            ],
+            ]
         ];
 
         $this->assertEquals($expected, $searchablePost->getSearchableArray());
@@ -112,6 +114,69 @@ class SerializationTest extends BaseTest
         ];
 
         $this->assertEquals($expected, $searchablePost->getSearchableArray());
+    }
+
+    public function annotatedEntityContextProvider()
+    {
+        return [
+            [
+                ['useSerializerGroup' => false], //Grouping disabled -> all properties will be serialized
+                ['id' => 42, 'url' => 'http://www.example.com', 'customVirtualProperty' => 'here']
+            ],
+            [
+                //As in Symfony Serializer empty groups array will return no result
+                ['useSerializerGroup' => true, 'serializerGroups' => []],
+                []
+            ],
+            [
+                ['useSerializerGroup' => true], //Ensure legacy method still works
+                ['id' => 42]
+            ],
+            [
+                //This should work exactly like legacy above
+                ['useSerializerGroup' => true, 'serializerGroups' => ['searchable']],
+                ['id' => 42]
+            ],
+
+            [
+                ['useSerializerGroup' => true, 'serializerGroups' => ['unknownGroup']],
+                []
+            ],
+            [
+                ['useSerializerGroup' => true, 'serializerGroups' => ['searchableCustom']],
+                ['customVirtualProperty' => 'here']
+            ],
+            [
+                ['useSerializerGroup' => true, 'serializerGroups' => ['searchable', 'searchableCustom']],
+                ['id' => 42, 'customVirtualProperty' => 'here']
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider annotatedEntityContextProvider
+     */
+    public function testEntityWithCustomSerializationGroupsToSearchableArray($extra, $expectedOutput)
+    {
+        $image = new Image(
+            [
+                'id' => 42,
+                'url' => 'http://www.example.com',
+            ]
+        );
+        $postMeta = $this->get('doctrine')
+                         ->getManager()
+                         ->getClassMetadata(Image::class);
+
+        $searchablePost = new SearchableEntity(
+            'images',
+            $image,
+            $postMeta,
+            $this->get('serializer'),
+            $extra
+        );
+
+        $this->assertEquals($expectedOutput, $searchablePost->getSearchableArray());
     }
 
     public function testNormalizableEntityToSearchableArray()
@@ -163,6 +228,7 @@ class SerializationTest extends BaseTest
         $expected = [
             "content" => "hey, this is a comment",
             "post_title" => "Another super post",
+            "original_class" => \md5(Comment::class)
         ];
 
         $this->assertEquals($expected, $searchableComment->getSearchableArray());

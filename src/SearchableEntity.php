@@ -2,6 +2,7 @@
 
 namespace Algolia\SearchBundle;
 
+use Doctrine\ORM\Mapping\ClassMetadata;
 use JMS\Serializer\ArrayTransformerInterface;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
@@ -10,8 +11,21 @@ class SearchableEntity implements SearchableEntityInterface
 {
     protected $indexName;
     protected $entity;
+
+    /**
+     * @var ClassMetadata
+     */
     protected $entityMetadata;
-    protected $useSerializerGroups;
+
+    /**
+     * @var string[] List of groups to use during serialization
+     */
+    protected $serializerGroups = [Searchable::NORMALIZATION_GROUP];
+
+    /**
+     * @var bool
+     */
+    protected $useSerializerGroups = false;
 
     private $id;
     private $normalizer;
@@ -22,7 +36,14 @@ class SearchableEntity implements SearchableEntityInterface
         $this->entity              = $entity;
         $this->entityMetadata      = $entityMetadata;
         $this->normalizer          = $normalizer;
-        $this->useSerializerGroups = isset($extra['useSerializerGroup']) && $extra['useSerializerGroup'];
+
+        if (isset($extra['useSerializerGroup']) && $extra['useSerializerGroup']) {
+            $this->useSerializerGroups = true;
+        }
+
+        if (isset($extra['serializerGroups']) && \is_array($extra['serializerGroups'])) {
+            $this->serializerGroups = $extra['serializerGroups'];
+        }
 
         $this->setId();
     }
@@ -35,11 +56,12 @@ class SearchableEntity implements SearchableEntityInterface
     public function getSearchableArray()
     {
         $context = [
+            'rootEntity'    => $this->entityMetadata->name,
             'fieldsMapping' => $this->entityMetadata->fieldMappings,
         ];
 
         if ($this->useSerializerGroups) {
-            $context['groups'] = [Searchable::NORMALIZATION_GROUP];
+            $context['groups'] = $this->serializerGroups;
         }
 
         if ($this->normalizer instanceof NormalizerInterface) {

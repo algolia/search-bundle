@@ -4,6 +4,14 @@ CHANGELOG
 UNRELEASED
 ----------
 
+* Feature: Custom Serialization Groups & Access To Root Entity Class On Normalization - PR [#287](https://github.com/algolia/search-bundle/pull/287)
+
+    The feature adds new `rootEntity` to normalization context, which allows distinguishing which index is processed
+    in a custom normalizer. In addition now it is possible to specify custom normalization groups (by default only
+    `searchable` group is used).  
+    In order to use custom serialization groups the `enable_serializer_groups` must be enabled.
+
+
 3.4.0
 ----------
 

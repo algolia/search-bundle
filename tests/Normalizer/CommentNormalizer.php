@@ -10,6 +10,7 @@ class CommentNormalizer implements NormalizerInterface
     public function normalize($object, $format = null, array $context = array())
     {
         return [
+            'original_class' => \md5($context['rootEntity']), //prevent skewing results with "TestApp"
             'content' => $object->getContent(),
             'post_title' => $object->getPost()->getTitle(),
         ];
