@@ -88,6 +88,6 @@ abstract class Aggregator implements NormalizableInterface
      */
     public function normalize(NormalizerInterface $normalizer, $format = null, array $context = [])
     {
-        return array_merge(['objectID' => $this->objectID], $normalizer->normalize($this->entity));
+        return array_merge(['objectID' => $this->objectID], $normalizer->normalize($this->entity, $format, $context));
     }
 }
