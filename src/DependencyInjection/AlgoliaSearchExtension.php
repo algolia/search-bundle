@@ -57,7 +57,7 @@ class AlgoliaSearchExtension extends Extension
             [
                 new Reference($config['serializer']),
                 new Reference('search.engine'),
-                $config
+                $config,
             ]
         ))->setPublic(true);
 
@@ -65,7 +65,7 @@ class AlgoliaSearchExtension extends Extension
             AlgoliaSettingsManager::class,
             [
                 new Reference('algolia_client'),
-                $config
+                $config,
             ]
         ))->setPublic(true);
 
