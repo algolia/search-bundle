@@ -1230,7 +1230,7 @@ namespace App\Engine;
 
 use Algolia\SearchBundle\Settings\SettingsManagerInterface;
 
-class CustomSettingsManager implements EngineInterface
+class CustomSettingsManager implements SettingsManagerInterface
 {
 
     public function backup(array $params)
