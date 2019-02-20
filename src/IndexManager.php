@@ -151,7 +151,7 @@ class IndexManager implements IndexManagerInterface
             $nbResults = $this->configuration['nbResults'];
         }
 
-        return $this->engine->search($query, $this->getFullIndexName($className), $page,  $nbResults, $parameters);
+        return $this->engine->search($query, $this->getFullIndexName($className), $page, $nbResults, $parameters);
     }
 
     public function count($query, $className, array $parameters = [])
@@ -210,7 +210,6 @@ class IndexManager implements IndexManagerInterface
         foreach ($this->configuration['indices'] as $name => $index) {
             if (is_subclass_of($index['class'], Aggregator::class)) {
                 foreach ($index['class']::getEntities() as $entityClass) {
-
                     if (! isset($this->entitiesAggregators[$entityClass])) {
                         $this->entitiesAggregators[$entityClass] = [];
                     }

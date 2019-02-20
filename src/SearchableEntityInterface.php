@@ -2,7 +2,6 @@
 
 namespace Algolia\SearchBundle;
 
-
 interface SearchableEntityInterface
 {
     public function getIndexName();

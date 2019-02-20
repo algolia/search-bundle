@@ -2,7 +2,6 @@
 
 namespace Algolia\SearchBundle;
 
-
 use Doctrine\Common\Persistence\ObjectManager;
 
 interface IndexManagerInterface
