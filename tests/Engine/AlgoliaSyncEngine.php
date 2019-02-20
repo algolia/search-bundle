@@ -2,7 +2,6 @@
 
 namespace Algolia\SearchBundle\Engine;
 
-
 class AlgoliaSyncEngine extends AlgoliaEngine
 {
     public function add($searchableEntities)

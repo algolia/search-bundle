@@ -2,10 +2,8 @@
 
 namespace Algolia\SearchBundle\Engine;
 
-
 class NullEngine implements EngineInterface
 {
-
     public function add($searchableEntities)
     {
         //

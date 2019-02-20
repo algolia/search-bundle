@@ -54,7 +54,6 @@ class AlgoliaSettingsManager implements SettingsManagerInterface
 
                 $output[] = "Pushed settings for <info>$indexName</info>";
             }
-
         }
 
         return $output;
