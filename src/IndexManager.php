@@ -123,6 +123,7 @@ class IndexManager implements IndexManagerInterface
 
         $results = [];
 
+        $objectsByEntityClass = [];
         foreach ($ids as $objectID) {
             if (in_array($className, $this->aggregators, true)) {
                 $entityClass = $className::getEntityClassFromObjectID($objectID);
@@ -132,12 +133,18 @@ class IndexManager implements IndexManagerInterface
                 $entityClass = $className;
             }
 
-            $repo = $objectManager->getRepository($entityClass);
-            $entity = $repo->findOneBy(['id' => $id]);
-
-            if ($entity !== null) {
-                $results[] = $entity;
+            if (!array_key_exists($entityClass, $objectsByEntityClass)) {
+                $objectsByEntityClass[$entityClass] = [];
             }
+
+            $objectsByEntityClass[$entityClass][] = $id;
+        }
+
+        foreach ($objectsByEntityClass as $entityClass => $ids) {
+            $repo = $objectManager->getRepository($entityClass);
+            $entities = $repo->findById($ids);
+
+            $results = array_merge($results, $entities);
         }
 
         return $results;
@@ -151,7 +158,7 @@ class IndexManager implements IndexManagerInterface
             $nbResults = $this->configuration['nbResults'];
         }
 
-        return $this->engine->search($query, $this->getFullIndexName($className), $page, $nbResults, $parameters);
+        return $this->engine->search($query, $this->getFullIndexName($className), $page,  $nbResults, $parameters);
     }
 
     public function count($query, $className, array $parameters = [])
@@ -210,6 +217,7 @@ class IndexManager implements IndexManagerInterface
         foreach ($this->configuration['indices'] as $name => $index) {
             if (is_subclass_of($index['class'], Aggregator::class)) {
                 foreach ($index['class']::getEntities() as $entityClass) {
+
                     if (! isset($this->entitiesAggregators[$entityClass])) {
                         $this->entitiesAggregators[$entityClass] = [];
                     }
