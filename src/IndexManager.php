@@ -146,8 +146,13 @@ class IndexManager implements IndexManagerInterface
 
             $results = array_merge($results, $entities);
         }
+        
+        $entities = [];
+        foreach ($results as $entity) {
+            $entities[$entity->getId()] = $entity;
+        }
 
-        return $results;
+        return array_values(array_replace(array_flip($ids), $entities));
     }
 
     public function rawSearch($query, $className, $page = 1, $nbResults = null, array $parameters = [])
