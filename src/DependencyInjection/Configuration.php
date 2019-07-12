@@ -2,6 +2,7 @@
 
 namespace Algolia\SearchBundle\DependencyInjection;
 
+use Algolia\SearchBundle\Searchable;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use function method_exists;
@@ -50,14 +51,32 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('indices')
                     ->useAttributeAsKey('name')
                     ->arrayPrototype()
+                        ->beforeNormalization()
+                            ->ifTrue(function($v) {
+                                return !empty($v['serializer_groups']) &&
+                                       (!isset($v['enable_serializer_groups']) || !$v['enable_serializer_groups']);
+                            })
+                            ->thenInvalid('In order to specify "serializer_groups" you need to enable "enable_serializer_groups"')
+                        ->end()
                         ->children()
                             ->scalarNode('class')
                                 ->isRequired()
                                 ->cannotBeEmpty()
                             ->end()
                             ->booleanNode('enable_serializer_groups')
-                                ->info('When set to true, it will call normalize method with an extra groups parameter "groups" => [Searchable::NORMALIZATION_GROUP]')
+                                ->info(
+                                    'When set to true, it will call normalize method with an extra groups ' .
+                                    'defined in "serializer_groups" (Searchable::NORMALIZATION_GROUP by default)'
+                                )
                                 ->defaultFalse()
+                            ->end()
+                            ->arrayNode('serializer_groups')
+                                ->info('List of serializer groups to use while serializing. This option requires "enable_serializer_groups" set to true.')
+                                ->beforeNormalization()
+                                    ->castToArray()
+                                ->end()
+                                ->scalarPrototype()->end()
+                                ->defaultValue([Searchable::NORMALIZATION_GROUP])
                             ->end()
                             ->scalarNode('index_if')
                                 ->info('Property accessor path (like method or property name) used to decide if an entry should be indexed.')
