@@ -169,4 +169,45 @@ class IndexManagerTest extends BaseTest
         // The content aggregator expects 3 ( not 4, because of the index_if condition ).
         $this->assertEquals(3, $this->indexManager->count('', ContentAggregator::class));
     }
+
+    public function testIndexOversizedEntityData()
+    {
+        $this->expectException('Exception');
+        $this->expectExceptionMessageRegExp('/objectID=10/');
+        $this->expectExceptionMessageRegExp('/Object overview/');
+        $om = $this->get('doctrine')->getManager();
+
+        $posts = [];
+        for ($i = 0; $i < 3; $i++) {
+            $posts[] = $this->createPost($i);
+        }
+
+        $post = $this->createPost(10);
+        $post->setTitle(str_repeat('Foo',10000));
+        $posts[] = $post;
+
+        $this->indexManager->index($posts, $om);
+    }
+
+    /**
+     * @expectedException \Exception
+     */
+    public function testIndexOversizedAggregatorData()
+    {
+        $this->expectException('Exception');
+        $this->expectExceptionMessageRegExp('/objectID=Algolia\SearchBundle\TestApp\Entity\Image::1/');
+        $this->expectExceptionMessageRegExp('/Object overview/');
+        $om = $this->get('doctrine')->getManager();
+
+        $posts = [];
+        for ($i = 0; $i < 3; $i++) {
+            $posts[] = $this->createPost($i);
+        }
+
+        $comment = $this->createComment(1);
+        $image   = $this->createImage(1);
+        $image->setUrl(str_repeat('Foo',10000));
+
+        $this->indexManager->index(array_merge($posts, [$comment, $image]), $om);
+    }
 }
