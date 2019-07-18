@@ -43,6 +43,11 @@ abstract class Aggregator implements NormalizableInterface
         $this->objectID = get_class($this->entity).'::'.reset($entityIdentifierValues);
     }
 
+    public function getObjectID()
+    {
+        return $this->objectID;
+    }
+
     /**
      * Returns the entities class names that should be aggregated.
      *

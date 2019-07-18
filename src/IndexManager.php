@@ -78,9 +78,15 @@ class IndexManager implements IndexManagerInterface
             $this->remove($entitiesToBeRemoved, $objectManager);
         }
 
-        return $this->forEachChunk($objectManager, $entitiesToBeIndexed, function ($chunk) {
-            return $this->engine->update($chunk);
-        });
+        try {
+            return $this->forEachChunk($objectManager, $entitiesToBeIndexed, function ($chunk) {
+                return $this->engine->update($chunk);
+            });
+        } catch (\Exception $e) {
+            $message = $this->formatIndexingException($e, $entitiesToBeIndexed);
+
+            throw new \Exception($message);
+        }
     }
 
     public function remove($entities, ObjectManager $objectManager)
@@ -334,5 +340,36 @@ class IndexManager implements IndexManagerInterface
     private function removePrefixFromIndexName($indexName)
     {
         return preg_replace('/^'.preg_quote($this->configuration['prefix'], '/').'/', '', $indexName);
+    }
+
+    private function formatIndexingException($exception, $entitiesToBeIndexed)
+    {
+        // Retrieve the objectID if returned by the API
+        preg_match('/objectID=(.*?)\sis\stoo\sbig/', $exception->getMessage(), $matches);
+
+        if (count($matches) === 0) {
+            return $exception->getMessage();
+        }
+
+        $objectId = $matches[1];
+        $entityId = null;
+        $faultyEntity = null;
+        $detailedInfos = '';
+        foreach ($entitiesToBeIndexed as $entityToBeIndexed) {
+            if (get_parent_class($entityToBeIndexed) === Aggregator::class) {
+                $entityId = $entityToBeIndexed->getObjectID();
+            } else {
+                $entityId = (string) $entityToBeIndexed->getId();
+            }
+
+            if ($entityId === $objectId) {
+                $faultyEntity = $this->normalizer->serialize($entityToBeIndexed, 'json');
+                $truncatedEntity = strlen($faultyEntity) > 300 ?
+                    substr($faultyEntity, 0, 300) . '...' : $faultyEntity;
+                $detailedInfos = "\nObject overview: " . $truncatedEntity;
+            }
+        }
+
+        return $exception->getMessage() . $detailedInfos;
     }
 }
