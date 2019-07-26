@@ -14,7 +14,7 @@ class AlgoliaSyncEngine extends AlgoliaEngine
         $batch = $this->doUpdate($searchableEntities);
 
         foreach ($batch as $indexName => $response) {
-            $this->algolia->initIndex($indexName)->waitTask($response['taskID']);
+            $response->wait();
         }
 
         return $this->formatIndexingResponse($batch);
@@ -25,7 +25,7 @@ class AlgoliaSyncEngine extends AlgoliaEngine
         $batch = $this->doRemove($searchableEntities);
 
         foreach ($batch as $indexName => $response) {
-            $this->algolia->initIndex($indexName)->waitTask($response['taskID']);
+            $response->wait();
         }
 
         return $this->formatIndexingResponse($batch);
@@ -37,7 +37,7 @@ class AlgoliaSyncEngine extends AlgoliaEngine
             $batch = $this->doClear($indexName);
 
             foreach ($batch as $indexName => $response) {
-                $this->algolia->initIndex($indexName)->waitTask($response['taskID']);
+                $response->wait();
             }
         } catch (\Exception $e) {
             return false;
@@ -52,7 +52,7 @@ class AlgoliaSyncEngine extends AlgoliaEngine
             $batch = $this->doDelete($indexName);
 
             foreach ($batch as $indexName => $response) {
-                $this->algolia->initIndex($indexName)->waitTask($response['taskID']);
+                $response->wait();
             }
         } catch (\Exception $e) {
             return false;

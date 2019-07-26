@@ -3,7 +3,7 @@
 namespace Algolia\SearchBundle\Engine;
 
 use Algolia\SearchBundle\SearchableEntityInterface;
-use AlgoliaSearch\Client;
+use Algolia\AlgoliaSearch\SearchClient as Client;
 
 class AlgoliaEngine implements EngineInterface
 {
@@ -56,7 +56,7 @@ class AlgoliaEngine implements EngineInterface
         return true;
     }
 
-    public function search($query, $indexName, $page = 1, $nbResults = null, array $parameters = [])
+    public function search($query, $indexName, $page = 1, $nbResults = 20, array $parameters = [])
     {
         $params = array_merge($parameters, [
             'hitsPerPage' => $nbResults,
@@ -66,7 +66,7 @@ class AlgoliaEngine implements EngineInterface
         return $this->algolia->initIndex($indexName)->search($query, $params);
     }
 
-    public function searchIds($query, $indexName, $page = 1, $nbResults = null, array $parameters = [])
+    public function searchIds($query, $indexName, $page = 1, $nbResults = 20, array $parameters = [])
     {
         $result = $this->search($query, $indexName, $page, $nbResults, $parameters);
 
@@ -113,7 +113,7 @@ class AlgoliaEngine implements EngineInterface
         foreach ($data as $indexName => $objects) {
             $result[$indexName] = $this->algolia
                 ->initIndex($indexName)
-                ->addObjects($objects);
+                ->saveObjects($objects);
         }
 
         return $result;
@@ -152,14 +152,14 @@ class AlgoliaEngine implements EngineInterface
     protected function doClear($indexName)
     {
         return [
-            $indexName => $this->algolia->initIndex($indexName)->clearIndex()
+            $indexName => $this->algolia->initIndex($indexName)->clearObjects()
         ];
     }
 
     protected function doDelete($indexName)
     {
         return [
-            $indexName => $this->algolia->deleteIndex($indexName)
+            $indexName => $this->algolia->initIndex($indexName)->delete()
         ];
     }
 
@@ -167,7 +167,7 @@ class AlgoliaEngine implements EngineInterface
     {
         $response = [];
         foreach ($batch as $indexName => $res) {
-            $response[$indexName] = count($res['objectIDs']);
+            $response[$indexName] = count($res->current()['objectIDs']);
         }
 
         return $response;

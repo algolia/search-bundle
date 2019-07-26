@@ -50,6 +50,6 @@ class ClientProxyTest extends BaseTest
      */
     public function testProxiedClientFailIfNoEnvVarsFound()
     {
-        $this->get('algolia.client')->listIndexes();
+        $this->get('algolia.client')->listIndices();
     }
 }
