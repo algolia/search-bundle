@@ -6,6 +6,8 @@ use Algolia\SearchBundle\TestApp\Entity\Comment;
 use Algolia\SearchBundle\TestApp\Entity\Image;
 use Algolia\SearchBundle\TestApp\Entity\Post;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 class BaseTest extends KernelTestCase
 {
@@ -85,5 +87,26 @@ class BaseTest extends KernelTestCase
     protected function get($id)
     {
         return self::$kernel->getContainer()->get($id);
+    }
+
+    protected function refreshDb($application)
+    {
+        $inputs = [
+            new ArrayInput([
+                'command' => 'doctrine:schema:drop',
+                '--full-database' => true,
+                '--force' => true,
+                '--quiet' => true,
+            ]),
+            new ArrayInput([
+                'command' => 'doctrine:schema:create',
+                '--quiet' => true,
+            ])
+        ];
+
+        $application->setAutoExit(false);
+        foreach ($inputs as $input) {
+            $application->run($input, new ConsoleOutput());
+        }
     }
 }

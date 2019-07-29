@@ -50,7 +50,7 @@ class AlgoliaSettingsManager implements SettingsManagerInterface
             if (is_readable($filename)) {
                 $index = $this->algolia->initIndex($indexName);
                 $settings = json_decode(file_get_contents($filename), true);
-                $index->setSettings($settings);
+                $index->setSettings($settings)->wait();
 
                 $output[] = "Pushed settings for <info>$indexName</info>";
             }

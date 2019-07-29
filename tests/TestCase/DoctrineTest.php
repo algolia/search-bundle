@@ -20,7 +20,8 @@ class DoctrineTest extends BaseTest
     {
         parent::setUp();
 
-        $this->refreshDb();
+        $application = new Application(self::$kernel);
+        $this->refreshDb($application);
         $this->syncIndexManager  = $this->get('search.index_manager');
     }
 
@@ -60,6 +61,12 @@ class DoctrineTest extends BaseTest
             $this->assertInstanceOf(Post::class, $p);
         }
 
+        $postToUpdate = $posts[4];
+        $postToUpdate->setTitle('New Title');
+        $em->flush();
+        $posts = $this->syncIndexManager->search('', ContentAggregator::class, $em);
+        $this->assertEquals($posts[4]->getTitle(), 'New Title');
+
         $em->remove($posts[0]);
         $this->assertEquals(4, $this->syncIndexManager->count('', Post::class));
     }
@@ -78,27 +85,5 @@ class DoctrineTest extends BaseTest
 
         $this->syncIndexManager->index($tags[2]->setPublic(true), $em);
         $this->assertEquals(3, $this->syncIndexManager->count('', Tag::class));
-    }
-
-    private function refreshDb()
-    {
-        $inputs = [
-            new ArrayInput([
-                'command' => 'doctrine:schema:drop',
-                '--full-database' => true,
-                '--force' => true,
-                '--quiet' => true,
-            ]),
-            new ArrayInput([
-                'command' => 'doctrine:schema:create',
-                '--quiet' => true,
-            ])
-        ];
-
-        $app = new Application(self::$kernel);
-        $app->setAutoExit(false);
-        foreach ($inputs as $input) {
-            $app->run($input, new ConsoleOutput());
-        }
     }
 }
