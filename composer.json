@@ -17,6 +17,7 @@
         "php": "^5.6 || ^7.0",
         "algolia/algoliasearch-client-php": "^2.2",
         "doctrine/common": "^2.5",
+        "friendsofphp/php-cs-fixer": "^2.15",
         "symfony/filesystem": "^3.4.0 || ^4.0.0",
         "symfony/property-access": "^3.4.0 || ^4.0.0",
         "symfony/serializer": "^3.4.0 || ^4.0.0"
@@ -53,5 +54,17 @@
     },
     "config": {
         "sort-packages": true
+    },
+    "scripts": {
+        "phpunit": "phpunit --colors=always --verbose",
+        "php-cs-fixer": "php-cs-fixer fix -v --dry-run",
+        "quality": [
+            "@phpstan",
+            "@phpinsights"
+        ],
+        "test": [
+            "@php-cs-fixer",
+            "@phpunit"
+        ]
     }
 }
