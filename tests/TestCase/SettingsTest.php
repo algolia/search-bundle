@@ -21,7 +21,7 @@ class SettingsTest extends BaseTest
     {
         parent::setUp();
 
-        $this->client = $this->get('algolia.client');
+        $this->client = $this->get('search.client');
 
         $this->settingsManager = $this->get('search.settings_manager');
     }

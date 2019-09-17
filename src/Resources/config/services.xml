@@ -15,14 +15,14 @@
             <tag name="doctrine_mongodb.odm.event_subscriber" />
         </service>
 
-        <service id="algolia_client" class="Algolia\AlgoliaSearch\SearchClient" public="false" lazy="true">
+        <service id="search.client" class="Algolia\AlgoliaSearch\SearchClient" public="true" lazy="true">
             <factory class="Algolia\AlgoliaSearch\SearchClient" method="create" />
             <argument key="$appId">%env(ALGOLIA_APP_ID)%</argument>
             <argument key="$apiKey">%env(ALGOLIA_API_KEY)%</argument>
         </service>
 
         <service id="search.engine" class="Algolia\SearchBundle\Engine\AlgoliaEngine" public="true">
-            <argument type="service" id="algolia_client" />
+            <argument type="service" id="search.client" />
         </service>
 
         <service id="Algolia\SearchBundle\IndexManager" alias="search.index_manager"/>

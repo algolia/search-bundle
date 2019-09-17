@@ -64,7 +64,7 @@ class AlgoliaSearchExtension extends Extension
         $settingsManagerDefinition = (new Definition(
             AlgoliaSettingsManager::class,
             [
-                new Reference('algolia_client'),
+                new Reference('search.client'),
                 $config,
             ]
         ))->setPublic(true);

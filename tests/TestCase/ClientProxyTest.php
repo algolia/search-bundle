@@ -40,7 +40,7 @@ class ClientProxyTest extends BaseTest
 
     public function testClientIsProxied()
     {
-        $interfaces = class_implements($this->get('algolia.client'));
+        $interfaces = class_implements($this->get('search.client'));
 
         $this->assertTrue(in_array(ProxyInterface::class, $interfaces));
     }
@@ -50,6 +50,6 @@ class ClientProxyTest extends BaseTest
      */
     public function testProxiedClientFailIfNoEnvVarsFound()
     {
-        $this->get('algolia.client')->listIndices();
+        $this->get('search.client')->listIndices();
     }
 }

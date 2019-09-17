@@ -24,7 +24,7 @@ class CommandsTest extends BaseTest
     {
         parent::setUp();
         $this->indexManager = $this->get('search.index_manager');
-        $this->client       = $this->get('algolia.client');
+        $this->client       = $this->get('search.client');
         $this->om           = $this->get('doctrine')->getManager();
         $this->connection   = $this->get('doctrine')->getConnection();
         $this->platform     = $this->connection->getDatabasePlatform();
