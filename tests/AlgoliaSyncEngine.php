@@ -4,14 +4,14 @@ namespace Algolia\SearchBundle;
 
 class AlgoliaSyncEngine extends AlgoliaEngine
 {
-    public function add($searchableEntities)
+    public function add($searchableEntities, $requestOptions = [])
     {
-        return $this->update($searchableEntities);
+        return $this->update($searchableEntities, $requestOptions);
     }
 
-    public function update($searchableEntities)
+    public function update($searchableEntities, $requestOptions = [])
     {
-        $batch = $this->doUpdate($searchableEntities);
+        $batch = $this->doUpdate($searchableEntities, $requestOptions);
 
         foreach ($batch as $indexName => $response) {
             $response->wait();
@@ -20,9 +20,9 @@ class AlgoliaSyncEngine extends AlgoliaEngine
         return $this->formatIndexingResponse($batch);
     }
 
-    public function remove($searchableEntities)
+    public function remove($searchableEntities, $requestOptions = [])
     {
-        $batch = $this->doRemove($searchableEntities);
+        $batch = $this->doRemove($searchableEntities, $requestOptions);
 
         foreach ($batch as $indexName => $response) {
             $response->wait();
@@ -36,7 +36,7 @@ class AlgoliaSyncEngine extends AlgoliaEngine
         try {
             $batch = $this->doClear($indexName);
 
-            foreach ($batch as $indexName => $response) {
+            foreach ($batch as $name => $response) {
                 $response->wait();
             }
         } catch (\Exception $e) {
@@ -51,7 +51,7 @@ class AlgoliaSyncEngine extends AlgoliaEngine
         try {
             $batch = $this->doDelete($indexName);
 
-            foreach ($batch as $indexName => $response) {
+            foreach ($batch as $name => $response) {
                 $response->wait();
             }
         } catch (\Exception $e) {

@@ -25,26 +25,70 @@ class AlgoliaEngineTest extends BaseTest
         // Delete index in case there is already something
         $engine->delete($searchablePost->getIndexName());
 
-        // Indexing
+        // Indexing without requestOptions
         $result = $engine->add($searchablePost);
         $this->assertArrayHasKey($searchablePost->getIndexName(), $result);
         $this->assertEquals(1, $result[$searchablePost->getIndexName()]);
 
+        // Indexing with requestOptions
+        $result = $engine->add($searchablePost, [
+            'autoGenerateObjectIDIfNotExist' => true,
+        ]);
+        $this->assertArrayHasKey($searchablePost->getIndexName(), $result);
+        $this->assertEquals(1, $result[$searchablePost->getIndexName()]);
+
+        // Removing without requestOptions
         $result = $engine->remove($searchablePost);
         $this->assertArrayHasKey($searchablePost->getIndexName(), $result);
         $this->assertEquals(1, $result[$searchablePost->getIndexName()]);
 
+        // Removing with requestOptions
+        $result = $engine->remove($searchablePost, [
+            'X-Forwarded-For' => '0.0.0.0'
+        ]);
+        $this->assertArrayHasKey($searchablePost->getIndexName(), $result);
+        $this->assertEquals(1, $result[$searchablePost->getIndexName()]);
+
+        // Updating without requestOptions
         $result = $engine->update($searchablePost);
         $this->assertArrayHasKey($searchablePost->getIndexName(), $result);
         $this->assertEquals(1, $result[$searchablePost->getIndexName()]);
 
-        // Search
+        // Updating with requestOptions
+        $result = $engine->update($searchablePost, [
+            'createIfNotExists' => true,
+        ]);
+        $this->assertArrayHasKey($searchablePost->getIndexName(), $result);
+        $this->assertEquals(1, $result[$searchablePost->getIndexName()]);
+
+        // Search without requestOptions
         $result = $engine->search('query', $searchablePost->getIndexName());
         $this->assertArrayHasKey('hits', $result);
         $this->assertArrayHasKey('nbHits', $result);
         $this->assertArrayHasKey('page', $result);
 
+        // Search with requestOptions
+        $result = $engine->search('Test', $searchablePost->getIndexName(), 1, 20, [
+            'attributesToRetrieve' => [
+                'title',
+            ],
+        ]);
+        $this->assertArrayHasKey('hits', $result);
+        $this->assertArrayHasKey('nbHits', $result);
+        $this->assertArrayHasKey('page', $result);
+        $this->assertArrayHasKey('title', $result['hits'][0]);
+        $this->assertArrayNotHasKey('content', $result['hits'][0]);
+
+        // Search IDs without requestOptions
         $result = $engine->searchIds('This should not have results', $searchablePost->getIndexName());
+        $this->assertEmpty($result);
+
+        // Search IDs with requestOptions
+        $result = $engine->searchIds('This should not have results', $searchablePost->getIndexName(), 1, 20, [
+            'attributesToRetrieve' => [
+                'title',
+            ],
+        ]);
         $this->assertEmpty($result);
 
         $result = $engine->count('', $searchablePost->getIndexName());

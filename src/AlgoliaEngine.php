@@ -6,7 +6,7 @@ use Algolia\AlgoliaSearch\SearchClient as Client;
 
 class AlgoliaEngine
 {
-    /** @var Client Client */
+    /** @var Client */
     protected $algolia;
 
     public function __construct(Client $algolia)
@@ -14,21 +14,21 @@ class AlgoliaEngine
         $this->algolia = $algolia;
     }
 
-    public function add($searchableEntities)
+    public function add($searchableEntities, $requestOptions = [])
     {
-        return $this->update($searchableEntities);
+        return $this->update($searchableEntities, $requestOptions);
     }
 
-    public function update($searchableEntities)
+    public function update($searchableEntities, $requestOptions = [])
     {
-        $batch = $this->doUpdate($searchableEntities);
+        $batch = $this->doUpdate($searchableEntities, $requestOptions);
 
         return $this->formatIndexingResponse($batch);
     }
 
-    public function remove($searchableEntities)
+    public function remove($searchableEntities, $requestOptions = [])
     {
-        $batch = $this->doRemove($searchableEntities);
+        $batch = $this->doRemove($searchableEntities, $requestOptions);
 
         return $this->formatIndexingResponse($batch);
     }
@@ -55,36 +55,31 @@ class AlgoliaEngine
         return true;
     }
 
-    public function search($query, $indexName, $page = 1, $nbResults = 20, array $parameters = [])
+    public function search($query, $indexName, $page = 1, $nbResults = 20, $requestOptions = [])
     {
-        $params = array_merge($parameters, [
+        $requestOptions = array_merge($requestOptions, [
             'hitsPerPage' => $nbResults,
             'page'        => $page - 1,
         ]);
 
-        return $this->algolia->initIndex($indexName)->search($query, $params);
+        return $this->algolia->initIndex($indexName)->search($query, $requestOptions);
     }
 
-    public function searchIds($query, $indexName, $page = 1, $nbResults = 20, array $parameters = [])
+    public function searchIds($query, $indexName, $page = 1, $nbResults = 20, $requestOptions = [])
     {
-        $result = $this->search($query, $indexName, $page, $nbResults, $parameters);
+        $result = $this->search($query, $indexName, $page, $nbResults, $requestOptions);
 
         return array_column($result['hits'], 'objectID');
     }
 
-    public function count($query, $indexName /*, array $parameters = [] */)
+    public function count($query, $indexName, $requestOptions = [])
     {
-        $parameters = [];
-        if (3 === func_num_args() && is_array(func_get_arg(2))) {
-            $parameters = func_get_arg(2);
-        }
-
-        $results = $this->algolia->initIndex($indexName)->search($query, $parameters);
+        $results = $this->algolia->initIndex($indexName)->search($query, $requestOptions);
 
         return (int) $results['nbHits'];
     }
 
-    protected function doUpdate($searchableEntities)
+    protected function doUpdate($searchableEntities, $requestOptions = [])
     {
         if ($searchableEntities instanceof SearchableEntity) {
             $searchableEntities = [$searchableEntities];
@@ -112,13 +107,13 @@ class AlgoliaEngine
         foreach ($data as $indexName => $objects) {
             $result[$indexName] = $this->algolia
                 ->initIndex($indexName)
-                ->saveObjects($objects);
+                ->saveObjects($objects, $requestOptions);
         }
 
         return $result;
     }
 
-    protected function doRemove($searchableEntities)
+    protected function doRemove($searchableEntities, $requestOptions = [])
     {
         if ($searchableEntities instanceof SearchableEntity) {
             $searchableEntities = [$searchableEntities];
@@ -142,7 +137,7 @@ class AlgoliaEngine
         foreach ($data as $indexName => $objects) {
             $result[$indexName] = $this->algolia
                 ->initIndex($indexName)
-                ->deleteObjects($objects);
+                ->deleteObjects($objects, $requestOptions);
         }
 
         return $result;

@@ -56,7 +56,7 @@ class IndexManager
         return $this->configuration;
     }
 
-    public function index($entities, ObjectManager $objectManager)
+    public function index($entities, ObjectManager $objectManager, $requestOptions = [])
     {
         $entities = is_array($entities) ? $entities : [$entities];
         $entities = array_merge($entities, $this->getAggregatorsFromEntities($objectManager, $entities));
@@ -77,12 +77,12 @@ class IndexManager
             $this->remove($entitiesToBeRemoved, $objectManager);
         }
 
-        return $this->forEachChunk($objectManager, $entitiesToBeIndexed, function ($chunk) {
-            return $this->engine->update($chunk);
+        return $this->forEachChunk($objectManager, $entitiesToBeIndexed, function ($chunk) use ($requestOptions) {
+            return $this->engine->update($chunk, $requestOptions);
         });
     }
 
-    public function remove($entities, ObjectManager $objectManager)
+    public function remove($entities, ObjectManager $objectManager, $requestOptions = [])
     {
         $entities = is_array($entities) ? $entities : [$entities];
         $entities = array_merge($entities, $this->getAggregatorsFromEntities($objectManager, $entities));
@@ -91,8 +91,8 @@ class IndexManager
             return $this->isSearchable($entity);
         });
 
-        return $this->forEachChunk($objectManager, $entities, function ($chunk) {
-            return $this->engine->remove($chunk);
+        return $this->forEachChunk($objectManager, $entities, function ($chunk) use ($requestOptions) {
+            return $this->engine->remove($chunk, $requestOptions);
         });
     }
 
@@ -110,7 +110,7 @@ class IndexManager
         return $this->engine->delete($this->getFullIndexName($className));
     }
 
-    public function search($query, $className, ObjectManager $objectManager, $page = 1, $nbResults = null, array $parameters = [])
+    public function search($query, $className, ObjectManager $objectManager, $page = 1, $nbResults = null, $requestOptions = [])
     {
         $this->assertIsSearchable($className);
 
@@ -118,7 +118,7 @@ class IndexManager
             $nbResults = $this->configuration['nbResults'];
         }
 
-        $ids = $this->engine->searchIds($query, $this->getFullIndexName($className), $page, $nbResults, $parameters);
+        $ids = $this->engine->searchIds($query, $this->getFullIndexName($className), $page, $nbResults, $requestOptions);
 
         $results = [];
 
@@ -142,7 +142,7 @@ class IndexManager
         return $results;
     }
 
-    public function rawSearch($query, $className, $page = 1, $nbResults = null, array $parameters = [])
+    public function rawSearch($query, $className, $page = 1, $nbResults = null, $requestOptions = [])
     {
         $this->assertIsSearchable($className);
 
@@ -150,14 +150,14 @@ class IndexManager
             $nbResults = $this->configuration['nbResults'];
         }
 
-        return $this->engine->search($query, $this->getFullIndexName($className), $page, $nbResults, $parameters);
+        return $this->engine->search($query, $this->getFullIndexName($className), $page, $nbResults, $requestOptions);
     }
 
-    public function count($query, $className, array $parameters = [])
+    public function count($query, $className, $requestOptions = [])
     {
         $this->assertIsSearchable($className);
 
-        return $this->engine->count($query, $this->getFullIndexName($className), $parameters);
+        return $this->engine->count($query, $this->getFullIndexName($className), $requestOptions);
     }
 
     public function shouldBeIndexed($entity)
