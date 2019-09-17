@@ -6,7 +6,7 @@ use JMS\Serializer\ArrayTransformerInterface;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-class SearchableEntity implements SearchableEntityInterface
+class SearchableEntity
 {
     protected $indexName;
     protected $entity;

@@ -11,7 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 
 class DoctrineTest extends BaseTest
 {
-    /** @var \Algolia\SearchBundle\IndexManagerInterface */
+    /** @var \Algolia\SearchBundle\IndexManager */
     protected $syncIndexManager;
 
     public function setUp()

@@ -4,7 +4,7 @@ namespace Algolia\SearchBundle\TestCase;
 
 use Algolia\SearchBundle\BaseTest;
 use Algolia\SearchBundle\TestApp\Entity\Post;
-use Algolia\SearchBundle\Settings\SettingsManagerInterface;
+use Algolia\SearchBundle\Settings\AlgoliaSettingsManager;
 use Algolia\AlgoliaSearch\SearchClient as Client;
 
 class SettingsTest extends BaseTest
@@ -12,7 +12,7 @@ class SettingsTest extends BaseTest
     /** @var Client */
     private $client;
 
-    /** @var SettingsManagerInterface */
+    /** @var AlgoliaSettingsManager */
     private $settingsManager;
 
     private $settingsDir = __DIR__ . '/../cache/settings';

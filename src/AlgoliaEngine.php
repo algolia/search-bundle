@@ -1,11 +1,10 @@
 <?php
 
-namespace Algolia\SearchBundle\Engine;
+namespace Algolia\SearchBundle;
 
-use Algolia\SearchBundle\SearchableEntityInterface;
 use Algolia\AlgoliaSearch\SearchClient as Client;
 
-class AlgoliaEngine implements EngineInterface
+class AlgoliaEngine
 {
     /** @var Client Client */
     protected $algolia;
@@ -87,7 +86,7 @@ class AlgoliaEngine implements EngineInterface
 
     protected function doUpdate($searchableEntities)
     {
-        if ($searchableEntities instanceof SearchableEntityInterface) {
+        if ($searchableEntities instanceof SearchableEntity) {
             $searchableEntities = [$searchableEntities];
         }
 
@@ -121,7 +120,7 @@ class AlgoliaEngine implements EngineInterface
 
     protected function doRemove($searchableEntities)
     {
-        if ($searchableEntities instanceof SearchableEntityInterface) {
+        if ($searchableEntities instanceof SearchableEntity) {
             $searchableEntities = [$searchableEntities];
         }
 

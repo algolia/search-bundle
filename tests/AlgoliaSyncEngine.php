@@ -1,6 +1,6 @@
 <?php
 
-namespace Algolia\SearchBundle\Engine;
+namespace Algolia\SearchBundle;
 
 class AlgoliaSyncEngine extends AlgoliaEngine
 {

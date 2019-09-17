@@ -11,7 +11,7 @@ use Algolia\SearchBundle\TestApp\Entity\Post;
 
 class CommandsTest extends BaseTest
 {
-    /** @var \Algolia\SearchBundle\IndexManagerInterface */
+    /** @var \Algolia\SearchBundle\IndexManager */
     protected $indexManager;
     protected $client;
     protected $om;

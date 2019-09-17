@@ -2,7 +2,7 @@
 
 namespace Algolia\SearchBundle\Command;
 
-use Algolia\SearchBundle\IndexManagerInterface;
+use Algolia\SearchBundle\IndexManager;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -18,7 +18,7 @@ abstract class IndexCommand extends Command implements ContainerAwareInterface
 
     protected $indexManager;
 
-    public function __construct(IndexManagerInterface $indexManager)
+    public function __construct(IndexManager $indexManager)
     {
         $this->indexManager = $indexManager;
 

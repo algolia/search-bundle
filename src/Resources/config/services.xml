@@ -25,8 +25,8 @@
             <argument type="service" id="algolia_client" />
         </service>
 
-        <service id="Algolia\SearchBundle\IndexManagerInterface" alias="search.index_manager"/>
-        <service id="Algolia\SearchBundle\Settings\SettingsManagerInterface" alias="search.settings_manager"/>
+        <service id="Algolia\SearchBundle\IndexManager" alias="search.index_manager"/>
+        <service id="Algolia\SearchBundle\Settings\AlgoliaSettingsManager" alias="search.settings_manager"/>
 
         <!-- CustomNormalizer is not registered by framework-bundle -->
         <service id="custom_normalizer" class="Symfony\Component\Serializer\Normalizer\CustomNormalizer" public="false">

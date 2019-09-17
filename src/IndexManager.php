@@ -3,13 +3,12 @@
 namespace Algolia\SearchBundle;
 
 use Algolia\SearchBundle\Entity\Aggregator;
-use Algolia\SearchBundle\Engine\EngineInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\Util\ClassUtils;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
-class IndexManager implements IndexManagerInterface
+class IndexManager
 {
     protected $engine;
     protected $configuration;
@@ -24,7 +23,7 @@ class IndexManager implements IndexManagerInterface
     private $indexIfMapping;
     private $normalizer;
 
-    public function __construct($normalizer, EngineInterface $engine, array $configuration)
+    public function __construct($normalizer, AlgoliaEngine $engine, array $configuration)
     {
         $this->normalizer       = $normalizer;
         $this->engine           = $engine;

@@ -10,7 +10,7 @@ use Algolia\SearchBundle\TestApp\Entity\Image;
 
 class IndexManagerTest extends BaseTest
 {
-    /** @var \Algolia\SearchBundle\IndexManagerInterface */
+    /** @var \Algolia\SearchBundle\IndexManager */
     protected $indexManager;
 
     public function setUp()

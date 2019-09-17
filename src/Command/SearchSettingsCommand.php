@@ -2,7 +2,7 @@
 
 namespace Algolia\SearchBundle\Command;
 
-use Algolia\SearchBundle\Settings\SettingsManagerInterface;
+use Algolia\SearchBundle\Settings\AlgoliaSettingsManager;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -11,7 +11,7 @@ abstract class SearchSettingsCommand extends Command
 {
     protected $settingsManager;
 
-    public function __construct(SettingsManagerInterface $settingsManager)
+    public function __construct(AlgoliaSettingsManager $settingsManager)
     {
         $this->settingsManager = $settingsManager;
 
