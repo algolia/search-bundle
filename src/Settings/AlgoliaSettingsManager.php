@@ -13,21 +13,21 @@ class AlgoliaSettingsManager implements SettingsManagerInterface
     public function __construct(Client $algolia, array $config)
     {
         $this->algolia = $algolia;
-        $this->config = $config;
+        $this->config  = $config;
     }
 
     public function backup(array $params)
     {
         $indices = $this->getIndexNames($params['indices']);
-        $fs = new Filesystem();
-        $output = [];
+        $fs      = new Filesystem();
+        $output  = [];
 
         if (!$fs->exists($this->config['settingsDirectory'])) {
             $fs->mkdir($this->config['settingsDirectory']);
         }
 
         foreach ($indices as $indexName) {
-            $index = $this->algolia->initIndex($indexName);
+            $index    = $this->algolia->initIndex($indexName);
             $settings = $index->getSettings();
             $filename = $this->getFileName($indexName, 'settings');
 
@@ -42,13 +42,13 @@ class AlgoliaSettingsManager implements SettingsManagerInterface
     public function push(array $params)
     {
         $indices = $this->getIndexNames($params['indices']);
-        $output = [];
+        $output  = [];
 
         foreach ($indices as $indexName) {
             $filename = $this->getFileName($indexName, 'settings');
 
             if (is_readable($filename)) {
-                $index = $this->algolia->initIndex($indexName);
+                $index    = $this->algolia->initIndex($indexName);
                 $settings = json_decode(file_get_contents($filename), true);
                 $index->setSettings($settings)->wait();
 
@@ -66,7 +66,7 @@ class AlgoliaSettingsManager implements SettingsManagerInterface
         }
 
         foreach ($indices as &$name) {
-            $name = $this->config['prefix'].$name;
+            $name = $this->config['prefix'] . $name;
         }
 
         return $indices;
@@ -81,6 +81,6 @@ class AlgoliaSettingsManager implements SettingsManagerInterface
 
     private function removePrefixFromIndexName($indexName)
     {
-        return preg_replace('/^'.preg_quote($this->config['prefix'], '/').'/', '', $indexName);
+        return preg_replace('/^' . preg_quote($this->config['prefix'], '/') . '/', '', $indexName);
     }
 }

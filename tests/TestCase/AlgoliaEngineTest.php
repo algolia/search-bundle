@@ -7,17 +7,15 @@ use Algolia\SearchBundle\BaseTest;
 class AlgoliaEngineTest extends BaseTest
 {
     /**
-     *
      * Doctrine is currently splitting the common package
      * into 3 separate ones, some deprecation notice appeared
      * until we can migrate doctrine/common and keep BC
      * with PHP 5.6 and Symfony 3.4, we allow deprecation
-     * notice for this test
+     * notice for this test.
      *
      * https://github.com/doctrine/common/issues/826
      *
      * @group legacy
-     *
      */
     public function testIndexing()
     {

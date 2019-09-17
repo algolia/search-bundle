@@ -41,13 +41,12 @@ class SearchImportCommand extends IndexCommand
                 InputArgument::IS_ARRAY | InputArgument::OPTIONAL,
                 'Check your engine documentation for available options'
             );
-        ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $entitiesToIndex = $this->getEntitiesFromArgs($input, $output);
-        $config = $this->indexManager->getConfiguration();
+        $config          = $this->indexManager->getConfiguration();
 
         foreach ($entitiesToIndex as $key => $entityClassName) {
             if (is_subclass_of($entityClassName, Aggregator::class)) {
@@ -59,7 +58,7 @@ class SearchImportCommand extends IndexCommand
         $entitiesToIndex = array_unique($entitiesToIndex);
 
         foreach ($entitiesToIndex as $entityClassName) {
-            $manager = $this->getManagerRegistry()->getManagerForClass($entityClassName);
+            $manager    = $this->getManagerRegistry()->getManagerForClass($entityClassName);
             $repository = $manager->getRepository($entityClassName);
 
             $page = 0;
@@ -87,7 +86,6 @@ class SearchImportCommand extends IndexCommand
 
             $repository->clear();
         }
-
 
         $output->writeln('<info>Done!</info>');
     }

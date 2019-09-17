@@ -20,7 +20,7 @@ class BaseTest extends KernelTestCase
          * env rather than the XML config
          */
         if (class_exists('\PHPUnit_Runner_Version')) {
-            $_ENV['ALGOLIA_PREFIX'] = getenv('ALGOLIA_PREFIX');
+            $_ENV['ALGOLIA_PREFIX']    = getenv('ALGOLIA_PREFIX');
             $_ENV['TRAVIS_JOB_NUMBER'] = getenv('TRAVIS_JOB_NUMBER');
         }
     }
@@ -32,7 +32,7 @@ class BaseTest extends KernelTestCase
 
     protected function createPost($id = null)
     {
-        $post = new Post;
+        $post = new Post();
         $post->setTitle('Test');
         $post->setContent('Test content');
 
@@ -48,7 +48,7 @@ class BaseTest extends KernelTestCase
         $post = $this->createPost(rand(100, 300));
 
         return new SearchableEntity(
-            $this->getPrefix().'posts',
+            $this->getPrefix() . 'posts',
             $post,
             $this->get('doctrine')->getManager()->getClassMetadata(Post::class),
             $this->get('serializer')
@@ -57,7 +57,7 @@ class BaseTest extends KernelTestCase
 
     protected function createComment($id = null)
     {
-        $comment = new Comment;
+        $comment = new Comment();
         $comment->setContent('Comment content');
         $comment->setPost(new Post(['title' => 'What a post!']));
 
@@ -70,7 +70,7 @@ class BaseTest extends KernelTestCase
 
     protected function createImage($id = null)
     {
-        $comment = new Image;
+        $comment = new Image();
 
         if (!is_null($id)) {
             $comment->setId($id);
@@ -93,15 +93,15 @@ class BaseTest extends KernelTestCase
     {
         $inputs = [
             new ArrayInput([
-                'command' => 'doctrine:schema:drop',
+                'command'         => 'doctrine:schema:drop',
                 '--full-database' => true,
-                '--force' => true,
-                '--quiet' => true,
+                '--force'         => true,
+                '--quiet'         => true,
             ]),
             new ArrayInput([
                 'command' => 'doctrine:schema:create',
                 '--quiet' => true,
-            ])
+            ]),
         ];
 
         $application->setAutoExit(false);

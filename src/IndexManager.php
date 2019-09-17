@@ -26,10 +26,10 @@ class IndexManager implements IndexManagerInterface
 
     public function __construct($normalizer, EngineInterface $engine, array $configuration)
     {
-        $this->normalizer          = $normalizer;
-        $this->engine              = $engine;
-        $this->configuration       = $configuration;
-        $this->propertyAccessor    = PropertyAccess::createPropertyAccessor();
+        $this->normalizer       = $normalizer;
+        $this->engine           = $engine;
+        $this->configuration    = $configuration;
+        $this->propertyAccessor = PropertyAccess::createPropertyAccessor();
 
         $this->setSearchableEntities();
         $this->setAggregatorsAndEntitiesAggregators();
@@ -68,13 +68,13 @@ class IndexManager implements IndexManagerInterface
 
         $entitiesToBeRemoved = [];
         foreach ($entitiesToBeIndexed as $key => $entity) {
-            if (! $this->shouldBeIndexed($entity)) {
+            if (!$this->shouldBeIndexed($entity)) {
                 unset($entitiesToBeIndexed[$key]);
                 $entitiesToBeRemoved[] = $entity;
             }
         }
 
-        if (! empty($entitiesToBeRemoved)) {
+        if (!empty($entitiesToBeRemoved)) {
             $this->remove($entitiesToBeRemoved, $objectManager);
         }
 
@@ -126,13 +126,13 @@ class IndexManager implements IndexManagerInterface
         foreach ($ids as $objectID) {
             if (in_array($className, $this->aggregators, true)) {
                 $entityClass = $className::getEntityClassFromObjectID($objectID);
-                $id = $className::getEntityIdFromObjectID($objectID);
+                $id          = $className::getEntityIdFromObjectID($objectID);
             } else {
-                $id = $objectID;
+                $id          = $objectID;
                 $entityClass = $className;
             }
 
-            $repo = $objectManager->getRepository($entityClass);
+            $repo   = $objectManager->getRepository($entityClass);
             $entity = $repo->findOneBy(['id' => $id]);
 
             if ($entity !== null) {
@@ -205,17 +205,17 @@ class IndexManager implements IndexManagerInterface
     private function setAggregatorsAndEntitiesAggregators()
     {
         $this->entitiesAggregators = [];
-        $this->aggregators = [];
+        $this->aggregators         = [];
 
         foreach ($this->configuration['indices'] as $name => $index) {
             if (is_subclass_of($index['class'], Aggregator::class)) {
                 foreach ($index['class']::getEntities() as $entityClass) {
-                    if (! isset($this->entitiesAggregators[$entityClass])) {
+                    if (!isset($this->entitiesAggregators[$entityClass])) {
                         $this->entitiesAggregators[$entityClass] = [];
                     }
 
                     $this->entitiesAggregators[$entityClass][] = $index['class'];
-                    $this->aggregators[] = $index['class'];
+                    $this->aggregators[]                       = $index['class'];
                 }
             }
         }
@@ -225,13 +225,13 @@ class IndexManager implements IndexManagerInterface
 
     public function getFullIndexName($className)
     {
-        return $this->configuration['prefix'].$this->classToIndexMapping[$className];
+        return $this->configuration['prefix'] . $this->classToIndexMapping[$className];
     }
 
     private function assertIsSearchable($className)
     {
         if (!$this->isSearchable($className)) {
-            throw new Exception('Class '.$className.' is not searchable.');
+            throw new Exception('Class ' . $className . ' is not searchable.');
         }
     }
 
@@ -258,9 +258,10 @@ class IndexManager implements IndexManagerInterface
     /**
      * For each chunk performs the provided operation.
      *
-     * @param  \Doctrine\Common\Persistence\ObjectManager $objectManager
-     * @param  array $entities
-     * @param  callable $operation
+     * @param \Doctrine\Common\Persistence\ObjectManager $objectManager
+     * @param array                                      $entities
+     * @param callable                                   $operation
+     *
      * @return array
      */
     private function forEachChunk(ObjectManager $objectManager, array $entities, $operation)
@@ -289,8 +290,9 @@ class IndexManager implements IndexManagerInterface
     /**
      * Returns the aggregators instances of the provided entities.
      *
-     * @param  \Doctrine\Common\Persistence\ObjectManager $objectManager
-     * @param  object[] $entities
+     * @param \Doctrine\Common\Persistence\ObjectManager $objectManager
+     * @param object[]                                   $entities
+     *
      * @return array
      */
     private function getAggregatorsFromEntities(ObjectManager $objectManager, array $entities)
@@ -333,6 +335,6 @@ class IndexManager implements IndexManagerInterface
 
     private function removePrefixFromIndexName($indexName)
     {
-        return preg_replace('/^'.preg_quote($this->configuration['prefix'], '/').'/', '', $indexName);
+        return preg_replace('/^' . preg_quote($this->configuration['prefix'], '/') . '/', '', $indexName);
     }
 }

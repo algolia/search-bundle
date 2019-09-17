@@ -60,7 +60,7 @@ class AlgoliaEngine implements EngineInterface
     {
         $params = array_merge($parameters, [
             'hitsPerPage' => $nbResults,
-            'page' => $page - 1,
+            'page'        => $page - 1,
         ]);
 
         return $this->algolia->initIndex($indexName)->search($query, $params);
@@ -79,7 +79,7 @@ class AlgoliaEngine implements EngineInterface
         if (3 === func_num_args() && is_array(func_get_arg(2))) {
             $parameters = func_get_arg(2);
         }
-        
+
         $results = $this->algolia->initIndex($indexName)->search($query, $parameters);
 
         return (int) $results['nbHits'];
@@ -100,12 +100,12 @@ class AlgoliaEngine implements EngineInterface
 
             $indexName = $entity->getIndexName();
 
-            if (! isset($data[$indexName])) {
+            if (!isset($data[$indexName])) {
                 $data[$indexName] = [];
             }
 
             $data[$indexName][] = $searchableArray + [
-                'objectID' => $entity->getId()
+                'objectID' => $entity->getId(),
             ];
         }
 
@@ -132,7 +132,7 @@ class AlgoliaEngine implements EngineInterface
             }
             $indexName = $entity->getIndexName();
 
-            if (! isset($data[$indexName])) {
+            if (!isset($data[$indexName])) {
                 $data[$indexName] = [];
             }
 
@@ -152,14 +152,14 @@ class AlgoliaEngine implements EngineInterface
     protected function doClear($indexName)
     {
         return [
-            $indexName => $this->algolia->initIndex($indexName)->clearObjects()
+            $indexName => $this->algolia->initIndex($indexName)->clearObjects(),
         ];
     }
 
     protected function doDelete($indexName)
     {
         return [
-            $indexName => $this->algolia->initIndex($indexName)->delete()
+            $indexName => $this->algolia->initIndex($indexName)->delete(),
         ];
     }
 

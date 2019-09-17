@@ -40,7 +40,7 @@ abstract class IndexCommand extends Command implements ContainerAwareInterface
 
     protected function getEntitiesFromArgs(InputInterface $input, OutputInterface $output)
     {
-        $entities = [];
+        $entities   = [];
         $indexNames = [];
 
         if ($indexList = $input->getOption('indices')) {
@@ -57,7 +57,7 @@ abstract class IndexCommand extends Command implements ContainerAwareInterface
             if (isset($config['indices'][$name])) {
                 $entities[$name] = $config['indices'][$name]['class'];
             } else {
-                $output->writeln('<comment>No index named <info>'.$name.'</info> was found. Check you configuration.</comment>');
+                $output->writeln('<comment>No index named <info>' . $name . '</info> was found. Check you configuration.</comment>');
             }
         }
 

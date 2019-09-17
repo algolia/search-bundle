@@ -14,7 +14,7 @@ class SearchIndexerSubscriber implements EventSubscriber
 
     public function __construct(IndexManagerInterface $indexManager, $subscribedEvents)
     {
-        $this->indexManager = $indexManager;
+        $this->indexManager     = $indexManager;
         $this->subscribedEvents = $subscribedEvents;
     }
 

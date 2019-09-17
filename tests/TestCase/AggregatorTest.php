@@ -27,7 +27,7 @@ class AggregatorTest extends BaseTest
     public function testContructor()
     {
         $this->expectException(InvalidEntityForAggregator::class);
-        $post = new Post();
+        $post                = new Post();
         $compositeAggregator = new ContentAggregator($post, ['objectId', 'url']);
     }
 }

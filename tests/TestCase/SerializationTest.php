@@ -18,7 +18,7 @@ class SerializationTest extends BaseTest
     {
         $serializer = $this->get('serializer');
 
-        $refl = new \ReflectionClass($serializer);
+        $refl                = new \ReflectionClass($serializer);
         $normalizersProperty = $refl->getProperty('normalizers');
         $normalizersProperty->setAccessible(true);
         $normalizers = $normalizersProperty->getValue($serializer);
@@ -35,22 +35,22 @@ class SerializationTest extends BaseTest
 
     public function testSimpleEntityToSearchableArray()
     {
-        $datetime = new \DateTime();
+        $datetime       = new \DateTime();
         $dateSerializer = new Serializer([new DateTimeNormalizer()]);
         // This way we can test that DateTime's are serialized with DateTimeNormalizer
         // And not the default ObjectNormalizer
         $serializedDateTime = $dateSerializer->normalize($datetime, Searchable::NORMALIZATION_FORMAT);
 
         $post = new Post([
-            'id' => 12,
-            'title' => 'a simple post',
-            'content' => 'some text',
+            'id'          => 12,
+            'title'       => 'a simple post',
+            'content'     => 'some text',
             'publishedAt' => $datetime,
         ]);
         $post->addComment(new Comment([
-            'content' => 'a great comment',
+            'content'     => 'a great comment',
             'publishedAt' => $datetime,
-            'post' => $post,
+            'post'        => $post,
         ]));
         $postMeta = $this->get('doctrine')->getManager()->getClassMetadata(Post::class);
 
@@ -62,15 +62,15 @@ class SerializationTest extends BaseTest
         );
 
         $expected = [
-            "id" => 12,
-            "title" => "a simple post",
-            "content" => "some text",
-            "publishedAt" => $serializedDateTime,
-            "comments" => [
+            'id'          => 12,
+            'title'       => 'a simple post',
+            'content'     => 'some text',
+            'publishedAt' => $serializedDateTime,
+            'comments'    => [
                 [
-                    "content" => "a great comment",
-                    "post_title" => "a simple post",
-                ]
+                    'content'    => 'a great comment',
+                    'post_title' => 'a simple post',
+                ],
             ],
         ];
 
@@ -79,19 +79,19 @@ class SerializationTest extends BaseTest
 
     public function testEntityWithAnnotationsToSearchableArray()
     {
-        $datetime = new \DateTime();
+        $datetime       = new \DateTime();
         $dateSerializer = new Serializer([new DateTimeNormalizer()]);
         // This way we can test that DateTime's are serialized with DateTimeNormalizer
         // And not the default ObjectNormalizer
         $serializedDateTime = $dateSerializer->normalize($datetime, Searchable::NORMALIZATION_FORMAT);
 
         $post = new Post([
-            'id' => 12,
-            'title' => 'a simple post',
-            'content' => 'some text',
+            'id'          => 12,
+            'title'       => 'a simple post',
+            'content'     => 'some text',
             'publishedAt' => $datetime,
-            'comments' => [new Comment([
-                'content' => 'a great comment',
+            'comments'    => [new Comment([
+                'content'     => 'a great comment',
                 'publishedAt' => $datetime,
             ])],
         ]);
@@ -106,9 +106,9 @@ class SerializationTest extends BaseTest
         );
 
         $expected = [
-            "id" => 12,
-            "title" => "a simple post",
-            "publishedAt" => $serializedDateTime,
+            'id'          => 12,
+            'title'       => 'a simple post',
+            'publishedAt' => $serializedDateTime,
         ];
 
         $this->assertEquals($expected, $searchablePost->getSearchableArray());
@@ -116,14 +116,14 @@ class SerializationTest extends BaseTest
 
     public function testNormalizableEntityToSearchableArray()
     {
-        $datetime = new \DateTime();
+        $datetime       = new \DateTime();
         $dateSerializer = new Serializer([new DateTimeNormalizer()]);
         // This way we can test that DateTime's are serialized with DateTimeNormalizer
         // And not the default ObjectNormalizer
         $serializedDateTime = $dateSerializer->normalize($datetime, Searchable::NORMALIZATION_FORMAT);
 
         $tag = new Tag([
-            'id' => 123,
+            'id'          => 123,
             'publishedAt' => $datetime,
         ]);
         $tagMeta = $this->get('doctrine')->getManager()->getClassMetadata(Tag::class);
@@ -137,10 +137,10 @@ class SerializationTest extends BaseTest
         );
 
         $expected = [
-            'id' => 123,
-            'name' => 'this test is correct',
-            'count' => 10,
-            "publishedAt" => $serializedDateTime,
+            'id'          => 123,
+            'name'        => 'this test is correct',
+            'count'       => 10,
+            'publishedAt' => $serializedDateTime,
         ];
 
         $this->assertEquals($expected, $searchableTag->getSearchableArray());
@@ -149,9 +149,9 @@ class SerializationTest extends BaseTest
     public function testDedicatedNormalizer()
     {
         $comment = new Comment([
-            'id' => 99,
+            'id'      => 99,
             'content' => 'hey, this is a comment',
-            'post' => new Post(['title' => 'Another super post'])
+            'post'    => new Post(['title' => 'Another super post']),
         ]);
 
         $searchableComment = new SearchableEntity(
@@ -161,8 +161,8 @@ class SerializationTest extends BaseTest
             $this->get('serializer')
         );
         $expected = [
-            "content" => "hey, this is a comment",
-            "post_title" => "Another super post",
+            'content'    => 'hey, this is a comment',
+            'post_title' => 'Another super post',
         ];
 
         $this->assertEquals($expected, $searchableComment->getSearchableArray());
@@ -172,15 +172,15 @@ class SerializationTest extends BaseTest
     {
         $datetime = new \DateTime();
         // The format is defined in the framework configuration (see tests/config/config.yml)
-        $serializedDateTime = $datetime->format("Y-m-d\\TH:i:sP");
+        $serializedDateTime = $datetime->format('Y-m-d\\TH:i:sP');
 
         $post = new Post([
-            'id' => 12,
-            'title' => 'a simple post',
-            'content' => 'some text',
+            'id'          => 12,
+            'title'       => 'a simple post',
+            'content'     => 'some text',
             'publishedAt' => $datetime,
-            'comments' => [new Comment([
-                'content' => 'a great comment',
+            'comments'    => [new Comment([
+                'content'     => 'a great comment',
                 'publishedAt' => $datetime,
             ])],
         ]);
@@ -194,17 +194,17 @@ class SerializationTest extends BaseTest
         );
 
         $expected = [
-            "id" => 12,
-            "title" => "a simple post",
-            "content" => "some text",
-            "publishedAt" => $serializedDateTime,
-            "comments" => [
+            'id'          => 12,
+            'title'       => 'a simple post',
+            'content'     => 'some text',
+            'publishedAt' => $serializedDateTime,
+            'comments'    => [
                 [
-                    "id" => null,
-                    "content" => "a great comment",
-                    "publishedAt" => $serializedDateTime,
-                    "post" => null,
-                ]
+                    'id'          => null,
+                    'content'     => 'a great comment',
+                    'publishedAt' => $serializedDateTime,
+                    'post'        => null,
+                ],
             ],
         ];
 

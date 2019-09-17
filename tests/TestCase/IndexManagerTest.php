@@ -3,7 +3,6 @@
 namespace Algolia\SearchBundle\TestCase;
 
 use Algolia\SearchBundle\BaseTest;
-use Algolia\SearchBundle\Doctrine\NullObjectManager;
 use Algolia\SearchBundle\TestApp\Entity\Comment;
 use Algolia\SearchBundle\TestApp\Entity\ContentAggregator;
 use Algolia\SearchBundle\TestApp\Entity\Post;
@@ -27,7 +26,6 @@ class IndexManagerTest extends BaseTest
         $this->indexManager->delete(ContentAggregator::class);
     }
 
-
     public function testIsSearchableMethod()
     {
         $this->assertTrue($this->indexManager->isSearchable(Post::class));
@@ -44,7 +42,7 @@ class IndexManagerTest extends BaseTest
     {
         $om = $this->get('doctrine')->getManager();
 
-        $this->indexManager->index(new Post, $om);
+        $this->indexManager->index(new Post(), $om);
     }
 
     public function testIndexedDataAreSearchable()

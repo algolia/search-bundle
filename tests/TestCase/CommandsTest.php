@@ -4,8 +4,6 @@ namespace Algolia\SearchBundle\TestCase;
 
 use Algolia\SearchBundle\BaseTest;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Tester\CommandTester;
 use Algolia\SearchBundle\TestApp\Entity\Comment;
 use Algolia\SearchBundle\TestApp\Entity\ContentAggregator;
@@ -26,11 +24,11 @@ class CommandsTest extends BaseTest
     {
         parent::setUp();
         $this->indexManager = $this->get('search.index_manager');
-        $this->client = $this->get('algolia.client');
-        $this->om = $this->get('doctrine')->getManager();
-        $this->connection = $this->get('doctrine')->getConnection();
-        $this->platform = $this->connection->getDatabasePlatform();
-        $this->indexName = 'posts';
+        $this->client       = $this->get('algolia.client');
+        $this->om           = $this->get('doctrine')->getManager();
+        $this->connection   = $this->get('doctrine')->getConnection();
+        $this->platform     = $this->connection->getDatabasePlatform();
+        $this->indexName    = 'posts';
 
         $this->application = new Application(self::$kernel);
         $this->refreshDb($this->application);
@@ -47,11 +45,11 @@ class CommandsTest extends BaseTest
     {
         $unknownIndexName = 'test';
 
-        $command = $this->application->find('search:clear');
+        $command       = $this->application->find('search:clear');
         $commandTester = new CommandTester($command);
         $commandTester->execute([
-            'command'  => $command->getName(),
-            '--indices' => $unknownIndexName
+            'command'   => $command->getName(),
+            '--indices' => $unknownIndexName,
         ]);
 
         // Checks output and ensure it failed
@@ -68,7 +66,7 @@ class CommandsTest extends BaseTest
         $searchPost = $this->indexManager->rawSearch('', Post::class);
         $this->assertCount(1, $searchPost['hits']);
 
-        $command = $this->application->find('search:clear');
+        $command       = $this->application->find('search:clear');
         $commandTester = new CommandTester($command);
         $commandTester->execute([
             'command'  => $command->getName(),
@@ -87,15 +85,15 @@ class CommandsTest extends BaseTest
     {
         $now = new \DateTime();
         $this->connection->insert($this->indexName, [
-            'title' => 'Test',
-            'content' => 'Test content',
+            'title'        => 'Test',
+            'content'      => 'Test content',
             'published_at' => $now->format('Y-m-d H:i:s'),
         ]);
 
-        $command = $this->application->find('search:import');
+        $command       = $this->application->find('search:import');
         $commandTester = new CommandTester($command);
         $commandTester->execute([
-            'command'  => $command->getName(),
+            'command'   => $command->getName(),
             '--indices' => 'contents',
         ]);
 
@@ -114,16 +112,16 @@ class CommandsTest extends BaseTest
     {
         $now = new \DateTime();
         $this->connection->insert($this->indexName, [
-            'title' => 'Test',
-            'content' => 'Test content',
+            'title'        => 'Test',
+            'content'      => 'Test content',
             'published_at' => $now->format('Y-m-d H:i:s'),
         ]);
 
-        $command = $this->application->find('search:import');
+        $command       = $this->application->find('search:import');
         $commandTester = new CommandTester($command);
         $commandTester->execute([
-            'command'  => $command->getName(),
-            '--indices' => $this->indexName
+            'command'   => $command->getName(),
+            '--indices' => $this->indexName,
         ]);
 
         // Checks output
@@ -140,15 +138,15 @@ class CommandsTest extends BaseTest
     public function testSearchSettingsBackupCommand()
     {
         $settingsToUpdate = [
-            'hitsPerPage' => 51,
+            'hitsPerPage'       => 51,
             'maxValuesPerFacet' => 99,
         ];
-        $index = $this->client->initIndex($this->getPrefix().$this->indexName);
+        $index = $this->client->initIndex($this->getPrefix() . $this->indexName);
         $index->setSettings($settingsToUpdate)->wait();
-        $command = $this->application->find('search:settings:backup');
+        $command       = $this->application->find('search:settings:backup');
         $commandTester = new CommandTester($command);
         $commandTester->execute([
-            'command'  => $command->getName(),
+            'command'   => $command->getName(),
             '--indices' => $this->indexName,
         ]);
 
@@ -166,22 +164,22 @@ class CommandsTest extends BaseTest
     public function testSearchSettingsPushCommand()
     {
         $settingsToUpdate = [
-            'hitsPerPage' => 50,
+            'hitsPerPage'       => 50,
             'maxValuesPerFacet' => 100,
         ];
-        $index = $this->client->initIndex($this->getPrefix().$this->indexName);
+        $index = $this->client->initIndex($this->getPrefix() . $this->indexName);
         $index->setSettings($settingsToUpdate)->wait();
-        $settings = $index->getSettings();
+        $settings     = $index->getSettings();
         $settingsFile = $this->getFileName($this->indexName, 'settings');
 
         $settingsFileContent = json_decode(file_get_contents($settingsFile), true);
         $this->assertNotEquals($settings['hitsPerPage'], $settingsFileContent['hitsPerPage']);
         $this->assertNotEquals($settings['maxValuesPerFacet'], $settingsFileContent['maxValuesPerFacet']);
 
-        $command = $this->application->find('search:settings:push');
+        $command       = $this->application->find('search:settings:push');
         $commandTester = new CommandTester($command);
         $commandTester->execute([
-            'command'  => $command->getName(),
+            'command'   => $command->getName(),
             '--indices' => $this->indexName,
         ]);
 

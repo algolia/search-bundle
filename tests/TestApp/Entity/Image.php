@@ -15,7 +15,6 @@ class Image
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     *
      */
     private $id;
 
@@ -26,7 +25,7 @@ class Image
 
     public function __construct(array $attributes = [])
     {
-        $this->id = isset($attributes['id']) ? $attributes['id'] : null;
+        $this->id  = isset($attributes['id']) ? $attributes['id'] : null;
         $this->url = isset($attributes['url']) ? $attributes['url'] : '/wp-content/uploads/flamingo.jpg';
     }
 

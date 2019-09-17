@@ -31,9 +31,9 @@ class SearchClearCommand extends IndexCommand
             $success = $this->indexManager->clear($className);
 
             if ($success) {
-                $output->writeln('Cleared <info>'.$indexName.'</info> index of <comment>'.$className.'</comment> ');
+                $output->writeln('Cleared <info>' . $indexName . '</info> index of <comment>' . $className . '</comment> ');
             } else {
-                $output->writeln('<error>Index <info>'.$indexName.'</info>  couldn\'t be cleared</error>');
+                $output->writeln('<error>Index <info>' . $indexName . '</info>  couldn\'t be cleared</error>');
             }
         }
 

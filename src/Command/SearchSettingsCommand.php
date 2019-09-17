@@ -26,7 +26,7 @@ abstract class SearchSettingsCommand extends Command
 
         $params = [
             'indices' => (array) $indexList,
-            'extra' => $input->getArgument('extra'),
+            'extra'   => $input->getArgument('extra'),
         ];
 
         $message = $this->handle($params);

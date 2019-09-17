@@ -8,8 +8,6 @@ use Algolia\SearchBundle\TestApp\Entity\ContentAggregator;
 use Algolia\SearchBundle\TestApp\Entity\Post;
 use Algolia\SearchBundle\TestApp\Entity\Tag;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Output\ConsoleOutput;
 
 class DoctrineTest extends BaseTest
 {
@@ -22,7 +20,7 @@ class DoctrineTest extends BaseTest
 
         $application = new Application(self::$kernel);
         $this->refreshDb($application);
-        $this->syncIndexManager  = $this->get('search.index_manager');
+        $this->syncIndexManager = $this->get('search.index_manager');
     }
 
     public function tearDown()
@@ -35,7 +33,7 @@ class DoctrineTest extends BaseTest
     public function testDoctrineEventManagement()
     {
         $em = $this->get('doctrine')->getManager();
-        for ($i=0; $i<5; $i++) {
+        for ($i = 0; $i < 5; $i++) {
             $post = $this->createPost();
             $em->persist($post);
         }
