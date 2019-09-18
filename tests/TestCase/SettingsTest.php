@@ -5,11 +5,11 @@ namespace Algolia\SearchBundle\TestCase;
 use Algolia\SearchBundle\BaseTest;
 use Algolia\SearchBundle\TestApp\Entity\Post;
 use Algolia\SearchBundle\Settings\AlgoliaSettingsManager;
-use Algolia\AlgoliaSearch\SearchClient as Client;
+use Algolia\AlgoliaSearch\SearchClient;
 
 class SettingsTest extends BaseTest
 {
-    /** @var Client */
+    /** @var SearchClient */
     private $client;
 
     /** @var AlgoliaSettingsManager */

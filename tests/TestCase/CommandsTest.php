@@ -187,6 +187,8 @@ class CommandsTest extends BaseTest
         $output = $commandTester->getDisplay();
         $this->assertContains('Pushed settings', $output);
 
+        // use sleep to make sure the last task is done since we don't have the taskID
+        sleep(2);
         $newSettings = $index->getSettings();
         $this->assertEquals($newSettings['hitsPerPage'], $settingsFileContent['hitsPerPage']);
         $this->assertEquals($newSettings['maxValuesPerFacet'], $settingsFileContent['maxValuesPerFacet']);

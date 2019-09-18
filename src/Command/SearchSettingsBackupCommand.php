@@ -5,7 +5,12 @@ namespace Algolia\SearchBundle\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
-class SearchSettingsBackupCommand extends SearchSettingsCommand
+/**
+ * Class SearchSettingsBackupCommand.
+ *
+ * @internal
+ */
+final class SearchSettingsBackupCommand extends SearchSettingsCommand
 {
     protected static $defaultName = 'search:settings:backup';
 

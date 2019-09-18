@@ -7,7 +7,12 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class SearchClearCommand extends IndexCommand
+/**
+ * Class SearchClearCommand.
+ *
+ * @internal
+ */
+final class SearchClearCommand extends IndexCommand
 {
     protected static $defaultName = 'search:clear';
 

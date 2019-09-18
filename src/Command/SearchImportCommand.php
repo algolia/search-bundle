@@ -12,7 +12,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 use const E_USER_DEPRECATED;
 use function trigger_error;
 
-class SearchImportCommand extends IndexCommand
+/**
+ * Class SearchImportCommand.
+ *
+ * @internal
+ */
+final class SearchImportCommand extends IndexCommand
 {
     protected static $defaultName = 'search:import';
 

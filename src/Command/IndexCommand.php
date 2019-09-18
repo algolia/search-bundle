@@ -12,6 +12,11 @@ use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use const E_USER_DEPRECATED;
 use function trigger_error;
 
+/**
+ * Class IndexCommand.
+ *
+ * @internal
+ */
 abstract class IndexCommand extends Command implements ContainerAwareInterface
 {
     use ContainerAwareTrait;

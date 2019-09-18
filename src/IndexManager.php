@@ -110,15 +110,11 @@ class IndexManager
         return $this->engine->delete($this->getFullIndexName($className));
     }
 
-    public function search($query, $className, ObjectManager $objectManager, $page = 1, $nbResults = null, $requestOptions = [])
+    public function search($query, $className, ObjectManager $objectManager, $requestOptions = [])
     {
         $this->assertIsSearchable($className);
 
-        if (!is_int($nbResults)) {
-            $nbResults = $this->configuration['nbResults'];
-        }
-
-        $ids = $this->engine->searchIds($query, $this->getFullIndexName($className), $page, $nbResults, $requestOptions);
+        $ids = $this->engine->searchIds($query, $this->getFullIndexName($className), $requestOptions);
 
         $results = [];
 
@@ -142,15 +138,11 @@ class IndexManager
         return $results;
     }
 
-    public function rawSearch($query, $className, $page = 1, $nbResults = null, $requestOptions = [])
+    public function rawSearch($query, $className, $requestOptions = [])
     {
         $this->assertIsSearchable($className);
 
-        if (!is_int($nbResults)) {
-            $nbResults = $this->configuration['nbResults'];
-        }
-
-        return $this->engine->search($query, $this->getFullIndexName($className), $page, $nbResults, $requestOptions);
+        return $this->engine->search($query, $this->getFullIndexName($className), $requestOptions);
     }
 
     public function count($query, $className, $requestOptions = [])

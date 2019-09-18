@@ -15,9 +15,8 @@
     "prefer-stable": true,
     "require": {
         "php": "^5.6 || ^7.0",
-        "algolia/algoliasearch-client-php": "^2.2",
+        "algolia/algoliasearch-client-php": "^2.4",
         "doctrine/common": "^2.5",
-        "friendsofphp/php-cs-fixer": "^2.15",
         "symfony/filesystem": "^3.4.0 || ^4.0.0",
         "symfony/property-access": "^3.4.0 || ^4.0.0",
         "symfony/serializer": "^3.4.0 || ^4.0.0"
@@ -45,7 +44,10 @@
         "symfony/framework-bundle": "^3.4.0 || ^4.0.0",
         "symfony/phpunit-bridge": "^3.4.0 || ^4.0",
         "symfony/proxy-manager-bridge": "*",
-        "symfony/yaml": "^3.4.0 || ^4.0.0"
+        "symfony/yaml": "^3.4.0 || ^4.0.0",
+        "friendsofphp/php-cs-fixer": "^2.15",
+        "roave/security-advisories": "dev-master"
+
     },
     "extra": {
         "branch-alias": {
@@ -58,10 +60,6 @@
     "scripts": {
         "phpunit": "phpunit --colors=always --verbose",
         "php-cs-fixer": "php-cs-fixer fix -v --dry-run",
-        "quality": [
-            "@phpstan",
-            "@phpinsights"
-        ],
         "test": [
             "@php-cs-fixer",
             "@phpunit"

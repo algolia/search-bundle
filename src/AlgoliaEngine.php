@@ -2,14 +2,14 @@
 
 namespace Algolia\SearchBundle;
 
-use Algolia\AlgoliaSearch\SearchClient as Client;
+use Algolia\AlgoliaSearch\SearchClient;
 
 class AlgoliaEngine
 {
-    /** @var Client */
+    /** @var SearchClient */
     protected $algolia;
 
-    public function __construct(Client $algolia)
+    public function __construct(SearchClient $algolia)
     {
         $this->algolia = $algolia;
     }
@@ -55,19 +55,14 @@ class AlgoliaEngine
         return true;
     }
 
-    public function search($query, $indexName, $page = 1, $nbResults = 20, $requestOptions = [])
+    public function search($query, $indexName, $requestOptions = [])
     {
-        $requestOptions = array_merge($requestOptions, [
-            'hitsPerPage' => $nbResults,
-            'page'        => $page - 1,
-        ]);
-
         return $this->algolia->initIndex($indexName)->search($query, $requestOptions);
     }
 
-    public function searchIds($query, $indexName, $page = 1, $nbResults = 20, $requestOptions = [])
+    public function searchIds($query, $indexName, $requestOptions = [])
     {
-        $result = $this->search($query, $indexName, $page, $nbResults, $requestOptions);
+        $result = $this->search($query, $indexName, $requestOptions);
 
         return array_column($result['hits'], 'objectID');
     }

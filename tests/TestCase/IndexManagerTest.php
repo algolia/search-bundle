@@ -61,7 +61,10 @@ class IndexManagerTest extends BaseTest
         // RawSearch
         $searchPost = $this->indexManager->rawSearch('', Post::class);
         $this->assertCount(4, $searchPost['hits']);
-        $searchPost = $this->indexManager->rawSearch('', Post::class, 1, 1);
+        $searchPost = $this->indexManager->rawSearch('', Post::class, [
+            'page'        => 0,
+            'hitsPerPage' => 1,
+        ]);
         $this->assertCount(1, $searchPost['hits']);
 
         $searchPostEmpty = $this->indexManager->rawSearch('with no result', Post::class);
