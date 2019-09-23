@@ -2,79 +2,36 @@
 
 namespace Algolia\SearchBundle;
 
+use Algolia\AlgoliaSearch\Response\BatchIndexingResponse;
+use Algolia\AlgoliaSearch\Response\NullResponse;
 use Algolia\AlgoliaSearch\SearchClient;
 
-class AlgoliaEngine
+final class AlgoliaEngine
 {
     /** @var SearchClient */
-    protected $algolia;
+    private $client;
 
-    public function __construct(SearchClient $algolia)
+    /**
+     * AlgoliaEngine constructor.
+     *
+     * @param SearchClient $client
+     */
+    public function __construct(SearchClient $client)
     {
-        $this->algolia = $algolia;
+        $this->client = $client;
     }
 
-    public function add($searchableEntities, $requestOptions = [])
-    {
-        return $this->update($searchableEntities, $requestOptions);
-    }
-
-    public function update($searchableEntities, $requestOptions = [])
-    {
-        $batch = $this->doUpdate($searchableEntities, $requestOptions);
-
-        return $this->formatIndexingResponse($batch);
-    }
-
-    public function remove($searchableEntities, $requestOptions = [])
-    {
-        $batch = $this->doRemove($searchableEntities, $requestOptions);
-
-        return $this->formatIndexingResponse($batch);
-    }
-
-    public function clear($indexName)
-    {
-        try {
-            $this->doClear($indexName);
-        } catch (\Exception $e) {
-            return false;
-        }
-
-        return true;
-    }
-
-    public function delete($indexName)
-    {
-        try {
-            $this->doDelete($indexName);
-        } catch (\Exception $e) {
-            return false;
-        }
-
-        return true;
-    }
-
-    public function search($query, $indexName, $requestOptions = [])
-    {
-        return $this->algolia->initIndex($indexName)->search($query, $requestOptions);
-    }
-
-    public function searchIds($query, $indexName, $requestOptions = [])
-    {
-        $result = $this->search($query, $indexName, $requestOptions);
-
-        return array_column($result['hits'], 'objectID');
-    }
-
-    public function count($query, $indexName, $requestOptions = [])
-    {
-        $results = $this->algolia->initIndex($indexName)->search($query, $requestOptions);
-
-        return (int) $results['nbHits'];
-    }
-
-    protected function doUpdate($searchableEntities, $requestOptions = [])
+    /**
+     * Save entities to Algolia.
+     *
+     * @param array<int, SearchableEntity>    $searchableEntities
+     * @param array<string, int|string|array> $requestOptions
+     *
+     * @return array<string, BatchIndexingResponse>
+     *
+     * @throws \Algolia\AlgoliaSearch\Exceptions\AlgoliaException
+     */
+    public function save($searchableEntities, $requestOptions = [])
     {
         if ($searchableEntities instanceof SearchableEntity) {
             $searchableEntities = [$searchableEntities];
@@ -94,13 +51,17 @@ class AlgoliaEngine
             }
 
             $data[$indexName][] = $searchableArray + [
-                'objectID' => $entity->getId(),
-            ];
+                    'objectID' => $entity->getId(),
+                ];
         }
 
         $result = [];
         foreach ($data as $indexName => $objects) {
-            $result[$indexName] = $this->algolia
+            if (!array_key_exists('autoGenerateObjectIDIfNotExist', $requestOptions)) {
+                $requestOptions['autoGenerateObjectIDIfNotExist'] = true;
+            }
+
+            $result[$indexName] = $this->client
                 ->initIndex($indexName)
                 ->saveObjects($objects, $requestOptions);
         }
@@ -108,7 +69,17 @@ class AlgoliaEngine
         return $result;
     }
 
-    protected function doRemove($searchableEntities, $requestOptions = [])
+    /**
+     * Remove entities from Algolia.
+     *
+     * @param array<int, SearchableEntity>    $searchableEntities
+     * @param array<string, int|string|array> $requestOptions
+     *
+     * @return array<string, BatchIndexingResponse>
+     *
+     * @throws \Algolia\AlgoliaSearch\Exceptions\AlgoliaException
+     */
+    public function remove($searchableEntities, $requestOptions = [])
     {
         if ($searchableEntities instanceof SearchableEntity) {
             $searchableEntities = [$searchableEntities];
@@ -130,7 +101,7 @@ class AlgoliaEngine
 
         $result = [];
         foreach ($data as $indexName => $objects) {
-            $result[$indexName] = $this->algolia
+            $result[$indexName] = $this->client
                 ->initIndex($indexName)
                 ->deleteObjects($objects, $requestOptions);
         }
@@ -138,27 +109,91 @@ class AlgoliaEngine
         return $result;
     }
 
-    protected function doClear($indexName)
+    /**
+     * Clear all objects from the index.
+     *
+     * @param string $indexName
+     *
+     * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
+     */
+    public function clear($indexName)
     {
-        return [
-            $indexName => $this->algolia->initIndex($indexName)->clearObjects(),
-        ];
-    }
+        $index = $this->client->initIndex($indexName);
 
-    protected function doDelete($indexName)
-    {
-        return [
-            $indexName => $this->algolia->initIndex($indexName)->delete(),
-        ];
-    }
-
-    protected function formatIndexingResponse($batch)
-    {
-        $response = [];
-        foreach ($batch as $indexName => $res) {
-            $response[$indexName] = count($res->current()['objectIDs']);
+        if ($index->exists()) {
+            return $index->clearObjects();
         }
 
-        return $response;
+        return new NullResponse();
+    }
+
+    /**
+     * Delete the index.
+     *
+     * @param string $indexName
+     *
+     * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
+     */
+    public function delete($indexName)
+    {
+        $index = $this->client->initIndex($indexName);
+
+        if ($index->exists()) {
+            return $index->delete();
+        }
+
+        return new NullResponse();
+    }
+
+    /**
+     * Search the index.
+     *
+     * @param string                          $query
+     * @param string                          $indexName
+     * @param array<string, int|string|array> $requestOptions
+     *
+     * @return array<string, int|string|array>
+     *
+     * @throws \Algolia\AlgoliaSearch\Exceptions\AlgoliaException
+     */
+    public function search($query, $indexName, $requestOptions = [])
+    {
+        return $this->client->initIndex($indexName)->search($query, $requestOptions);
+    }
+
+    /**
+     * Search the index and returns the objectIDs.
+     *
+     * @param string                          $query
+     * @param string                          $indexName
+     * @param array<string, int|string|array> $requestOptions
+     *
+     * @return array<string, int|string|array>
+     *
+     * @throws \Algolia\AlgoliaSearch\Exceptions\AlgoliaException
+     */
+    public function searchIds($query, $indexName, $requestOptions = [])
+    {
+        $result = $this->search($query, $indexName, $requestOptions);
+
+        return array_column($result['hits'], 'objectID');
+    }
+
+    /**
+     * Search the index and returns the number of results.
+     *
+     * @param string                          $query
+     * @param string                          $indexName
+     * @param array<string, int|string|array> $requestOptions
+     *
+     * @return int
+     *
+     * @throws \Algolia\AlgoliaSearch\Exceptions\AlgoliaException
+     */
+    public function count($query, $indexName, $requestOptions = [])
+    {
+        $results = $this->client->initIndex($indexName)->search($query, $requestOptions);
+
+        return (int) $results['nbHits'];
     }
 }

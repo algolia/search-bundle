@@ -6,7 +6,7 @@ use Algolia\AlgoliaSearch\Support\UserAgent;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\HttpKernel\Kernel as SfKernel;
 
-class AlgoliaSearchBundle extends Bundle
+final class AlgoliaSearchBundle extends Bundle
 {
     const VERSION = '4.0.0';
 

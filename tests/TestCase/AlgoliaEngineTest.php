@@ -2,6 +2,8 @@
 
 namespace Algolia\SearchBundle\TestCase;
 
+use Algolia\AlgoliaSearch\Response\IndexingResponse;
+use Algolia\SearchBundle\AlgoliaEngine;
 use Algolia\SearchBundle\BaseTest;
 
 class AlgoliaEngineTest extends BaseTest
@@ -11,6 +13,8 @@ class AlgoliaEngineTest extends BaseTest
     public function setUp()
     {
         parent::setUp();
+
+        /* @var AlgoliaEngine */
         $this->engine = $this->get('search.engine');
     }
 
@@ -33,19 +37,22 @@ class AlgoliaEngineTest extends BaseTest
         $this->engine->delete($searchablePost->getIndexName());
 
         // Index
-        $result = $this->engine->add($searchablePost);
+        $result = $this->engine->save($searchablePost);
         $this->assertArrayHasKey($searchablePost->getIndexName(), $result);
-        $this->assertEquals(1, $result[$searchablePost->getIndexName()]);
+        $this->assertEquals(1, $result[$searchablePost->getIndexName()]->count());
 
         // Remove
         $result = $this->engine->remove($searchablePost);
         $this->assertArrayHasKey($searchablePost->getIndexName(), $result);
-        $this->assertEquals(1, $result[$searchablePost->getIndexName()]);
+        $this->assertEquals(1, $result[$searchablePost->getIndexName()]->count());
 
         // Update
-        $result = $this->engine->update($searchablePost);
+        $result = $this->engine->save($searchablePost);
         $this->assertArrayHasKey($searchablePost->getIndexName(), $result);
-        $this->assertEquals(1, $result[$searchablePost->getIndexName()]);
+        $this->assertEquals(1, $result[$searchablePost->getIndexName()]->count());
+        foreach ($result as $indexName => $response) {
+            $response->wait();
+        }
 
         // Search
         $result = $this->engine->search('query', $searchablePost->getIndexName());
@@ -65,11 +72,11 @@ class AlgoliaEngineTest extends BaseTest
 
         // Cleanup
         $result = $this->engine->clear($searchablePost->getIndexName());
-        $this->assertTrue($result);
+        $this->assertInstanceOf(IndexingResponse::class, $result);
 
         // Delete index
         $result = $this->engine->delete($searchablePost->getIndexName());
-        $this->assertTrue($result);
+        $this->assertInstanceOf(IndexingResponse::class, $result);
     }
 
     public function testIndexingWithRequestOptions()
@@ -80,25 +87,28 @@ class AlgoliaEngineTest extends BaseTest
         $this->engine->delete($searchablePost->getIndexName());
 
         // Index
-        $result = $this->engine->add($searchablePost, [
+        $result = $this->engine->save($searchablePost, [
             'autoGenerateObjectIDIfNotExist' => true,
         ]);
         $this->assertArrayHasKey($searchablePost->getIndexName(), $result);
-        $this->assertEquals(1, $result[$searchablePost->getIndexName()]);
+        $this->assertEquals(1, $result[$searchablePost->getIndexName()]->count());
 
         // Remove
         $result = $this->engine->remove($searchablePost, [
             'X-Forwarded-For' => '0.0.0.0',
         ]);
         $this->assertArrayHasKey($searchablePost->getIndexName(), $result);
-        $this->assertEquals(1, $result[$searchablePost->getIndexName()]);
+        $this->assertEquals(1, $result[$searchablePost->getIndexName()]->count());
 
         // Update
-        $result = $this->engine->update($searchablePost, [
+        $result = $this->engine->save($searchablePost, [
             'createIfNotExists' => true,
         ]);
         $this->assertArrayHasKey($searchablePost->getIndexName(), $result);
-        $this->assertEquals(1, $result[$searchablePost->getIndexName()]);
+        $this->assertEquals(1, $result[$searchablePost->getIndexName()]->count());
+        foreach ($result as $indexName => $response) {
+            $response->wait();
+        }
 
         // Search
         $result = $this->engine->search('Test', $searchablePost->getIndexName(), [
@@ -129,5 +139,32 @@ class AlgoliaEngineTest extends BaseTest
         $this->assertEquals(0, $result);
 
         $this->engine->delete($searchablePost->getIndexName());
+    }
+
+    public function testIndexingEmptyEntity()
+    {
+        $searchableImage = $this->createSearchableImage();
+
+        // Delete index in case there is already something
+        $this->engine->delete($searchableImage->getIndexName());
+
+        // Index
+        $result = $this->engine->save($searchableImage);
+        $this->assertEmpty($result);
+
+        // Remove
+        $result = $this->engine->remove($searchableImage);
+        $this->assertEmpty($result);
+
+        // Update
+        $result = $this->engine->save($searchableImage);
+        $this->assertEmpty($result);
+
+        // Search
+        try {
+            $this->engine->search('query', $searchableImage->getIndexName());
+        } catch (\Exception $e) {
+            $this->assertInstanceOf('Algolia\AlgoliaSearch\Exceptions\NotFoundException', $e);
+        }
     }
 }

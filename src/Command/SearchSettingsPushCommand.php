@@ -6,8 +6,6 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
 /**
- * Class SearchSettingsPushCommand.
- *
  * @internal
  */
 final class SearchSettingsPushCommand extends SearchSettingsCommand

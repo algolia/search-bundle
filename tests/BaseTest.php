@@ -70,13 +70,25 @@ class BaseTest extends KernelTestCase
 
     protected function createImage($id = null)
     {
-        $comment = new Image();
+        $image = new Image();
 
         if (!is_null($id)) {
-            $comment->setId($id);
+            $image->setId($id);
         }
 
-        return $comment;
+        return $image;
+    }
+
+    protected function createSearchableImage()
+    {
+        $image = $this->createImage(rand(100, 300));
+
+        return new SearchableEntity(
+            $this->getPrefix() . 'image',
+            $image,
+            $this->get('doctrine')->getManager()->getClassMetadata(Image::class),
+            null
+        );
     }
 
     protected function getPrefix()

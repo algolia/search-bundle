@@ -48,4 +48,9 @@ class Image
     {
         $this->url = $url;
     }
+
+    public function isPublic()
+    {
+        return true;
+    }
 }

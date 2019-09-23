@@ -4,3 +4,4 @@
 .php_cs.cache
 /var/
 .idea
+tests/coverage

@@ -6,11 +6,11 @@ use Algolia\SearchBundle\IndexManager;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
 
-class SearchIndexerSubscriber implements EventSubscriber
+final class SearchIndexerSubscriber implements EventSubscriber
 {
-    protected $indexManager;
+    private $indexManager;
 
-    protected $subscribedEvents;
+    private $subscribedEvents;
 
     public function __construct(IndexManager $indexManager, $subscribedEvents)
     {

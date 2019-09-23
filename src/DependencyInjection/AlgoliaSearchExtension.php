@@ -17,7 +17,7 @@ use Symfony\Component\HttpKernel\Kernel;
  *
  * @see http://symfony.com/doc/current/cookbook/bundles/extension.html
  */
-class AlgoliaSearchExtension extends Extension
+final class AlgoliaSearchExtension extends Extension
 {
     /**
      * {@inheritdoc}

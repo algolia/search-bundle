@@ -2,27 +2,67 @@
 
 namespace Algolia\SearchBundle;
 
+use Algolia\AlgoliaSearch\Response\AbstractResponse;
+use Algolia\AlgoliaSearch\Response\BatchIndexingResponse;
 use Algolia\SearchBundle\Entity\Aggregator;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\Util\ClassUtils;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
-class IndexManager
+/**
+ * Class IndexManager.
+ */
+final class IndexManager
 {
-    protected $engine;
-    protected $configuration;
-    protected $useSerializerGroups;
-
+    /**
+     * @var AlgoliaEngine
+     */
+    private $engine;
+    /**
+     * @var array<string, array|int|string>
+     */
+    private $configuration;
+    /**
+     * @var \Symfony\Component\PropertyAccess\PropertyAccessor
+     */
     private $propertyAccessor;
+    /**
+     * @var array<int, string>
+     */
     private $searchableEntities;
+    /**
+     * @var array<int, string>
+     */
     private $aggregators;
+    /**
+     * @var array<string, array>
+     */
     private $entitiesAggregators;
+    /**
+     * @var array<string, string>
+     */
     private $classToIndexMapping;
+    /**
+     * @var array<string, boolean>
+     */
     private $classToSerializerGroupMapping;
+    /**
+     * @var array<string, string|null>
+     */
     private $indexIfMapping;
+    /**
+     * @var mixed
+     */
     private $normalizer;
 
+    /**
+     * IndexManager constructor.
+     *
+     * @param mixed                           $normalizer
+     * @param AlgoliaEngine                   $engine
+     * @param array<string, array|int|string> $configuration
+     */
     public function __construct($normalizer, AlgoliaEngine $engine, array $configuration)
     {
         $this->normalizer       = $normalizer;
@@ -37,6 +77,11 @@ class IndexManager
         $this->setIndexIfMapping();
     }
 
+    /**
+     * @param string $className
+     *
+     * @return bool
+     */
     public function isSearchable($className)
     {
         if (is_object($className)) {
@@ -46,16 +91,29 @@ class IndexManager
         return in_array($className, $this->searchableEntities);
     }
 
+    /**
+     * @return array<int, string>
+     */
     public function getSearchableEntities()
     {
         return $this->searchableEntities;
     }
 
+    /**
+     * @return array<string, array|int|string>
+     */
     public function getConfiguration()
     {
         return $this->configuration;
     }
 
+    /**
+     * @param object|array<int, object>       $entities
+     * @param ObjectManager                   $objectManager
+     * @param array<string, int|string|array> $requestOptions
+     *
+     * @return array<int, array<string, AbstractResponse>>
+     */
     public function index($entities, ObjectManager $objectManager, $requestOptions = [])
     {
         $entities = is_array($entities) ? $entities : [$entities];
@@ -78,10 +136,17 @@ class IndexManager
         }
 
         return $this->forEachChunk($objectManager, $entitiesToBeIndexed, function ($chunk) use ($requestOptions) {
-            return $this->engine->update($chunk, $requestOptions);
+            return $this->engine->save($chunk, $requestOptions);
         });
     }
 
+    /**
+     * @param object|array<int, object>       $entities
+     * @param ObjectManager                   $objectManager
+     * @param array<string, int|string|array> $requestOptions
+     *
+     * @return array<int, array<string, AbstractResponse>>
+     */
     public function remove($entities, ObjectManager $objectManager, $requestOptions = [])
     {
         $entities = is_array($entities) ? $entities : [$entities];
@@ -96,6 +161,11 @@ class IndexManager
         });
     }
 
+    /**
+     * @param string $className
+     *
+     * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
+     */
     public function clear($className)
     {
         $this->assertIsSearchable($className);
@@ -103,6 +173,11 @@ class IndexManager
         return $this->engine->clear($this->getFullIndexName($className));
     }
 
+    /**
+     * @param string $className
+     *
+     * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
+     */
     public function delete($className)
     {
         $this->assertIsSearchable($className);
@@ -110,6 +185,16 @@ class IndexManager
         return $this->engine->delete($this->getFullIndexName($className));
     }
 
+    /**
+     * @param string                          $query
+     * @param string                          $className
+     * @param ObjectManager                   $objectManager
+     * @param array<string, int|string|array> $requestOptions
+     *
+     * @return array<int, object>
+     *
+     * @throws \Algolia\AlgoliaSearch\Exceptions\AlgoliaException
+     */
     public function search($query, $className, ObjectManager $objectManager, $requestOptions = [])
     {
         $this->assertIsSearchable($className);
@@ -138,6 +223,15 @@ class IndexManager
         return $results;
     }
 
+    /**
+     * @param string                          $query
+     * @param string                          $className
+     * @param array<string, int|string|array> $requestOptions
+     *
+     * @return array<string, int|string|array>
+     *
+     * @throws \Algolia\AlgoliaSearch\Exceptions\AlgoliaException
+     */
     public function rawSearch($query, $className, $requestOptions = [])
     {
         $this->assertIsSearchable($className);
@@ -145,6 +239,15 @@ class IndexManager
         return $this->engine->search($query, $this->getFullIndexName($className), $requestOptions);
     }
 
+    /**
+     * @param string                          $query
+     * @param string                          $className
+     * @param array<string, int|string|array> $requestOptions
+     *
+     * @return int
+     *
+     * @throws \Algolia\AlgoliaSearch\Exceptions\AlgoliaException
+     */
     public function count($query, $className, $requestOptions = [])
     {
         $this->assertIsSearchable($className);
@@ -152,6 +255,11 @@ class IndexManager
         return $this->engine->count($query, $this->getFullIndexName($className), $requestOptions);
     }
 
+    /**
+     * @param object $entity
+     *
+     * @return bool
+     */
     public function shouldBeIndexed($entity)
     {
         $className = ClassUtils::getClass($entity);
@@ -167,11 +275,19 @@ class IndexManager
         return true;
     }
 
+    /**
+     * @param $className
+     *
+     * @return bool
+     */
     private function canUseSerializerGroup($className)
     {
         return $this->classToSerializerGroupMapping[$className];
     }
 
+    /**
+     * @return void
+     */
     private function setClassToIndexMapping()
     {
         $mapping = [];
@@ -182,6 +298,9 @@ class IndexManager
         $this->classToIndexMapping = $mapping;
     }
 
+    /**
+     * @return void
+     */
     private function setSearchableEntities()
     {
         $searchable = [];
@@ -193,6 +312,9 @@ class IndexManager
         $this->searchableEntities = array_unique($searchable);
     }
 
+    /**
+     * @return void
+     */
     private function setAggregatorsAndEntitiesAggregators()
     {
         $this->entitiesAggregators = [];
@@ -214,11 +336,21 @@ class IndexManager
         $this->aggregators = array_unique($this->aggregators);
     }
 
+    /**
+     * @param string $className
+     *
+     * @return string
+     */
     public function getFullIndexName($className)
     {
         return $this->configuration['prefix'] . $this->classToIndexMapping[$className];
     }
 
+    /**
+     * @param string $className
+     *
+     * @return void
+     */
     private function assertIsSearchable($className)
     {
         if (!$this->isSearchable($className)) {
@@ -226,6 +358,9 @@ class IndexManager
         }
     }
 
+    /**
+     * @return void
+     */
     private function setClassToSerializerGroupMapping()
     {
         $mapping = [];
@@ -236,6 +371,9 @@ class IndexManager
         $this->classToSerializerGroupMapping = $mapping;
     }
 
+    /**
+     * @return void
+     */
     private function setIndexIfMapping()
     {
         $mapping = [];
@@ -250,10 +388,10 @@ class IndexManager
      * For each chunk performs the provided operation.
      *
      * @param \Doctrine\Common\Persistence\ObjectManager $objectManager
-     * @param array                                      $entities
+     * @param array<int, object>                         $entities
      * @param callable                                   $operation
      *
-     * @return array
+     * @return array<int, array<string, BatchIndexingResponse>>
      */
     private function forEachChunk(ObjectManager $objectManager, array $entities, $operation)
     {
@@ -275,16 +413,16 @@ class IndexManager
             $batch[] = $operation($searchableEntitiesChunk);
         }
 
-        return $this->formatBatchResponse($batch);
+        return $batch;
     }
 
     /**
      * Returns the aggregators instances of the provided entities.
      *
      * @param \Doctrine\Common\Persistence\ObjectManager $objectManager
-     * @param object[]                                   $entities
+     * @param array<int, object>                         $entities
      *
-     * @return array
+     * @return array<int, object>
      */
     private function getAggregatorsFromEntities(ObjectManager $objectManager, array $entities)
     {
@@ -300,32 +438,5 @@ class IndexManager
         }
 
         return $aggregators;
-    }
-
-    private function formatBatchResponse(array $batch)
-    {
-        $formattedResponse = [];
-        foreach ($batch as $response) {
-            if (!is_array($response)) {
-                continue;
-            }
-
-            foreach ($response as $fullIndexName => $count) {
-                $indexName = $this->removePrefixFromIndexName($fullIndexName);
-
-                if (!isset($formattedResponse[$indexName])) {
-                    $formattedResponse[$indexName] = 0;
-                }
-
-                $formattedResponse[$indexName] += $count;
-            }
-        }
-
-        return $formattedResponse;
-    }
-
-    private function removePrefixFromIndexName($indexName)
-    {
-        return preg_replace('/^' . preg_quote($this->configuration['prefix'], '/') . '/', '', $indexName);
     }
 }

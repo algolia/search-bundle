@@ -1,6 +1,6 @@
 services:
     search.engine:
-        class: Algolia\SearchBundle\AlgoliaSyncEngine
+        class: Algolia\SearchBundle\AlgoliaEngine
         arguments:
             - '@search.client'
         public: true

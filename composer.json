@@ -58,11 +58,12 @@
         "sort-packages": true
     },
     "scripts": {
-        "phpunit": "phpunit --colors=always --verbose",
-        "php-cs-fixer": "php-cs-fixer fix -v --dry-run",
+        "lint": "php-cs-fixer fix -v",
+        "test:unit": "phpunit --colors=always --verbose",
+        "test:lint": "php-cs-fixer fix -v --dry-run",
         "test": [
-            "@php-cs-fixer",
-            "@phpunit"
+            "@test:lint",
+            "@test:unit"
         ]
     }
 }

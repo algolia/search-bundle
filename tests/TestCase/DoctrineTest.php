@@ -12,7 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 class DoctrineTest extends BaseTest
 {
     /** @var \Algolia\SearchBundle\IndexManager */
-    protected $syncIndexManager;
+    protected $indexManager;
 
     public function setUp()
     {
@@ -20,14 +20,14 @@ class DoctrineTest extends BaseTest
 
         $application = new Application(self::$kernel);
         $this->refreshDb($application);
-        $this->syncIndexManager = $this->get('search.index_manager');
+        $this->indexManager = $this->get('search.index_manager');
     }
 
     public function tearDown()
     {
-//        $this->syncIndexManager->delete(Post::class);
-        $this->syncIndexManager->delete(Comment::class);
-        $this->syncIndexManager->delete(Tag::class);
+        $this->indexManager->delete(Post::class);
+        $this->indexManager->delete(Comment::class);
+        $this->indexManager->delete(Tag::class);
     }
 
     public function testDoctrineEventManagement()
@@ -38,23 +38,24 @@ class DoctrineTest extends BaseTest
             $em->persist($post);
         }
         $em->flush();
+        sleep(2);
 
-        $count = $this->syncIndexManager->count('', Post::class);
+        $count = $this->indexManager->count('', Post::class);
         $this->assertEquals(5, $count);
 
-        $raw = $this->syncIndexManager->rawSearch('', Post::class);
+        $raw = $this->indexManager->rawSearch('', Post::class);
         $this->assertArrayHasKey('query', $raw);
         $this->assertArrayHasKey('nbHits', $raw);
         $this->assertArrayHasKey('page', $raw);
         $this->assertTrue(is_array($raw['hits']));
 
-        $posts = $this->syncIndexManager->search('', Post::class, $em);
+        $posts = $this->indexManager->search('', Post::class, $em);
         $this->assertTrue(is_array($posts));
         foreach ($posts as $p) {
             $this->assertInstanceOf(Post::class, $p);
         }
 
-        $posts = $this->syncIndexManager->search('', ContentAggregator::class, $em);
+        $posts = $this->indexManager->search('', ContentAggregator::class, $em);
         foreach ($posts as $p) {
             $this->assertInstanceOf(Post::class, $p);
         }
@@ -62,11 +63,12 @@ class DoctrineTest extends BaseTest
         $postToUpdate = $posts[4];
         $postToUpdate->setTitle('New Title');
         $em->flush();
-        $posts = $this->syncIndexManager->search('', ContentAggregator::class, $em);
+        $posts = $this->indexManager->search('', ContentAggregator::class, $em);
         $this->assertEquals($posts[4]->getTitle(), 'New Title');
 
         $em->remove($posts[0]);
-        $this->assertEquals(4, $this->syncIndexManager->count('', Post::class));
+        sleep(2);
+        $this->assertEquals(4, $this->indexManager->count('', Post::class));
     }
 
     public function testIndexIfFeature()
@@ -78,10 +80,22 @@ class DoctrineTest extends BaseTest
         ];
         $em = $this->get('doctrine')->getManager();
 
-        $this->syncIndexManager->index($tags, $em);
-        $this->assertEquals(2, $this->syncIndexManager->count('', Tag::class));
+        $result = $this->indexManager->index($tags, $em);
+        foreach ($result as $chunk) {
+            foreach ($chunk as $indexName => $apiResponse) {
+                $apiResponse->wait();
+            }
+        }
 
-        $this->syncIndexManager->index($tags[2]->setPublic(true), $em);
-        $this->assertEquals(3, $this->syncIndexManager->count('', Tag::class));
+        $this->assertEquals(2, $this->indexManager->count('', Tag::class));
+
+        $result = $this->indexManager->index($tags[2]->setPublic(true), $em);
+        foreach ($result as $chunk) {
+            foreach ($chunk as $indexName => $apiResponse) {
+                $apiResponse->wait();
+            }
+        }
+
+        $this->assertEquals(3, $this->indexManager->count('', Tag::class));
     }
 }

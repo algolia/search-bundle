@@ -8,8 +8,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class SearchSettingsCommand.
- *
  * @internal
  */
 abstract class SearchSettingsCommand extends Command

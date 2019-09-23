@@ -6,12 +6,15 @@ use JMS\Serializer\ArrayTransformerInterface;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-class SearchableEntity
+/**
+ * @internal
+ */
+final class SearchableEntity
 {
-    protected $indexName;
-    protected $entity;
-    protected $entityMetadata;
-    protected $useSerializerGroups;
+    private $indexName;
+    private $entity;
+    private $entityMetadata;
+    private $useSerializerGroups;
 
     private $id;
     private $normalizer;

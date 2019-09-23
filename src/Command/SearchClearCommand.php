@@ -2,14 +2,13 @@
 
 namespace Algolia\SearchBundle\Command;
 
+use Algolia\AlgoliaSearch\Response\IndexingResponse;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class SearchClearCommand.
- *
  * @internal
  */
 final class SearchClearCommand extends IndexCommand
@@ -35,7 +34,7 @@ final class SearchClearCommand extends IndexCommand
         foreach ($indexToClear as $indexName => $className) {
             $success = $this->indexManager->clear($className);
 
-            if ($success) {
+            if ($success instanceof IndexingResponse) {
                 $output->writeln('Cleared <info>' . $indexName . '</info> index of <comment>' . $className . '</comment> ');
             } else {
                 $output->writeln('<error>Index <info>' . $indexName . '</info>  couldn\'t be cleared</error>');

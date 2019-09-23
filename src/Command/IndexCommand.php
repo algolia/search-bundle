@@ -3,24 +3,15 @@
 namespace Algolia\SearchBundle\Command;
 
 use Algolia\SearchBundle\IndexManager;
-use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
-use const E_USER_DEPRECATED;
-use function trigger_error;
 
 /**
- * Class IndexCommand.
- *
  * @internal
  */
-abstract class IndexCommand extends Command implements ContainerAwareInterface
+abstract class IndexCommand extends Command
 {
-    use ContainerAwareTrait;
-
     protected $indexManager;
 
     public function __construct(IndexManager $indexManager)
@@ -28,19 +19,6 @@ abstract class IndexCommand extends Command implements ContainerAwareInterface
         $this->indexManager = $indexManager;
 
         parent::__construct();
-    }
-
-    /**
-     * @return ContainerInterface
-     */
-    protected function getContainer()
-    {
-        @trigger_error(
-            sprintf('The %s method is deprecated and should not be used. Please wire your dependencies explicitly.', __METHOD__),
-            E_USER_DEPRECATED
-        );
-
-        return $this->container;
     }
 
     protected function getEntitiesFromArgs(InputInterface $input, OutputInterface $output)

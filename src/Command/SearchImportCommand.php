@@ -9,12 +9,8 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use const E_USER_DEPRECATED;
-use function trigger_error;
 
 /**
- * Class SearchImportCommand.
- *
  * @internal
  */
 final class SearchImportCommand extends IndexCommand
@@ -26,14 +22,11 @@ final class SearchImportCommand extends IndexCommand
      */
     private $managerRegistry;
 
-    public function __construct(IndexManager $indexManager, ManagerRegistry $managerRegistry = null)
+    public function __construct(IndexManager $indexManager, ManagerRegistry $managerRegistry)
     {
         parent::__construct($indexManager);
 
         $this->managerRegistry = $managerRegistry;
-        if ($managerRegistry === null) {
-            @trigger_error('Instantiating the SearchImportCommand without a manager registry is deprecated', E_USER_DEPRECATED);
-        }
     }
 
     protected function configure()
@@ -63,7 +56,7 @@ final class SearchImportCommand extends IndexCommand
         $entitiesToIndex = array_unique($entitiesToIndex);
 
         foreach ($entitiesToIndex as $entityClassName) {
-            $manager    = $this->getManagerRegistry()->getManagerForClass($entityClassName);
+            $manager    = $this->managerRegistry->getManagerForClass($entityClassName);
             $repository = $manager->getRepository($entityClassName);
 
             $page = 0;
@@ -74,14 +67,17 @@ final class SearchImportCommand extends IndexCommand
                     $config['batchSize'],
                     $config['batchSize'] * $page
                 );
-                $responses = $this->indexManager->index($entities, $manager);
+
+                $responses = $this->formatIndexingResponse(
+                    $this->indexManager->index($entities, $manager)
+                );
                 foreach ($responses as $indexName => $numberOfRecords) {
                     $output->writeln(sprintf(
                         'Indexed <comment>%s / %s</comment> %s entities into %s index',
                         $numberOfRecords,
                         count($entities),
                         $entityClassName,
-                        '<info>' . $config['prefix'] . $indexName . '</info>'
+                        '<info>' . $indexName . '</info>'
                     ));
                 }
 
@@ -95,15 +91,20 @@ final class SearchImportCommand extends IndexCommand
         $output->writeln('<info>Done!</info>');
     }
 
-    /**
-     * @return ManagerRegistry
-     */
-    private function getManagerRegistry()
+    private function formatIndexingResponse($batch)
     {
-        if ($this->managerRegistry === null) {
-            $this->managerRegistry = $this->container->get('doctrine');
+        $formattedResponse = [];
+
+        foreach ($batch as $chunk) {
+            foreach ($chunk as $indexName => $apiResponse) {
+                if (!array_key_exists($indexName, $formattedResponse)) {
+                    $formattedResponse[$indexName] = 0;
+                }
+
+                $formattedResponse[$indexName] += count($apiResponse->current()['objectIDs']);
+            }
         }
 
-        return $this->managerRegistry;
+        return $formattedResponse;
     }
 }

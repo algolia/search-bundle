@@ -5,10 +5,10 @@ namespace Algolia\SearchBundle\Settings;
 use Algolia\AlgoliaSearch\SearchClient;
 use Symfony\Component\Filesystem\Filesystem;
 
-class AlgoliaSettingsManager
+final class AlgoliaSettingsManager
 {
-    protected $algolia;
-    protected $config;
+    private $algolia;
+    private $config;
 
     public function __construct(SearchClient $algolia, array $config)
     {

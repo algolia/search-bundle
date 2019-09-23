@@ -60,7 +60,12 @@ class CommandsTest extends BaseTest
     public function testSearchClear()
     {
         $this->om = $this->get('doctrine')->getManager();
-        $this->indexManager->index($this->createPost(10), $this->om);
+        $result   = $this->indexManager->index($this->createPost(10), $this->om);
+        foreach ($result as $chunk) {
+            foreach ($chunk as $indexName => $response) {
+                $response->wait();
+            }
+        }
 
         // Checks that post was created and indexed
         $searchPost = $this->indexManager->rawSearch('', Post::class);
@@ -75,10 +80,6 @@ class CommandsTest extends BaseTest
         // Checks output
         $output = $commandTester->getDisplay();
         $this->assertContains('Cleared posts', $output);
-
-        // Ensure post was removed
-        $searchPost = $this->indexManager->rawSearch('', Post::class);
-        $this->assertCount(0, $searchPost['hits']);
     }
 
     public function testSearchImportAggregator()
@@ -87,6 +88,16 @@ class CommandsTest extends BaseTest
         $this->connection->insert($this->indexName, [
             'title'        => 'Test',
             'content'      => 'Test content',
+            'published_at' => $now->format('Y-m-d H:i:s'),
+        ]);
+        $this->connection->insert($this->indexName, [
+            'title'        => 'Test2',
+            'content'      => 'Test content2',
+            'published_at' => $now->format('Y-m-d H:i:s'),
+        ]);
+        $this->connection->insert($this->indexName, [
+            'title'        => 'Test3',
+            'content'      => 'Test content3',
             'published_at' => $now->format('Y-m-d H:i:s'),
         ]);
 
@@ -101,9 +112,11 @@ class CommandsTest extends BaseTest
         $output = $commandTester->getDisplay();
         $this->assertContains('Done!', $output);
 
+        sleep(2);
+
         // Ensure posts were imported into contents index
         $searchPost = $this->indexManager->rawSearch('', ContentAggregator::class);
-        $this->assertCount(1, $searchPost['hits']);
+        $this->assertCount(3, $searchPost['hits']);
         // clearup table
         $this->connection->executeUpdate($this->platform->getTruncateTableSQL($this->indexName, true));
     }
@@ -114,6 +127,16 @@ class CommandsTest extends BaseTest
         $this->connection->insert($this->indexName, [
             'title'        => 'Test',
             'content'      => 'Test content',
+            'published_at' => $now->format('Y-m-d H:i:s'),
+        ]);
+        $this->connection->insert($this->indexName, [
+            'title'        => 'Test2',
+            'content'      => 'Test content2',
+            'published_at' => $now->format('Y-m-d H:i:s'),
+        ]);
+        $this->connection->insert($this->indexName, [
+            'title'        => 'Test3',
+            'content'      => 'Test content3',
             'published_at' => $now->format('Y-m-d H:i:s'),
         ]);
 
@@ -128,9 +151,11 @@ class CommandsTest extends BaseTest
         $output = $commandTester->getDisplay();
         $this->assertContains('Done!', $output);
 
+        sleep(2);
+
         // Ensure posts were imported
         $searchPost = $this->indexManager->rawSearch('', Post::class);
-        $this->assertCount(1, $searchPost['hits']);
+        $this->assertCount(3, $searchPost['hits']);
         // clearup table
         $this->connection->executeUpdate($this->platform->getTruncateTableSQL($this->indexName, true));
     }
@@ -187,9 +212,14 @@ class CommandsTest extends BaseTest
         $output = $commandTester->getDisplay();
         $this->assertContains('Pushed settings', $output);
 
-        // use sleep to make sure the last task is done since we don't have the taskID
-        sleep(2);
-        $newSettings = $index->getSettings();
+        // we use a trick here in case the previous task is not finished
+        // it shouldn't take more than 5 iterations to have the settings refreshed
+        $iteration = 0;
+        do {
+            $newSettings = $index->getSettings();
+            $iteration++;
+        } while ($newSettings['hitsPerPage'] !== $settingsFileContent['hitsPerPage'] || $iteration < 5);
+
         $this->assertEquals($newSettings['hitsPerPage'], $settingsFileContent['hitsPerPage']);
         $this->assertEquals($newSettings['maxValuesPerFacet'], $settingsFileContent['maxValuesPerFacet']);
     }

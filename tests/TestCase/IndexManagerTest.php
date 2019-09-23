@@ -7,16 +7,19 @@ use Algolia\SearchBundle\TestApp\Entity\Comment;
 use Algolia\SearchBundle\TestApp\Entity\ContentAggregator;
 use Algolia\SearchBundle\TestApp\Entity\Post;
 use Algolia\SearchBundle\TestApp\Entity\Image;
+use Algolia\SearchBundle\TestApp\Entity\Tag;
 
 class IndexManagerTest extends BaseTest
 {
     /** @var \Algolia\SearchBundle\IndexManager */
     protected $indexManager;
+    protected $entityManager;
 
     public function setUp()
     {
         parent::setUp();
-        $this->indexManager = $this->get('search.index_manager');
+        $this->indexManager  = $this->get('search.index_manager');
+        $this->entityManager = $this->get('doctrine')->getManager();
     }
 
     public function tearDown()
@@ -33,6 +36,18 @@ class IndexManagerTest extends BaseTest
         $this->assertFalse($this->indexManager->isSearchable(BaseTest::class));
         $this->assertFalse($this->indexManager->isSearchable(Image::class));
         $this->assertTrue($this->indexManager->isSearchable(ContentAggregator::class));
+        $this->assertTrue($this->indexManager->isSearchable(Tag::class));
+    }
+
+    public function testGetSearchableEntities()
+    {
+        $result = $this->indexManager->getSearchableEntities();
+        $this->assertEquals([
+            Post::class,
+            Comment::class,
+            ContentAggregator::class,
+            Tag::class,
+        ], $result);
     }
 
     /**
@@ -40,23 +55,26 @@ class IndexManagerTest extends BaseTest
      */
     public function testExceptionIfNoId()
     {
-        $om = $this->get('doctrine')->getManager();
+        $this->entityManager = $this->get('doctrine')->getManager();
 
-        $this->indexManager->index(new Post(), $om);
+        $this->indexManager->index(new Post(), $this->entityManager);
     }
 
     public function testIndexedDataAreSearchable()
     {
-        $om = $this->get('doctrine')->getManager();
-
         $posts = [];
         for ($i = 0; $i < 3; $i++) {
             $posts[] = $this->createPost($i);
         }
 
         // index Data
-        $this->indexManager->index($this->createPost(10), $om);
-        $this->indexManager->index(array_merge($posts, [$this->createComment(1), $this->createImage(1)]), $om);
+        $this->indexManager->index($this->createPost(10), $this->entityManager);
+        $result = $this->indexManager->index(array_merge($posts, [$this->createComment(1), $this->createImage(1)]), $this->entityManager);
+        foreach ($result as $chunk) {
+            foreach ($chunk as $indexName => $apiResponse) {
+                $apiResponse->wait();
+            }
+        }
 
         // RawSearch
         $searchPost = $this->indexManager->rawSearch('', Post::class);
@@ -92,8 +110,6 @@ class IndexManagerTest extends BaseTest
 
     public function testIndexedDataCanBeRemoved()
     {
-        $om = $this->get('doctrine')->getManager();
-
         $posts = [];
         for ($i = 0; $i < 3; $i++) {
             $posts[] = $this->createPost($i);
@@ -103,10 +119,20 @@ class IndexManagerTest extends BaseTest
         $image   = $this->createImage(1);
 
         // index Data
-        $this->indexManager->index(array_merge($posts, [$comment, $image]), $om);
+        $result = $this->indexManager->index(array_merge($posts, [$comment, $image]), $this->entityManager);
+        foreach ($result as $chunk) {
+            foreach ($chunk as $indexName => $apiResponse) {
+                $apiResponse->wait();
+            }
+        }
 
         // Remove the last post.
-        $this->indexManager->remove(end($posts), $om);
+        $result = $this->indexManager->remove(end($posts), $this->entityManager);
+        foreach ($result as $chunk) {
+            foreach ($chunk as $indexName => $apiResponse) {
+                $apiResponse->wait();
+            }
+        }
 
         // Expects 2 posts and 1 comment.
         $this->assertEquals(2, $this->indexManager->count('', Post::class));
@@ -116,7 +142,12 @@ class IndexManagerTest extends BaseTest
         $this->assertEquals(4, $this->indexManager->count('', ContentAggregator::class));
 
         // Remove the only comment that exists.
-        $this->indexManager->remove($comment, $om);
+        $result = $this->indexManager->remove($comment, $this->entityManager);
+        foreach ($result as $chunk) {
+            foreach ($chunk as $indexName => $apiResponse) {
+                $apiResponse->wait();
+            }
+        }
 
         // Expects 2 posts and 0 comments.
         $this->assertEquals(2, $this->indexManager->count('', Post::class));
@@ -126,7 +157,12 @@ class IndexManagerTest extends BaseTest
         $this->assertEquals(3, $this->indexManager->count('', ContentAggregator::class));
 
         // Remove the only image that exists.
-        $this->indexManager->remove($image, $om);
+        $result = $this->indexManager->remove($image, $this->entityManager);
+        foreach ($result as $chunk) {
+            foreach ($chunk as $indexName => $apiResponse) {
+                $apiResponse->wait();
+            }
+        }
 
         // The content aggregator expects 2 + 0 + 0.
         $this->assertEquals(2, $this->indexManager->count('', ContentAggregator::class));
@@ -134,12 +170,15 @@ class IndexManagerTest extends BaseTest
 
     public function testRawSearchRawContent()
     {
-        $om = $this->get('doctrine')->getManager();
-
         $postIndexed = $this->createPost(10);
         $postIndexed->setTitle('Foo Bar');
 
-        $this->indexManager->index($postIndexed, $om);
+        $result = $this->indexManager->index($postIndexed, $this->entityManager);
+        foreach ($result as $chunk) {
+            foreach ($chunk as $indexName => $apiResponse) {
+                $apiResponse->wait();
+            }
+        }
 
         // Using entity.
         $results = $this->indexManager->rawSearch('Foo Bar', Post::class);
@@ -152,8 +191,6 @@ class IndexManagerTest extends BaseTest
 
     public function testIndexIfCondition()
     {
-        $om = $this->get('doctrine')->getManager();
-
         $posts = [];
         for ($i = 0; $i < 3; $i++) {
             $posts[] = $this->createPost($i);
@@ -165,9 +202,25 @@ class IndexManagerTest extends BaseTest
         $posts[] = $post;
 
         // index Data: Total 4 posts.
-        $this->indexManager->index($posts, $om);
+        $result = $this->indexManager->index($posts, $this->entityManager);
+        foreach ($result as $chunk) {
+            foreach ($chunk as $indexName => $apiResponse) {
+                $apiResponse->wait();
+            }
+        }
 
         // The content aggregator expects 3 ( not 4, because of the index_if condition ).
         $this->assertEquals(3, $this->indexManager->count('', ContentAggregator::class));
+    }
+
+    /**
+     * @expectedException \Exception
+     */
+    public function testClearUnsearchableEntity()
+    {
+        $image = $this->createSearchableImage();
+
+        $this->indexManager->index([$image], $this->entityManager);
+        $this->indexManager->clear(Image::class);
     }
 }

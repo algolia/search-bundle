@@ -6,8 +6,6 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
 /**
- * Class SearchSettingsBackupCommand.
- *
  * @internal
  */
 final class SearchSettingsBackupCommand extends SearchSettingsCommand
