@@ -22,8 +22,10 @@ final class Configuration implements ConfigurationInterface
             $treeBuilder = new TreeBuilder('algolia_search');
             $rootNode    = $treeBuilder->getRootNode();
         } else {
+            // @codeCoverageIgnoreStart
             $treeBuilder = new TreeBuilder();
             $rootNode    = $treeBuilder->root('algolia_search');
+            // @codeCoverageIgnoreEnd
         }
 
         $rootNode

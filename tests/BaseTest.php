@@ -121,4 +121,17 @@ class BaseTest extends KernelTestCase
             $application->run($input, new ConsoleOutput());
         }
     }
+
+    protected function getFileName($indexName, $type)
+    {
+        return sprintf('%s/%s-%s.json', $this->get('search.index_manager')->getConfiguration()['settingsDirectory'], $indexName, $type);
+    }
+
+    protected function getDefaultConfig()
+    {
+        return [
+            'hitsPerPage' => 20,
+            'maxValuesPerFacet' => 100,
+        ];
+    }
 }

@@ -14,20 +14,17 @@ class SettingsTest extends BaseTest
 
     /** @var AlgoliaSettingsManager */
     private $settingsManager;
-
-    private $settingsDir = __DIR__ . '/../cache/settings';
-
     private $configIndexes;
+    private $indexName;
 
     public function setUp()
     {
         parent::setUp();
 
-        $this->client = $this->get('search.client');
-
+        $this->client          = $this->get('search.client');
         $this->settingsManager = $this->get('search.settings_manager');
-
-        $this->configIndexes = $this->get('search.index_manager')->getConfiguration()['indices'];
+        $this->configIndexes   = $this->get('search.index_manager')->getConfiguration()['indices'];
+        $this->indexName       = 'posts';
     }
 
     public function tearDown()
@@ -37,22 +34,21 @@ class SettingsTest extends BaseTest
 
     public function testBackup()
     {
-        $this->rrmdir($this->settingsDir);
+        $this->rrmdir($this->get('search.index_manager')->getConfiguration()['settingsDirectory']);
         $settingsToUpdate = [
             'hitsPerPage'       => 51,
             'maxValuesPerFacet' => 99,
         ];
-        $index = $this->client->initIndex($this->getPrefix() . 'posts');
-        $task  = $index->setSettings($settingsToUpdate);
-        $index->waitTask($task['taskID']);
+        $index = $this->client->initIndex($this->getPrefix() . $this->indexName);
+        $index->setSettings($settingsToUpdate)->wait();
 
-        $message = $this->settingsManager->backup(['indices' => ['posts']]);
+        $message = $this->settingsManager->backup(['indices' => [$this->indexName]]);
 
         $this->assertContains('Saved settings for', $message[0]);
-        $this->assertTrue(file_exists($this->settingsDir . '/posts-settings.json'));
+        $this->assertFileExists($this->getFileName($this->indexName, 'settings'));
 
         $savedSettings = json_decode(file_get_contents(
-            $this->settingsDir . '/posts-settings.json'
+            $this->getFileName($this->indexName, 'settings')
         ), true);
 
         $this->assertEquals($settingsToUpdate['hitsPerPage'], $savedSettings['hitsPerPage']);
@@ -61,7 +57,7 @@ class SettingsTest extends BaseTest
 
     public function testBackupWithoutIndices()
     {
-        $this->rrmdir($this->settingsDir);
+        $this->rrmdir($this->get('search.index_manager')->getConfiguration()['settingsDirectory']);
         $settingsToUpdate = [
             'hitsPerPage'       => 51,
             'maxValuesPerFacet' => 99,
@@ -69,8 +65,7 @@ class SettingsTest extends BaseTest
 
         foreach ($this->configIndexes as $indexName => $configIndex) {
             $index = $this->client->initIndex($this->getPrefix() . $indexName);
-            $task  = $index->setSettings($settingsToUpdate);
-            $index->waitTask($task['taskID']);
+            $index->setSettings($settingsToUpdate)->wait();
         }
 
         $message = $this->settingsManager->backup(['indices' => []]);
@@ -78,10 +73,10 @@ class SettingsTest extends BaseTest
         $this->assertContains('Saved settings for', $message[0]);
 
         foreach ($this->configIndexes as $indexName => $configIndex) {
-            $this->assertFileExists($this->settingsDir . '/' . $indexName . '-settings.json');
+            $this->assertFileExists($this->getFileName($this->indexName, 'settings'));
 
             $savedSettings = json_decode(file_get_contents(
-                $this->settingsDir . '/' . $indexName . '-settings.json'
+                $this->getFileName($indexName, 'settings')
             ), true);
 
             $this->assertEquals($settingsToUpdate['hitsPerPage'], $savedSettings['hitsPerPage']);
@@ -98,16 +93,15 @@ class SettingsTest extends BaseTest
             'hitsPerPage'       => 12,
             'maxValuesPerFacet' => 100,
         ];
-        $index = $this->client->initIndex($this->getPrefix() . 'posts');
-        $task  = $index->setSettings($settingsToUpdate);
-        $index->waitTask($task['taskID']);
+        $index = $this->client->initIndex($this->getPrefix() . $this->indexName);
+        $index->setSettings($settingsToUpdate)->wait();
 
-        $message = $this->settingsManager->push(['indices' => ['posts']]);
+        $message = $this->settingsManager->push(['indices' => [$this->indexName]]);
 
         $this->assertContains('Pushed settings for', $message[0]);
 
         $savedSettings = json_decode(file_get_contents(
-            $this->settingsDir . '/posts-settings.json'
+            $this->getFileName($this->indexName, 'settings')
         ), true);
 
         for ($i = 0; $i < 5; $i++) {
@@ -131,8 +125,7 @@ class SettingsTest extends BaseTest
 
         foreach ($this->configIndexes as $indexName => $configIndex) {
             $index = $this->client->initIndex($this->getPrefix() . $indexName);
-            $task  = $index->setSettings($settingsToUpdate);
-            $index->waitTask($task['taskID']);
+            $index->setSettings($settingsToUpdate)->wait();
         }
 
         $message = $this->settingsManager->push(['indices' => []]);
@@ -141,7 +134,7 @@ class SettingsTest extends BaseTest
 
         foreach ($this->configIndexes as $indexName => $configIndex) {
             $savedSettings = json_decode(file_get_contents(
-                $this->settingsDir . '/' . $indexName . '-settings.json'
+                $this->getFileName($indexName, 'settings')
             ), true);
 
             for ($i = 0; $i < 5; $i++) {

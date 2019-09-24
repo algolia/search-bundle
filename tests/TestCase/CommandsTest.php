@@ -19,6 +19,7 @@ class CommandsTest extends BaseTest
     protected $application;
     protected $indexName;
     protected $platform;
+    protected $index;
 
     public function setUp()
     {
@@ -29,6 +30,12 @@ class CommandsTest extends BaseTest
         $this->connection   = $this->get('doctrine')->getConnection();
         $this->platform     = $this->connection->getDatabasePlatform();
         $this->indexName    = 'posts';
+        $this->index        = $this->client->initIndex($this->getPrefix() . $this->indexName);
+        $this->index->setSettings($this->getDefaultConfig())->wait();
+
+        $contentsIndexName = 'contents';
+        $contentsIndex     = $this->client->initIndex($this->getPrefix() . $contentsIndexName);
+        $contentsIndex->setSettings($this->getDefaultConfig())->wait();
 
         $this->application = new Application(self::$kernel);
         $this->refreshDb($this->application);
@@ -112,11 +119,17 @@ class CommandsTest extends BaseTest
         $output = $commandTester->getDisplay();
         $this->assertContains('Done!', $output);
 
-        sleep(2);
+        $iteration      = 0;
+        $expectedResult = 3;
+        do {
+            $searchPost = $this->indexManager->rawSearch('', ContentAggregator::class);
+            sleep(1);
+            $iteration++;
+        } while (count($searchPost['hits']) !== $expectedResult || $iteration < 10);
 
         // Ensure posts were imported into contents index
         $searchPost = $this->indexManager->rawSearch('', ContentAggregator::class);
-        $this->assertCount(3, $searchPost['hits']);
+        $this->assertCount($expectedResult, $searchPost['hits']);
         // clearup table
         $this->connection->executeUpdate($this->platform->getTruncateTableSQL($this->indexName, true));
     }
@@ -151,11 +164,16 @@ class CommandsTest extends BaseTest
         $output = $commandTester->getDisplay();
         $this->assertContains('Done!', $output);
 
-        sleep(2);
-
         // Ensure posts were imported
-        $searchPost = $this->indexManager->rawSearch('', Post::class);
-        $this->assertCount(3, $searchPost['hits']);
+        $iteration      = 0;
+        $expectedResult = 3;
+        do {
+            $searchPost = $this->indexManager->rawSearch('', Post::class);
+            sleep(1);
+            $iteration++;
+        } while (count($searchPost['hits']) !== $expectedResult || $iteration < 10);
+
+        $this->assertCount($expectedResult, $searchPost['hits']);
         // clearup table
         $this->connection->executeUpdate($this->platform->getTruncateTableSQL($this->indexName, true));
     }
@@ -166,8 +184,7 @@ class CommandsTest extends BaseTest
             'hitsPerPage'       => 51,
             'maxValuesPerFacet' => 99,
         ];
-        $index = $this->client->initIndex($this->getPrefix() . $this->indexName);
-        $index->setSettings($settingsToUpdate)->wait();
+        $this->index->setSettings($settingsToUpdate)->wait();
         $command       = $this->application->find('search:settings:backup');
         $commandTester = new CommandTester($command);
         $commandTester->execute([
@@ -192,9 +209,8 @@ class CommandsTest extends BaseTest
             'hitsPerPage'       => 50,
             'maxValuesPerFacet' => 100,
         ];
-        $index = $this->client->initIndex($this->getPrefix() . $this->indexName);
-        $index->setSettings($settingsToUpdate)->wait();
-        $settings     = $index->getSettings();
+        $this->index->setSettings($settingsToUpdate)->wait();
+        $settings     = $this->index->getSettings();
         $settingsFile = $this->getFileName($this->indexName, 'settings');
 
         $settingsFileContent = json_decode(file_get_contents($settingsFile), true);
@@ -212,20 +228,15 @@ class CommandsTest extends BaseTest
         $output = $commandTester->getDisplay();
         $this->assertContains('Pushed settings', $output);
 
-        // we use a trick here in case the previous task is not finished
-        // it shouldn't take more than 5 iterations to have the settings refreshed
+        // check if the settings were imported
         $iteration = 0;
         do {
-            $newSettings = $index->getSettings();
+            $newSettings = $this->index->getSettings();
+            sleep(1);
             $iteration++;
-        } while ($newSettings['hitsPerPage'] !== $settingsFileContent['hitsPerPage'] || $iteration < 5);
+        } while ($newSettings['hitsPerPage'] !== $settingsFileContent['hitsPerPage'] || $iteration < 10);
 
         $this->assertEquals($newSettings['hitsPerPage'], $settingsFileContent['hitsPerPage']);
         $this->assertEquals($newSettings['maxValuesPerFacet'], $settingsFileContent['maxValuesPerFacet']);
-    }
-
-    private function getFileName($indexName, $type)
-    {
-        return sprintf('%s/%s-%s.json', $this->get('search.index_manager')->getConfiguration()['settingsDirectory'], $indexName, $type);
     }
 }

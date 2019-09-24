@@ -21,6 +21,11 @@ class DoctrineTest extends BaseTest
         $application = new Application(self::$kernel);
         $this->refreshDb($application);
         $this->indexManager = $this->get('search.index_manager');
+
+        $client        = $this->get('search.client');
+        $indexName     = 'posts';
+        $index         = $client->initIndex($this->getPrefix() . $indexName);
+        $index->setSettings($this->getDefaultConfig())->wait();
     }
 
     public function tearDown()
@@ -38,10 +43,16 @@ class DoctrineTest extends BaseTest
             $em->persist($post);
         }
         $em->flush();
-        sleep(2);
 
-        $count = $this->indexManager->count('', Post::class);
-        $this->assertEquals(5, $count);
+        $iteration     = 0;
+        $expectedCount = 5;
+        do {
+            $count = $this->indexManager->count('', Post::class);
+            sleep(1);
+            $iteration++;
+        } while ($count !== $expectedCount || $iteration === 10);
+
+        $this->assertEquals($expectedCount, $count);
 
         $raw = $this->indexManager->rawSearch('', Post::class);
         $this->assertArrayHasKey('query', $raw);
@@ -67,8 +78,16 @@ class DoctrineTest extends BaseTest
         $this->assertEquals($posts[4]->getTitle(), 'New Title');
 
         $em->remove($posts[0]);
-        sleep(2);
-        $this->assertEquals(4, $this->indexManager->count('', Post::class));
+
+        $iteration     = 0;
+        $expectedCount = 4;
+        do {
+            $count = $this->indexManager->count('', Post::class);
+            sleep(1);
+            $iteration++;
+        } while ($count !== $expectedCount || $iteration === 10);
+
+        $this->assertEquals($count, $expectedCount);
     }
 
     public function testIndexIfFeature()
@@ -76,7 +95,7 @@ class DoctrineTest extends BaseTest
         $tags = [
             new Tag(['id' => 1, 'name' => 'Tag #1']),
             new Tag(['id' => 2, 'name' => 'Tag #2']),
-            new Tag(['id' => rand(10, 42), 'public' => false]),
+            new Tag(['id' => rand(10, 42), 'name' => 'Tag #3', 'public' => false]),
         ];
         $em = $this->get('doctrine')->getManager();
 

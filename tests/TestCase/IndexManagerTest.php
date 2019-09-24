@@ -8,6 +8,7 @@ use Algolia\SearchBundle\TestApp\Entity\ContentAggregator;
 use Algolia\SearchBundle\TestApp\Entity\Post;
 use Algolia\SearchBundle\TestApp\Entity\Image;
 use Algolia\SearchBundle\TestApp\Entity\Tag;
+use Algolia\SearchBundle\TestApp\Entity\Link;
 
 class IndexManagerTest extends BaseTest
 {
@@ -37,6 +38,7 @@ class IndexManagerTest extends BaseTest
         $this->assertFalse($this->indexManager->isSearchable(Image::class));
         $this->assertTrue($this->indexManager->isSearchable(ContentAggregator::class));
         $this->assertTrue($this->indexManager->isSearchable(Tag::class));
+        $this->assertTrue($this->indexManager->isSearchable(Link::class));
     }
 
     public function testGetSearchableEntities()
@@ -47,6 +49,7 @@ class IndexManagerTest extends BaseTest
             Comment::class,
             ContentAggregator::class,
             Tag::class,
+            Link::class,
         ], $result);
     }
 
@@ -222,5 +225,11 @@ class IndexManagerTest extends BaseTest
 
         $this->indexManager->index([$image], $this->entityManager);
         $this->indexManager->clear(Image::class);
+    }
+
+    public function testShouldNotBeIndexed()
+    {
+        $link = new Link();
+        $this->assertFalse($this->indexManager->shouldBeIndexed($link));
     }
 }

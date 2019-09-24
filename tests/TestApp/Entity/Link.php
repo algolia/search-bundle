@@ -9,9 +9,9 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="tags")
+ * @ORM\Table(name="links")
  */
-class Tag implements NormalizableInterface
+class Link implements NormalizableInterface
 {
     /**
      * @var int
@@ -21,37 +21,20 @@ class Tag implements NormalizableInterface
      */
     private $id;
 
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="string")
-     */
     private $name;
 
-    private $count;
-
-    private $public;
-
-    private $publishedAt;
+    private $url;
 
     public function __construct(array $attributes = [])
     {
         $this->id          = isset($attributes['id']) ? $attributes['id'] : null;
         $this->name        = isset($attributes['name']) ? $attributes['name'] : 'This is a tag';
-        $this->count       = isset($attributes['count']) ? $attributes['count'] : 0;
-        $this->public      = isset($attributes['public']) ? $attributes['public'] : true;
-        $this->publishedAt = isset($attributes['publishedAt']) ? $attributes['publishedAt'] : new \DateTime();
+        $this->url         = isset($attributes['url']) ? $attributes['url'] : null;
     }
 
-    public function isPublic()
+    private function isSponsored()
     {
-        return $this->public;
-    }
-
-    public function setPublic($public)
-    {
-        $this->public = $public;
-
-        return $this;
+        return false;
     }
 
     public function normalize(NormalizerInterface $normalizer, $format = null, array $context = [])
@@ -60,8 +43,7 @@ class Tag implements NormalizableInterface
             return [
                 'id'          => $this->id,
                 'name'        => 'this test is correct',
-                'count'       => 10,
-                'publishedAt' => $normalizer->normalize($this->publishedAt),
+                'url'         => 'https://algolia.com',
             ];
         }
     }
