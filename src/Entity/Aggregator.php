@@ -27,10 +27,8 @@ abstract class Aggregator implements NormalizableInterface
     protected $entity;
 
     /**
-     * Aggregator constructor.
-     *
-     * @param object $entity
-     * @param array  $entityIdentifierValues
+     * @param object             $entity
+     * @param array<int, string> $entityIdentifierValues
      */
     public function __construct($entity, array $entityIdentifierValues)
     {
@@ -58,7 +56,7 @@ abstract class Aggregator implements NormalizableInterface
      *
      * @param string $objectID
      *
-     * @return object
+     * @return string
      */
     public static function getEntityIdFromObjectID($objectID)
     {
@@ -70,7 +68,9 @@ abstract class Aggregator implements NormalizableInterface
      *
      * @param string $objectID
      *
-     * @return object
+     * @return string
+     *
+     * @throws EntityNotFoundInObjectID
      */
     public static function getEntityClassFromObjectID($objectID)
     {

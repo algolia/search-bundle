@@ -13,8 +13,14 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 final class SearchClearCommand extends IndexCommand
 {
+    /**
+     * @var string
+     */
     protected static $defaultName = 'search:clear';
 
+    /**
+     * @return void
+     */
     protected function configure()
     {
         $this
@@ -27,6 +33,12 @@ final class SearchClearCommand extends IndexCommand
             );
     }
 
+    /**
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @return int|null
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $indexToClear = $this->getEntitiesFromArgs($input, $output);
@@ -42,5 +54,7 @@ final class SearchClearCommand extends IndexCommand
         }
 
         $output->writeln('<info>Done!</info>');
+
+        return null;
     }
 }

@@ -12,8 +12,6 @@ final class AlgoliaEngine
     private $client;
 
     /**
-     * AlgoliaEngine constructor.
-     *
      * @param SearchClient $client
      */
     public function __construct(SearchClient $client)
@@ -40,7 +38,7 @@ final class AlgoliaEngine
         $data = [];
         foreach ($searchableEntities as $entity) {
             $searchableArray = $entity->getSearchableArray();
-            if (empty($searchableArray)) {
+            if ($searchableArray === null || count($searchableArray) === 0) {
                 continue;
             }
 
@@ -87,7 +85,8 @@ final class AlgoliaEngine
 
         $data = [];
         foreach ($searchableEntities as $entity) {
-            if (empty($entity->getSearchableArray())) {
+            $searchableArray = $entity->getSearchableArray();
+            if ($searchableArray === null || count($searchableArray) === 0) {
                 continue;
             }
             $indexName = $entity->getIndexName();

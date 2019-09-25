@@ -15,6 +15,9 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 final class SearchImportCommand extends IndexCommand
 {
+    /**
+     * @var string
+     */
     protected static $defaultName = 'search:import';
 
     /**
@@ -22,6 +25,10 @@ final class SearchImportCommand extends IndexCommand
      */
     private $managerRegistry;
 
+    /**
+     * @param IndexManager    $indexManager
+     * @param ManagerRegistry $managerRegistry
+     */
     public function __construct(IndexManager $indexManager, ManagerRegistry $managerRegistry)
     {
         parent::__construct($indexManager);
@@ -29,6 +36,9 @@ final class SearchImportCommand extends IndexCommand
         $this->managerRegistry = $managerRegistry;
     }
 
+    /**
+     * @return void
+     */
     protected function configure()
     {
         $this
@@ -41,6 +51,12 @@ final class SearchImportCommand extends IndexCommand
             );
     }
 
+    /**
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @return int|null
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $entitiesToIndex = $this->getEntitiesFromArgs($input, $output);
@@ -89,8 +105,15 @@ final class SearchImportCommand extends IndexCommand
         }
 
         $output->writeln('<info>Done!</info>');
+
+        return null;
     }
 
+    /**
+     * @param array<int, array> $batch
+     *
+     * @return array<string, int>
+     */
     private function formatIndexingResponse($batch)
     {
         $formattedResponse = [];

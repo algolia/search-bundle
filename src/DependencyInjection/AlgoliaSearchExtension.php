@@ -20,7 +20,12 @@ use Symfony\Component\HttpKernel\Kernel;
 final class AlgoliaSearchExtension extends Extension
 {
     /**
-     * {@inheritdoc}
+     * @param array            $configs
+     * @param ContainerBuilder $container
+     *
+     * @throws \Exception
+     *
+     * @return void
      */
     public function load(array $configs, ContainerBuilder $container)
     {

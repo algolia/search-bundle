@@ -4,4 +4,7 @@
 .php_cs.cache
 /var/
 .idea
-tests/coverage
+/tests/coverage
+/tests/QualityTools/vendor/
+/tests/QualityTools/.idea/
+/tests/QualityTools/composer.lock

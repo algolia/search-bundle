@@ -7,15 +7,30 @@ use Symfony\Component\Filesystem\Filesystem;
 
 final class AlgoliaSettingsManager
 {
+    /**
+     * @var SearchClient
+     */
     private $algolia;
+    /**
+     * @var array<string, array|int|string>
+     */
     private $config;
 
+    /**
+     * @param SearchClient                    $algolia
+     * @param array<string, array|int|string> $config
+     */
     public function __construct(SearchClient $algolia, array $config)
     {
         $this->algolia = $algolia;
         $this->config  = $config;
     }
 
+    /**
+     * @param array<string, array|int|string> $params
+     *
+     * @return array<int, string>
+     */
     public function backup(array $params)
     {
         $indices = $this->getIndexNames($params['indices']);
@@ -39,6 +54,11 @@ final class AlgoliaSettingsManager
         return $output;
     }
 
+    /**
+     * @param array<string, array|int|string> $params
+     *
+     * @return array<int, string>
+     */
     public function push(array $params)
     {
         $indices = $this->getIndexNames($params['indices']);
@@ -59,9 +79,14 @@ final class AlgoliaSettingsManager
         return $output;
     }
 
+    /**
+     * @param array<int, string> $indices
+     *
+     * @return array<int, string>
+     */
     private function getIndexNames($indices)
     {
-        if (empty($indices)) {
+        if (count($indices) === 0) {
             $indices = array_keys($this->config['indices']);
         }
 
@@ -72,6 +97,12 @@ final class AlgoliaSettingsManager
         return $indices;
     }
 
+    /**
+     * @param string $indexName
+     * @param string $type
+     *
+     * @return string
+     */
     private function getFileName($indexName, $type)
     {
         $indexName = $this->removePrefixFromIndexName($indexName);
@@ -79,6 +110,11 @@ final class AlgoliaSettingsManager
         return sprintf('%s/%s-%s.json', $this->config['settingsDirectory'], $indexName, $type);
     }
 
+    /**
+     * @param string $indexName
+     *
+     * @return string|string[]|null
+     */
     private function removePrefixFromIndexName($indexName)
     {
         return preg_replace('/^' . preg_quote($this->config['prefix'], '/') . '/', '', $indexName);

@@ -1,5 +1,15 @@
+includes:
+    - tests/QualityTools/vendor/phpstan/phpstan-strict-rules/rules.neon
+    - tests/QualityTools/vendor/localheinz/phpstan-rules/rules.neon
+    - tests/QualityTools/vendor/thecodingmachine/phpstan-strict-rules/phpstan-strict-rules.neon
+
 parameters:
-  level: 1
-  paths:
-    - %rootDir%/../../../src
-    - %rootDir%/../../../tests
+    level: 3
+    paths:
+        - src
+    ignoreErrors:
+        - '#In (method|function).*type-hinted.*More info#'
+        - '#In (method|function).*return type can be added..*More info#'
+        - '#(Method|Function|Constructor).*has parameter.*with.*default value.#'
+        - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition::children\(\).#'
+        - '#Call to an undefined method Doctrine\\Common\\Persistence\\ObjectRepository::clear\(\).#'

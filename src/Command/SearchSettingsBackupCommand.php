@@ -10,8 +10,14 @@ use Symfony\Component\Console\Input\InputOption;
  */
 final class SearchSettingsBackupCommand extends SearchSettingsCommand
 {
+    /**
+     * @var string
+     */
     protected static $defaultName = 'search:settings:backup';
 
+    /**
+     * @return void
+     */
     protected function configure()
     {
         $this
@@ -24,6 +30,11 @@ final class SearchSettingsBackupCommand extends SearchSettingsCommand
             );
     }
 
+    /**
+     * @param array<string, array> $params
+     *
+     * @return array<int, string>
+     */
     protected function handle($params)
     {
         return $this->settingsManager->backup($params);

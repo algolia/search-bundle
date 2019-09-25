@@ -57,8 +57,6 @@ final class IndexManager
     private $normalizer;
 
     /**
-     * IndexManager constructor.
-     *
      * @param mixed                           $normalizer
      * @param AlgoliaEngine                   $engine
      * @param array<string, array|int|string> $configuration
@@ -88,7 +86,7 @@ final class IndexManager
             $className = ClassUtils::getClass($className);
         }
 
-        return in_array($className, $this->searchableEntities);
+        return in_array($className, $this->searchableEntities, true);
     }
 
     /**
@@ -131,7 +129,7 @@ final class IndexManager
             }
         }
 
-        if (!empty($entitiesToBeRemoved)) {
+        if (count($entitiesToBeRemoved) > 0) {
             $this->remove($entitiesToBeRemoved, $objectManager);
         }
 
@@ -262,9 +260,10 @@ final class IndexManager
      */
     public function shouldBeIndexed($entity)
     {
-        $className = ClassUtils::getClass($entity);
+        $className    = ClassUtils::getClass($entity);
+        $propertyPath = $this->indexIfMapping[$className];
 
-        if ($propertyPath = $this->indexIfMapping[$className]) {
+        if ($propertyPath !== null) {
             if ($this->propertyAccessor->isReadable($entity, $propertyPath)) {
                 return (bool) $this->propertyAccessor->getValue($entity, $propertyPath);
             }
@@ -276,7 +275,7 @@ final class IndexManager
     }
 
     /**
-     * @param $className
+     * @param string $className
      *
      * @return bool
      */

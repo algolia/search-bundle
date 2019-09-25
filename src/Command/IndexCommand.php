@@ -12,8 +12,14 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 abstract class IndexCommand extends Command
 {
+    /**
+     * @var IndexManager
+     */
     protected $indexManager;
 
+    /**
+     * @param IndexManager $indexManager
+     */
     public function __construct(IndexManager $indexManager)
     {
         $this->indexManager = $indexManager;
@@ -21,6 +27,12 @@ abstract class IndexCommand extends Command
         parent::__construct();
     }
 
+    /**
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @return array<string, string>
+     */
     protected function getEntitiesFromArgs(InputInterface $input, OutputInterface $output)
     {
         $entities   = [];
@@ -32,7 +44,7 @@ abstract class IndexCommand extends Command
 
         $config = $this->indexManager->getConfiguration();
 
-        if (empty($indexNames)) {
+        if (count($indexNames) === 0) {
             $indexNames = array_keys($config['indices']);
         }
 

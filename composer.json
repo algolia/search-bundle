@@ -58,7 +58,10 @@
         "sort-packages": true
     },
     "scripts": {
+        "test:install": "composer install -d tests/QualityTools/",
+        "test:update": "composer update -d tests/QualityTools/",
         "lint": "php-cs-fixer fix -v",
+        "test:style": "tests/QualityTools/vendor/bin/phpstan analyse --ansi",
         "test:unit": "phpunit --colors=always --verbose",
         "test:lint": "php-cs-fixer fix -v --dry-run",
         "test": [

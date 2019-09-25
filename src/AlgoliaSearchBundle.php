@@ -10,6 +10,9 @@ final class AlgoliaSearchBundle extends Bundle
 {
     const VERSION = '4.0.0';
 
+    /**
+     * @return void
+     */
     public function boot()
     {
         parent::boot();

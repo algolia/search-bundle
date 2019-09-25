@@ -130,7 +130,7 @@ class BaseTest extends KernelTestCase
     protected function getDefaultConfig()
     {
         return [
-            'hitsPerPage' => 20,
+            'hitsPerPage'       => 20,
             'maxValuesPerFacet' => 100,
         ];
     }

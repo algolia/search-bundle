@@ -12,8 +12,14 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 abstract class SearchSettingsCommand extends Command
 {
+    /**
+     * @var AlgoliaSettingsManager
+     */
     protected $settingsManager;
 
+    /**
+     * @param AlgoliaSettingsManager $settingsManager
+     */
     public function __construct(AlgoliaSettingsManager $settingsManager)
     {
         $this->settingsManager = $settingsManager;
@@ -21,6 +27,12 @@ abstract class SearchSettingsCommand extends Command
         parent::__construct();
     }
 
+    /**
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @return int|null
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if ($indexList = $input->getOption('indices')) {
@@ -35,7 +47,14 @@ abstract class SearchSettingsCommand extends Command
         $message = $this->handle($params);
 
         $output->writeln($message);
+
+        return null;
     }
 
+    /**
+     * @param array<string, array> $params
+     *
+     * @return array<int, string>
+     */
     abstract protected function handle($params);
 }
