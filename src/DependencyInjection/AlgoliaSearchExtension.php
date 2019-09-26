@@ -2,7 +2,8 @@
 
 namespace Algolia\SearchBundle\DependencyInjection;
 
-use Algolia\SearchBundle\IndexManager;
+use Algolia\SearchBundle\SearchService;
+use Algolia\SearchBundle\Engine;
 use Algolia\SearchBundle\Settings\AlgoliaSettingsManager;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
@@ -42,7 +43,7 @@ final class AlgoliaSearchExtension extends Extension
         $rootDir = $container->getParameterBag()->get('kernel.project_dir');
 
         if (is_null($config['settingsDirectory'])) {
-            if (3 == Kernel::MAJOR_VERSION && !is_dir($rootDir . '/config/')) {
+            if (Kernel::MAJOR_VERSION >= 3 && !is_dir($rootDir . '/config/')) {
                 $config['settingsDirectory'] = '/app/Resources/SearchBundle/settings/';
             } else {
                 $config['settingsDirectory'] = '/config/settings/algolia_search/';
@@ -57,11 +58,18 @@ final class AlgoliaSearchExtension extends Extension
             $container->removeDefinition('search.search_indexer_subscriber');
         }
 
+        $engineDefinition = new Definition(
+            Engine::class,
+            [
+                new Reference('search.client'),
+            ]
+        );
+
         $indexManagerDefinition = (new Definition(
-            IndexManager::class,
+            SearchService::class,
             [
                 new Reference($config['serializer']),
-                new Reference('search.engine'),
+                $engineDefinition,
                 $config,
             ]
         ))->setPublic(true);
@@ -74,7 +82,7 @@ final class AlgoliaSearchExtension extends Extension
             ]
         ))->setPublic(true);
 
-        $container->setDefinition('search.index_manager', $indexManagerDefinition);
+        $container->setDefinition('search.service', $indexManagerDefinition);
         $container->setDefinition('search.settings_manager', $settingsManagerDefinition);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Algolia\SearchBundle\Command;
 
-use Algolia\SearchBundle\IndexManager;
+use Algolia\SearchBundle\SearchService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -13,14 +13,14 @@ use Symfony\Component\Console\Output\OutputInterface;
 abstract class IndexCommand extends Command
 {
     /**
-     * @var IndexManager
+     * @var SearchService
      */
     protected $indexManager;
 
     /**
-     * @param IndexManager $indexManager
+     * @param SearchService $indexManager
      */
-    public function __construct(IndexManager $indexManager)
+    public function __construct(SearchService $indexManager)
     {
         $this->indexManager = $indexManager;
 

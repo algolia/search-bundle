@@ -21,8 +21,7 @@ jobs:
     include:
         - stage: phpstan
           php: 7.2
-          before_install: composer require --no-update phpstan/phpstan "^0.10.6"
-          script: vendor/bin/phpstan analyse
+          script: composer test:install && composer test:style
 
 install:
     - wget https://alg.li/algolia-keys && chmod +x algolia-keys

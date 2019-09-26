@@ -23,18 +23,18 @@ class SettingsTest extends BaseTest
 
         $this->client          = $this->get('search.client');
         $this->settingsManager = $this->get('search.settings_manager');
-        $this->configIndexes   = $this->get('search.index_manager')->getConfiguration()['indices'];
+        $this->configIndexes   = $this->get('search.service')->getConfiguration()['indices'];
         $this->indexName       = 'posts';
     }
 
     public function tearDown()
     {
-        $this->get('search.index_manager')->delete(Post::class);
+        $this->get('search.service')->delete(Post::class);
     }
 
     public function testBackup()
     {
-        $this->rrmdir($this->get('search.index_manager')->getConfiguration()['settingsDirectory']);
+        $this->rrmdir($this->get('search.service')->getConfiguration()['settingsDirectory']);
         $settingsToUpdate = [
             'hitsPerPage'       => 51,
             'maxValuesPerFacet' => 99,
@@ -57,7 +57,7 @@ class SettingsTest extends BaseTest
 
     public function testBackupWithoutIndices()
     {
-        $this->rrmdir($this->get('search.index_manager')->getConfiguration()['settingsDirectory']);
+        $this->rrmdir($this->get('search.service')->getConfiguration()['settingsDirectory']);
         $settingsToUpdate = [
             'hitsPerPage'       => 51,
             'maxValuesPerFacet' => 99,

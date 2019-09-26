@@ -9,7 +9,7 @@
         <prototype namespace="Algolia\SearchBundle\Command\" resource="../../Command" autowire="true" autoconfigure="true" />
 
         <service id="search.search_indexer_subscriber" class="Algolia\SearchBundle\EventListener\SearchIndexerSubscriber" public="true">
-            <argument type="service" id="search.index_manager" />
+            <argument type="service" id="search.service" />
             <argument type="collection" /> <!-- doctrine subscribed events -->
             <tag name="doctrine.event_subscriber" />
             <tag name="doctrine_mongodb.odm.event_subscriber" />
@@ -21,11 +21,7 @@
             <argument key="$apiKey">%env(ALGOLIA_API_KEY)%</argument>
         </service>
 
-        <service id="search.engine" class="Algolia\SearchBundle\Engine\AlgoliaEngine" public="true">
-            <argument type="service" id="search.client" />
-        </service>
-
-        <service id="Algolia\SearchBundle\IndexManager" alias="search.index_manager"/>
+        <service id="Algolia\SearchBundle\SearchService" alias="search.service"/>
         <service id="Algolia\SearchBundle\Settings\AlgoliaSettingsManager" alias="search.settings_manager"/>
 
         <!-- CustomNormalizer is not registered by framework-bundle -->

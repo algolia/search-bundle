@@ -2,14 +2,14 @@
 
 namespace Algolia\SearchBundle\EventListener;
 
-use Algolia\SearchBundle\IndexManager;
+use Algolia\SearchBundle\SearchService;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
 
 final class SearchIndexerSubscriber implements EventSubscriber
 {
     /**
-     * @var IndexManager
+     * @var SearchService
      */
     private $indexManager;
 
@@ -19,10 +19,10 @@ final class SearchIndexerSubscriber implements EventSubscriber
     private $subscribedEvents;
 
     /**
-     * @param IndexManager       $indexManager
+     * @param SearchService      $indexManager
      * @param array<int, string> $subscribedEvents
      */
-    public function __construct(IndexManager $indexManager, $subscribedEvents)
+    public function __construct(SearchService $indexManager, $subscribedEvents)
     {
         $this->indexManager     = $indexManager;
         $this->subscribedEvents = $subscribedEvents;

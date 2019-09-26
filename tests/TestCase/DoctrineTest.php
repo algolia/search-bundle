@@ -11,7 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 
 class DoctrineTest extends BaseTest
 {
-    /** @var \Algolia\SearchBundle\IndexManager */
+    /** @var \Algolia\SearchBundle\SearchService */
     protected $indexManager;
 
     public function setUp()
@@ -20,7 +20,7 @@ class DoctrineTest extends BaseTest
 
         $application = new Application(self::$kernel);
         $this->refreshDb($application);
-        $this->indexManager = $this->get('search.index_manager');
+        $this->indexManager = $this->get('search.service');
 
         $client        = $this->get('search.client');
         $indexName     = 'posts';

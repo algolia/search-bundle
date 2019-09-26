@@ -11,12 +11,12 @@ use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
 /**
- * Class IndexManager.
+ * Class SearchService.
  */
-final class IndexManager
+final class SearchService implements SearchServiceInterface
 {
     /**
-     * @var AlgoliaEngine
+     * @var Engine
      */
     private $engine;
     /**
@@ -58,10 +58,10 @@ final class IndexManager
 
     /**
      * @param mixed                           $normalizer
-     * @param AlgoliaEngine                   $engine
+     * @param Engine                          $engine
      * @param array<string, array|int|string> $configuration
      */
-    public function __construct($normalizer, AlgoliaEngine $engine, array $configuration)
+    public function __construct($normalizer, Engine $engine, array $configuration)
     {
         $this->normalizer       = $normalizer;
         $this->engine           = $engine;

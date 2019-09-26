@@ -6,7 +6,10 @@ use Algolia\AlgoliaSearch\Response\BatchIndexingResponse;
 use Algolia\AlgoliaSearch\Response\NullResponse;
 use Algolia\AlgoliaSearch\SearchClient;
 
-final class AlgoliaEngine
+/**
+ * @internal
+ */
+final class Engine
 {
     /** @var SearchClient */
     private $client;

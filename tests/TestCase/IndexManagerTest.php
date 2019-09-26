@@ -12,14 +12,14 @@ use Algolia\SearchBundle\TestApp\Entity\Link;
 
 class IndexManagerTest extends BaseTest
 {
-    /** @var \Algolia\SearchBundle\IndexManager */
+    /** @var \Algolia\SearchBundle\SearchService */
     protected $indexManager;
     protected $entityManager;
 
     public function setUp()
     {
         parent::setUp();
-        $this->indexManager  = $this->get('search.index_manager');
+        $this->indexManager  = $this->get('search.service');
         $this->entityManager = $this->get('doctrine')->getManager();
     }
 

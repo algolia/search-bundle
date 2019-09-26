@@ -93,7 +93,7 @@ class BaseTest extends KernelTestCase
 
     protected function getPrefix()
     {
-        return $this->get('search.index_manager')->getConfiguration()['prefix'];
+        return $this->get('search.service')->getConfiguration()['prefix'];
     }
 
     protected function get($id)
@@ -124,7 +124,7 @@ class BaseTest extends KernelTestCase
 
     protected function getFileName($indexName, $type)
     {
-        return sprintf('%s/%s-%s.json', $this->get('search.index_manager')->getConfiguration()['settingsDirectory'], $indexName, $type);
+        return sprintf('%s/%s-%s.json', $this->get('search.service')->getConfiguration()['settingsDirectory'], $indexName, $type);
     }
 
     protected function getDefaultConfig()

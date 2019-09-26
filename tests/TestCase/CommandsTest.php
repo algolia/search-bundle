@@ -11,7 +11,7 @@ use Algolia\SearchBundle\TestApp\Entity\Post;
 
 class CommandsTest extends BaseTest
 {
-    /** @var \Algolia\SearchBundle\IndexManager */
+    /** @var \Algolia\SearchBundle\SearchService */
     protected $indexManager;
     protected $client;
     protected $om;
@@ -24,7 +24,7 @@ class CommandsTest extends BaseTest
     public function setUp()
     {
         parent::setUp();
-        $this->indexManager = $this->get('search.index_manager');
+        $this->indexManager = $this->get('search.service');
         $this->client       = $this->get('search.client');
         $this->om           = $this->get('doctrine')->getManager();
         $this->connection   = $this->get('doctrine')->getConnection();

@@ -3,7 +3,7 @@
 namespace Algolia\SearchBundle\TestCase;
 
 use Algolia\AlgoliaSearch\Response\IndexingResponse;
-use Algolia\SearchBundle\AlgoliaEngine;
+use Algolia\SearchBundle\Engine;
 use Algolia\SearchBundle\BaseTest;
 
 class AlgoliaEngineTest extends BaseTest
@@ -14,8 +14,8 @@ class AlgoliaEngineTest extends BaseTest
     {
         parent::setUp();
 
-        /* @var AlgoliaEngine */
-        $this->engine = $this->get('search.engine');
+        /* @var Engine */
+        $this->engine = new Engine($this->get('search.client'));
     }
 
     /**
