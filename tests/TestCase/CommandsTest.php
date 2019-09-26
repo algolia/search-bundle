@@ -12,7 +12,7 @@ use Algolia\SearchBundle\TestApp\Entity\Post;
 class CommandsTest extends BaseTest
 {
     /** @var \Algolia\SearchBundle\SearchService */
-    protected $indexManager;
+    protected $searchService;
     protected $client;
     protected $om;
     protected $connection;
@@ -24,13 +24,13 @@ class CommandsTest extends BaseTest
     public function setUp()
     {
         parent::setUp();
-        $this->indexManager = $this->get('search.service');
-        $this->client       = $this->get('search.client');
-        $this->om           = $this->get('doctrine')->getManager();
-        $this->connection   = $this->get('doctrine')->getConnection();
-        $this->platform     = $this->connection->getDatabasePlatform();
-        $this->indexName    = 'posts';
-        $this->index        = $this->client->initIndex($this->getPrefix() . $this->indexName);
+        $this->searchService = $this->get('search.service');
+        $this->client        = $this->get('search.client');
+        $this->om            = $this->get('doctrine')->getManager();
+        $this->connection    = $this->get('doctrine')->getConnection();
+        $this->platform      = $this->connection->getDatabasePlatform();
+        $this->indexName     = 'posts';
+        $this->index         = $this->client->initIndex($this->getPrefix() . $this->indexName);
         $this->index->setSettings($this->getDefaultConfig())->wait();
 
         $contentsIndexName = 'contents';
@@ -43,9 +43,9 @@ class CommandsTest extends BaseTest
 
     public function tearDown()
     {
-        $this->indexManager->delete(Post::class);
-        $this->indexManager->delete(Comment::class);
-        $this->indexManager->delete(ContentAggregator::class);
+        $this->searchService->delete(Post::class)->wait();
+        $this->searchService->delete(Comment::class)->wait();
+        $this->searchService->delete(ContentAggregator::class)->wait();
     }
 
     public function testSearchClearUnknownIndex()
@@ -67,7 +67,7 @@ class CommandsTest extends BaseTest
     public function testSearchClear()
     {
         $this->om = $this->get('doctrine')->getManager();
-        $result   = $this->indexManager->index($this->createPost(10), $this->om);
+        $result   = $this->searchService->index($this->createPost(10), $this->om);
         foreach ($result as $chunk) {
             foreach ($chunk as $indexName => $response) {
                 $response->wait();
@@ -75,7 +75,7 @@ class CommandsTest extends BaseTest
         }
 
         // Checks that post was created and indexed
-        $searchPost = $this->indexManager->rawSearch('', Post::class);
+        $searchPost = $this->searchService->rawSearch('', Post::class);
         $this->assertCount(1, $searchPost['hits']);
 
         $command       = $this->application->find('search:clear');
@@ -122,13 +122,13 @@ class CommandsTest extends BaseTest
         $iteration      = 0;
         $expectedResult = 3;
         do {
-            $searchPost = $this->indexManager->rawSearch('', ContentAggregator::class);
+            $searchPost = $this->searchService->rawSearch('', ContentAggregator::class);
             sleep(1);
             $iteration++;
         } while (count($searchPost['hits']) !== $expectedResult || $iteration < 10);
 
         // Ensure posts were imported into contents index
-        $searchPost = $this->indexManager->rawSearch('', ContentAggregator::class);
+        $searchPost = $this->searchService->rawSearch('', ContentAggregator::class);
         $this->assertCount($expectedResult, $searchPost['hits']);
         // clearup table
         $this->connection->executeUpdate($this->platform->getTruncateTableSQL($this->indexName, true));
@@ -168,7 +168,7 @@ class CommandsTest extends BaseTest
         $iteration      = 0;
         $expectedResult = 3;
         do {
-            $searchPost = $this->indexManager->rawSearch('', Post::class);
+            $searchPost = $this->searchService->rawSearch('', Post::class);
             sleep(1);
             $iteration++;
         } while (count($searchPost['hits']) !== $expectedResult || $iteration < 10);

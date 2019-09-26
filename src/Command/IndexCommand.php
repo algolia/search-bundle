@@ -15,14 +15,14 @@ abstract class IndexCommand extends Command
     /**
      * @var SearchService
      */
-    protected $indexManager;
+    protected $searchService;
 
     /**
-     * @param SearchService $indexManager
+     * @param SearchService $searchService
      */
-    public function __construct(SearchService $indexManager)
+    public function __construct(SearchService $searchService)
     {
-        $this->indexManager = $indexManager;
+        $this->searchService = $searchService;
 
         parent::__construct();
     }
@@ -42,7 +42,7 @@ abstract class IndexCommand extends Command
             $indexNames = explode(',', $indexList);
         }
 
-        $config = $this->indexManager->getConfiguration();
+        $config = $this->searchService->getConfiguration();
 
         if (count($indexNames) === 0) {
             $indexNames = array_keys($config['indices']);

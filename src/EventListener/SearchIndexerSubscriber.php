@@ -11,7 +11,7 @@ final class SearchIndexerSubscriber implements EventSubscriber
     /**
      * @var SearchService
      */
-    private $indexManager;
+    private $searchService;
 
     /**
      * @var array<int, string>
@@ -19,13 +19,13 @@ final class SearchIndexerSubscriber implements EventSubscriber
     private $subscribedEvents;
 
     /**
-     * @param SearchService      $indexManager
+     * @param SearchService      $searchService
      * @param array<int, string> $subscribedEvents
      */
-    public function __construct(SearchService $indexManager, $subscribedEvents)
+    public function __construct(SearchService $searchService, $subscribedEvents)
     {
-        $this->indexManager     = $indexManager;
-        $this->subscribedEvents = $subscribedEvents;
+        $this->searchService     = $searchService;
+        $this->subscribedEvents  = $subscribedEvents;
     }
 
     /**
@@ -43,7 +43,7 @@ final class SearchIndexerSubscriber implements EventSubscriber
      */
     public function postUpdate(LifecycleEventArgs $args)
     {
-        $this->indexManager->index($args->getObject(), $args->getObjectManager());
+        $this->searchService->index($args->getObject(), $args->getObjectManager());
     }
 
     /**
@@ -53,7 +53,7 @@ final class SearchIndexerSubscriber implements EventSubscriber
      */
     public function postPersist(LifecycleEventArgs $args)
     {
-        $this->indexManager->index($args->getObject(), $args->getObjectManager());
+        $this->searchService->index($args->getObject(), $args->getObjectManager());
     }
 
     /**
@@ -63,6 +63,6 @@ final class SearchIndexerSubscriber implements EventSubscriber
      */
     public function preRemove(LifecycleEventArgs $args)
     {
-        $this->indexManager->remove($object = $args->getObject(), $args->getObjectManager());
+        $this->searchService->remove($object = $args->getObject(), $args->getObjectManager());
     }
 }

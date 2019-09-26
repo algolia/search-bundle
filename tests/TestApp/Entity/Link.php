@@ -27,9 +27,9 @@ class Link implements NormalizableInterface
 
     public function __construct(array $attributes = [])
     {
-        $this->id          = isset($attributes['id']) ? $attributes['id'] : null;
-        $this->name        = isset($attributes['name']) ? $attributes['name'] : 'This is a tag';
-        $this->url         = isset($attributes['url']) ? $attributes['url'] : null;
+        $this->id   = isset($attributes['id']) ? $attributes['id'] : null;
+        $this->name = isset($attributes['name']) ? $attributes['name'] : 'This is a tag';
+        $this->url  = isset($attributes['url']) ? $attributes['url'] : null;
     }
 
     private function isSponsored()
@@ -41,9 +41,9 @@ class Link implements NormalizableInterface
     {
         if (Searchable::NORMALIZATION_FORMAT === $format) {
             return [
-                'id'          => $this->id,
-                'name'        => 'this test is correct',
-                'url'         => 'https://algolia.com',
+                'id'   => $this->id,
+                'name' => 'this test is correct',
+                'url'  => 'https://algolia.com',
             ];
         }
     }

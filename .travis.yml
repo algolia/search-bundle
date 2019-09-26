@@ -21,11 +21,14 @@ jobs:
     include:
         - stage: phpstan
           php: 7.2
-          script: composer test:install && composer test:style
+          script: composer test:install && composer test:types
 
 install:
     - wget https://alg.li/algolia-keys && chmod +x algolia-keys
     - composer install
 
 script:
-    - eval $(./algolia-keys export) && ./vendor/bin/phpunit -v
+    - eval $(./algolia-keys export)
+    - if [[ ${TRAVIS_PHP_VERSION:0:3} > "7.3" ]]; then composer test:unit; else composer test; fi
+    - if (( $(echo "${TRAVIS_PHP_VERSION:0:3} >= 7.2" |bc -l) )); then php coverage-checker.php clover.xml 100; fi
+    - if (( $(echo "${TRAVIS_PHP_VERSION:0:3} < 7.2" |bc -l) )); then php coverage-checker.php clover.xml 99; fi

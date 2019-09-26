@@ -6,7 +6,7 @@ use Algolia\AlgoliaSearch\Response\IndexingResponse;
 use Algolia\SearchBundle\Engine;
 use Algolia\SearchBundle\BaseTest;
 
-class AlgoliaEngineTest extends BaseTest
+class EngineTest extends BaseTest
 {
     protected $engine;
 
@@ -37,7 +37,7 @@ class AlgoliaEngineTest extends BaseTest
         $this->engine->delete($searchablePost->getIndexName());
 
         // Index
-        $result = $this->engine->save($searchablePost);
+        $result = $this->engine->index($searchablePost);
         $this->assertArrayHasKey($searchablePost->getIndexName(), $result);
         $this->assertEquals(1, $result[$searchablePost->getIndexName()]->count());
 
@@ -47,7 +47,7 @@ class AlgoliaEngineTest extends BaseTest
         $this->assertEquals(1, $result[$searchablePost->getIndexName()]->count());
 
         // Update
-        $result = $this->engine->save($searchablePost);
+        $result = $this->engine->index($searchablePost);
         $this->assertArrayHasKey($searchablePost->getIndexName(), $result);
         $this->assertEquals(1, $result[$searchablePost->getIndexName()]->count());
         foreach ($result as $indexName => $response) {
@@ -87,7 +87,7 @@ class AlgoliaEngineTest extends BaseTest
         $this->engine->delete($searchablePost->getIndexName());
 
         // Index
-        $result = $this->engine->save($searchablePost, [
+        $result = $this->engine->index($searchablePost, [
             'autoGenerateObjectIDIfNotExist' => true,
         ]);
         $this->assertArrayHasKey($searchablePost->getIndexName(), $result);
@@ -101,7 +101,7 @@ class AlgoliaEngineTest extends BaseTest
         $this->assertEquals(1, $result[$searchablePost->getIndexName()]->count());
 
         // Update
-        $result = $this->engine->save($searchablePost, [
+        $result = $this->engine->index($searchablePost, [
             'createIfNotExists' => true,
         ]);
         $this->assertArrayHasKey($searchablePost->getIndexName(), $result);
@@ -149,7 +149,7 @@ class AlgoliaEngineTest extends BaseTest
         $this->engine->delete($searchableImage->getIndexName());
 
         // Index
-        $result = $this->engine->save($searchableImage);
+        $result = $this->engine->index($searchableImage);
         $this->assertEmpty($result);
 
         // Remove
@@ -157,7 +157,7 @@ class AlgoliaEngineTest extends BaseTest
         $this->assertEmpty($result);
 
         // Update
-        $result = $this->engine->save($searchableImage);
+        $result = $this->engine->index($searchableImage);
         $this->assertEmpty($result);
 
         // Search

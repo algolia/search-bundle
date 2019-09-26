@@ -47,7 +47,6 @@
         "symfony/yaml": "^3.4.0 || ^4.0.0",
         "friendsofphp/php-cs-fixer": "^2.15",
         "roave/security-advisories": "dev-master"
-
     },
     "extra": {
         "branch-alias": {
@@ -61,7 +60,7 @@
         "test:install": "composer install -d tests/QualityTools/",
         "test:update": "composer update -d tests/QualityTools/",
         "lint": "php-cs-fixer fix -v",
-        "test:style": "tests/QualityTools/vendor/bin/phpstan analyse --ansi",
+        "test:types": "tests/QualityTools/vendor/bin/phpstan analyse --ansi",
         "test:unit": "phpunit --colors=always --verbose",
         "test:lint": "php-cs-fixer fix -v --dry-run",
         "test": [

@@ -32,7 +32,7 @@ final class Engine
      *
      * @throws \Algolia\AlgoliaSearch\Exceptions\AlgoliaException
      */
-    public function save($searchableEntities, $requestOptions = [])
+    public function index($searchableEntities, $requestOptions = [])
     {
         if ($searchableEntities instanceof SearchableEntity) {
             $searchableEntities = [$searchableEntities];

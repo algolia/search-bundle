@@ -12,7 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 class DoctrineTest extends BaseTest
 {
     /** @var \Algolia\SearchBundle\SearchService */
-    protected $indexManager;
+    protected $searchService;
 
     public function setUp()
     {
@@ -20,7 +20,7 @@ class DoctrineTest extends BaseTest
 
         $application = new Application(self::$kernel);
         $this->refreshDb($application);
-        $this->indexManager = $this->get('search.service');
+        $this->searchService = $this->get('search.service');
 
         $client        = $this->get('search.client');
         $indexName     = 'posts';
@@ -30,9 +30,9 @@ class DoctrineTest extends BaseTest
 
     public function tearDown()
     {
-        $this->indexManager->delete(Post::class);
-        $this->indexManager->delete(Comment::class);
-        $this->indexManager->delete(Tag::class);
+        $this->searchService->delete(Post::class)->wait();
+        $this->searchService->delete(Comment::class)->wait();
+        $this->searchService->delete(Tag::class)->wait();
     }
 
     public function testDoctrineEventManagement()
@@ -47,26 +47,26 @@ class DoctrineTest extends BaseTest
         $iteration     = 0;
         $expectedCount = 5;
         do {
-            $count = $this->indexManager->count('', Post::class);
+            $count = $this->searchService->count('', Post::class);
             sleep(1);
             $iteration++;
         } while ($count !== $expectedCount || $iteration === 10);
 
         $this->assertEquals($expectedCount, $count);
 
-        $raw = $this->indexManager->rawSearch('', Post::class);
+        $raw = $this->searchService->rawSearch('', Post::class);
         $this->assertArrayHasKey('query', $raw);
         $this->assertArrayHasKey('nbHits', $raw);
         $this->assertArrayHasKey('page', $raw);
         $this->assertTrue(is_array($raw['hits']));
 
-        $posts = $this->indexManager->search('', Post::class, $em);
+        $posts = $this->searchService->search('', Post::class, $em);
         $this->assertTrue(is_array($posts));
         foreach ($posts as $p) {
             $this->assertInstanceOf(Post::class, $p);
         }
 
-        $posts = $this->indexManager->search('', ContentAggregator::class, $em);
+        $posts = $this->searchService->search('', ContentAggregator::class, $em);
         foreach ($posts as $p) {
             $this->assertInstanceOf(Post::class, $p);
         }
@@ -74,7 +74,7 @@ class DoctrineTest extends BaseTest
         $postToUpdate = $posts[4];
         $postToUpdate->setTitle('New Title');
         $em->flush();
-        $posts = $this->indexManager->search('', ContentAggregator::class, $em);
+        $posts = $this->searchService->search('', ContentAggregator::class, $em);
         $this->assertEquals($posts[4]->getTitle(), 'New Title');
 
         $em->remove($posts[0]);
@@ -82,7 +82,7 @@ class DoctrineTest extends BaseTest
         $iteration     = 0;
         $expectedCount = 4;
         do {
-            $count = $this->indexManager->count('', Post::class);
+            $count = $this->searchService->count('', Post::class);
             sleep(1);
             $iteration++;
         } while ($count !== $expectedCount || $iteration === 10);
@@ -99,22 +99,22 @@ class DoctrineTest extends BaseTest
         ];
         $em = $this->get('doctrine')->getManager();
 
-        $result = $this->indexManager->index($tags, $em);
+        $result = $this->searchService->index($tags, $em);
         foreach ($result as $chunk) {
             foreach ($chunk as $indexName => $apiResponse) {
                 $apiResponse->wait();
             }
         }
 
-        $this->assertEquals(2, $this->indexManager->count('', Tag::class));
+        $this->assertEquals(2, $this->searchService->count('', Tag::class));
 
-        $result = $this->indexManager->index($tags[2]->setPublic(true), $em);
+        $result = $this->searchService->index($tags[2]->setPublic(true), $em);
         foreach ($result as $chunk) {
             foreach ($chunk as $indexName => $apiResponse) {
                 $apiResponse->wait();
             }
         }
 
-        $this->assertEquals(3, $this->indexManager->count('', Tag::class));
+        $this->assertEquals(3, $this->searchService->count('', Tag::class));
     }
 }

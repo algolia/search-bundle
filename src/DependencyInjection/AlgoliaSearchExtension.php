@@ -4,7 +4,7 @@ namespace Algolia\SearchBundle\DependencyInjection;
 
 use Algolia\SearchBundle\SearchService;
 use Algolia\SearchBundle\Engine;
-use Algolia\SearchBundle\Settings\AlgoliaSettingsManager;
+use Algolia\SearchBundle\Settings\SettingsManager;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Definition;
@@ -65,7 +65,7 @@ final class AlgoliaSearchExtension extends Extension
             ]
         );
 
-        $indexManagerDefinition = (new Definition(
+        $searchServiceDefinition = (new Definition(
             SearchService::class,
             [
                 new Reference($config['serializer']),
@@ -75,14 +75,14 @@ final class AlgoliaSearchExtension extends Extension
         ))->setPublic(true);
 
         $settingsManagerDefinition = (new Definition(
-            AlgoliaSettingsManager::class,
+            SettingsManager::class,
             [
                 new Reference('search.client'),
                 $config,
             ]
         ))->setPublic(true);
 
-        $container->setDefinition('search.service', $indexManagerDefinition);
+        $container->setDefinition('search.service', $searchServiceDefinition);
         $container->setDefinition('search.settings_manager', $settingsManagerDefinition);
     }
 }

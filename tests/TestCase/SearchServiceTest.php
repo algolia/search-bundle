@@ -10,40 +10,40 @@ use Algolia\SearchBundle\TestApp\Entity\Image;
 use Algolia\SearchBundle\TestApp\Entity\Tag;
 use Algolia\SearchBundle\TestApp\Entity\Link;
 
-class IndexManagerTest extends BaseTest
+class SearchServiceTest extends BaseTest
 {
     /** @var \Algolia\SearchBundle\SearchService */
-    protected $indexManager;
+    protected $searchService;
     protected $entityManager;
 
     public function setUp()
     {
         parent::setUp();
-        $this->indexManager  = $this->get('search.service');
-        $this->entityManager = $this->get('doctrine')->getManager();
+        $this->searchService  = $this->get('search.service');
+        $this->entityManager  = $this->get('doctrine')->getManager();
     }
 
     public function tearDown()
     {
-        $this->indexManager->delete(Post::class);
-        $this->indexManager->delete(Comment::class);
-        $this->indexManager->delete(ContentAggregator::class);
+        $this->searchService->delete(Post::class)->wait();
+        $this->searchService->delete(Comment::class)->wait();
+        $this->searchService->delete(ContentAggregator::class)->wait();
     }
 
     public function testIsSearchableMethod()
     {
-        $this->assertTrue($this->indexManager->isSearchable(Post::class));
-        $this->assertTrue($this->indexManager->isSearchable(Comment::class));
-        $this->assertFalse($this->indexManager->isSearchable(BaseTest::class));
-        $this->assertFalse($this->indexManager->isSearchable(Image::class));
-        $this->assertTrue($this->indexManager->isSearchable(ContentAggregator::class));
-        $this->assertTrue($this->indexManager->isSearchable(Tag::class));
-        $this->assertTrue($this->indexManager->isSearchable(Link::class));
+        $this->assertTrue($this->searchService->isSearchable(Post::class));
+        $this->assertTrue($this->searchService->isSearchable(Comment::class));
+        $this->assertFalse($this->searchService->isSearchable(BaseTest::class));
+        $this->assertFalse($this->searchService->isSearchable(Image::class));
+        $this->assertTrue($this->searchService->isSearchable(ContentAggregator::class));
+        $this->assertTrue($this->searchService->isSearchable(Tag::class));
+        $this->assertTrue($this->searchService->isSearchable(Link::class));
     }
 
     public function testGetSearchableEntities()
     {
-        $result = $this->indexManager->getSearchableEntities();
+        $result = $this->searchService->getSearchableEntities();
         $this->assertEquals([
             Post::class,
             Comment::class,
@@ -60,7 +60,7 @@ class IndexManagerTest extends BaseTest
     {
         $this->entityManager = $this->get('doctrine')->getManager();
 
-        $this->indexManager->index(new Post(), $this->entityManager);
+        $this->searchService->index(new Post(), $this->entityManager);
     }
 
     public function testIndexedDataAreSearchable()
@@ -71,8 +71,8 @@ class IndexManagerTest extends BaseTest
         }
 
         // index Data
-        $this->indexManager->index($this->createPost(10), $this->entityManager);
-        $result = $this->indexManager->index(array_merge($posts, [$this->createComment(1), $this->createImage(1)]), $this->entityManager);
+        $this->searchService->index($this->createPost(10), $this->entityManager);
+        $result = $this->searchService->index(array_merge($posts, [$this->createComment(1), $this->createImage(1)]), $this->entityManager);
         foreach ($result as $chunk) {
             foreach ($chunk as $indexName => $apiResponse) {
                 $apiResponse->wait();
@@ -80,35 +80,35 @@ class IndexManagerTest extends BaseTest
         }
 
         // RawSearch
-        $searchPost = $this->indexManager->rawSearch('', Post::class);
+        $searchPost = $this->searchService->rawSearch('', Post::class);
         $this->assertCount(4, $searchPost['hits']);
-        $searchPost = $this->indexManager->rawSearch('', Post::class, [
+        $searchPost = $this->searchService->rawSearch('', Post::class, [
             'page'        => 0,
             'hitsPerPage' => 1,
         ]);
         $this->assertCount(1, $searchPost['hits']);
 
-        $searchPostEmpty = $this->indexManager->rawSearch('with no result', Post::class);
+        $searchPostEmpty = $this->searchService->rawSearch('with no result', Post::class);
         $this->assertCount(0, $searchPostEmpty['hits']);
 
-        $searchComment = $this->indexManager->rawSearch('', Comment::class);
+        $searchComment = $this->searchService->rawSearch('', Comment::class);
         $this->assertCount(1, $searchComment['hits']);
 
-        $searchPost = $this->indexManager->rawSearch('test', ContentAggregator::class);
+        $searchPost = $this->searchService->rawSearch('test', ContentAggregator::class);
         $this->assertCount(4, $searchPost['hits']);
 
-        $searchPost = $this->indexManager->rawSearch('Comment content', ContentAggregator::class);
+        $searchPost = $this->searchService->rawSearch('Comment content', ContentAggregator::class);
         $this->assertCount(1, $searchPost['hits']);
 
         // Count
-        $this->assertEquals(4, $this->indexManager->count('test', Post::class));
-        $this->assertEquals(1, $this->indexManager->count('content', Comment::class));
-        $this->assertEquals(6, $this->indexManager->count('', ContentAggregator::class));
+        $this->assertEquals(4, $this->searchService->count('test', Post::class));
+        $this->assertEquals(1, $this->searchService->count('content', Comment::class));
+        $this->assertEquals(6, $this->searchService->count('', ContentAggregator::class));
 
         // Cleanup
-        $this->indexManager->delete(Post::class);
-        $this->indexManager->delete(Comment::class);
-        $this->indexManager->delete(ContentAggregator::class);
+        $this->searchService->delete(Post::class);
+        $this->searchService->delete(Comment::class);
+        $this->searchService->delete(ContentAggregator::class);
     }
 
     public function testIndexedDataCanBeRemoved()
@@ -122,7 +122,7 @@ class IndexManagerTest extends BaseTest
         $image   = $this->createImage(1);
 
         // index Data
-        $result = $this->indexManager->index(array_merge($posts, [$comment, $image]), $this->entityManager);
+        $result = $this->searchService->index(array_merge($posts, [$comment, $image]), $this->entityManager);
         foreach ($result as $chunk) {
             foreach ($chunk as $indexName => $apiResponse) {
                 $apiResponse->wait();
@@ -130,7 +130,7 @@ class IndexManagerTest extends BaseTest
         }
 
         // Remove the last post.
-        $result = $this->indexManager->remove(end($posts), $this->entityManager);
+        $result = $this->searchService->remove(end($posts), $this->entityManager);
         foreach ($result as $chunk) {
             foreach ($chunk as $indexName => $apiResponse) {
                 $apiResponse->wait();
@@ -138,14 +138,14 @@ class IndexManagerTest extends BaseTest
         }
 
         // Expects 2 posts and 1 comment.
-        $this->assertEquals(2, $this->indexManager->count('', Post::class));
-        $this->assertEquals(1, $this->indexManager->count('', Comment::class));
+        $this->assertEquals(2, $this->searchService->count('', Post::class));
+        $this->assertEquals(1, $this->searchService->count('', Comment::class));
 
         // The content aggregator expects 2 + 1 + 1.
-        $this->assertEquals(4, $this->indexManager->count('', ContentAggregator::class));
+        $this->assertEquals(4, $this->searchService->count('', ContentAggregator::class));
 
         // Remove the only comment that exists.
-        $result = $this->indexManager->remove($comment, $this->entityManager);
+        $result = $this->searchService->remove($comment, $this->entityManager);
         foreach ($result as $chunk) {
             foreach ($chunk as $indexName => $apiResponse) {
                 $apiResponse->wait();
@@ -153,14 +153,14 @@ class IndexManagerTest extends BaseTest
         }
 
         // Expects 2 posts and 0 comments.
-        $this->assertEquals(2, $this->indexManager->count('', Post::class));
-        $this->assertEquals(0, $this->indexManager->count('', Comment::class));
+        $this->assertEquals(2, $this->searchService->count('', Post::class));
+        $this->assertEquals(0, $this->searchService->count('', Comment::class));
 
         // The content aggregator expects 2 + 0 + 1.
-        $this->assertEquals(3, $this->indexManager->count('', ContentAggregator::class));
+        $this->assertEquals(3, $this->searchService->count('', ContentAggregator::class));
 
         // Remove the only image that exists.
-        $result = $this->indexManager->remove($image, $this->entityManager);
+        $result = $this->searchService->remove($image, $this->entityManager);
         foreach ($result as $chunk) {
             foreach ($chunk as $indexName => $apiResponse) {
                 $apiResponse->wait();
@@ -168,7 +168,7 @@ class IndexManagerTest extends BaseTest
         }
 
         // The content aggregator expects 2 + 0 + 0.
-        $this->assertEquals(2, $this->indexManager->count('', ContentAggregator::class));
+        $this->assertEquals(2, $this->searchService->count('', ContentAggregator::class));
     }
 
     public function testRawSearchRawContent()
@@ -176,7 +176,7 @@ class IndexManagerTest extends BaseTest
         $postIndexed = $this->createPost(10);
         $postIndexed->setTitle('Foo Bar');
 
-        $result = $this->indexManager->index($postIndexed, $this->entityManager);
+        $result = $this->searchService->index($postIndexed, $this->entityManager);
         foreach ($result as $chunk) {
             foreach ($chunk as $indexName => $apiResponse) {
                 $apiResponse->wait();
@@ -184,11 +184,11 @@ class IndexManagerTest extends BaseTest
         }
 
         // Using entity.
-        $results = $this->indexManager->rawSearch('Foo Bar', Post::class);
+        $results = $this->searchService->rawSearch('Foo Bar', Post::class);
         $this->assertEquals($results['hits'][0]['title'], $postIndexed->getTitle());
 
         // Using aggregator.
-        $results = $this->indexManager->rawSearch('Foo Bar', ContentAggregator::class);
+        $results = $this->searchService->rawSearch('Foo Bar', ContentAggregator::class);
         $this->assertEquals($results['hits'][0]['title'], $postIndexed->getTitle());
     }
 
@@ -205,7 +205,7 @@ class IndexManagerTest extends BaseTest
         $posts[] = $post;
 
         // index Data: Total 4 posts.
-        $result = $this->indexManager->index($posts, $this->entityManager);
+        $result = $this->searchService->index($posts, $this->entityManager);
         foreach ($result as $chunk) {
             foreach ($chunk as $indexName => $apiResponse) {
                 $apiResponse->wait();
@@ -213,7 +213,7 @@ class IndexManagerTest extends BaseTest
         }
 
         // The content aggregator expects 3 ( not 4, because of the index_if condition ).
-        $this->assertEquals(3, $this->indexManager->count('', ContentAggregator::class));
+        $this->assertEquals(3, $this->searchService->count('', ContentAggregator::class));
     }
 
     /**
@@ -223,13 +223,13 @@ class IndexManagerTest extends BaseTest
     {
         $image = $this->createSearchableImage();
 
-        $this->indexManager->index([$image], $this->entityManager);
-        $this->indexManager->clear(Image::class);
+        $this->searchService->index([$image], $this->entityManager);
+        $this->searchService->clear(Image::class);
     }
 
     public function testShouldNotBeIndexed()
     {
         $link = new Link();
-        $this->assertFalse($this->indexManager->shouldBeIndexed($link));
+        $this->assertFalse($this->searchService->shouldBeIndexed($link));
     }
 }

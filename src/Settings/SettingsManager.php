@@ -5,7 +5,7 @@ namespace Algolia\SearchBundle\Settings;
 use Algolia\AlgoliaSearch\SearchClient;
 use Symfony\Component\Filesystem\Filesystem;
 
-final class AlgoliaSettingsManager
+final class SettingsManager
 {
     /**
      * @var SearchClient

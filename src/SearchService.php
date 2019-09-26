@@ -134,7 +134,7 @@ final class SearchService implements SearchServiceInterface
         }
 
         return $this->forEachChunk($objectManager, $entitiesToBeIndexed, function ($chunk) use ($requestOptions) {
-            return $this->engine->save($chunk, $requestOptions);
+            return $this->engine->index($chunk, $requestOptions);
         });
     }
 
@@ -277,6 +277,16 @@ final class SearchService implements SearchServiceInterface
     /**
      * @param string $className
      *
+     * @return string
+     */
+    public function getFullIndexName($className)
+    {
+        return $this->configuration['prefix'] . $this->classToIndexMapping[$className];
+    }
+
+    /**
+     * @param string $className
+     *
      * @return bool
      */
     private function canUseSerializerGroup($className)
@@ -333,16 +343,6 @@ final class SearchService implements SearchServiceInterface
         }
 
         $this->aggregators = array_unique($this->aggregators);
-    }
-
-    /**
-     * @param string $className
-     *
-     * @return string
-     */
-    public function getFullIndexName($className)
-    {
-        return $this->configuration['prefix'] . $this->classToIndexMapping[$className];
     }
 
     /**

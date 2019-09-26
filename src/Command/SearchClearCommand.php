@@ -44,7 +44,7 @@ final class SearchClearCommand extends IndexCommand
         $indexToClear = $this->getEntitiesFromArgs($input, $output);
 
         foreach ($indexToClear as $indexName => $className) {
-            $success = $this->indexManager->clear($className);
+            $success = $this->searchService->clear($className);
 
             if ($success instanceof IndexingResponse) {
                 $output->writeln('Cleared <info>' . $indexName . '</info> index of <comment>' . $className . '</comment> ');

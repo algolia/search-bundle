@@ -4,6 +4,7 @@
 .php_cs.cache
 /var/
 .idea
+clover.xml
 /tests/coverage
 /tests/QualityTools/vendor/
 /tests/QualityTools/.idea/

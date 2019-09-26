@@ -26,12 +26,12 @@ final class SearchImportCommand extends IndexCommand
     private $managerRegistry;
 
     /**
-     * @param SearchService   $indexManager
+     * @param SearchService   $searchService
      * @param ManagerRegistry $managerRegistry
      */
-    public function __construct(SearchService $indexManager, ManagerRegistry $managerRegistry)
+    public function __construct(SearchService $searchService, ManagerRegistry $managerRegistry)
     {
-        parent::__construct($indexManager);
+        parent::__construct($searchService);
 
         $this->managerRegistry = $managerRegistry;
     }
@@ -60,7 +60,7 @@ final class SearchImportCommand extends IndexCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $entitiesToIndex = $this->getEntitiesFromArgs($input, $output);
-        $config          = $this->indexManager->getConfiguration();
+        $config          = $this->searchService->getConfiguration();
 
         foreach ($entitiesToIndex as $key => $entityClassName) {
             if (is_subclass_of($entityClassName, Aggregator::class)) {
@@ -85,7 +85,7 @@ final class SearchImportCommand extends IndexCommand
                 );
 
                 $responses = $this->formatIndexingResponse(
-                    $this->indexManager->index($entities, $manager)
+                    $this->searchService->index($entities, $manager)
                 );
                 foreach ($responses as $indexName => $numberOfRecords) {
                     $output->writeln(sprintf(

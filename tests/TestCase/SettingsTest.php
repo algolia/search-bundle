@@ -4,7 +4,7 @@ namespace Algolia\SearchBundle\TestCase;
 
 use Algolia\SearchBundle\BaseTest;
 use Algolia\SearchBundle\TestApp\Entity\Post;
-use Algolia\SearchBundle\Settings\AlgoliaSettingsManager;
+use Algolia\SearchBundle\Settings\SettingsManager;
 use Algolia\AlgoliaSearch\SearchClient;
 
 class SettingsTest extends BaseTest
@@ -12,7 +12,7 @@ class SettingsTest extends BaseTest
     /** @var SearchClient */
     private $client;
 
-    /** @var AlgoliaSettingsManager */
+    /** @var SettingsManager */
     private $settingsManager;
     private $configIndexes;
     private $indexName;
@@ -29,7 +29,7 @@ class SettingsTest extends BaseTest
 
     public function tearDown()
     {
-        $this->get('search.service')->delete(Post::class);
+        $this->get('search.service')->delete(Post::class)->wait();
     }
 
     public function testBackup()
