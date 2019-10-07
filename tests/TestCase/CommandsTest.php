@@ -67,12 +67,7 @@ class CommandsTest extends BaseTest
     public function testSearchClear()
     {
         $this->om = $this->get('doctrine')->getManager();
-        $result   = $this->searchService->index($this->createPost(10), $this->om);
-        foreach ($result as $chunk) {
-            foreach ($chunk as $indexName => $response) {
-                $response->wait();
-            }
-        }
+        $this->searchService->index($this->createPost(10), $this->om)->wait();
 
         // Checks that post was created and indexed
         $searchPost = $this->searchService->rawSearch('', Post::class);

@@ -2,9 +2,8 @@
 
 namespace Algolia\SearchBundle;
 
-use Algolia\AlgoliaSearch\Response\AbstractResponse;
-use Algolia\AlgoliaSearch\Response\BatchIndexingResponse;
 use Algolia\SearchBundle\Entity\Aggregator;
+use Algolia\SearchBundle\Responses\SearchServiceResponse;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\Util\ClassUtils;
 use Symfony\Component\Config\Definition\Exception\Exception;
@@ -119,7 +118,7 @@ final class SearchService implements SearchServiceInterface
      * @param ObjectManager                   $objectManager
      * @param array<string, int|string|array> $requestOptions
      *
-     * @return array<int, array<string, AbstractResponse>>
+     * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
      */
     public function index($entities, ObjectManager $objectManager, $requestOptions = [])
     {
@@ -142,7 +141,7 @@ final class SearchService implements SearchServiceInterface
             $this->remove($entitiesToBeRemoved, $objectManager);
         }
 
-        return $this->forEachChunk($objectManager, $entitiesToBeIndexed, function ($chunk) use ($requestOptions) {
+        return $this->makeSearchServiceResponseFrom($objectManager, $entitiesToBeIndexed, function ($chunk) use ($requestOptions) {
             return $this->engine->index($chunk, $requestOptions);
         });
     }
@@ -152,7 +151,7 @@ final class SearchService implements SearchServiceInterface
      * @param ObjectManager                   $objectManager
      * @param array<string, int|string|array> $requestOptions
      *
-     * @return array<int, array<string, AbstractResponse>>
+     * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
      */
     public function remove($entities, ObjectManager $objectManager, $requestOptions = [])
     {
@@ -163,7 +162,7 @@ final class SearchService implements SearchServiceInterface
             return $this->isSearchable($entity);
         });
 
-        return $this->forEachChunk($objectManager, $entities, function ($chunk) use ($requestOptions) {
+        return $this->makeSearchServiceResponseFrom($objectManager, $entities, function ($chunk) use ($requestOptions) {
             return $this->engine->remove($chunk, $requestOptions);
         });
     }
@@ -401,9 +400,9 @@ final class SearchService implements SearchServiceInterface
      * @param array<int, object>                         $entities
      * @param callable                                   $operation
      *
-     * @return array<int, array<string, BatchIndexingResponse>>
+     * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
      */
-    private function forEachChunk(ObjectManager $objectManager, array $entities, $operation)
+    private function makeSearchServiceResponseFrom(ObjectManager $objectManager, array $entities, $operation)
     {
         $batch = [];
         foreach (array_chunk($entities, $this->configuration['batchSize']) as $chunk) {
@@ -423,7 +422,7 @@ final class SearchService implements SearchServiceInterface
             $batch[] = $operation($searchableEntitiesChunk);
         }
 
-        return $batch;
+        return new SearchServiceResponse($batch);
     }
 
     /**

@@ -99,21 +99,11 @@ class DoctrineTest extends BaseTest
         ];
         $em = $this->get('doctrine')->getManager();
 
-        $result = $this->searchService->index($tags, $em);
-        foreach ($result as $chunk) {
-            foreach ($chunk as $indexName => $apiResponse) {
-                $apiResponse->wait();
-            }
-        }
+        $this->searchService->index($tags, $em)->wait();
 
         $this->assertEquals(2, $this->searchService->count('', Tag::class));
 
-        $result = $this->searchService->index($tags[2]->setPublic(true), $em);
-        foreach ($result as $chunk) {
-            foreach ($chunk as $indexName => $apiResponse) {
-                $apiResponse->wait();
-            }
-        }
+        $this->searchService->index($tags[2]->setPublic(true), $em)->wait();
 
         $this->assertEquals(3, $this->searchService->count('', Tag::class));
     }

@@ -2,7 +2,13 @@ CHANGELOG
 =========
 
 UNRELEASED
+
+4.0.0
 ----------
+
+Please check the [upgrade guide](https://github.com/algolia/search-bundle/blob/upgrade/v4/UPGRADE-4.0.md) in this repository for a detailed list of changes. 
+Also, since this version now relies on our [PHP Client v2](https://www.algolia.com/doc/api-client/getting-started/install/php/), you may want to check its [upgrade guide](https://www.algolia.com/doc/api-client/getting-started/upgrade-guides/php/) as well
+
 
 3.4.0
 ----------

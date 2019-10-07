@@ -72,12 +72,13 @@ class SearchServiceTest extends BaseTest
 
         // index Data
         $this->searchService->index($this->createPost(10), $this->entityManager);
-        $result = $this->searchService->index(array_merge($posts, [$this->createComment(1), $this->createImage(1)]), $this->entityManager);
-        foreach ($result as $chunk) {
-            foreach ($chunk as $indexName => $apiResponse) {
-                $apiResponse->wait();
-            }
-        }
+        $this->searchService->index(
+            array_merge(
+                $posts,
+                [$this->createComment(1), $this->createImage(1)]
+            ),
+            $this->entityManager
+        )->wait();
 
         // RawSearch
         $searchPost = $this->searchService->rawSearch('', Post::class);
@@ -122,20 +123,13 @@ class SearchServiceTest extends BaseTest
         $image   = $this->createImage(1);
 
         // index Data
-        $result = $this->searchService->index(array_merge($posts, [$comment, $image]), $this->entityManager);
-        foreach ($result as $chunk) {
-            foreach ($chunk as $indexName => $apiResponse) {
-                $apiResponse->wait();
-            }
-        }
+        $this->searchService->index(
+            array_merge($posts, [$comment, $image]),
+            $this->entityManager
+        )->wait();
 
         // Remove the last post.
-        $result = $this->searchService->remove(end($posts), $this->entityManager);
-        foreach ($result as $chunk) {
-            foreach ($chunk as $indexName => $apiResponse) {
-                $apiResponse->wait();
-            }
-        }
+        $this->searchService->remove(end($posts), $this->entityManager)->wait();
 
         // Expects 2 posts and 1 comment.
         $this->assertEquals(2, $this->searchService->count('', Post::class));
@@ -145,12 +139,7 @@ class SearchServiceTest extends BaseTest
         $this->assertEquals(4, $this->searchService->count('', ContentAggregator::class));
 
         // Remove the only comment that exists.
-        $result = $this->searchService->remove($comment, $this->entityManager);
-        foreach ($result as $chunk) {
-            foreach ($chunk as $indexName => $apiResponse) {
-                $apiResponse->wait();
-            }
-        }
+        $this->searchService->remove($comment, $this->entityManager)->wait();
 
         // Expects 2 posts and 0 comments.
         $this->assertEquals(2, $this->searchService->count('', Post::class));
@@ -160,12 +149,7 @@ class SearchServiceTest extends BaseTest
         $this->assertEquals(3, $this->searchService->count('', ContentAggregator::class));
 
         // Remove the only image that exists.
-        $result = $this->searchService->remove($image, $this->entityManager);
-        foreach ($result as $chunk) {
-            foreach ($chunk as $indexName => $apiResponse) {
-                $apiResponse->wait();
-            }
-        }
+        $this->searchService->remove($image, $this->entityManager)->wait();
 
         // The content aggregator expects 2 + 0 + 0.
         $this->assertEquals(2, $this->searchService->count('', ContentAggregator::class));
@@ -176,12 +160,7 @@ class SearchServiceTest extends BaseTest
         $postIndexed = $this->createPost(10);
         $postIndexed->setTitle('Foo Bar');
 
-        $result = $this->searchService->index($postIndexed, $this->entityManager);
-        foreach ($result as $chunk) {
-            foreach ($chunk as $indexName => $apiResponse) {
-                $apiResponse->wait();
-            }
-        }
+        $this->searchService->index($postIndexed, $this->entityManager)->wait();
 
         // Using entity.
         $results = $this->searchService->rawSearch('Foo Bar', Post::class);
@@ -205,12 +184,7 @@ class SearchServiceTest extends BaseTest
         $posts[] = $post;
 
         // index Data: Total 4 posts.
-        $result = $this->searchService->index($posts, $this->entityManager);
-        foreach ($result as $chunk) {
-            foreach ($chunk as $indexName => $apiResponse) {
-                $apiResponse->wait();
-            }
-        }
+        $this->searchService->index($posts, $this->entityManager)->wait();
 
         // The content aggregator expects 3 ( not 4, because of the index_if condition ).
         $this->assertEquals(3, $this->searchService->count('', ContentAggregator::class));

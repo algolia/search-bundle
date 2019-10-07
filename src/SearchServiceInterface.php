@@ -2,12 +2,9 @@
 
 namespace Algolia\SearchBundle;
 
-use Algolia\AlgoliaSearch\Response\AbstractResponse;
 use Doctrine\Common\Persistence\ObjectManager;
 
 /**
- * @internal
- *
  * This class should be used for testing purposes only.
  * It exists so the service can be mocked.
  */
@@ -42,7 +39,7 @@ interface SearchServiceInterface
      * @param ObjectManager                   $objectManager
      * @param array<string, int|string|array> $requestOptions
      *
-     * @return array<int, array<string, AbstractResponse>>
+     * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
      */
     public function index($entities, ObjectManager $objectManager, $requestOptions = []);
 
@@ -51,7 +48,7 @@ interface SearchServiceInterface
      * @param ObjectManager                   $objectManager
      * @param array<string, int|string|array> $requestOptions
      *
-     * @return array<int, array<string, AbstractResponse>>
+     * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
      */
     public function remove($entities, ObjectManager $objectManager, $requestOptions = []);
 
