@@ -6,6 +6,9 @@ use Algolia\SearchBundle\SearchService;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
 
+/**
+ * @internal
+ */
 final class SearchIndexerSubscriber implements EventSubscriber
 {
     /**

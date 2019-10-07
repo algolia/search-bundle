@@ -16,14 +16,17 @@ final class SearchableEntity
      * @var string
      */
     private $indexName;
+
     /**
      * @var object
      */
     private $entity;
+
     /**
      * @var ClassMetadata
      */
     private $entityMetadata;
+
     /**
      * @var bool
      */
@@ -33,6 +36,7 @@ final class SearchableEntity
      * @var int|string
      */
     private $id;
+
     /**
      * @var object
      */

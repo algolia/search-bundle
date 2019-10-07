@@ -5,12 +5,16 @@ namespace Algolia\SearchBundle\Settings;
 use Algolia\AlgoliaSearch\SearchClient;
 use Symfony\Component\Filesystem\Filesystem;
 
+/**
+ * @internal
+ */
 final class SettingsManager
 {
     /**
      * @var SearchClient
      */
     private $algolia;
+
     /**
      * @var array<string, array|int|string>
      */

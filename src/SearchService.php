@@ -19,38 +19,47 @@ final class SearchService implements SearchServiceInterface
      * @var Engine
      */
     private $engine;
+
     /**
      * @var array<string, array|int|string>
      */
     private $configuration;
+
     /**
      * @var \Symfony\Component\PropertyAccess\PropertyAccessor
      */
     private $propertyAccessor;
+
     /**
      * @var array<int, string>
      */
     private $searchableEntities;
+
     /**
      * @var array<int, string>
      */
     private $aggregators;
+
     /**
      * @var array<string, array>
      */
     private $entitiesAggregators;
+
     /**
      * @var array<string, string>
      */
     private $classToIndexMapping;
+
     /**
      * @var array<string, boolean>
      */
     private $classToSerializerGroupMapping;
+
     /**
      * @var array<string, string|null>
      */
     private $indexIfMapping;
+
     /**
      * @var mixed
      */
