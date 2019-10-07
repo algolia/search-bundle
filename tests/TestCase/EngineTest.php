@@ -102,7 +102,7 @@ class EngineTest extends BaseTest
     public function testIndexingEmptyEntity()
     {
         $searchableImage = $this->createSearchableImage();
-        $requestOptions = [];
+        $requestOptions  = [];
 
         // Delete index in case there is already something
         $this->engine->delete($searchableImage->getIndexName(), $requestOptions);
