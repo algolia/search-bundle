@@ -169,27 +169,29 @@ final class SearchService implements SearchServiceInterface
     }
 
     /**
-     * @param string $className
+     * @param string                          $className
+     * @param array<string, int|string|array> $requestOptions
      *
      * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
      */
-    public function clear($className)
+    public function clear($className, $requestOptions = [])
     {
         $this->assertIsSearchable($className);
 
-        return $this->engine->clear($this->getFullIndexName($className));
+        return $this->engine->clear($this->getFullIndexName($className), $requestOptions);
     }
 
     /**
-     * @param string $className
+     * @param string                          $className
+     * @param array<string, int|string|array> $requestOptions
      *
      * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
      */
-    public function delete($className)
+    public function delete($className, $requestOptions = [])
     {
         $this->assertIsSearchable($className);
 
-        return $this->engine->delete($this->getFullIndexName($className));
+        return $this->engine->delete($this->getFullIndexName($className), $requestOptions);
     }
 
     /**

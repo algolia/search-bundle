@@ -48,7 +48,7 @@ abstract class SearchSettingsCommand extends Command
 
         $output->writeln($message);
 
-        return null;
+        return 0;
     }
 
     /**

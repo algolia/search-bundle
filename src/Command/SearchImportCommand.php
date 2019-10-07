@@ -106,7 +106,7 @@ final class SearchImportCommand extends IndexCommand
 
         $output->writeln('<info>Done!</info>');
 
-        return null;
+        return 0;
     }
 
     /**

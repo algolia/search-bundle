@@ -26,7 +26,7 @@ final class AlgoliaSearchExtension extends Extension
      * @param array            $configs
      * @param ContainerBuilder $container
      *
-     * @throws \Exception
+     * @throws \InvalidArgumentException|\Exception
      *
      * @return void
      */
