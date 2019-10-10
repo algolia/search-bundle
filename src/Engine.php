@@ -134,7 +134,7 @@ final class Engine
     {
         $index = $this->client->initIndex($indexName);
 
-        if ($index->exists()) {
+        if ($index->exists($requestOptions)) {
             return $index->clearObjects($requestOptions);
         }
 
@@ -159,7 +159,7 @@ final class Engine
     {
         $index = $this->client->initIndex($indexName);
 
-        if ($index->exists()) {
+        if ($index->exists($requestOptions)) {
             return $index->delete($requestOptions);
         }
 

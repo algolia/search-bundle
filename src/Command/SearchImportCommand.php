@@ -3,7 +3,7 @@
 namespace Algolia\SearchBundle\Command;
 
 use Algolia\SearchBundle\Entity\Aggregator;
-use Algolia\SearchBundle\SearchService;
+use Algolia\SearchBundle\SearchServiceInterface;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -26,10 +26,10 @@ final class SearchImportCommand extends IndexCommand
     private $managerRegistry;
 
     /**
-     * @param SearchService   $searchService
-     * @param ManagerRegistry $managerRegistry
+     * @param SearchServiceInterface $searchService
+     * @param ManagerRegistry        $managerRegistry
      */
-    public function __construct(SearchService $searchService, ManagerRegistry $managerRegistry)
+    public function __construct(SearchServiceInterface $searchService, ManagerRegistry $managerRegistry)
     {
         parent::__construct($searchService);
 

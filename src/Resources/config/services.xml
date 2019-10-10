@@ -21,7 +21,7 @@
             <argument key="$apiKey">%env(ALGOLIA_API_KEY)%</argument>
         </service>
 
-        <service id="Algolia\SearchBundle\SearchService" alias="search.service"/>
+        <service id="Algolia\SearchBundle\SearchServiceInterface" alias="search.service"/>
         <service id="Algolia\SearchBundle\Settings\SettingsManager" alias="search.settings_manager"/>
 
         <!-- CustomNormalizer is not registered by framework-bundle -->

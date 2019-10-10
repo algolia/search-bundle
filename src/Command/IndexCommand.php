@@ -2,7 +2,7 @@
 
 namespace Algolia\SearchBundle\Command;
 
-use Algolia\SearchBundle\SearchService;
+use Algolia\SearchBundle\SearchServiceInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -13,14 +13,14 @@ use Symfony\Component\Console\Output\OutputInterface;
 abstract class IndexCommand extends Command
 {
     /**
-     * @var SearchService
+     * @var SearchServiceInterface
      */
     protected $searchService;
 
     /**
-     * @param SearchService $searchService
+     * @param SearchServiceInterface $searchService
      */
-    public function __construct(SearchService $searchService)
+    public function __construct(SearchServiceInterface $searchService)
     {
         $this->searchService = $searchService;
 

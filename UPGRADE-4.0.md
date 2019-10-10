@@ -48,7 +48,7 @@ We strongly encourage you to take a look at the [PHP Client v2 upgrade guide](ht
     <tr>
         <td><code>Algolia\SearchBundle\Engine\NullEngine</code></td>
         <td>Removed</td>
-        <td><strong>For testing purposes only</strong> use <code>Algolia\SearchBundle\SearchServiceInterface</code></td>
+        <td>For testing purposes use <code>Algolia\SearchBundle\SearchServiceInterface</code> by mocking it or extending it and overriding the `search.service` in your test config (see https://symfony.com/doc/current/configuration.html#configuration-environments)</td>
     </tr>
 </tbody>
 </table>
@@ -93,7 +93,7 @@ used directly and may be up to changes in minor versions.
     <tr>
         <td><code>Algolia\SearchBundle\Engine\EngineInterface</code></td>
         <td>Removed</td>
-        <td><code>Algolia\SearchBundle\Engine</code></td>
+        <td></td>
     </tr>
     <tr>
         <td><code>Algolia\SearchBundle\Engine\IndexManagerInterface</code></td>
@@ -266,6 +266,7 @@ $result = $this->indexManager->search(
     'foo', 
     Post::class, 
     $this->get('doctrine')->getManager(),
+    // the optional page and hitsPerPage parameters were passed separately
     1,
     20,
     'attributesToRetrieve' => [
@@ -278,7 +279,7 @@ $result = $this->searchService->search(
     'foo', 
     Post::class, 
     $this->get('doctrine')->getManager(),
-    // all the optional parameters are sent as once in the $requestOptions
+    // all the optional parameters are now sent as once in the $requestOptions
     [
         'page'                 => 0,
         'hitsPerPage'          => 20,
