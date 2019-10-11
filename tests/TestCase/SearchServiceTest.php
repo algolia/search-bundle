@@ -43,7 +43,7 @@ class SearchServiceTest extends BaseTest
 
     public function testGetSearchableEntities()
     {
-        $result = $this->searchService->getSearchableEntities();
+        $result = $this->searchService->getSearchables();
         $this->assertEquals([
             Post::class,
             Comment::class,
@@ -60,7 +60,7 @@ class SearchServiceTest extends BaseTest
     {
         $this->entityManager = $this->get('doctrine')->getManager();
 
-        $this->searchService->index(new Post(), $this->entityManager);
+        $this->searchService->index($this->entityManager, new Post());
     }
 
     public function testIndexedDataAreSearchable()
@@ -71,40 +71,40 @@ class SearchServiceTest extends BaseTest
         }
 
         // index Data
-        $this->searchService->index($this->createPost(10), $this->entityManager);
+        $this->searchService->index($this->entityManager, $this->createPost(10));
         $this->searchService->index(
+            $this->entityManager,
             array_merge(
                 $posts,
                 [$this->createComment(1), $this->createImage(1)]
-            ),
-            $this->entityManager
+            )
         )->wait();
 
         // RawSearch
-        $searchPost = $this->searchService->rawSearch('', Post::class);
+        $searchPost = $this->searchService->rawSearch(Post::class);
         $this->assertCount(4, $searchPost['hits']);
-        $searchPost = $this->searchService->rawSearch('', Post::class, [
+        $searchPost = $this->searchService->rawSearch(Post::class, '', [
             'page'        => 0,
             'hitsPerPage' => 1,
         ]);
         $this->assertCount(1, $searchPost['hits']);
 
-        $searchPostEmpty = $this->searchService->rawSearch('with no result', Post::class);
+        $searchPostEmpty = $this->searchService->rawSearch(Post::class, 'with no result', );
         $this->assertCount(0, $searchPostEmpty['hits']);
 
-        $searchComment = $this->searchService->rawSearch('', Comment::class);
+        $searchComment = $this->searchService->rawSearch(Comment::class);
         $this->assertCount(1, $searchComment['hits']);
 
-        $searchPost = $this->searchService->rawSearch('test', ContentAggregator::class);
+        $searchPost = $this->searchService->rawSearch(ContentAggregator::class, 'test');
         $this->assertCount(4, $searchPost['hits']);
 
-        $searchPost = $this->searchService->rawSearch('Comment content', ContentAggregator::class);
+        $searchPost = $this->searchService->rawSearch(ContentAggregator::class, 'Comment content');
         $this->assertCount(1, $searchPost['hits']);
 
         // Count
-        $this->assertEquals(4, $this->searchService->count('test', Post::class));
-        $this->assertEquals(1, $this->searchService->count('content', Comment::class));
-        $this->assertEquals(6, $this->searchService->count('', ContentAggregator::class));
+        $this->assertEquals(4, $this->searchService->count(Post::class, 'test'));
+        $this->assertEquals(1, $this->searchService->count(Comment::class, 'content'));
+        $this->assertEquals(6, $this->searchService->count(ContentAggregator::class));
 
         // Cleanup
         $this->searchService->delete(Post::class);
@@ -124,35 +124,35 @@ class SearchServiceTest extends BaseTest
 
         // index Data
         $this->searchService->index(
-            array_merge($posts, [$comment, $image]),
-            $this->entityManager
+            $this->entityManager,
+            array_merge($posts, [$comment, $image])
         )->wait();
 
         // Remove the last post.
-        $this->searchService->remove(end($posts), $this->entityManager)->wait();
+        $this->searchService->remove($this->entityManager, end($posts))->wait();
 
         // Expects 2 posts and 1 comment.
-        $this->assertEquals(2, $this->searchService->count('', Post::class));
-        $this->assertEquals(1, $this->searchService->count('', Comment::class));
+        $this->assertEquals(2, $this->searchService->count(Post::class));
+        $this->assertEquals(1, $this->searchService->count(Comment::class));
 
         // The content aggregator expects 2 + 1 + 1.
-        $this->assertEquals(4, $this->searchService->count('', ContentAggregator::class));
+        $this->assertEquals(4, $this->searchService->count(ContentAggregator::class));
 
         // Remove the only comment that exists.
-        $this->searchService->remove($comment, $this->entityManager)->wait();
+        $this->searchService->remove($this->entityManager, $comment)->wait();
 
         // Expects 2 posts and 0 comments.
-        $this->assertEquals(2, $this->searchService->count('', Post::class));
-        $this->assertEquals(0, $this->searchService->count('', Comment::class));
+        $this->assertEquals(2, $this->searchService->count(Post::class));
+        $this->assertEquals(0, $this->searchService->count(Comment::class));
 
         // The content aggregator expects 2 + 0 + 1.
-        $this->assertEquals(3, $this->searchService->count('', ContentAggregator::class));
+        $this->assertEquals(3, $this->searchService->count(ContentAggregator::class));
 
         // Remove the only image that exists.
-        $this->searchService->remove($image, $this->entityManager)->wait();
+        $this->searchService->remove($this->entityManager, $image)->wait();
 
         // The content aggregator expects 2 + 0 + 0.
-        $this->assertEquals(2, $this->searchService->count('', ContentAggregator::class));
+        $this->assertEquals(2, $this->searchService->count(ContentAggregator::class));
     }
 
     public function testRawSearchRawContent()
@@ -160,14 +160,14 @@ class SearchServiceTest extends BaseTest
         $postIndexed = $this->createPost(10);
         $postIndexed->setTitle('Foo Bar');
 
-        $this->searchService->index($postIndexed, $this->entityManager)->wait();
+        $this->searchService->index($this->entityManager, $postIndexed)->wait();
 
         // Using entity.
-        $results = $this->searchService->rawSearch('Foo Bar', Post::class);
+        $results = $this->searchService->rawSearch(Post::class, 'Foo Bar');
         $this->assertEquals($results['hits'][0]['title'], $postIndexed->getTitle());
 
         // Using aggregator.
-        $results = $this->searchService->rawSearch('Foo Bar', ContentAggregator::class);
+        $results = $this->searchService->rawSearch(ContentAggregator::class, 'Foo Bar');
         $this->assertEquals($results['hits'][0]['title'], $postIndexed->getTitle());
     }
 
@@ -184,10 +184,10 @@ class SearchServiceTest extends BaseTest
         $posts[] = $post;
 
         // index Data: Total 4 posts.
-        $this->searchService->index($posts, $this->entityManager)->wait();
+        $this->searchService->index($this->entityManager, $posts)->wait();
 
         // The content aggregator expects 3 ( not 4, because of the index_if condition ).
-        $this->assertEquals(3, $this->searchService->count('', ContentAggregator::class));
+        $this->assertEquals(3, $this->searchService->count(ContentAggregator::class));
     }
 
     /**
@@ -197,7 +197,7 @@ class SearchServiceTest extends BaseTest
     {
         $image = $this->createSearchableImage();
 
-        $this->searchService->index([$image], $this->entityManager);
+        $this->searchService->index($this->entityManager, [$image]);
         $this->searchService->clear(Image::class);
     }
 

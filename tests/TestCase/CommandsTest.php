@@ -67,10 +67,10 @@ class CommandsTest extends BaseTest
     public function testSearchClear()
     {
         $this->om = $this->get('doctrine')->getManager();
-        $this->searchService->index($this->createPost(10), $this->om)->wait();
+        $this->searchService->index($this->om, $this->createPost(10))->wait();
 
         // Checks that post was created and indexed
-        $searchPost = $this->searchService->rawSearch('', Post::class);
+        $searchPost = $this->searchService->rawSearch(Post::class);
         $this->assertCount(1, $searchPost['hits']);
 
         $command       = $this->application->find('search:clear');
@@ -117,13 +117,13 @@ class CommandsTest extends BaseTest
         $iteration      = 0;
         $expectedResult = 3;
         do {
-            $searchPost = $this->searchService->rawSearch('', ContentAggregator::class);
+            $searchPost = $this->searchService->rawSearch(ContentAggregator::class);
             sleep(1);
             $iteration++;
         } while (count($searchPost['hits']) !== $expectedResult || $iteration < 10);
 
         // Ensure posts were imported into contents index
-        $searchPost = $this->searchService->rawSearch('', ContentAggregator::class);
+        $searchPost = $this->searchService->rawSearch(ContentAggregator::class);
         $this->assertCount($expectedResult, $searchPost['hits']);
         // clearup table
         $this->connection->executeUpdate($this->platform->getTruncateTableSQL($this->indexName, true));
@@ -163,7 +163,7 @@ class CommandsTest extends BaseTest
         $iteration      = 0;
         $expectedResult = 3;
         do {
-            $searchPost = $this->searchService->rawSearch('', Post::class);
+            $searchPost = $this->searchService->rawSearch(Post::class);
             sleep(1);
             $iteration++;
         } while (count($searchPost['hits']) !== $expectedResult || $iteration < 10);

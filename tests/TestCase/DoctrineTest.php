@@ -47,26 +47,26 @@ class DoctrineTest extends BaseTest
         $iteration     = 0;
         $expectedCount = 5;
         do {
-            $count = $this->searchService->count('', Post::class);
+            $count = $this->searchService->count(Post::class);
             sleep(1);
             $iteration++;
         } while ($count !== $expectedCount || $iteration === 10);
 
         $this->assertEquals($expectedCount, $count);
 
-        $raw = $this->searchService->rawSearch('', Post::class);
+        $raw = $this->searchService->rawSearch(Post::class);
         $this->assertArrayHasKey('query', $raw);
         $this->assertArrayHasKey('nbHits', $raw);
         $this->assertArrayHasKey('page', $raw);
         $this->assertTrue(is_array($raw['hits']));
 
-        $posts = $this->searchService->search('', Post::class, $em);
+        $posts = $this->searchService->search($em, Post::class);
         $this->assertTrue(is_array($posts));
         foreach ($posts as $p) {
             $this->assertInstanceOf(Post::class, $p);
         }
 
-        $posts = $this->searchService->search('', ContentAggregator::class, $em);
+        $posts = $this->searchService->search($em, ContentAggregator::class);
         foreach ($posts as $p) {
             $this->assertInstanceOf(Post::class, $p);
         }
@@ -74,7 +74,7 @@ class DoctrineTest extends BaseTest
         $postToUpdate = $posts[4];
         $postToUpdate->setTitle('New Title');
         $em->flush();
-        $posts = $this->searchService->search('', ContentAggregator::class, $em);
+        $posts = $this->searchService->search($em, ContentAggregator::class);
         $this->assertEquals($posts[4]->getTitle(), 'New Title');
 
         $em->remove($posts[0]);
@@ -82,7 +82,7 @@ class DoctrineTest extends BaseTest
         $iteration     = 0;
         $expectedCount = 4;
         do {
-            $count = $this->searchService->count('', Post::class);
+            $count = $this->searchService->count(Post::class);
             sleep(1);
             $iteration++;
         } while ($count !== $expectedCount || $iteration === 10);
@@ -99,12 +99,12 @@ class DoctrineTest extends BaseTest
         ];
         $em = $this->get('doctrine')->getManager();
 
-        $this->searchService->index($tags, $em)->wait();
+        $this->searchService->index($em, $tags)->wait();
 
-        $this->assertEquals(2, $this->searchService->count('', Tag::class));
+        $this->assertEquals(2, $this->searchService->count(Tag::class));
 
-        $this->searchService->index($tags[2]->setPublic(true), $em)->wait();
+        $this->searchService->index($em, $tags[2]->setPublic(true))->wait();
 
-        $this->assertEquals(3, $this->searchService->count('', Tag::class));
+        $this->assertEquals(3, $this->searchService->count(Tag::class));
     }
 }

@@ -2,7 +2,9 @@
 
 namespace Algolia\SearchBundle\Command;
 
+use Algolia\AlgoliaSearch\Response\AbstractResponse;
 use Algolia\SearchBundle\Entity\Aggregator;
+use Algolia\SearchBundle\Responses\SearchServiceResponse;
 use Algolia\SearchBundle\SearchServiceInterface;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Symfony\Component\Console\Input\InputArgument;
@@ -85,7 +87,7 @@ final class SearchImportCommand extends IndexCommand
                 );
 
                 $responses = $this->formatIndexingResponse(
-                    $this->searchService->index($entities, $manager)
+                    $this->searchService->index($manager, $entities)
                 );
                 foreach ($responses as $indexName => $numberOfRecords) {
                     $output->writeln(sprintf(
@@ -110,7 +112,7 @@ final class SearchImportCommand extends IndexCommand
     }
 
     /**
-     * @param array<int, array> $batch
+     * @param AbstractResponse $batch
      *
      * @return array<string, int>
      */

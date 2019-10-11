@@ -64,7 +64,6 @@ final class Engine
             $requestOptions['autoGenerateObjectIDIfNotExist'] = true;
         }
         foreach ($data as $indexName => $objects) {
-
             $result[$indexName] = $this->client
                 ->initIndex($indexName)
                 ->saveObjects($objects, $requestOptions);

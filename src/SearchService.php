@@ -97,7 +97,7 @@ final class SearchService implements SearchServiceInterface
     /**
      * @return array<int, string>
      */
-    public function getSearchableEntities()
+    public function getSearchables()
     {
         return $this->searchableEntities;
     }
@@ -111,55 +111,65 @@ final class SearchService implements SearchServiceInterface
     }
 
     /**
-     * @param object|array<int, object>       $entities
+     * @param string $className
+     *
+     * @return string
+     */
+    public function searchableAs($className)
+    {
+        return $this->configuration['prefix'] . $this->classToIndexMapping[$className];
+    }
+
+    /**
      * @param ObjectManager                   $objectManager
+     * @param object|array<int, object>       $searchables
      * @param array<string, int|string|array> $requestOptions
      *
      * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
      */
-    public function index($entities, ObjectManager $objectManager, $requestOptions = [])
+    public function index(ObjectManager $objectManager, $searchables, $requestOptions = [])
     {
-        $entities = is_array($entities) ? $entities : [$entities];
-        $entities = array_merge($entities, $this->getAggregatorsFromEntities($objectManager, $entities));
+        $searchables = is_array($searchables) ? $searchables : [$searchables];
+        $searchables = array_merge($searchables, $this->getAggregatorsFromEntities($objectManager, $searchables));
 
-        $entitiesToBeIndexed = array_filter($entities, function ($entity) {
+        $searchablesToBeIndexed = array_filter($searchables, function ($entity) {
             return $this->isSearchable($entity);
         });
 
-        $entitiesToBeRemoved = [];
-        foreach ($entitiesToBeIndexed as $key => $entity) {
+        $searchablesToBeRemoved = [];
+        foreach ($searchablesToBeIndexed as $key => $entity) {
             if (!$this->shouldBeIndexed($entity)) {
-                unset($entitiesToBeIndexed[$key]);
-                $entitiesToBeRemoved[] = $entity;
+                unset($searchablesToBeIndexed[$key]);
+                $searchablesToBeRemoved[] = $entity;
             }
         }
 
-        if (count($entitiesToBeRemoved) > 0) {
-            $this->remove($entitiesToBeRemoved, $objectManager);
+        if (count($searchablesToBeRemoved) > 0) {
+            $this->remove($objectManager, $searchablesToBeRemoved);
         }
 
-        return $this->makeSearchServiceResponseFrom($objectManager, $entitiesToBeIndexed, function ($chunk) use ($requestOptions) {
+        return $this->makeSearchServiceResponseFrom($objectManager, $searchablesToBeIndexed, function ($chunk) use ($requestOptions) {
             return $this->engine->index($chunk, $requestOptions);
         });
     }
 
     /**
-     * @param object|array<int, object>       $entities
+     * @param object|array<int, object>       $searchables
      * @param ObjectManager                   $objectManager
      * @param array<string, int|string|array> $requestOptions
      *
      * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
      */
-    public function remove($entities, ObjectManager $objectManager, $requestOptions = [])
+    public function remove(ObjectManager $objectManager, $searchables, $requestOptions = [])
     {
-        $entities = is_array($entities) ? $entities : [$entities];
-        $entities = array_merge($entities, $this->getAggregatorsFromEntities($objectManager, $entities));
+        $searchables = is_array($searchables) ? $searchables : [$searchables];
+        $searchables = array_merge($searchables, $this->getAggregatorsFromEntities($objectManager, $searchables));
 
-        $entities = array_filter($entities, function ($entity) {
+        $searchables = array_filter($searchables, function ($entity) {
             return $this->isSearchable($entity);
         });
 
-        return $this->makeSearchServiceResponseFrom($objectManager, $entities, function ($chunk) use ($requestOptions) {
+        return $this->makeSearchServiceResponseFrom($objectManager, $searchables, function ($chunk) use ($requestOptions) {
             return $this->engine->remove($chunk, $requestOptions);
         });
     }
@@ -174,7 +184,7 @@ final class SearchService implements SearchServiceInterface
     {
         $this->assertIsSearchable($className);
 
-        return $this->engine->clear($this->getFullIndexName($className), $requestOptions);
+        return $this->engine->clear($this->searchableAs($className), $requestOptions);
     }
 
     /**
@@ -187,24 +197,24 @@ final class SearchService implements SearchServiceInterface
     {
         $this->assertIsSearchable($className);
 
-        return $this->engine->delete($this->getFullIndexName($className), $requestOptions);
+        return $this->engine->delete($this->searchableAs($className), $requestOptions);
     }
 
     /**
-     * @param string                          $query
-     * @param string                          $className
      * @param ObjectManager                   $objectManager
+     * @param string                          $className
+     * @param string                          $query
      * @param array<string, int|string|array> $requestOptions
      *
      * @return array<int, object>
      *
      * @throws \Algolia\AlgoliaSearch\Exceptions\AlgoliaException
      */
-    public function search($query, $className, ObjectManager $objectManager, $requestOptions = [])
+    public function search(ObjectManager $objectManager, $className, $query = '', $requestOptions = [])
     {
         $this->assertIsSearchable($className);
 
-        $ids = $this->engine->searchIds($query, $this->getFullIndexName($className), $requestOptions);
+        $ids = $this->engine->searchIds($query, $this->searchableAs($className), $requestOptions);
 
         $results = [];
 
@@ -229,35 +239,35 @@ final class SearchService implements SearchServiceInterface
     }
 
     /**
-     * @param string                          $query
      * @param string                          $className
+     * @param string                          $query
      * @param array<string, int|string|array> $requestOptions
      *
      * @return array<string, int|string|array>
      *
      * @throws \Algolia\AlgoliaSearch\Exceptions\AlgoliaException
      */
-    public function rawSearch($query, $className, $requestOptions = [])
+    public function rawSearch($className, $query = '', $requestOptions = [])
     {
         $this->assertIsSearchable($className);
 
-        return $this->engine->search($query, $this->getFullIndexName($className), $requestOptions);
+        return $this->engine->search($query, $this->searchableAs($className), $requestOptions);
     }
 
     /**
-     * @param string                          $query
      * @param string                          $className
+     * @param string                          $query
      * @param array<string, int|string|array> $requestOptions
      *
      * @return int
      *
      * @throws \Algolia\AlgoliaSearch\Exceptions\AlgoliaException
      */
-    public function count($query, $className, $requestOptions = [])
+    public function count($className, $query = '', $requestOptions = [])
     {
         $this->assertIsSearchable($className);
 
-        return $this->engine->count($query, $this->getFullIndexName($className), $requestOptions);
+        return $this->engine->count($query, $this->searchableAs($className), $requestOptions);
     }
 
     /**
@@ -279,16 +289,6 @@ final class SearchService implements SearchServiceInterface
         }
 
         return true;
-    }
-
-    /**
-     * @param string $className
-     *
-     * @return string
-     */
-    public function getFullIndexName($className)
-    {
-        return $this->configuration['prefix'] . $this->classToIndexMapping[$className];
     }
 
     /**
@@ -408,7 +408,7 @@ final class SearchService implements SearchServiceInterface
                 $entityClassName = ClassUtils::getClass($entity);
 
                 $searchableEntitiesChunk[] = new SearchableEntity(
-                    $this->getFullIndexName($entityClassName),
+                    $this->searchableAs($entityClassName),
                     $entity,
                     $objectManager->getClassMetadata($entityClassName),
                     $this->normalizer,

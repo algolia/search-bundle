@@ -46,7 +46,7 @@ final class SearchIndexerSubscriber implements EventSubscriber
      */
     public function postUpdate(LifecycleEventArgs $args)
     {
-        $this->searchService->index($args->getObject(), $args->getObjectManager());
+        $this->searchService->index($args->getObjectManager(), $args->getObject());
     }
 
     /**
@@ -56,7 +56,7 @@ final class SearchIndexerSubscriber implements EventSubscriber
      */
     public function postPersist(LifecycleEventArgs $args)
     {
-        $this->searchService->index($args->getObject(), $args->getObjectManager());
+        $this->searchService->index($args->getObjectManager(), $args->getObject());
     }
 
     /**
@@ -66,6 +66,6 @@ final class SearchIndexerSubscriber implements EventSubscriber
      */
     public function preRemove(LifecycleEventArgs $args)
     {
-        $this->searchService->remove($object = $args->getObject(), $args->getObjectManager());
+        $this->searchService->remove($args->getObjectManager(), $object = $args->getObject());
     }
 }

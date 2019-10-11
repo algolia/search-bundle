@@ -264,14 +264,24 @@ class ExampleController extends Controller
 </thead>
 <tbody>
     <tr>
+        <td><code>getSearchableEntities(): array&lt;int, string&gt;</code></td>
+        <td>Renamed</td>
+        <td><code>getSearchableEntities(): array&lt;int, string&gt;</code></td>
+    </tr>
+    <tr>
+        <td><code>getFullIndexName($className): string</code></td>
+        <td>Renamed</td>
+        <td><code>searchableAs($className): string</code></td>
+    </tr>
+    <tr>
         <td><code>index($entities, ObjectManager $objectManager): array&lt;string, int&gt;</code></td>
         <td>Changed</td>
-        <td><code>index(ObjectManager $objectManager, $entities, $requestOptions = []): array&lt;int, array&lt;string, \Algolia\AlgoliaSearch\Response\AbstractResponse&gt;&gt;</code></td>
+        <td><code>index(ObjectManager $objectManager, $searchables, $requestOptions = []): array&lt;int, array&lt;string, \Algolia\AlgoliaSearch\Response\AbstractResponse&gt;&gt;</code></td>
     </tr>
     <tr>
         <td><code>remove($entities, ObjectManager $objectManager): array&lt;string, int&gt;</code></td>
         <td>Changed</td>
-        <td><code>remove(ObjectManager $objectManager, $entities, $requestOptions = []): array&lt;int, array&lt;string, \Algolia\AlgoliaSearch\Response\AbstractResponse&gt;&gt;</code></td>
+        <td><code>remove(ObjectManager $objectManager, $searchables, $requestOptions = []): array&lt;int, array&lt;string, \Algolia\AlgoliaSearch\Response\AbstractResponse&gt;&gt;</code></td>
     </tr>
     <tr>
         <td><code>clear($className): boolean</code></td>
