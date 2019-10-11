@@ -9,9 +9,6 @@ use Doctrine\Common\Util\ClassUtils;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
-/**
- * Class SearchService.
- */
 final class SearchService implements SearchServiceInterface
 {
     /**
