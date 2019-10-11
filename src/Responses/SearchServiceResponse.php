@@ -49,7 +49,7 @@ final class SearchServiceResponse extends AbstractResponse implements \Iterator
      */
     public function current()
     {
-        return $this->apiResponse[$this->position];
+        return $this->apiResponse[$this->key()];
     }
 
     /**

@@ -60,10 +60,10 @@ final class Engine
         }
 
         $result = [];
+        if (!array_key_exists('autoGenerateObjectIDIfNotExist', $requestOptions)) {
+            $requestOptions['autoGenerateObjectIDIfNotExist'] = true;
+        }
         foreach ($data as $indexName => $objects) {
-            if (!array_key_exists('autoGenerateObjectIDIfNotExist', $requestOptions)) {
-                $requestOptions['autoGenerateObjectIDIfNotExist'] = true;
-            }
 
             $result[$indexName] = $this->client
                 ->initIndex($indexName)

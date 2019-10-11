@@ -4,10 +4,6 @@ namespace Algolia\SearchBundle;
 
 use Doctrine\Common\Persistence\ObjectManager;
 
-/**
- * This class should be used for testing purposes only.
- * It exists so the service can be mocked.
- */
 interface SearchServiceInterface
 {
     /**
