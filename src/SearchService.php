@@ -2,6 +2,7 @@
 
 namespace Algolia\SearchBundle;
 
+use Algolia\AlgoliaSearch\RequestOptions\RequestOptions;
 use Algolia\SearchBundle\Entity\Aggregator;
 use Algolia\SearchBundle\Responses\SearchServiceResponse;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -121,9 +122,9 @@ final class SearchService implements SearchServiceInterface
     }
 
     /**
-     * @param ObjectManager                   $objectManager
-     * @param object|array<int, object>       $searchables
-     * @param array<string, int|string|array> $requestOptions
+     * @param ObjectManager                                  $objectManager
+     * @param object|array<int, object>                      $searchables
+     * @param array<string, int|string|array>|RequestOptions $requestOptions
      *
      * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
      */
@@ -154,9 +155,9 @@ final class SearchService implements SearchServiceInterface
     }
 
     /**
-     * @param object|array<int, object>       $searchables
-     * @param ObjectManager                   $objectManager
-     * @param array<string, int|string|array> $requestOptions
+     * @param object|array<int, object>                      $searchables
+     * @param ObjectManager                                  $objectManager
+     * @param array<string, int|string|array>|RequestOptions $requestOptions
      *
      * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
      */
@@ -175,8 +176,8 @@ final class SearchService implements SearchServiceInterface
     }
 
     /**
-     * @param string                          $className
-     * @param array<string, int|string|array> $requestOptions
+     * @param string                                         $className
+     * @param array<string, int|string|array>|RequestOptions $requestOptions
      *
      * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
      */
@@ -188,8 +189,8 @@ final class SearchService implements SearchServiceInterface
     }
 
     /**
-     * @param string                          $className
-     * @param array<string, int|string|array> $requestOptions
+     * @param string                                         $className
+     * @param array<string, int|string|array>|RequestOptions $requestOptions
      *
      * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
      */
@@ -201,10 +202,10 @@ final class SearchService implements SearchServiceInterface
     }
 
     /**
-     * @param ObjectManager                   $objectManager
-     * @param string                          $className
-     * @param string                          $query
-     * @param array<string, int|string|array> $requestOptions
+     * @param ObjectManager                                  $objectManager
+     * @param string                                         $className
+     * @param string                                         $query
+     * @param array<string, int|string|array>|RequestOptions $requestOptions
      *
      * @return array<int, object>
      *
@@ -239,9 +240,9 @@ final class SearchService implements SearchServiceInterface
     }
 
     /**
-     * @param string                          $className
-     * @param string                          $query
-     * @param array<string, int|string|array> $requestOptions
+     * @param string                                         $className
+     * @param string                                         $query
+     * @param array<string, int|string|array>|RequestOptions $requestOptions
      *
      * @return array<string, int|string|array>
      *
@@ -255,9 +256,9 @@ final class SearchService implements SearchServiceInterface
     }
 
     /**
-     * @param string                          $className
-     * @param string                          $query
-     * @param array<string, int|string|array> $requestOptions
+     * @param string                                         $className
+     * @param string                                         $query
+     * @param array<string, int|string|array>|RequestOptions $requestOptions
      *
      * @return int
      *

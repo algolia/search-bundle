@@ -21,6 +21,8 @@
             <argument key="$apiKey">%env(ALGOLIA_API_KEY)%</argument>
         </service>
 
+        <service id="Algolia\AlgoliaSearch\SearchClient" alias="search.client" />
+
         <service id="Algolia\SearchBundle\SearchServiceInterface" alias="search.service"/>
         <service id="Algolia\SearchBundle\Settings\SettingsManager" alias="search.settings_manager"/>
 

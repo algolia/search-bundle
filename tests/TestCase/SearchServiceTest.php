@@ -89,7 +89,7 @@ class SearchServiceTest extends BaseTest
         ]);
         $this->assertCount(1, $searchPost['hits']);
 
-        $searchPostEmpty = $this->searchService->rawSearch(Post::class, 'with no result', );
+        $searchPostEmpty = $this->searchService->rawSearch(Post::class, 'with no result');
         $this->assertCount(0, $searchPostEmpty['hits']);
 
         $searchComment = $this->searchService->rawSearch(Comment::class);

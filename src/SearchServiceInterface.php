@@ -2,6 +2,7 @@
 
 namespace Algolia\SearchBundle;
 
+use Algolia\AlgoliaSearch\RequestOptions\RequestOptions;
 use Doctrine\Common\Persistence\ObjectManager;
 
 interface SearchServiceInterface
@@ -33,18 +34,18 @@ interface SearchServiceInterface
     public function searchableAs($className);
 
     /**
-     * @param ObjectManager                   $objectManager
-     * @param object|array<int, object>       $searchables
-     * @param array<string, int|string|array> $requestOptions
+     * @param \Doctrine\Common\Persistence\ObjectManager     $objectManager
+     * @param object|array<int, object>                      $searchables
+     * @param array<string, int|string|array>|RequestOptions $requestOptions
      *
      * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
      */
     public function index(ObjectManager $objectManager, $searchables, $requestOptions = []);
 
     /**
-     * @param ObjectManager                   $objectManager
-     * @param object|array<int, object>       $searchables
-     * @param array<string, int|string|array> $requestOptions
+     * @param \Doctrine\Common\Persistence\ObjectManager     $objectManager
+     * @param object|array<int, object>                      $searchables
+     * @param array<string, int|string|array>|RequestOptions $requestOptions
      *
      * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
      */
@@ -65,10 +66,10 @@ interface SearchServiceInterface
     public function delete($className);
 
     /**
-     * @param ObjectManager                   $objectManager
-     * @param string                          $className
-     * @param string                          $query
-     * @param array<string, int|string|array> $requestOptions
+     * @param \Doctrine\Common\Persistence\ObjectManager     $objectManager
+     * @param string                                         $className
+     * @param string                                         $query
+     * @param array<string, int|string|array>|RequestOptions $requestOptions
      *
      * @return array<int, object>
      *
@@ -77,9 +78,9 @@ interface SearchServiceInterface
     public function search(ObjectManager $objectManager, $className, $query = '', $requestOptions = []);
 
     /**
-     * @param string                          $className
-     * @param string                          $query
-     * @param array<string, int|string|array> $requestOptions
+     * @param string                                         $className
+     * @param string                                         $query
+     * @param array<string, int|string|array>|RequestOptions $requestOptions
      *
      * @return array<string, int|string|array>
      *
@@ -88,9 +89,9 @@ interface SearchServiceInterface
     public function rawSearch($className, $query = '', $requestOptions = []);
 
     /**
-     * @param string                          $className
-     * @param string                          $query
-     * @param array<string, int|string|array> $requestOptions
+     * @param string                                         $className
+     * @param string                                         $query
+     * @param array<string, int|string|array>|RequestOptions $requestOptions
      *
      * @return int
      *

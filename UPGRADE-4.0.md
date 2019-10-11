@@ -15,20 +15,92 @@ Upgrade your `algolia/search-bundle` dependency from `3.4` to `^4.0` in your `co
 We strongly encourage you to take a look at the [PHP Client v2 upgrade guide](https://www.algolia.com/doc/api-client/getting-started/upgrade-guides/php/) to get acquainted with the new features deployed in this version.
 
 
-## Features ✨
+## Improved DX with the usage of our PHP Client v2
+Its entire redesign makes it faster and easier to use, but don't worry about the method signature changes: most of the the previous usage stay the same, everything is transparent to you. You will also benefit from its new features, the Algolia Client being now public (it relies on your ALGOLIA_APP_ID and ALGOLIA_API_KEY env variables), like the possibility to copy a whole index, to copy all the rules from an index, to replace all data in one index, creating secured API keys, and more. We also added better Exceptions, made the instantiation of the clients easier, and created many more features to help you have the best possible experience with Algolia. Please head over the [PHP Client v2 upgrade guide](https://www.algolia.com/doc/api-client/getting-started/upgrade-guides/php/) to know more.
 
-### Improved DX with the usage of our PHP Client v2
-Its entire redesign makes it faster and easier to use, but don't worry about the method signature changes: most of the the previous usage stay unchanged, everything is transparent to you. You will also benefit from its new features, like the possibility to copy a whole index, to copy all the rules from an index, to replace all data in one index, and more. We also added better Exceptions, made the instantiation of the clients easier, and created many more features to help you have the best possible experience with Algolia. Please head over the [PHP Client v2 upgrade guide](https://www.algolia.com/doc/api-client/getting-started/upgrade-guides/php/) to know more.
+Examples:
 
-### Waitable operations
-Methods from the `SearchService` are now *waitable*. You can rely on the [`wait()`](https://www.algolia.com/doc/api-reference/api-methods/wait-task/) method to wait for your task to be completely handled by the Engine before moving on, while previously you had to make a separate query swith the taskID returned from the operation to achieve the same result. The `wait()` method can be chained on any methods from the `SearchService`. Example: `$searchService->index(...)->wait()`.
+```php
+/**
+* Either autowire the SearchClient service
+*/
+
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+
+class ArticleController extends AbstractController
+{
+    private $searchService;
+
+    public function __construct(SearchServiceInterface $searchService)
+    {
+        $this->searchService = $searchService;
+    }
+
+    public function test(SearchClient $client)
+    {
+        // Copy an index
+        $client->copyIndex(SRC_INDEX_NAME, DEST_INDEX_NAME);
+
+        // Copy all the rules from an index
+        $client->copyRules(SRC_INDEX_NAME, DEST_INDEX_NAME);
+
+        // Replace all objects
+        $index = $client->initIndex(DEST_INDEX_NAME);
+        $index->replaceAllObjects($objects);
+    }
+}
+```
+
+```php
+/**
+* Or fetch it directly from the container. Note that the Controller class is deprecated.
+*/
+
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+
+class ArticleController extends Controller
+{
+    private $searchService;
+
+    public function __construct(SearchServiceInterface $searchService)
+    {
+        $this->searchService = $searchService;
+    }
+
+    public function test(SearchClient $client)
+    {
+        $client = $this->get('search.client');
+        // Copy an index
+        $client->copyIndex(SRC_INDEX_NAME, DEST_INDEX_NAME);
+
+        // Copy all the rules from an index
+        $client->copyRules(SRC_INDEX_NAME, DEST_INDEX_NAME);
+
+        // Replace all objects
+        $index = $client->initIndex(DEST_INDEX_NAME);
+        $index->replaceAllObjects($objects);
+    }
+}
+```
+
+## Waitable operations
+Methods from the `SearchService` are now *waitable*. You can rely on the [`wait()`](https://www.algolia.com/doc/api-reference/api-methods/wait-task/) method to wait for your task to be completely handled by the Engine before moving on, while previously you had to make a separate query swith the taskID returned from the operation to achieve the same result. The `wait()` method can be chained on any methods from the `SearchService`. 
+
+Examples: 
+```php
+// index objects and wait for the task to finish
+$response = $this->searchService->index($entityManager, $objects)->wait();
+
+// clear an index
+$response = $this->searchService->clear($className)->wait();
+```
 
 That also means that the return type of those methods has changed. They now all return an Algolia `AbstractResponse`. Please update your code accordingly.
 
-### All the logic in one single service
+## All the logic in one single service
 The bundle has been made much more simple with the merge of the two classes `AlgoliaEngine` and `IndexManager` to one `SearchService`. The `SearchService` is your only entry point for any operation on the engine.
 
-### Add any options to your operations
+## Add any options to your operations
 To have the most consistent, predictable, and future-proof method signature, we followed three rules:
 
 - All required parameters have a single argument each
@@ -50,8 +122,8 @@ $result = $this->indexManager->remove(
 
 # v4
 $result = $this->searchService->remove(
-    $searchablePosts,
     $this->get('doctrine')->getManager(),
+    $searchablePosts,
     // here you can pass any requestOptions, for example 'X-Forwarded-For', 'X-Algolia-UserToken'...
     [
         'X-Forwarded-For' => '0.0.0.0',
@@ -76,9 +148,9 @@ $result = $this->indexManager->search(
 
 # v4
 $result = $this->searchService->search(
-    'foo',
-    Post::class,
     $this->get('doctrine')->getManager(),
+    Post::class,
+    'foo',
     // all the optional parameters are now sent as once in the $requestOptions
     // be careful as page argument now starts from 0
     [
@@ -91,11 +163,9 @@ $result = $this->searchService->search(
 );
 ```
 
-### Direct access to Algolia Client
-We realized it was a common need to have a direct access to the Algolia Client anytime you had to perform advanced operations, so we decided to make it public by default. Moreover, with our PHP client v2 you now have way more features to interact with your indexes, like creating secured API keys, retrieving multiple objects accross different indexes, etc.
-
-### And also
+## And also
 * Better doc blocks to improve the public API and auto-completion.
+![alt text](./example-search.png)
 * Better quality tooling, so the bundle is now extra robust and future-proof.
 
 
@@ -203,7 +273,7 @@ used directly and may be up to changes in minor versions.
     <tr>
         <td><code>algolia_client</code><br>(setup publicly manually, you may not have been using it)</td>
         <td>Renamed</td>
-        <td><code>search.client</code></td>
+        <td><code>search.client</code> or `SearchClient` class autowired</td>
     </tr>
 </tbody>
 </table>

@@ -2,9 +2,7 @@
 
 namespace Algolia\SearchBundle\Command;
 
-use Algolia\AlgoliaSearch\Response\AbstractResponse;
 use Algolia\SearchBundle\Entity\Aggregator;
-use Algolia\SearchBundle\Responses\SearchServiceResponse;
 use Algolia\SearchBundle\SearchServiceInterface;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Symfony\Component\Console\Input\InputArgument;
@@ -112,7 +110,7 @@ final class SearchImportCommand extends IndexCommand
     }
 
     /**
-     * @param AbstractResponse $batch
+     * @param array<int, array> $batch
      *
      * @return array<string, int>
      */
