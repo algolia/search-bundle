@@ -7,7 +7,7 @@ Also, the Algolia Client is now public. Its methods signatures and return types 
 
 We attempt to document every possible breaking change. Since some of these breaking changes are in obscure parts of the API Client, only a portion of these changes may affect your application.
 
-Upgrade your `algolia/search-bundle` dependency from `^3.4` to `4.0.0-alpha1` in your `composer.json` file and run `composer update algolia/search-bundle` in your terminal.
+Upgrade your `algolia/search-bundle` dependency from `^3.4` to `4.0.0-alpha1` in your `composer.json` file and run `composer update algolia/search-bundle algolia/algoliasearch-client-php` in your terminal.
 
 
 ## Miscellaneous
