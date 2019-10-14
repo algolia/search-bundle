@@ -67,7 +67,7 @@ class ArticleController extends Controller
         $this->searchService = $searchService;
     }
 
-    public function test(SearchClient $client)
+    public function test()
     {
         $client = $this->get('search.client');
         // Copy an index
