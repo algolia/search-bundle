@@ -3,6 +3,11 @@ CHANGELOG
 
 UNRELEASED
 
+4.0.0-alpha2
+--------------
+
+* Fix: Missing `$requestOptions` in `SearchServiceInterface` - Commit [6b40e18](https://github.com/algolia/search-bundle/commit/6b40e181b6de65a9825d64a9d5b607bfcdbb9afc)
+
 4.0.0-alpha1
 --------------
 
