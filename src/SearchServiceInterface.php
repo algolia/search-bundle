@@ -52,18 +52,20 @@ interface SearchServiceInterface
     public function remove(ObjectManager $objectManager, $searchables, $requestOptions = []);
 
     /**
-     * @param string $className
+     * @param string                                         $className
+     * @param array<string, int|string|array>|RequestOptions $requestOptions
      *
      * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
      */
-    public function clear($className);
+    public function clear($className, $requestOptions = []);
 
     /**
-     * @param string $className
+     * @param string                                         $className
+     * @param array<string, int|string|array>|RequestOptions $requestOptions
      *
      * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
      */
-    public function delete($className);
+    public function delete($className, $requestOptions = []);
 
     /**
      * @param \Doctrine\Common\Persistence\ObjectManager     $objectManager
