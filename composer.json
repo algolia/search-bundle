@@ -15,7 +15,7 @@
     "prefer-stable": true,
     "require": {
         "php": "^5.6 || ^7.0",
-        "algolia/algoliasearch-client-php": "^1.23",
+        "algolia/algoliasearch-client-php": "^2.4",
         "doctrine/common": "^2.5",
         "symfony/filesystem": "^3.4.0 || ^4.0.0",
         "symfony/property-access": "^3.4.0 || ^4.0.0",
@@ -44,7 +44,9 @@
         "symfony/framework-bundle": "^3.4.0 || ^4.0.0",
         "symfony/phpunit-bridge": "^3.4.0 || ^4.0",
         "symfony/proxy-manager-bridge": "*",
-        "symfony/yaml": "^3.4.0 || ^4.0.0"
+        "symfony/yaml": "^3.4.0 || ^4.0.0",
+        "friendsofphp/php-cs-fixer": "^2.15",
+        "roave/security-advisories": "dev-master"
     },
     "extra": {
         "branch-alias": {
@@ -53,5 +55,17 @@
     },
     "config": {
         "sort-packages": true
+    },
+    "scripts": {
+        "test:install": "composer install -d tests/QualityTools/",
+        "test:update": "composer update -d tests/QualityTools/",
+        "lint": "php-cs-fixer fix -v",
+        "test:types": "tests/QualityTools/vendor/bin/phpstan analyse --ansi",
+        "test:unit": "phpunit --colors=always --verbose",
+        "test:lint": "php-cs-fixer fix -v --dry-run",
+        "test": [
+            "@test:lint",
+            "@test:unit"
+        ]
     }
 }

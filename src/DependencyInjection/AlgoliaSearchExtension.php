@@ -2,8 +2,9 @@
 
 namespace Algolia\SearchBundle\DependencyInjection;
 
-use Algolia\SearchBundle\IndexManager;
-use Algolia\SearchBundle\Settings\AlgoliaSettingsManager;
+use Algolia\SearchBundle\SearchService;
+use Algolia\SearchBundle\Engine;
+use Algolia\SearchBundle\Settings\SettingsManager;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Definition;
@@ -15,36 +16,43 @@ use Symfony\Component\HttpKernel\Kernel;
 /**
  * This is the class that loads and manages your bundle configuration.
  *
- * @link http://symfony.com/doc/current/cookbook/bundles/extension.html
+ * @see http://symfony.com/doc/current/cookbook/bundles/extension.html
+ *
+ * @internal
  */
-class AlgoliaSearchExtension extends Extension
+final class AlgoliaSearchExtension extends Extension
 {
     /**
-     * {@inheritdoc}
+     * @param array            $configs
+     * @param ContainerBuilder $container
+     *
+     * @throws \InvalidArgumentException|\Exception
+     *
+     * @return void
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.xml');
 
         $configuration = new Configuration();
-        $config = $this->processConfiguration($configuration, $configs);
+        $config        = $this->processConfiguration($configuration, $configs);
 
         if (is_null($config['prefix'])) {
-            $config['prefix'] = $container->getParameter("kernel.environment").'_';
+            $config['prefix'] = $container->getParameter('kernel.environment') . '_';
         }
 
         $rootDir = $container->getParameterBag()->get('kernel.project_dir');
 
         if (is_null($config['settingsDirectory'])) {
-            if (3 == Kernel::MAJOR_VERSION && !is_dir($rootDir.'/config/')) {
+            if (Kernel::MAJOR_VERSION >= 3 && !is_dir($rootDir . '/config/')) {
                 $config['settingsDirectory'] = '/app/Resources/SearchBundle/settings/';
             } else {
                 $config['settingsDirectory'] = '/config/settings/algolia_search/';
             }
         }
 
-        $config['settingsDirectory'] = $rootDir.$config['settingsDirectory'];
+        $config['settingsDirectory'] = $rootDir . $config['settingsDirectory'];
 
         if (count($doctrineSubscribedEvents = $config['doctrineSubscribedEvents']) > 0) {
             $container->getDefinition('search.search_indexer_subscriber')->setArgument(1, $doctrineSubscribedEvents);
@@ -52,24 +60,31 @@ class AlgoliaSearchExtension extends Extension
             $container->removeDefinition('search.search_indexer_subscriber');
         }
 
-        $indexManagerDefinition = (new Definition(
-            IndexManager::class,
+        $engineDefinition = new Definition(
+            Engine::class,
+            [
+                new Reference('search.client'),
+            ]
+        );
+
+        $searchServiceDefinition = (new Definition(
+            SearchService::class,
             [
                 new Reference($config['serializer']),
-                new Reference('search.engine'),
+                $engineDefinition,
                 $config,
             ]
         ))->setPublic(true);
 
         $settingsManagerDefinition = (new Definition(
-            AlgoliaSettingsManager::class,
+            SettingsManager::class,
             [
-                new Reference('algolia_client'),
+                new Reference('search.client'),
                 $config,
             ]
         ))->setPublic(true);
 
-        $container->setDefinition('search.index_manager', $indexManagerDefinition);
+        $container->setDefinition('search.service', $searchServiceDefinition);
         $container->setDefinition('search.settings_manager', $settingsManagerDefinition);
     }
 }

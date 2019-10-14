@@ -2,54 +2,49 @@
 
 namespace Algolia\SearchBundle\Command;
 
-use Algolia\SearchBundle\IndexManagerInterface;
-use Psr\Container\ContainerInterface;
+use Algolia\SearchBundle\SearchServiceInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
-use const E_USER_DEPRECATED;
-use function trigger_error;
 
-abstract class IndexCommand extends Command implements ContainerAwareInterface
+/**
+ * @internal
+ */
+abstract class IndexCommand extends Command
 {
-    use ContainerAwareTrait;
+    /**
+     * @var SearchServiceInterface
+     */
+    protected $searchService;
 
-    protected $indexManager;
-
-    public function __construct(IndexManagerInterface $indexManager)
+    /**
+     * @param SearchServiceInterface $searchService
+     */
+    public function __construct(SearchServiceInterface $searchService)
     {
-        $this->indexManager = $indexManager;
+        $this->searchService = $searchService;
 
         parent::__construct();
     }
 
     /**
-     * @return ContainerInterface
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @return array<string, string>
      */
-    protected function getContainer()
-    {
-        @trigger_error(
-            sprintf('The %s method is deprecated and should not be used. Please wire your dependencies explicitly.', __METHOD__),
-            E_USER_DEPRECATED
-        );
-
-        return $this->container;
-    }
-
     protected function getEntitiesFromArgs(InputInterface $input, OutputInterface $output)
     {
-        $entities = [];
+        $entities   = [];
         $indexNames = [];
 
         if ($indexList = $input->getOption('indices')) {
             $indexNames = explode(',', $indexList);
         }
 
-        $config = $this->indexManager->getConfiguration();
+        $config = $this->searchService->getConfiguration();
 
-        if (empty($indexNames)) {
+        if (count($indexNames) === 0) {
             $indexNames = array_keys($config['indices']);
         }
 
@@ -57,7 +52,7 @@ abstract class IndexCommand extends Command implements ContainerAwareInterface
             if (isset($config['indices'][$name])) {
                 $entities[$name] = $config['indices'][$name]['class'];
             } else {
-                $output->writeln('<comment>No index named <info>'.$name.'</info> was found. Check you configuration.</comment>');
+                $output->writeln('<comment>No index named <info>' . $name . '</info> was found. Check you configuration.</comment>');
             }
         }
 

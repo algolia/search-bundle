@@ -48,10 +48,10 @@ class Comment
 
     public function __construct(array $attributes = [])
     {
-        $this->id = isset($attributes['id']) ? $attributes['id'] : null;
-        $this->content = isset($attributes['content']) ? $attributes['content'] : null;
+        $this->id          = isset($attributes['id']) ? $attributes['id'] : null;
+        $this->content     = isset($attributes['content']) ? $attributes['content'] : null;
         $this->publishedAt = isset($attributes['publishedAt']) ? $attributes['publishedAt'] : new \DateTime();
-        $this->post = isset($attributes['post']) ? $attributes['post'] : null;
+        $this->post        = isset($attributes['post']) ? $attributes['post'] : null;
     }
 
     public function getId()

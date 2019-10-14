@@ -4,7 +4,6 @@ namespace Algolia\SearchBundle\TestApp\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
@@ -22,7 +21,6 @@ class Post
      *
      * @Groups({"searchable"})
      * ^ Note that Groups work on private properties
-     *
      */
     private $id;
 
@@ -61,11 +59,11 @@ class Post
 
     public function __construct(array $attributes = [])
     {
-        $this->id = isset($attributes['id']) ? $attributes['id'] : null;
-        $this->title = isset($attributes['title']) ? $attributes['title'] : null;
-        $this->content = isset($attributes['content']) ? $attributes['content'] : null;
+        $this->id          = isset($attributes['id']) ? $attributes['id'] : null;
+        $this->title       = isset($attributes['title']) ? $attributes['title'] : null;
+        $this->content     = isset($attributes['content']) ? $attributes['content'] : null;
         $this->publishedAt = isset($attributes['publishedAt']) ? $attributes['publishedAt'] : new \DateTime();
-        $this->comments = isset($attributes['comments']) ? new ArrayCollection($attributes['comments']) : new ArrayCollection();
+        $this->comments    = isset($attributes['comments']) ? new ArrayCollection($attributes['comments']) : new ArrayCollection();
     }
 
     public function getId()

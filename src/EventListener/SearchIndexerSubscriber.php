@@ -2,39 +2,70 @@
 
 namespace Algolia\SearchBundle\EventListener;
 
-use Algolia\SearchBundle\IndexManagerInterface;
+use Algolia\SearchBundle\SearchServiceInterface;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
 
-class SearchIndexerSubscriber implements EventSubscriber
+/**
+ * @internal
+ */
+final class SearchIndexerSubscriber implements EventSubscriber
 {
-    protected $indexManager;
+    /**
+     * @var SearchServiceInterface
+     */
+    private $searchService;
 
-    protected $subscribedEvents;
+    /**
+     * @var array<int, string>
+     */
+    private $subscribedEvents;
 
-    public function __construct(IndexManagerInterface $indexManager, $subscribedEvents)
+    /**
+     * @param SearchServiceInterface $searchService
+     * @param array<int, string>     $subscribedEvents
+     */
+    public function __construct(SearchServiceInterface $searchService, $subscribedEvents)
     {
-        $this->indexManager = $indexManager;
-        $this->subscribedEvents = $subscribedEvents;
+        $this->searchService     = $searchService;
+        $this->subscribedEvents  = $subscribedEvents;
     }
 
+    /**
+     * @return array<int, string>
+     */
     public function getSubscribedEvents()
     {
         return $this->subscribedEvents;
     }
 
+    /**
+     * @param LifecycleEventArgs $args
+     *
+     * @return void
+     */
     public function postUpdate(LifecycleEventArgs $args)
     {
-        $this->indexManager->index($args->getObject(), $args->getObjectManager());
+        $this->searchService->index($args->getObjectManager(), $args->getObject());
     }
 
+    /**
+     * @param LifecycleEventArgs $args
+     *
+     * @return void
+     */
     public function postPersist(LifecycleEventArgs $args)
     {
-        $this->indexManager->index($args->getObject(), $args->getObjectManager());
+        $this->searchService->index($args->getObjectManager(), $args->getObject());
     }
 
+    /**
+     * @param LifecycleEventArgs $args
+     *
+     * @return void
+     */
     public function preRemove(LifecycleEventArgs $args)
     {
-        $this->indexManager->remove($object = $args->getObject(), $args->getObjectManager());
+        $this->searchService->remove($args->getObjectManager(), $object = $args->getObject());
     }
 }

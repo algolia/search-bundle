@@ -7,10 +7,10 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 class CommentNormalizer implements NormalizerInterface
 {
-    public function normalize($object, $format = null, array $context = array())
+    public function normalize($object, $format = null, array $context = [])
     {
         return [
-            'content' => $object->getContent(),
+            'content'    => $object->getContent(),
             'post_title' => $object->getPost()->getTitle(),
         ];
     }

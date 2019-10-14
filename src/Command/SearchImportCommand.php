@@ -3,17 +3,21 @@
 namespace Algolia\SearchBundle\Command;
 
 use Algolia\SearchBundle\Entity\Aggregator;
-use Algolia\SearchBundle\IndexManagerInterface;
+use Algolia\SearchBundle\SearchServiceInterface;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use const E_USER_DEPRECATED;
-use function trigger_error;
 
-class SearchImportCommand extends IndexCommand
+/**
+ * @internal
+ */
+final class SearchImportCommand extends IndexCommand
 {
+    /**
+     * @var string
+     */
     protected static $defaultName = 'search:import';
 
     /**
@@ -21,16 +25,20 @@ class SearchImportCommand extends IndexCommand
      */
     private $managerRegistry;
 
-    public function __construct(IndexManagerInterface $indexManager, ManagerRegistry $managerRegistry = null)
+    /**
+     * @param SearchServiceInterface $searchService
+     * @param ManagerRegistry        $managerRegistry
+     */
+    public function __construct(SearchServiceInterface $searchService, ManagerRegistry $managerRegistry)
     {
-        parent::__construct($indexManager);
+        parent::__construct($searchService);
 
         $this->managerRegistry = $managerRegistry;
-        if ($managerRegistry === null) {
-            @trigger_error('Instantiating the SearchImportCommand without a manager registry is deprecated', E_USER_DEPRECATED);
-        }
     }
 
+    /**
+     * @return void
+     */
     protected function configure()
     {
         $this
@@ -41,13 +49,18 @@ class SearchImportCommand extends IndexCommand
                 InputArgument::IS_ARRAY | InputArgument::OPTIONAL,
                 'Check your engine documentation for available options'
             );
-        ;
     }
 
+    /**
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @return int|null
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $entitiesToIndex = $this->getEntitiesFromArgs($input, $output);
-        $config = $this->indexManager->getConfiguration();
+        $config          = $this->searchService->getConfiguration();
 
         foreach ($entitiesToIndex as $key => $entityClassName) {
             if (is_subclass_of($entityClassName, Aggregator::class)) {
@@ -59,7 +72,7 @@ class SearchImportCommand extends IndexCommand
         $entitiesToIndex = array_unique($entitiesToIndex);
 
         foreach ($entitiesToIndex as $entityClassName) {
-            $manager = $this->getManagerRegistry()->getManagerForClass($entityClassName);
+            $manager    = $this->managerRegistry->getManagerForClass($entityClassName);
             $repository = $manager->getRepository($entityClassName);
 
             $page = 0;
@@ -70,14 +83,17 @@ class SearchImportCommand extends IndexCommand
                     $config['batchSize'],
                     $config['batchSize'] * $page
                 );
-                $responses = $this->indexManager->index($entities, $manager);
+
+                $responses = $this->formatIndexingResponse(
+                    $this->searchService->index($manager, $entities)
+                );
                 foreach ($responses as $indexName => $numberOfRecords) {
                     $output->writeln(sprintf(
                         'Indexed <comment>%s / %s</comment> %s entities into %s index',
                         $numberOfRecords,
                         count($entities),
                         $entityClassName,
-                        '<info>' . $config['prefix'] . $indexName . '</info>'
+                        '<info>' . $indexName . '</info>'
                     ));
                 }
 
@@ -88,19 +104,30 @@ class SearchImportCommand extends IndexCommand
             $repository->clear();
         }
 
-
         $output->writeln('<info>Done!</info>');
+
+        return 0;
     }
 
     /**
-     * @return ManagerRegistry
+     * @param array<int, array> $batch
+     *
+     * @return array<string, int>
      */
-    private function getManagerRegistry()
+    private function formatIndexingResponse($batch)
     {
-        if ($this->managerRegistry === null) {
-            $this->managerRegistry = $this->container->get('doctrine');
+        $formattedResponse = [];
+
+        foreach ($batch as $chunk) {
+            foreach ($chunk as $indexName => $apiResponse) {
+                if (!array_key_exists($indexName, $formattedResponse)) {
+                    $formattedResponse[$indexName] = 0;
+                }
+
+                $formattedResponse[$indexName] += count($apiResponse->current()['objectIDs']);
+            }
         }
 
-        return $this->managerRegistry;
+        return $formattedResponse;
     }
 }

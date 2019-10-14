@@ -27,10 +27,8 @@ abstract class Aggregator implements NormalizableInterface
     protected $entity;
 
     /**
-     * Aggregator constructor.
-     *
-     * @param object $entity
-     * @param array $entityIdentifierValues
+     * @param object             $entity
+     * @param array<int, string> $entityIdentifierValues
      */
     public function __construct($entity, array $entityIdentifierValues)
     {
@@ -40,7 +38,7 @@ abstract class Aggregator implements NormalizableInterface
             throw new InvalidEntityForAggregator("Aggregators don't support more than one primary key.");
         }
 
-        $this->objectID = get_class($this->entity).'::'.reset($entityIdentifierValues);
+        $this->objectID = get_class($this->entity) . '::' . reset($entityIdentifierValues);
     }
 
     /**
@@ -56,9 +54,9 @@ abstract class Aggregator implements NormalizableInterface
     /**
      * Returns an entity id from the provided object id.
      *
-     * @param  string $objectID
+     * @param string $objectID
      *
-     * @return object
+     * @return string
      */
     public static function getEntityIdFromObjectID($objectID)
     {
@@ -68,9 +66,11 @@ abstract class Aggregator implements NormalizableInterface
     /**
      * Returns an entity class name from the provided object id.
      *
-     * @param  string $objectID
+     * @param string $objectID
      *
-     * @return object
+     * @return string
+     *
+     * @throws EntityNotFoundInObjectID
      */
     public static function getEntityClassFromObjectID($objectID)
     {

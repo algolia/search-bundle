@@ -10,8 +10,10 @@ use function method_exists;
  * This is the class that validates and merges configuration from your app/config files.
  *
  * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/configuration.html}
+ *
+ * @internal
  */
-class Configuration implements ConfigurationInterface
+final class Configuration implements ConfigurationInterface
 {
     /**
      * {@inheritdoc}
@@ -22,8 +24,10 @@ class Configuration implements ConfigurationInterface
             $treeBuilder = new TreeBuilder('algolia_search');
             $rootNode    = $treeBuilder->getRootNode();
         } else {
+            // @codeCoverageIgnoreStart
             $treeBuilder = new TreeBuilder();
             $rootNode    = $treeBuilder->root('algolia_search');
+            // @codeCoverageIgnoreEnd
         }
 
         $rootNode

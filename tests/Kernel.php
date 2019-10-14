@@ -8,7 +8,6 @@ use Symfony\Component\HttpKernel\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
 {
-
     /**
      * Returns an array of bundles to register.
      *
@@ -31,12 +30,12 @@ class Kernel extends HttpKernel
      */
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
-        $loader->load(__DIR__.'/config/config.yml');
+        $loader->load(__DIR__ . '/config/config.yml');
 
-        $loader->load(__DIR__.'/../src/Resources/config/services.xml');
+        $loader->load(__DIR__ . '/../src/Resources/config/services.xml');
 
-        $loader->load(__DIR__.'/config/algolia_search.yml');
+        $loader->load(__DIR__ . '/config/algolia_search.yml');
 
-        $loader->load(__DIR__.'/config/services.yml');
+        $loader->load(__DIR__ . '/config/services.yml');
     }
 }

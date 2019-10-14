@@ -28,8 +28,3 @@ jms_serializer:
     default_context:
         serialization:
             serialize_null: true
-
-services:
-    algolia.client:
-        alias: algolia_client
-        public: true

@@ -4,6 +4,6 @@ namespace Algolia\SearchBundle\Exception;
 
 use LogicException;
 
-class InvalidEntityForAggregator extends LogicException
+final class InvalidEntityForAggregator extends LogicException
 {
 }

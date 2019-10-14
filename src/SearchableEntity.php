@@ -2,20 +2,53 @@
 
 namespace Algolia\SearchBundle;
 
+use Doctrine\ORM\Mapping\ClassMetadata;
 use JMS\Serializer\ArrayTransformerInterface;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-class SearchableEntity implements SearchableEntityInterface
+/**
+ * @internal
+ */
+final class SearchableEntity
 {
-    protected $indexName;
-    protected $entity;
-    protected $entityMetadata;
-    protected $useSerializerGroups;
+    /**
+     * @var string
+     */
+    private $indexName;
 
+    /**
+     * @var object
+     */
+    private $entity;
+
+    /**
+     * @var ClassMetadata
+     */
+    private $entityMetadata;
+
+    /**
+     * @var bool
+     */
+    private $useSerializerGroups;
+
+    /**
+     * @var int|string
+     */
     private $id;
+
+    /**
+     * @var object
+     */
     private $normalizer;
 
+    /**
+     * @param string                               $indexName
+     * @param object                               $entity
+     * @param ClassMetadata                        $entityMetadata
+     * @param object                               $normalizer
+     * @param array<string, int|string|array|bool> $extra
+     */
     public function __construct($indexName, $entity, $entityMetadata, $normalizer, array $extra = [])
     {
         $this->indexName           = $indexName;
@@ -27,11 +60,19 @@ class SearchableEntity implements SearchableEntityInterface
         $this->setId();
     }
 
+    /**
+     * @return string
+     */
     public function getIndexName()
     {
         return $this->indexName;
     }
 
+    /**
+     * @return array<string, int|string|array>
+     *
+     * @throws \Symfony\Component\Serializer\Exception\ExceptionInterface
+     */
     public function getSearchableArray()
     {
         $context = [
@@ -49,11 +90,14 @@ class SearchableEntity implements SearchableEntityInterface
         }
     }
 
+    /**
+     * @return void
+     */
     private function setId()
     {
         $ids = $this->entityMetadata->getIdentifierValues($this->entity);
 
-        if (empty($ids)) {
+        if (count($ids) === 0) {
             throw new Exception('Entity has no primary key');
         }
 
@@ -69,6 +113,9 @@ class SearchableEntity implements SearchableEntityInterface
         }
     }
 
+    /**
+     * @return int|string
+     */
     public function getId()
     {
         return $this->id;
