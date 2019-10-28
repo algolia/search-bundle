@@ -218,7 +218,6 @@ used directly and may be up to changes in minor versions.
 * `Algolia\SearchBundle\DependencyInjection\AlgoliaSearchExtension`
 * `Algolia\SearchBundle\DependencyInjection\Configuration`
 * `Algolia\SearchBundle\EventListener\SearchIndexerSubscriber`
-* `Algolia\SearchBundle\Searchable`
 * `Algolia\SearchBundle\SearchableEntity`
 * `Algolia\SearchBundle\SettingsManager`
 
