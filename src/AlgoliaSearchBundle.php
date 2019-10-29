@@ -11,7 +11,7 @@ final class AlgoliaSearchBundle extends Bundle
     /**
      * Holds the bundle version.
      */
-    const VERSION = '4.0.0-alpha2';
+    const VERSION = '4.0.0-alpha3';
 
     /**
      * @return void

@@ -3,6 +3,11 @@ CHANGELOG
 
 UNRELEASED
 
+4.0.0-alpha3
+--------------
+
+* Fix: Remove `@internal` tag from `Searchable` class - PR [#314](https://github.com/algolia/search-bundle/pull/314)
+
 4.0.0-alpha2
 --------------
 
