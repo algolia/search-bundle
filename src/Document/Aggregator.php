@@ -1,6 +1,6 @@
 <?php
 
-namespace Algolia\SearchBundle\Entity;
+namespace Algolia\SearchBundle\Document;
 
 use Algolia\SearchBundle\Model\Aggregator as BaseAggregator;
 
