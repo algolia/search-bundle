@@ -15,9 +15,6 @@ final class Engine
     /** @var SearchClient */
     private $client;
 
-    /**
-     * @param SearchClient $client
-     */
     public function __construct(SearchClient $client)
     {
         $this->client = $client;

@@ -1,10 +1,12 @@
 <?php
 
-namespace Algolia\SearchBundle;
+namespace Algolia\SearchBundle\Service;
 
 use Algolia\AlgoliaSearch\RequestOptions\RequestOptions;
+use Algolia\SearchBundle\Engine;
 use Algolia\SearchBundle\Entity\Aggregator;
 use Algolia\SearchBundle\Responses\SearchServiceResponse;
+use Algolia\SearchBundle\SearchableEntity;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\Util\ClassUtils;
 use Symfony\Component\Config\Definition\Exception\Exception;
@@ -64,7 +66,6 @@ final class SearchService implements SearchServiceInterface
 
     /**
      * @param mixed                           $normalizer
-     * @param Engine                          $engine
      * @param array<string, array|int|string> $configuration
      */
     public function __construct($normalizer, Engine $engine, array $configuration)
@@ -122,7 +123,6 @@ final class SearchService implements SearchServiceInterface
     }
 
     /**
-     * @param ObjectManager                                  $objectManager
      * @param object|array<int, object>                      $searchables
      * @param array<string, int|string|array>|RequestOptions $requestOptions
      *
@@ -156,7 +156,6 @@ final class SearchService implements SearchServiceInterface
 
     /**
      * @param object|array<int, object>                      $searchables
-     * @param ObjectManager                                  $objectManager
      * @param array<string, int|string|array>|RequestOptions $requestOptions
      *
      * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
@@ -202,7 +201,6 @@ final class SearchService implements SearchServiceInterface
     }
 
     /**
-     * @param ObjectManager                                  $objectManager
      * @param string                                         $className
      * @param string                                         $query
      * @param array<string, int|string|array>|RequestOptions $requestOptions
@@ -394,9 +392,8 @@ final class SearchService implements SearchServiceInterface
     /**
      * For each chunk performs the provided operation.
      *
-     * @param \Doctrine\Common\Persistence\ObjectManager $objectManager
-     * @param array<int, object>                         $entities
-     * @param callable                                   $operation
+     * @param array<int, object> $entities
+     * @param callable           $operation
      *
      * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
      */
@@ -426,8 +423,7 @@ final class SearchService implements SearchServiceInterface
     /**
      * Returns the aggregators instances of the provided entities.
      *
-     * @param \Doctrine\Common\Persistence\ObjectManager $objectManager
-     * @param array<int, object>                         $entities
+     * @param array<int, object> $entities
      *
      * @return array<int, object>
      */

@@ -2,10 +2,10 @@
 
 namespace Algolia\SearchBundle\TestCase;
 
-use Algolia\SearchBundle\BaseTest;
-use Algolia\SearchBundle\TestApp\Entity\Post;
-use Algolia\SearchBundle\Settings\SettingsManager;
 use Algolia\AlgoliaSearch\SearchClient;
+use Algolia\SearchBundle\BaseTest;
+use Algolia\SearchBundle\Settings\SettingsManager;
+use Algolia\SearchBundle\TestApp\Entity\Post;
 
 class SettingsTest extends BaseTest
 {

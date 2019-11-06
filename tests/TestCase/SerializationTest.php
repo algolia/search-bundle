@@ -3,12 +3,12 @@
 namespace Algolia\SearchBundle\TestCase;
 
 use Algolia\SearchBundle\BaseTest;
+use Algolia\SearchBundle\Normalizer\CommentNormalizer;
 use Algolia\SearchBundle\Searchable;
 use Algolia\SearchBundle\SearchableEntity;
 use Algolia\SearchBundle\TestApp\Entity\Comment;
 use Algolia\SearchBundle\TestApp\Entity\Post;
 use Algolia\SearchBundle\TestApp\Entity\Tag;
-use Algolia\SearchBundle\Normalizer\CommentNormalizer;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Serializer;
 

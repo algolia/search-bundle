@@ -34,9 +34,6 @@ final class SearchClearCommand extends IndexCommand
     }
 
     /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     *
      * @return int|null
      */
     protected function execute(InputInterface $input, OutputInterface $output)

@@ -2,7 +2,7 @@
 
 namespace Algolia\SearchBundle\EventListener;
 
-use Algolia\SearchBundle\SearchServiceInterface;
+use Algolia\SearchBundle\Service\SearchServiceInterface;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
 
@@ -22,8 +22,7 @@ final class SearchIndexerSubscriber implements EventSubscriber
     private $subscribedEvents;
 
     /**
-     * @param SearchServiceInterface $searchService
-     * @param array<int, string>     $subscribedEvents
+     * @param array<int, string> $subscribedEvents
      */
     public function __construct(SearchServiceInterface $searchService, $subscribedEvents)
     {
@@ -40,8 +39,6 @@ final class SearchIndexerSubscriber implements EventSubscriber
     }
 
     /**
-     * @param LifecycleEventArgs $args
-     *
      * @return void
      */
     public function postUpdate(LifecycleEventArgs $args)
@@ -50,8 +47,6 @@ final class SearchIndexerSubscriber implements EventSubscriber
     }
 
     /**
-     * @param LifecycleEventArgs $args
-     *
      * @return void
      */
     public function postPersist(LifecycleEventArgs $args)
@@ -60,8 +55,6 @@ final class SearchIndexerSubscriber implements EventSubscriber
     }
 
     /**
-     * @param LifecycleEventArgs $args
-     *
      * @return void
      */
     public function preRemove(LifecycleEventArgs $args)

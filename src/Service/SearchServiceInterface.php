@@ -1,6 +1,6 @@
 <?php
 
-namespace Algolia\SearchBundle;
+namespace Algolia\SearchBundle\Service;
 
 use Algolia\AlgoliaSearch\RequestOptions\RequestOptions;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -34,7 +34,6 @@ interface SearchServiceInterface
     public function searchableAs($className);
 
     /**
-     * @param \Doctrine\Common\Persistence\ObjectManager     $objectManager
      * @param object|array<int, object>                      $searchables
      * @param array<string, int|string|array>|RequestOptions $requestOptions
      *
@@ -43,7 +42,6 @@ interface SearchServiceInterface
     public function index(ObjectManager $objectManager, $searchables, $requestOptions = []);
 
     /**
-     * @param \Doctrine\Common\Persistence\ObjectManager     $objectManager
      * @param object|array<int, object>                      $searchables
      * @param array<string, int|string|array>|RequestOptions $requestOptions
      *
@@ -68,7 +66,6 @@ interface SearchServiceInterface
     public function delete($className, $requestOptions = []);
 
     /**
-     * @param \Doctrine\Common\Persistence\ObjectManager     $objectManager
      * @param string                                         $className
      * @param string                                         $query
      * @param array<string, int|string|array>|RequestOptions $requestOptions

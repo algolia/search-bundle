@@ -5,14 +5,14 @@ namespace Algolia\SearchBundle\TestCase;
 use Algolia\SearchBundle\BaseTest;
 use Algolia\SearchBundle\TestApp\Entity\Comment;
 use Algolia\SearchBundle\TestApp\Entity\ContentAggregator;
-use Algolia\SearchBundle\TestApp\Entity\Post;
 use Algolia\SearchBundle\TestApp\Entity\Image;
-use Algolia\SearchBundle\TestApp\Entity\Tag;
 use Algolia\SearchBundle\TestApp\Entity\Link;
+use Algolia\SearchBundle\TestApp\Entity\Post;
+use Algolia\SearchBundle\TestApp\Entity\Tag;
 
 class SearchServiceTest extends BaseTest
 {
-    /** @var \Algolia\SearchBundle\SearchService */
+    /** @var \Algolia\SearchBundle\Service\SearchService */
     protected $searchService;
     protected $entityManager;
 

@@ -3,10 +3,10 @@
 namespace Algolia\SearchBundle\TestCase;
 
 use Algolia\SearchBundle\BaseTest;
+use Algolia\SearchBundle\Exception\EntityNotFoundInObjectID;
+use Algolia\SearchBundle\Exception\InvalidEntityForAggregator;
 use Algolia\SearchBundle\TestApp\Entity\ContentAggregator;
 use Algolia\SearchBundle\TestApp\Entity\EmptyAggregator;
-use Algolia\SearchBundle\Exception\InvalidEntityForAggregator;
-use Algolia\SearchBundle\Exception\EntityNotFoundInObjectID;
 use Algolia\SearchBundle\TestApp\Entity\Post;
 
 class AggregatorTest extends BaseTest

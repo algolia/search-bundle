@@ -188,17 +188,17 @@ $result = $this->searchService->search(
     <tr>
         <td><code>Algolia\SearchBundle\IndexManager</code></td>
         <td>Renamed</td>
-        <td><code>Algolia\SearchBundle\SearchService</code></td>
+        <td><code>Algolia\SearchBundle\Service\SearchService</code></td>
     </tr>
     <tr>
         <td><code>Algolia\SearchBundle\IndexManagerInterface</code></td>
         <td>Renamed</td>
-        <td><code>Algolia\SearchBundle\SearchServiceInterface</code></td>
+        <td><code>Algolia\SearchBundle\Service\SearchServiceInterface</code></td>
     </tr>
     <tr>
         <td><code>Algolia\SearchBundle\Engine\NullEngine</code></td>
         <td>Removed</td>
-        <td>For testing purposes use <code>Algolia\SearchBundle\SearchServiceInterface</code> by mocking it or extending it and overriding the `search.service` in your test config (see https://symfony.com/doc/current/configuration.html#configuration-environments)</td>
+        <td>For testing purposes use <code>Algolia\SearchBundle\Service\SearchServiceInterface</code> by mocking it or extending it and overriding the `search.service` in your test config (see https://symfony.com/doc/current/configuration.html#configuration-environments and <code>Algolia\SearchBundle\Service\NullSearchService</code> as an example)</td>
     </tr>
 </tbody>
 </table>
@@ -246,7 +246,7 @@ used directly and may be up to changes in minor versions.
     <tr>
         <td><code>Algolia\SearchBundle\Engine\IndexManagerInterface</code></td>
         <td>Removed</td>
-        <td><code>Algolia\SearchBundle\SearchService</code></td>
+        <td><code>Algolia\SearchBundle\Service\SearchService</code></td>
     </tr>
 </tbody>
 </table>
@@ -307,7 +307,7 @@ Now, in the `4.0.0` you should update your code to:
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Algolia\SearchBundle\SearchServiceInterface;
+use Algolia\SearchBundle\Service\SearchServiceInterface;
 
 class ExampleController extends Controller
 {

@@ -17,9 +17,6 @@ abstract class SearchSettingsCommand extends Command
      */
     protected $settingsManager;
 
-    /**
-     * @param SettingsManager $settingsManager
-     */
     public function __construct(SettingsManager $settingsManager)
     {
         $this->settingsManager = $settingsManager;
@@ -28,9 +25,6 @@ abstract class SearchSettingsCommand extends Command
     }
 
     /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     *
      * @return int|null
      */
     protected function execute(InputInterface $input, OutputInterface $output)

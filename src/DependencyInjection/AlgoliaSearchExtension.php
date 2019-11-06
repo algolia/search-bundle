@@ -2,15 +2,15 @@
 
 namespace Algolia\SearchBundle\DependencyInjection;
 
-use Algolia\SearchBundle\SearchService;
 use Algolia\SearchBundle\Engine;
+use Algolia\SearchBundle\Service\SearchService;
 use Algolia\SearchBundle\Settings\SettingsManager;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
-use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\HttpKernel\Kernel;
 
 /**
@@ -23,9 +23,6 @@ use Symfony\Component\HttpKernel\Kernel;
 final class AlgoliaSearchExtension extends Extension
 {
     /**
-     * @param array            $configs
-     * @param ContainerBuilder $container
-     *
      * @throws \InvalidArgumentException|\Exception
      *
      * @return void
