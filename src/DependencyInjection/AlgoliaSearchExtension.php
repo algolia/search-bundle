@@ -3,7 +3,7 @@
 namespace Algolia\SearchBundle\DependencyInjection;
 
 use Algolia\SearchBundle\Engine;
-use Algolia\SearchBundle\Service\SearchService;
+use Algolia\SearchBundle\Services\SearchService;
 use Algolia\SearchBundle\Settings\SettingsManager;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;

@@ -23,7 +23,7 @@
 
         <service id="Algolia\AlgoliaSearch\SearchClient" alias="search.client" />
 
-        <service id="Algolia\SearchBundle\Service\SearchServiceInterface" alias="search.service"/>
+        <service id="Algolia\SearchBundle\Services\SearchServiceInterface" alias="search.service"/>
         <service id="Algolia\SearchBundle\Settings\SettingsManager" alias="search.settings_manager"/>
 
         <!-- CustomNormalizer is not registered by framework-bundle -->

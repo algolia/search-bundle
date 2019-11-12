@@ -1,6 +1,6 @@
 <?php
 
-namespace Algolia\SearchBundle\Service;
+namespace Algolia\SearchBundle\Services;
 
 use Algolia\AlgoliaSearch\RequestOptions\RequestOptions;
 use Algolia\SearchBundle\Engine;

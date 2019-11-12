@@ -12,7 +12,7 @@ use Algolia\SearchBundle\TestApp\Entity\Tag;
 
 class SearchServiceTest extends BaseTest
 {
-    /** @var \Algolia\SearchBundle\Service\SearchService */
+    /** @var \Algolia\SearchBundle\Services\SearchService */
     protected $searchService;
     protected $entityManager;
 

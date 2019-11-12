@@ -1,49 +1,37 @@
 <?php
 
-namespace Algolia\SearchBundle\Service;
+namespace Algolia\SearchBundle\Services;
 
 use Algolia\AlgoliaSearch\RequestOptions\RequestOptions;
-use Algolia\AlgoliaSearch\Response\BatchIndexingResponse;
-use Algolia\AlgoliaSearch\Response\NullResponse;
 use Doctrine\Common\Persistence\ObjectManager;
 
-final class NullSearchService implements SearchServiceInterface
+interface SearchServiceInterface
 {
     /**
      * @param string $className
      *
      * @return bool
      */
-    public function isSearchable($className)
-    {
-        return true;
-    }
+    public function isSearchable($className);
 
     /**
      * @return array<int, string>
      */
-    public function getSearchables()
-    {
-        return ['foo', 'bar'];
-    }
+    public function getSearchables();
 
     /**
      * @return array<string, array|int|string>
      */
-    public function getConfiguration()
-    {
-        return ['batchSize' => 200];
-    }
+    public function getConfiguration();
 
     /**
+     * Get the index name for the given `$className`.
+     *
      * @param string $className
      *
      * @return string
      */
-    public function searchableAs($className)
-    {
-        return $className;
-    }
+    public function searchableAs($className);
 
     /**
      * @param object|array<int, object>                      $searchables
@@ -51,10 +39,7 @@ final class NullSearchService implements SearchServiceInterface
      *
      * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
      */
-    public function index(ObjectManager $objectManager, $searchables, $requestOptions = [])
-    {
-        return new BatchIndexingResponse(['success' => true], 'foo');
-    }
+    public function index(ObjectManager $objectManager, $searchables, $requestOptions = []);
 
     /**
      * @param object|array<int, object>                      $searchables
@@ -62,10 +47,7 @@ final class NullSearchService implements SearchServiceInterface
      *
      * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
      */
-    public function remove(ObjectManager $objectManager, $searchables, $requestOptions = [])
-    {
-        return new BatchIndexingResponse(['success' => true], 'foo');
-    }
+    public function remove(ObjectManager $objectManager, $searchables, $requestOptions = []);
 
     /**
      * @param string                                         $className
@@ -73,10 +55,7 @@ final class NullSearchService implements SearchServiceInterface
      *
      * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
      */
-    public function clear($className, $requestOptions = [])
-    {
-        return new NullResponse();
-    }
+    public function clear($className, $requestOptions = []);
 
     /**
      * @param string                                         $className
@@ -84,10 +63,7 @@ final class NullSearchService implements SearchServiceInterface
      *
      * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
      */
-    public function delete($className, $requestOptions = [])
-    {
-        return new NullResponse();
-    }
+    public function delete($className, $requestOptions = []);
 
     /**
      * @param string                                         $className
@@ -98,10 +74,7 @@ final class NullSearchService implements SearchServiceInterface
      *
      * @throws \Algolia\AlgoliaSearch\Exceptions\AlgoliaException
      */
-    public function search(ObjectManager $objectManager, $className, $query = '', $requestOptions = [])
-    {
-        return [new \stdClass()];
-    }
+    public function search(ObjectManager $objectManager, $className, $query = '', $requestOptions = []);
 
     /**
      * @param string                                         $className
@@ -112,12 +85,7 @@ final class NullSearchService implements SearchServiceInterface
      *
      * @throws \Algolia\AlgoliaSearch\Exceptions\AlgoliaException
      */
-    public function rawSearch($className, $query = '', $requestOptions = [])
-    {
-        return [
-            'foo' => 'success',
-        ];
-    }
+    public function rawSearch($className, $query = '', $requestOptions = []);
 
     /**
      * @param string                                         $className
@@ -128,18 +96,5 @@ final class NullSearchService implements SearchServiceInterface
      *
      * @throws \Algolia\AlgoliaSearch\Exceptions\AlgoliaException
      */
-    public function count($className, $query = '', $requestOptions = [])
-    {
-        return 0;
-    }
-
-    /**
-     * @param object $entity
-     *
-     * @return bool
-     */
-    public function shouldBeIndexed($entity)
-    {
-        return true;
-    }
+    public function count($className, $query = '', $requestOptions = []);
 }

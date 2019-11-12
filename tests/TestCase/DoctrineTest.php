@@ -11,7 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 
 class DoctrineTest extends BaseTest
 {
-    /** @var \Algolia\SearchBundle\Service\SearchService */
+    /** @var \Algolia\SearchBundle\Services\SearchService */
     protected $searchService;
 
     public function setUp()

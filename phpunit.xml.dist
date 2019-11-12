@@ -18,7 +18,7 @@
             <directory>src/</directory>
             <exclude>
                 <file>src/DependencyInjection/AlgoliaSearchExtension.php</file>
-                <file>src/Service/NullSearchService.php</file>
+                <file>src/Services/NullSearchService.php</file>
             </exclude>
         </whitelist>
     </filter>
