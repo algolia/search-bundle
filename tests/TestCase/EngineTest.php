@@ -3,8 +3,8 @@
 namespace Algolia\SearchBundle\TestCase;
 
 use Algolia\AlgoliaSearch\Response\IndexingResponse;
-use Algolia\SearchBundle\Engine;
 use Algolia\SearchBundle\BaseTest;
+use Algolia\SearchBundle\Engine;
 
 class EngineTest extends BaseTest
 {

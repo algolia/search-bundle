@@ -2,7 +2,7 @@
 
 namespace Algolia\SearchBundle\Command;
 
-use Algolia\SearchBundle\SearchServiceInterface;
+use Algolia\SearchBundle\SearchService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -13,14 +13,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 abstract class IndexCommand extends Command
 {
     /**
-     * @var SearchServiceInterface
+     * @var SearchService
      */
     protected $searchService;
 
-    /**
-     * @param SearchServiceInterface $searchService
-     */
-    public function __construct(SearchServiceInterface $searchService)
+    public function __construct(SearchService $searchService)
     {
         $this->searchService = $searchService;
 
@@ -28,9 +25,6 @@ abstract class IndexCommand extends Command
     }
 
     /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     *
      * @return array<string, string>
      */
     protected function getEntitiesFromArgs(InputInterface $input, OutputInterface $output)

@@ -1,10 +1,4 @@
 services:
-    search.engine:
-        class: Algolia\SearchBundle\Engine
-        arguments:
-            - '@search.client'
-        public: true
-
     search.search_indexer_subscriber:
         class: Algolia\SearchBundle\EventListener\SearchIndexerSubscriber
         public: true

@@ -2,9 +2,9 @@
 
 namespace Algolia\SearchBundle\DependencyInjection;
 
+use function method_exists;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
-use function method_exists;
 
 /**
  * This is the class that validates and merges configuration from your app/config files.

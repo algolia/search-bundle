@@ -3,15 +3,15 @@
 namespace Algolia\SearchBundle\TestCase;
 
 use Algolia\SearchBundle\BaseTest;
-use Symfony\Bundle\FrameworkBundle\Console\Application;
-use Symfony\Component\Console\Tester\CommandTester;
 use Algolia\SearchBundle\TestApp\Entity\Comment;
 use Algolia\SearchBundle\TestApp\Entity\ContentAggregator;
 use Algolia\SearchBundle\TestApp\Entity\Post;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Component\Console\Tester\CommandTester;
 
 class CommandsTest extends BaseTest
 {
-    /** @var \Algolia\SearchBundle\SearchService */
+    /** @var \Algolia\SearchBundle\Services\AlgoliaSearchService */
     protected $searchService;
     protected $client;
     protected $om;

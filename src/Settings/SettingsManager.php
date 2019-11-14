@@ -21,7 +21,6 @@ final class SettingsManager
     private $config;
 
     /**
-     * @param SearchClient                    $algolia
      * @param array<string, array|int|string> $config
      */
     public function __construct(SearchClient $algolia, array $config)
