@@ -3,6 +3,12 @@ CHANGELOG
 
 UNRELEASED
 
+4.0.0-beta1
+--------------
+
+* Feature: Adds a `Model` main class - PR [#318](https://github.com/algolia/search-bundle/pull/318)
+* Feature: Adds a `NullSearchService` class as an example for tests and dev - PR [#320](https://github.com/algolia/search-bundle/pull/320)
+
 4.0.0-alpha3
 --------------
 
