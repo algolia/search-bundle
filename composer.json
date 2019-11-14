@@ -12,14 +12,15 @@
             "email": "contact@algolia.com"
         }
     ],
+    "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": "^5.6 || ^7.0",
+        "php": "^5.6 || ^7.3",
         "algolia/algoliasearch-client-php": "^2.4",
         "doctrine/common": "^2.5",
-        "symfony/filesystem": "^3.4.0 || ^4.0.0",
-        "symfony/property-access": "^3.4.0 || ^4.0.0",
-        "symfony/serializer": "^3.4.0 || ^4.0.0"
+        "symfony/filesystem": "4.4.0-BETA1",
+        "symfony/property-access": "4.4.0-BETA1",
+        "symfony/serializer": "4.4.0-BETA1"
     },
     "autoload": {
         "psr-4": {
@@ -35,22 +36,21 @@
         }
     },
     "require-dev": {
-        "doctrine/doctrine-bundle": "^1.8",
+        "doctrine/doctrine-bundle": "2.0.0-beta1",
         "doctrine/orm": "^2.5",
         "jms/serializer-bundle": "^2.3",
         "ocramius/proxy-manager": "*",
         "phpunit/phpunit": "^5.7.21 || ^6.4 || ^7.0",
-        "symfony/doctrine-bridge": "^3.4.0 || ^4.0.0",
-        "symfony/framework-bundle": "^3.4.0 || ^4.0.0",
-        "symfony/phpunit-bridge": "^3.4.0 || ^4.0",
+        "symfony/doctrine-bridge": "4.4.0-BETA1",
+        "symfony/framework-bundle": "4.4.0-BETA1",
+        "symfony/phpunit-bridge": "4.4.0-BETA1",
         "symfony/proxy-manager-bridge": "*",
-        "symfony/yaml": "^3.4.0 || ^4.0.0",
-        "friendsofphp/php-cs-fixer": "^2.15",
-        "roave/security-advisories": "dev-master"
+        "symfony/yaml": "4.4.0-BETA1",
+        "friendsofphp/php-cs-fixer": "^2.15"
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "3.2.x-dev"
+            "dev-master": "3.4.x-dev"
         }
     },
     "config": {
