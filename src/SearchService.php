@@ -1,11 +1,11 @@
 <?php
 
-namespace Algolia\SearchBundle\Services;
+namespace Algolia\SearchBundle;
 
 use Algolia\AlgoliaSearch\RequestOptions\RequestOptions;
 use Doctrine\Common\Persistence\ObjectManager;
 
-interface SearchServiceInterface
+interface SearchService
 {
     /**
      * @param string $className
@@ -81,7 +81,7 @@ interface SearchServiceInterface
      * @param string                                         $query
      * @param array<string, int|string|array>|RequestOptions $requestOptions
      *
-     * @return array<string, int|string|array>
+     * @return array<string, int|string|bool|array>
      *
      * @throws \Algolia\AlgoliaSearch\Exceptions\AlgoliaException
      */

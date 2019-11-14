@@ -7,12 +7,13 @@ use Algolia\SearchBundle\Engine;
 use Algolia\SearchBundle\Entity\Aggregator;
 use Algolia\SearchBundle\Responses\SearchServiceResponse;
 use Algolia\SearchBundle\SearchableEntity;
+use Algolia\SearchBundle\SearchService;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\Util\ClassUtils;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
-final class SearchService implements SearchServiceInterface
+final class AlgoliaSearchService implements SearchService
 {
     /**
      * @var Engine
@@ -242,7 +243,7 @@ final class SearchService implements SearchServiceInterface
      * @param string                                         $query
      * @param array<string, int|string|array>|RequestOptions $requestOptions
      *
-     * @return array<string, int|string|array>
+     * @return array<string, int|string|bool|array>
      *
      * @throws \Algolia\AlgoliaSearch\Exceptions\AlgoliaException
      */

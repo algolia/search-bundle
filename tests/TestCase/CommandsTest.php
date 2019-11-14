@@ -11,7 +11,7 @@ use Symfony\Component\Console\Tester\CommandTester;
 
 class CommandsTest extends BaseTest
 {
-    /** @var \Algolia\SearchBundle\Services\SearchService */
+    /** @var \Algolia\SearchBundle\Services\AlgoliaSearchService */
     protected $searchService;
     protected $client;
     protected $om;

@@ -93,13 +93,13 @@ Now, in `4.0.0` you should update your code to:
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Algolia\SearchBundle\Services\SearchServiceInterface;
+use Algolia\SearchBundle\SearchService;
 
 class ExampleController extends Controller
 {
     protected $searchService;
 
-    public function __construct(SearchServiceInterface $searchService)
+    public function __construct(SearchService $searchService)
     {
         $this->searchService = $searchService;
     }
@@ -269,12 +269,12 @@ $result = $this->searchService->search(
       <tr>
         <td><code>Algolia\SearchBundle\IndexManager</code></td>
         <td>Renamed</td>
-        <td><code>Algolia\SearchBundle\Services\SearchService</code></td>
+        <td><code>Algolia\SearchBundle\Services\AlgoliaSearchService</code></td>
       </tr>
       <tr>
         <td><code>Algolia\SearchBundle\IndexManagerInterface</code></td>
         <td>Renamed</td>
-        <td><code>Algolia\SearchBundle\Services\SearchServiceInterface</code></td>
+        <td><code>Algolia\SearchBundle\SearchService</code></td>
       </tr>
       <tr>
         <td><code>Algolia\SearchBundle\Engine\NullEngine</code></td>
@@ -285,7 +285,7 @@ $result = $this->searchService->search(
   </table>
 </div>
 
-<sup>*</sup>For testing purposes use <code>Algolia\SearchBundle\Services\SearchServiceInterface</code> by mocking it or extending it and overriding the `search.service` in your test config (see https://symfony.com/doc/current/configuration.html#configuration-environments). The <code>Algolia\SearchBundle\Services\NullSearchService</code> class is here as an example. 
+<sup>*</sup>For testing purposes use <code>Algolia\SearchBundle\SearchService</code> by mocking it or extending it and overriding the `search.service` in your test config (see https://symfony.com/doc/current/configuration.html#configuration-environments). The <code>Algolia\SearchBundle\Services\NullSearchService</code> class is here as an example.
 
 
 ## List of classes that became internal

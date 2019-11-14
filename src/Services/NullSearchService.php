@@ -4,13 +4,14 @@ namespace Algolia\SearchBundle\Services;
 
 use Algolia\AlgoliaSearch\RequestOptions\RequestOptions;
 use Algolia\AlgoliaSearch\Response\NullResponse;
+use Algolia\SearchBundle\SearchService;
 use Doctrine\Common\Persistence\ObjectManager;
 
 /**
  * This class aims to be used in dev or testing environments.
  * It may be subject to breaking changes.
  */
-final class NullSearchService implements SearchServiceInterface
+final class NullSearchService implements SearchService
 {
     /**
      * @param string $className
@@ -115,14 +116,22 @@ final class NullSearchService implements SearchServiceInterface
      * @param string                                         $query
      * @param array<string, int|string|array>|RequestOptions $requestOptions
      *
-     * @return array<string, int|string|array>
+     * @return array<string, int|string|bool|array>
      *
      * @throws \Algolia\AlgoliaSearch\Exceptions\AlgoliaException
      */
     public function rawSearch($className, $query = '', $requestOptions = [])
     {
         return [
-            'result' => [],
+            'hits'             => [],
+            'nbHits'           => 0,
+            'page'             => 0,
+            'nbPages'          => 1,
+            'hitsPerPage'      => 0,
+            'exhaustiveNbHits' => true,
+            'query'            => '',
+            'params'           => '',
+            'processingTimeMS' => 1,
         ];
     }
 

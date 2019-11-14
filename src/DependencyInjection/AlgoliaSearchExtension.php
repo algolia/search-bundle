@@ -3,7 +3,7 @@
 namespace Algolia\SearchBundle\DependencyInjection;
 
 use Algolia\SearchBundle\Engine;
-use Algolia\SearchBundle\Services\SearchService;
+use Algolia\SearchBundle\Services\AlgoliaSearchService;
 use Algolia\SearchBundle\Settings\SettingsManager;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -65,7 +65,7 @@ final class AlgoliaSearchExtension extends Extension
         );
 
         $searchServiceDefinition = (new Definition(
-            SearchService::class,
+            AlgoliaSearchService::class,
             [
                 new Reference($config['serializer']),
                 $engineDefinition,
