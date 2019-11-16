@@ -8,6 +8,10 @@
 
         <prototype namespace="Algolia\SearchBundle\Command\" resource="../../Command" autowire="true" autoconfigure="true" />
 
+        <service id="Algolia\SearchBundle\Command\SearchImportCommand" autowire="true" autoconfigure="true">
+            <argument key="$searchServiceForAtomicReindex" type="service" id="search.service_for_atomic_reindex" />
+        </service>
+
         <service id="search.search_indexer_subscriber" class="Algolia\SearchBundle\EventListener\SearchIndexerSubscriber" public="true">
             <argument type="service" id="search.service" />
             <argument type="collection" /> <!-- doctrine subscribed events -->
