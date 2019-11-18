@@ -4,12 +4,8 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "Julien Bourdeau",
-            "email": "julien@sigerr.org"
-        },
-        {
-            "name": "Algolia Team",
-            "email": "contact@algolia.com"
+            "name": "Algolia",
+            "email": "support@algolia.com"
         }
     ],
     "prefer-stable": true,
