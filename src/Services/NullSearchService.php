@@ -8,10 +8,10 @@ use Algolia\SearchBundle\SearchService;
 use Doctrine\Common\Persistence\ObjectManager;
 
 /**
- * This class aims to be used in dev or testing environments.
- * It may be subject to breaking changes.
+ * This class aims to be used in dev or testing environments. It may
+ * be subject to breaking changes.
  */
-final class NullSearchService implements SearchService
+class NullSearchService implements SearchService
 {
     /**
      * @param string $className
