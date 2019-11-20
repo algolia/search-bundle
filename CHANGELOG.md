@@ -3,6 +3,15 @@ CHANGELOG
 
 UNRELEASED
 
+4.0.0-beta2
+--------------
+
+* Feature: Adds support for MongoDB ODM 2.0 - PR [#321](https://github.com/algolia/search-bundle/pull/321) @alcaeus
+
+* Fix: Allows extend `NullSearchService` - PR [#323](https://github.com/algolia/search-bundle/pull/323)
+
+* Chore: Update `composer.json` - PR [#325](https://github.com/algolia/search-bundle/pull/325)
+
 4.0.0-beta1
 --------------
 
