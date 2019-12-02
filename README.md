@@ -8,7 +8,7 @@ This readme/code introduces the upcoming Algolia SearchBundle v4, the next major
 - Waitable operations
 - Autocompletion, improved DX and many others
 
-**Development Status**: 4.0.0-beta2
+**Development Status**: 4.0.0
 
 **Upgrade Guide**: [Upgrade Guide](https://github.com/algolia/search-bundle/blob/master/UPGRADE-4.0.md)
 
