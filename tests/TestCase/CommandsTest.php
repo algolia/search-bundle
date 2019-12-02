@@ -41,7 +41,7 @@ class CommandsTest extends BaseTest
         $this->refreshDb($this->application);
     }
 
-    public function tearDown()
+    public function cleanUp()
     {
         $this->searchService->delete(Post::class)->wait();
         $this->searchService->delete(Comment::class)->wait();
@@ -62,6 +62,7 @@ class CommandsTest extends BaseTest
         // Checks output and ensure it failed
         $output = $commandTester->getDisplay();
         $this->assertContains('No index named ' . $unknownIndexName, $output);
+        $this->cleanUp();
     }
 
     public function testSearchClear()
@@ -82,6 +83,7 @@ class CommandsTest extends BaseTest
         // Checks output
         $output = $commandTester->getDisplay();
         $this->assertContains('Cleared posts', $output);
+        $this->cleanUp();
     }
 
     public function testSearchImportAggregator()
@@ -127,6 +129,7 @@ class CommandsTest extends BaseTest
         $this->assertCount($expectedResult, $searchPost['hits']);
         // clearup table
         $this->connection->executeUpdate($this->platform->getTruncateTableSQL($this->indexName, true));
+        $this->cleanUp();
     }
 
     public function testSearchImport()
@@ -171,6 +174,7 @@ class CommandsTest extends BaseTest
         $this->assertCount($expectedResult, $searchPost['hits']);
         // clearup table
         $this->connection->executeUpdate($this->platform->getTruncateTableSQL($this->indexName, true));
+        $this->cleanUp();
     }
 
     public function testSearchSettingsBackupCommand()
@@ -233,5 +237,6 @@ class CommandsTest extends BaseTest
 
         $this->assertEquals($newSettings['hitsPerPage'], $settingsFileContent['hitsPerPage']);
         $this->assertEquals($newSettings['maxValuesPerFacet'], $settingsFileContent['maxValuesPerFacet']);
+        $this->cleanUp();
     }
 }

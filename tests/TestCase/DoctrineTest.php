@@ -28,7 +28,7 @@ class DoctrineTest extends BaseTest
         $index->setSettings($this->getDefaultConfig())->wait();
     }
 
-    public function tearDown()
+    public function cleanUp()
     {
         $this->searchService->delete(Post::class)->wait();
         $this->searchService->delete(Comment::class)->wait();
@@ -88,6 +88,7 @@ class DoctrineTest extends BaseTest
         } while ($count !== $expectedCount || $iteration === 10);
 
         $this->assertEquals($count, $expectedCount);
+        $this->cleanUp();
     }
 
     public function testIndexIfFeature()
@@ -106,5 +107,6 @@ class DoctrineTest extends BaseTest
         $this->searchService->index($em, $tags[2]->setPublic(true))->wait();
 
         $this->assertEquals(3, $this->searchService->count(Tag::class));
+        $this->cleanUp();
     }
 }

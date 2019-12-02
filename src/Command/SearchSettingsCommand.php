@@ -24,9 +24,6 @@ abstract class SearchSettingsCommand extends Command
         parent::__construct();
     }
 
-    /**
-     * @return int|null
-     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if ($indexList = $input->getOption('indices')) {

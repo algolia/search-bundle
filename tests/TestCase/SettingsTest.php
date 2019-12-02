@@ -27,7 +27,7 @@ class SettingsTest extends BaseTest
         $this->indexName       = 'posts';
     }
 
-    public function tearDown()
+    public function cleanUp()
     {
         $this->get('search.service')->delete(Post::class)->wait();
     }
@@ -145,6 +145,7 @@ class SettingsTest extends BaseTest
                 }
             }
         }
+        $this->cleanUp();
     }
 
     /**
