@@ -47,9 +47,6 @@ final class SearchImportCommand extends IndexCommand
             );
     }
 
-    /**
-     * @return int|null
-     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $entitiesToIndex = $this->getEntitiesFromArgs($input, $output);

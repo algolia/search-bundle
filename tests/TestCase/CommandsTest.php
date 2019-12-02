@@ -41,7 +41,7 @@ class CommandsTest extends BaseTest
         $this->refreshDb($this->application);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->searchService->delete(Post::class)->wait();
         $this->searchService->delete(Comment::class)->wait();
