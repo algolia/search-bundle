@@ -23,7 +23,7 @@ class SearchServiceTest extends BaseTest
         $this->entityManager  = $this->get('doctrine')->getManager();
     }
 
-    public function tearDown(): void
+    public function cleanUp()
     {
         $this->searchService->delete(Post::class)->wait();
         $this->searchService->delete(Comment::class)->wait();
@@ -39,6 +39,7 @@ class SearchServiceTest extends BaseTest
         $this->assertTrue($this->searchService->isSearchable(ContentAggregator::class));
         $this->assertTrue($this->searchService->isSearchable(Tag::class));
         $this->assertTrue($this->searchService->isSearchable(Link::class));
+        $this->cleanUp();
     }
 
     public function testGetSearchableEntities()
@@ -51,6 +52,7 @@ class SearchServiceTest extends BaseTest
             Tag::class,
             Link::class,
         ], $result);
+        $this->cleanUp();
     }
 
     /**
@@ -61,6 +63,7 @@ class SearchServiceTest extends BaseTest
         $this->entityManager = $this->get('doctrine')->getManager();
 
         $this->searchService->index($this->entityManager, new Post());
+        $this->cleanUp();
     }
 
     public function testIndexedDataAreSearchable()
@@ -110,6 +113,7 @@ class SearchServiceTest extends BaseTest
         $this->searchService->delete(Post::class);
         $this->searchService->delete(Comment::class);
         $this->searchService->delete(ContentAggregator::class);
+        $this->cleanUp();
     }
 
     public function testIndexedDataCanBeRemoved()
@@ -153,6 +157,7 @@ class SearchServiceTest extends BaseTest
 
         // The content aggregator expects 2 + 0 + 0.
         $this->assertEquals(2, $this->searchService->count(ContentAggregator::class));
+        $this->cleanUp();
     }
 
     public function testRawSearchRawContent()
@@ -169,6 +174,7 @@ class SearchServiceTest extends BaseTest
         // Using aggregator.
         $results = $this->searchService->rawSearch(ContentAggregator::class, 'Foo Bar');
         $this->assertEquals($results['hits'][0]['title'], $postIndexed->getTitle());
+        $this->cleanUp();
     }
 
     public function testIndexIfCondition()
@@ -188,6 +194,7 @@ class SearchServiceTest extends BaseTest
 
         // The content aggregator expects 3 ( not 4, because of the index_if condition ).
         $this->assertEquals(3, $this->searchService->count(ContentAggregator::class));
+        $this->cleanUp();
     }
 
     /**
@@ -199,11 +206,13 @@ class SearchServiceTest extends BaseTest
 
         $this->searchService->index($this->entityManager, [$image]);
         $this->searchService->clear(Image::class);
+        $this->cleanUp();
     }
 
     public function testShouldNotBeIndexed()
     {
         $link = new Link();
         $this->assertFalse($this->searchService->shouldBeIndexed($link));
+        $this->cleanUp();
     }
 }
