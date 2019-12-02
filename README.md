@@ -1,20 +1,4 @@
 <p align="center">
-    <h4 align="center">The readme/code you are seeing is part of the upcoming release 4.0</h4>
-</p>
-
-This readme/code introduces the upcoming Algolia SearchBundle v4, the next major release of our Algolia Symfony Integration. This release includes several new features along with the latest bug fixes and improvements:
-
-- Integration of the PHP Client v2
-- Waitable operations
-- Autocompletion, improved DX and many others
-
-**Development Status**: 4.0.0-beta2
-
-**Upgrade Guide**: [Upgrade Guide](https://github.com/algolia/search-bundle/blob/master/UPGRADE-4.0.md)
-
-You'd like to contribute? Before start, we want to let you know that your **feedback** is important to us! Please consider start using this `v4` today! Found a bug or see something that can improved? Report it here: [github.com/algolia/search-bundle/issues](https://github.com/algolia/search-bundle/issues).
-
-<p align="center">
   <a href="https://www.algolia.com">
     <img alt="Algolia for Symfony" src="https://raw.githubusercontent.com/algolia/algoliasearch-client-common/master/banners/symfony.png" >
   </a>
@@ -45,12 +29,11 @@ You'd like to contribute? Before start, we want to let you know that your **feed
 
 ## ✨ Features
 
- * **Compatible** with Symfony 3.4 LTS and Symfony 4.0 (and later).
  * **Simple**: You can get started with only 5 lines of YAML
- * **Standard**: It leverages Normalizers to convert entities for indexing
- * **Dev-friendly**: It lets you disable HTTP calls easily (while running tests, for example)
- * **Future-ready**: It lets you unsubscribe from doctrine events easily to use a messaging/queue system.
- 
+ * **Robust**: It benefits from all the new features of our PHP Client v2, like the [`wait()`](/doc/api-reference/api-methods/wait-task/) method
+ * **Flexible**: All methods take optional `$requestOptions` to let you handle your data as you wish
+ * **Dev-friendly**: Auto-completion and type-hinting thanks to an exhaustive documentation
+
 ## 💡 Getting Started
 
 First, install Algolia Search Bundle Integration via the composer package manager:
