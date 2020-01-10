@@ -13,5 +13,5 @@ parameters:
         - '#(Method|Function|Constructor).*has parameter.*with.*default value.#'
         - '#Class Symfony\\Component\\Config\\Definition\\Builder\\TreeBuilder constructor#'
         - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\TreeBuilder::root\(\).#'
-        - '#Call to an undefined method Doctrine\\Common\\Persistence\\ObjectRepository::clear\(\).#'
+        - '#Call to an undefined method Doctrine\\Persistence\\ObjectRepository::clear\(\).#'
         - '#Class Algolia\\SearchBundle\\Services\\NullSearchService is neither abstract nor final.#'
