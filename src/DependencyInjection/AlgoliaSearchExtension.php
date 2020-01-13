@@ -75,9 +75,11 @@ final class AlgoliaSearchExtension extends Extension
             ]
         ));
 
-        $searchServiceDefinitionForAtomicReindex = (clone $searchServiceDefinition)
-            ->replaceArgument(2, ['prefix' => 'atomic_temporary_' . uniqid('php_', true) . $config['prefix']] + $config)
-        ;
+        $searchServiceDefinitionForAtomicReindex = (clone $searchServiceDefinition);
+        $searchServiceDefinitionForAtomicReindex->replaceArgument(
+            2,
+            ['prefix' => 'atomic_temporary_' . uniqid('php_', true) . $config['prefix']] + $config
+        );
 
         $settingsManagerDefinition = (new Definition(
             SettingsManager::class,
