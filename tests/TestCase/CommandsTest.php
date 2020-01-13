@@ -132,7 +132,10 @@ class CommandsTest extends BaseTest
         $this->cleanUp();
     }
 
-    public function testSearchImport()
+    /**
+     * @testWith [true, false]
+     */
+    public function testSearchImport($isAtomic)
     {
         $now = new \DateTime();
         $this->connection->insert($this->indexName, [
@@ -154,8 +157,9 @@ class CommandsTest extends BaseTest
         $command       = $this->application->find('search:import');
         $commandTester = new CommandTester($command);
         $commandTester->execute([
-            'command'   => $command->getName(),
-            '--indices' => $this->indexName,
+            'command'    => $command->getName(),
+            '--indices'  => $this->indexName,
+            '--atomic'   => $isAtomic,
         ]);
 
         // Checks output

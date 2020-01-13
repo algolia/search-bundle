@@ -8,6 +8,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased](https://github.com/algolia/search-bundle/compare/4.0.0...master)
 
+- Feature: Adds atomic reindex support, via --atomic flag in search:import
+
 ## [v4.0.0](https://github.com/algolia/search-bundle/compare/3.4.0...4.0.0)
 
 ### Changed

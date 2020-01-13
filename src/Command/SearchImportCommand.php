@@ -2,6 +2,7 @@
 
 namespace Algolia\SearchBundle\Command;
 
+use Algolia\AlgoliaSearch\SearchClient;
 use Algolia\SearchBundle\Entity\Aggregator;
 use Algolia\SearchBundle\SearchService;
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -21,15 +22,31 @@ final class SearchImportCommand extends IndexCommand
     protected static $defaultName = 'search:import';
 
     /**
+     * @var SearchService
+     */
+    private $searchServiceForAtomicReindex;
+
+    /**
      * @var ManagerRegistry|null
      */
     private $managerRegistry;
 
-    public function __construct(SearchService $searchService, ManagerRegistry $managerRegistry)
-    {
+    /**
+     * @var SearchClient
+     */
+    private $searchClient;
+
+    public function __construct(
+        SearchService $searchService,
+        SearchService $searchServiceForAtomicReindex,
+        ManagerRegistry $managerRegistry,
+        SearchClient $searchClient
+    ) {
         parent::__construct($searchService);
 
-        $this->managerRegistry = $managerRegistry;
+        $this->searchServiceForAtomicReindex = $searchServiceForAtomicReindex;
+        $this->managerRegistry               = $managerRegistry;
+        $this->searchClient                  = $searchClient;
     }
 
     /**
@@ -40,6 +57,12 @@ final class SearchImportCommand extends IndexCommand
         $this
             ->setDescription('Import given entity into search engine')
             ->addOption('indices', 'i', InputOption::VALUE_OPTIONAL, 'Comma-separated list of index names')
+            ->addOption('atomic', null, InputOption::VALUE_NONE, <<<EOT
+If set, command replaces all records in an index without any downtime. It pushes a new set of objects and removes all previous ones.
+
+Internally, this option causes command to copy existing index settings, synonyms and query rules and indexes all objects. Finally, the existing index is replaced by the temporary one.
+EOT
+            )
             ->addArgument(
                 'extra',
                 InputArgument::IS_ARRAY | InputArgument::OPTIONAL,
@@ -49,8 +72,10 @@ final class SearchImportCommand extends IndexCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $entitiesToIndex = $this->getEntitiesFromArgs($input, $output);
-        $config          = $this->searchService->getConfiguration();
+        $shouldDoAtomicReindex = $input->getOption('atomic');
+        $entitiesToIndex       = $this->getEntitiesFromArgs($input, $output);
+        $config                = $this->searchService->getConfiguration();
+        $indexingService       = ($shouldDoAtomicReindex ? $this->searchServiceForAtomicReindex : $this->searchService);
 
         foreach ($entitiesToIndex as $key => $entityClassName) {
             if (is_subclass_of($entityClassName, Aggregator::class)) {
@@ -62,8 +87,19 @@ final class SearchImportCommand extends IndexCommand
         $entitiesToIndex = array_unique($entitiesToIndex);
 
         foreach ($entitiesToIndex as $entityClassName) {
-            $manager    = $this->managerRegistry->getManagerForClass($entityClassName);
-            $repository = $manager->getRepository($entityClassName);
+            if (!$this->searchService->isSearchable($entityClassName)) {
+                continue;
+            }
+
+            $manager         = $this->managerRegistry->getManagerForClass($entityClassName);
+            $repository      = $manager->getRepository($entityClassName);
+            $sourceIndexName = $this->searchService->searchableAs($entityClassName);
+
+            if ($shouldDoAtomicReindex) {
+                $temporaryIndexName = $this->searchServiceForAtomicReindex->searchableAs($entityClassName);
+                $output->writeln("Creating temporary index <info>$temporaryIndexName</info>");
+                $this->searchClient->copyIndex($sourceIndexName, $temporaryIndexName, ['scope' => ['settings', 'synonyms', 'rules']]);
+            }
 
             $page = 0;
             do {
@@ -75,7 +111,7 @@ final class SearchImportCommand extends IndexCommand
                 );
 
                 $responses = $this->formatIndexingResponse(
-                    $this->searchService->index($manager, $entities)
+                    $indexingService->index($manager, $entities)
                 );
                 foreach ($responses as $indexName => $numberOfRecords) {
                     $output->writeln(sprintf(
@@ -90,6 +126,11 @@ final class SearchImportCommand extends IndexCommand
                 $page++;
                 $repository->clear();
             } while (count($entities) >= $config['batchSize']);
+
+            if ($shouldDoAtomicReindex && isset($indexName)) {
+                $output->writeln("Moving <info>$indexName</info> -> <comment>$sourceIndexName</comment>\n");
+                $this->searchClient->moveIndex($indexName, $sourceIndexName);
+            }
 
             $repository->clear();
         }

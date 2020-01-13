@@ -5,6 +5,8 @@ namespace Algolia\SearchBundle\DependencyInjection;
 use Algolia\SearchBundle\Engine;
 use Algolia\SearchBundle\Services\AlgoliaSearchService;
 use Algolia\SearchBundle\Settings\SettingsManager;
+use Exception;
+use InvalidArgumentException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -23,9 +25,9 @@ use Symfony\Component\HttpKernel\Kernel;
 final class AlgoliaSearchExtension extends Extension
 {
     /**
-     * @throws \InvalidArgumentException|\Exception
-     *
      * @return void
+     *
+     * @throws InvalidArgumentException|Exception
      */
     public function load(array $configs, ContainerBuilder $container)
     {
@@ -71,7 +73,11 @@ final class AlgoliaSearchExtension extends Extension
                 $engineDefinition,
                 $config,
             ]
-        ))->setPublic(true);
+        ));
+
+        $searchServiceDefinitionForAtomicReindex = (clone $searchServiceDefinition)
+            ->replaceArgument(2, ['prefix' => 'atomic_temporary_' . uniqid('php_', true) . $config['prefix']] + $config)
+        ;
 
         $settingsManagerDefinition = (new Definition(
             SettingsManager::class,
@@ -81,7 +87,8 @@ final class AlgoliaSearchExtension extends Extension
             ]
         ))->setPublic(true);
 
-        $container->setDefinition('search.service', $searchServiceDefinition);
+        $container->setDefinition('search.service', $searchServiceDefinition->setPublic(true));
+        $container->setDefinition('search.service_for_atomic_reindex', $searchServiceDefinitionForAtomicReindex);
         $container->setDefinition('search.settings_manager', $settingsManagerDefinition);
     }
 }
