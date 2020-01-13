@@ -20,12 +20,13 @@ jobs:
           script: composer test:install && composer test:types
 
 install:
-    - wget https://alg.li/algolia-keys && chmod +x algolia-keys
     - composer install
 
+before_script:
+    - wget https://alg.li/algolia-keys && chmod +x algolia-keys
+
 script:
-    - eval $(./algolia-keys export)
     - export COMPOSER_PROCESS_TIMEOUT=900
-    - if [[ ${TRAVIS_PHP_VERSION:0:3} > "7.3" ]]; then composer test:unit; else composer test; fi
+    - if [[ ${TRAVIS_PHP_VERSION:0:3} > "7.3" ]]; then eval $(./algolia-keys export) && composer test:unit; else eval $(./algolia-keys export) && composer test; fi
     - if (( $(echo "${TRAVIS_PHP_VERSION:0:3} >= 7.2" |bc -l) )); then php coverage-checker.php clover.xml 100; fi
     - if (( $(echo "${TRAVIS_PHP_VERSION:0:3} < 7.2" |bc -l) )); then php coverage-checker.php clover.xml 99; fi
