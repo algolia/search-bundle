@@ -45,9 +45,9 @@ final class AlgoliaSearchExtension extends Extension
 
         if (is_null($config['settingsDirectory'])) {
             if (Kernel::MAJOR_VERSION >= 3 && !is_dir($rootDir . '/config/')) {
-                $config['settingsDirectory'] = '/app/Resources/SearchBundle/settings/';
+                $config['settingsDirectory'] = '/app/Resources/SearchBundle/settings';
             } else {
-                $config['settingsDirectory'] = '/config/settings/algolia_search/';
+                $config['settingsDirectory'] = '/config/settings/algolia_search';
             }
         }
 
