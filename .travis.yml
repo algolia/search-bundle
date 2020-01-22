@@ -11,7 +11,6 @@ php:
 branches:
     only:
         - master
-        - 2.x
 
 jobs:
     include:
@@ -20,11 +19,9 @@ jobs:
           script: composer test:install && composer test:types
 
 install:
-    - wget https://alg.li/algolia-keys && chmod +x algolia-keys
     - composer install
 
 script:
-    - eval $(./algolia-keys export)
     - export COMPOSER_PROCESS_TIMEOUT=900
     - if [[ ${TRAVIS_PHP_VERSION:0:3} > "7.3" ]]; then composer test:unit; else composer test; fi
     - if (( $(echo "${TRAVIS_PHP_VERSION:0:3} >= 7.2" |bc -l) )); then php coverage-checker.php clover.xml 100; fi
