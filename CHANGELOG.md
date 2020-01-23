@@ -6,9 +6,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 # Release Notes
 
-## [Unreleased](https://github.com/algolia/search-bundle/compare/4.0.0...master)
+## [Unreleased](https://github.com/algolia/search-bundle/compare/4.1.0...master)
 
-- Feature: Adds atomic reindex support, via --atomic flag in search:import
+
+## [v4.1.0](https://github.com/algolia/search-bundle/compare/4.0.0...4.1.0)
+### Added
+- Adds atomic reindex support, via `--atomic` flag in `search:import` ([#324](https://github.com/algolia/search-bundle/pull/324))
 
 ## [v4.0.0](https://github.com/algolia/search-bundle/compare/3.4.0...4.0.0)
 
