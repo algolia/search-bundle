@@ -6,6 +6,7 @@ use Algolia\SearchBundle\Exception\EntityNotFoundInObjectID;
 use Algolia\SearchBundle\Exception\InvalidEntityForAggregator;
 use Symfony\Component\Serializer\Normalizer\NormalizableInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use Doctrine\Common\Util\ClassUtils;
 
 abstract class Aggregator implements NormalizableInterface
 {
@@ -38,7 +39,7 @@ abstract class Aggregator implements NormalizableInterface
             throw new InvalidEntityForAggregator("Aggregators don't support more than one primary key.");
         }
 
-        $this->objectID = get_class($this->entity) . '::' . reset($entityIdentifierValues);
+        $this->objectID = ClassUtils::getClass($this->entity) . '::' . reset($entityIdentifierValues);
     }
 
     /**
