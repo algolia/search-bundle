@@ -4,6 +4,6 @@ namespace Algolia\SearchBundle\Exception;
 
 use LogicException;
 
-class EntityNotFoundInObjectID extends LogicException
+final class EntityNotFoundInObjectID extends LogicException
 {
 }

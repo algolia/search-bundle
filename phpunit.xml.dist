@@ -13,4 +13,16 @@
             <directory suffix=".php">tests/TestCase/</directory>
         </testsuite>
     </testsuites>
+    <filter>
+        <whitelist>
+            <directory>src/</directory>
+            <exclude>
+                <file>src/DependencyInjection/AlgoliaSearchExtension.php</file>
+                <file>src/Services/NullSearchService.php</file>
+            </exclude>
+        </whitelist>
+    </filter>
+    <logging>
+        <log type="coverage-clover" target="./clover.xml"/>
+    </logging>
 </phpunit>

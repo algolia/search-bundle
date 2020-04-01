@@ -16,9 +16,9 @@ class ClientProxyTest extends BaseTest
         // client is used. Save them to restore them after.
         // See: https://github.com/algolia/search-bundle/issues/241
         self::$values = [
-            'env_id' => getenv('ALGOLIA_APP_ID'),
+            'env_id'  => getenv('ALGOLIA_APP_ID'),
             'env_key' => getenv('ALGOLIA_API_KEY'),
-            '_env' => $_ENV,
+            '_env'    => $_ENV,
             '_server' => $_SERVER,
         ];
 
@@ -32,15 +32,15 @@ class ClientProxyTest extends BaseTest
 
     public static function tearDownAfterClass()
     {
-        putenv('ALGOLIA_APP_ID='.self::$values['env_id']);
-        putenv('ALGOLIA_API_KEY='.self::$values['env_key']);
-        $_ENV = self::$values['_env'];
+        putenv('ALGOLIA_APP_ID=' . self::$values['env_id']);
+        putenv('ALGOLIA_API_KEY=' . self::$values['env_key']);
+        $_ENV    = self::$values['_env'];
         $_SERVER = self::$values['_server'];
     }
 
     public function testClientIsProxied()
     {
-        $interfaces = class_implements($this->get('algolia.client'));
+        $interfaces = class_implements($this->get('search.client'));
 
         $this->assertTrue(in_array(ProxyInterface::class, $interfaces));
     }
@@ -50,6 +50,6 @@ class ClientProxyTest extends BaseTest
      */
     public function testProxiedClientFailIfNoEnvVarsFound()
     {
-        $this->get('algolia.client')->listIndexes();
+        $this->get('search.client')->listIndices();
     }
 }

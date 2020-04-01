@@ -8,24 +8,27 @@
 
         <prototype namespace="Algolia\SearchBundle\Command\" resource="../../Command" autowire="true" autoconfigure="true" />
 
+        <service id="Algolia\SearchBundle\Command\SearchImportCommand" autowire="true" autoconfigure="true">
+            <argument key="$searchServiceForAtomicReindex" type="service" id="search.service_for_atomic_reindex" />
+        </service>
+
         <service id="search.search_indexer_subscriber" class="Algolia\SearchBundle\EventListener\SearchIndexerSubscriber" public="true">
-            <argument type="service" id="search.index_manager" />
+            <argument type="service" id="search.service" />
             <argument type="collection" /> <!-- doctrine subscribed events -->
             <tag name="doctrine.event_subscriber" />
             <tag name="doctrine_mongodb.odm.event_subscriber" />
         </service>
 
-        <service id="algolia_client" class="AlgoliaSearch\Client" public="false" lazy="true">
-            <argument key="$applicationID">%env(ALGOLIA_APP_ID)%</argument>
+        <service id="search.client" class="Algolia\AlgoliaSearch\SearchClient" public="true" lazy="true">
+            <factory class="Algolia\AlgoliaSearch\SearchClient" method="create" />
+            <argument key="$appId">%env(ALGOLIA_APP_ID)%</argument>
             <argument key="$apiKey">%env(ALGOLIA_API_KEY)%</argument>
         </service>
 
-        <service id="search.engine" class="Algolia\SearchBundle\Engine\AlgoliaEngine" public="true">
-            <argument type="service" id="algolia_client" />
-        </service>
+        <service id="Algolia\AlgoliaSearch\SearchClient" alias="search.client" />
 
-        <service id="Algolia\SearchBundle\IndexManagerInterface" alias="search.index_manager"/>
-        <service id="Algolia\SearchBundle\Settings\SettingsManagerInterface" alias="search.settings_manager"/>
+        <service id="Algolia\SearchBundle\SearchService" alias="search.service"/>
+        <service id="Algolia\SearchBundle\Settings\SettingsManager" alias="search.settings_manager"/>
 
         <!-- CustomNormalizer is not registered by framework-bundle -->
         <service id="custom_normalizer" class="Symfony\Component\Serializer\Normalizer\CustomNormalizer" public="false">

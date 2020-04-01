@@ -15,3 +15,6 @@ algolia_search:
         - name: tags
           class: 'Algolia\SearchBundle\TestApp\Entity\Tag'
           index_if: isPublic
+        - name: links
+          class: 'Algolia\SearchBundle\TestApp\Entity\Link'
+          index_if: isSponsored

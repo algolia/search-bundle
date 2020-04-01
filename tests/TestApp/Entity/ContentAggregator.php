@@ -24,7 +24,7 @@ class ContentAggregator extends Aggregator
         return [
             Post::class,
             Comment::class,
-            Image::class
+            Image::class,
         ];
     }
 }

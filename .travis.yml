@@ -6,27 +6,23 @@ php:
     - 7.1
     - 7.2
     - 7.3
-    - 7.4snapshot
-
-matrix:
-    allow_failures:
-        - php: 7.4snapshot
+    - 7.4
 
 branches:
     only:
         - master
-        - 2.x
 
 jobs:
     include:
         - stage: phpstan
           php: 7.2
-          before_install: composer require --no-update phpstan/phpstan "^0.10.6"
-          script: vendor/bin/phpstan analyse
+          script: composer test:install && composer test:types
 
 install:
-    - wget https://alg.li/algolia-keys && chmod +x algolia-keys
     - composer install
 
 script:
-    - eval $(./algolia-keys export) && ./vendor/bin/phpunit -v
+    - export COMPOSER_PROCESS_TIMEOUT=900
+    - if [[ ${TRAVIS_PHP_VERSION:0:3} > "7.3" ]]; then composer test:unit; else composer test; fi
+    - if (( $(echo "${TRAVIS_PHP_VERSION:0:3} >= 7.2" |bc -l) )); then php coverage-checker.php clover.xml 100; fi
+    - if (( $(echo "${TRAVIS_PHP_VERSION:0:3} < 7.2" |bc -l) )); then php coverage-checker.php clover.xml 99; fi
