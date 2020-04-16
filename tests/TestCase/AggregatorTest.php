@@ -8,7 +8,6 @@ use Algolia\SearchBundle\Exception\InvalidEntityForAggregator;
 use Algolia\SearchBundle\TestApp\Entity\ContentAggregator;
 use Algolia\SearchBundle\TestApp\Entity\EmptyAggregator;
 use Algolia\SearchBundle\TestApp\Entity\Post;
-use Doctrine\Common\Proxy\ProxyGenerator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 
@@ -52,8 +51,8 @@ class AggregatorTest extends BaseTest
     public function testAggregatorProxyClass()
     {
         $post = new Post([
-            'id' => 1,
-            'title' => 'Test',
+            'id'      => 1,
+            'title'   => 'Test',
             'content' => 'Test content',
         ]);
         $this->entityManager->persist($post);
@@ -62,7 +61,7 @@ class AggregatorTest extends BaseTest
         $postMetadata = $this->entityManager->getClassMetadata(Post::class);
         $this->entityManager->getProxyFactory()->generateProxyClasses([$postMetadata], null);
 
-        $proxy = $this->entityManager->getProxyFactory()->getProxy($postMetadata->getName(), ['id' => 1]);
+        $proxy             = $this->entityManager->getProxyFactory()->getProxy($postMetadata->getName(), ['id' => 1]);
         $contentAggregator = new ContentAggregator($proxy, ['objectId']);
 
         $serializer = $this->get('serializer');
