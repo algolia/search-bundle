@@ -4,9 +4,9 @@ namespace Algolia\SearchBundle\Model;
 
 use Algolia\SearchBundle\Exception\EntityNotFoundInObjectID;
 use Algolia\SearchBundle\Exception\InvalidEntityForAggregator;
+use Doctrine\Common\Util\ClassUtils;
 use Symfony\Component\Serializer\Normalizer\NormalizableInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Doctrine\Common\Util\ClassUtils;
 
 abstract class Aggregator implements NormalizableInterface
 {
