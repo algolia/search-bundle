@@ -30,9 +30,9 @@ class AggregatorTest extends BaseTest
 
     public function testGetEntities()
     {
-        $entites = EmptyAggregator::getEntities();
+        $entities = EmptyAggregator::getEntities();
 
-        $this->assertEquals([], $entites);
+        $this->assertEquals([], $entities);
     }
 
     public function testGetEntityClassFromObjectID()
@@ -41,7 +41,7 @@ class AggregatorTest extends BaseTest
         EmptyAggregator::getEntityClassFromObjectID('test');
     }
 
-    public function testContructor()
+    public function testConstructor()
     {
         $this->expectException(InvalidEntityForAggregator::class);
         $post                = new Post();
