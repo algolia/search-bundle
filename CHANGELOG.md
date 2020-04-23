@@ -6,7 +6,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 # Release Notes
 
-## [Unreleased](https://github.com/algolia/search-bundle/compare/4.1.0...master)
+## [Unreleased](https://github.com/algolia/search-bundle/compare/4.1.1...master)
+
+
+## [v4.1.1](https://github.com/algolia/search-bundle/compare/4.1.0...4.1.1)
+
+### Fixed
+- Use ClassUtils from Doctrine to avoid having Proxy into Algolia ([#341](https://github.com/algolia/search-bundle/pull/341))
 
 
 ## [v4.1.0](https://github.com/algolia/search-bundle/compare/4.0.0...4.1.0)
