@@ -77,22 +77,11 @@ EOT
         $config                = $this->searchService->getConfiguration();
         $indexingService       = ($shouldDoAtomicReindex ? $this->searchServiceForAtomicReindex : $this->searchService);
 
-        foreach ($entitiesToIndex as $key => $entityClassName) {
-            if (is_subclass_of($entityClassName, Aggregator::class)) {
-                unset($entitiesToIndex[$key]);
-                $entitiesToIndex = array_merge($entitiesToIndex, $entityClassName::getEntities());
-            }
-        }
-
-        $entitiesToIndex = array_unique($entitiesToIndex);
-
         foreach ($entitiesToIndex as $entityClassName) {
             if (!$this->searchService->isSearchable($entityClassName)) {
                 continue;
             }
 
-            $manager         = $this->managerRegistry->getManagerForClass($entityClassName);
-            $repository      = $manager->getRepository($entityClassName);
             $sourceIndexName = $this->searchService->searchableAs($entityClassName);
 
             if ($shouldDoAtomicReindex) {
@@ -101,38 +90,42 @@ EOT
                 $this->searchClient->copyIndex($sourceIndexName, $temporaryIndexName, ['scope' => ['settings', 'synonyms', 'rules']]);
             }
 
-            $page = 0;
-            do {
-                $entities = $repository->findBy(
-                    [],
-                    null,
-                    $config['batchSize'],
-                    $config['batchSize'] * $page
-                );
+            foreach (is_subclass_of($entityClassName, Aggregator::class) ? $entityClassName::getEntities() : [$entityClassName] as $entityClass) {
+                $manager    = $this->managerRegistry->getManagerForClass($entityClass);
+                $repository = $manager->getRepository($entityClass);
 
-                $responses = $this->formatIndexingResponse(
-                    $indexingService->index($manager, $entities)
-                );
-                foreach ($responses as $indexName => $numberOfRecords) {
-                    $output->writeln(sprintf(
-                        'Indexed <comment>%s / %s</comment> %s entities into %s index',
-                        $numberOfRecords,
-                        count($entities),
-                        $entityClassName,
-                        '<info>' . $indexName . '</info>'
-                    ));
-                }
+                $page = 0;
+                do {
+                    $entities = $repository->findBy(
+                        [],
+                        null,
+                        $config['batchSize'],
+                        $config['batchSize'] * $page
+                    );
 
-                $page++;
+                    $responses = $this->formatIndexingResponse($indexingService->index($manager, $entities));
+
+                    foreach ($responses as $indexName => $numberOfRecords) {
+                        $output->writeln(sprintf(
+                            'Indexed <comment>%s / %s</comment> %s entities into %s index',
+                            $numberOfRecords,
+                            count($entities),
+                            $entityClass,
+                            '<info>' . $indexName . '</info>'
+                        ));
+                    }
+
+                    $page++;
+                    $repository->clear();
+                } while (count($entities) >= $config['batchSize']);
+
                 $repository->clear();
-            } while (count($entities) >= $config['batchSize']);
+            }
 
             if ($shouldDoAtomicReindex && isset($indexName)) {
                 $output->writeln("Moving <info>$indexName</info> -> <comment>$sourceIndexName</comment>\n");
                 $this->searchClient->moveIndex($indexName, $sourceIndexName);
             }
-
-            $repository->clear();
         }
 
         $output->writeln('<info>Done!</info>');

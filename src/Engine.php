@@ -53,8 +53,8 @@ final class Engine
             }
 
             $data[$indexName][] = $searchableArray + [
-                    'objectID' => $entity->getId(),
-                ];
+                'objectID' => $entity->getId(),
+            ];
         }
 
         $result = [];
