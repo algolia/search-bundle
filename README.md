@@ -112,6 +112,11 @@ For full documentation, visit the **[Algolia Symfony Search Bundle](https://www.
 
 Encountering an issue? Before reaching out to support, we recommend heading to our [FAQ](https://www.algolia.com/doc/framework-integration/symfony/troubleshooting/faq/) where you will find answers for the most common issues and gotchas with the bundle.
 
+## Use the Dockerfile
+
+If you wish to contribute to the repository but would like to avoid installing the dependencies locally, we provided you with a Docker image.
+Please check our [dedicated guide](DOCKER_README.MD) to know more.
+
 ## 📄 License
 
 Algolia Symfony Search Bundle is an open-sourced software licensed under the [MIT license](LICENSE.md).
