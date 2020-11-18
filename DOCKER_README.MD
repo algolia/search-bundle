@@ -43,40 +43,30 @@ docker build -t algolia-search-bundle .
 ## Run the image
 
 You need to provide few environment variables at runtime to be able to run the [Common Test Suite](https://github.com/algolia/algoliasearch-client-specs/tree/master/common-test-suite).
-You can set them up directly in the command
+You can set them up directly in the command:
 
 ```bash
 docker run -it --rm --env ALGOLIA_APP_ID=XXXXXX [...] -v $PWD:/app -w /app algolia-search-bundle bash
 ```
 
-But we advise you export them in your `.bashrc` or `.zshrc`. That way, you can use [Docker's shorten syntax](https://docs.docker.com/engine/reference/commandline/run/#set-environment-variables--e---env---env-file) to retrieve your variables.
+However, we advise you to export them in your `.bashrc` or `.zshrc`. That way, you can use [Docker's shorten syntax](https://docs.docker.com/engine/reference/commandline/run/#set-environment-variables--e---env---env-file) to set your variables.
 
 ```bash
-### For external contributors, the following env variables should be enough
 docker run -it --rm --env ALGOLIA_APP_ID \
-                    --env ALGOLIA_API_KEY \
--v $PWD:/app -w /app algolia-search-bundle bash
-
-### This is needed only to run the full test suite
-docker run -it --rm --env ALGOLIA_APP_ID \
-                    --env ALGOLIA_API_KEY \
-                    --env ALGOLIA_APPLICATION_ID_MCM \
-                    --env ALGOLIA_ADMIN_KEY_MCM \
+                    --env ALGOLIA_SECRET \
 -v $PWD:/app -w /app algolia-search-bundle bash
 ```
 
-Once the container is up, you can edit files directly in your IDE: changes will be mirrored in the image.
+Once your container is running, any changes you make in your IDE are directly reflected in the container.
 
-Lastly to launch the tests, you can use one of the following commands
+To launch the tests, you can use one of the following commands
 ```shell script
-# run linting and tests
+# run only the unit tests
 composer test
 
 # run a single test
 ./vendor/bin/phpunit --filter=nameOfYourTests
 ```
+Once your container is running, any changes you make in your IDE are directly reflected in the container.
 
-You can find more scripts in the `composer.json` file.
-
-Feel free to contact us if you have any questions.
-
+To launch the tests, you can use one of the following commands

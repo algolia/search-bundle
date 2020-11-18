@@ -114,8 +114,7 @@ Encountering an issue? Before reaching out to support, we recommend heading to o
 
 ## Use the Dockerfile
 
-If you wish to contribute to the repository but would like to avoid installing the dependencies locally, we provided you with a Docker image.
-Please check our [dedicated guide](DOCKER_README.MD) to know more.
+If you want to contribute to this project without installing all its dependencies, you can use our Docker image. Please check our [dedicated guide](DOCKER_README.MD) to learn more.
 
 ## 📄 License
 
