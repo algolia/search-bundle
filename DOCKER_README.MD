@@ -1,7 +1,7 @@
 In this page you will find our recommended way of installing Docker on your machine. 
 This guide is made for OSX users.
 
-## Install docker
+## Install Docker
 
 First install Docker using [Homebrew](https://brew.sh/)
 ```
@@ -10,7 +10,7 @@ $ brew install docker
 
 You can then install [Docker Desktop](https://docs.docker.com/get-docker/) if you wish, or use `docker-machine`. As we prefer the second option, we will only document this one.
 
-## Setup your docker
+## Setup your Docker
 
 Install `docker-machine`
 ```
@@ -53,11 +53,18 @@ However, we advise you to export them in your `.bashrc` or `.zshrc`. That way, y
 
 ```bash
 docker run -it --rm --env ALGOLIA_APP_ID \
-                    --env ALGOLIA_SECRET \
+                    --env ALGOLIA_API_KEY \
 -v $PWD:/app -w /app algolia-search-bundle bash
 ```
 
 Once your container is running, any changes you make in your IDE are directly reflected in the container.
+
+Manually install composer dependencies once inside the container
+```shell script
+composer update
+```
+
+As Docker and your current working directory are linked, this will also create a `vendor/` folder locally.
 
 To launch the tests, you can use one of the following commands
 ```shell script

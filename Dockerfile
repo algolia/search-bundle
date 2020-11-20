@@ -1,6 +1,5 @@
-# Dockerfile
-FROM php:7.4.1-fpm
-
+FROM php:7.4.1
+WORKDIR /app/
 RUN apt-get update -y \
     && apt-get install -y --no-install-recommends \
         wget \
@@ -12,7 +11,5 @@ RUN apt-get update -y \
 # Install Composer
 COPY --from=composer:1.9.0 /usr/bin/composer /usr/bin/composer
 
-WORKDIR /app
 ADD . /app/
 
-RUN composer install

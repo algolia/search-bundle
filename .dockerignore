@@ -2,4 +2,4 @@
 /tests/cache/
 .idea/
 .php_cs.dist
-/vendor/
+/var/cache
