@@ -52,8 +52,8 @@ class NullSearchService implements SearchService
     }
 
     /**
-     * @param object|array<int, object>                      $searchables
-     * @param array<string, int|string|array>|RequestOptions $requestOptions
+     * @param object|array<int, object>                           $searchables
+     * @param array<string, bool|int|string|array>|RequestOptions $requestOptions
      *
      * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
      */
@@ -63,8 +63,8 @@ class NullSearchService implements SearchService
     }
 
     /**
-     * @param object|array<int, object>                      $searchables
-     * @param array<string, int|string|array>|RequestOptions $requestOptions
+     * @param object|array<int, object>                           $searchables
+     * @param array<string, bool|int|string|array>|RequestOptions $requestOptions
      *
      * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
      */
@@ -74,8 +74,8 @@ class NullSearchService implements SearchService
     }
 
     /**
-     * @param string                                         $className
-     * @param array<string, int|string|array>|RequestOptions $requestOptions
+     * @param string                                              $className
+     * @param array<string, bool|int|string|array>|RequestOptions $requestOptions
      *
      * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
      */
@@ -85,8 +85,8 @@ class NullSearchService implements SearchService
     }
 
     /**
-     * @param string                                         $className
-     * @param array<string, int|string|array>|RequestOptions $requestOptions
+     * @param string                                              $className
+     * @param array<string, bool|int|string|array>|RequestOptions $requestOptions
      *
      * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
      */
@@ -96,9 +96,9 @@ class NullSearchService implements SearchService
     }
 
     /**
-     * @param string                                         $className
-     * @param string                                         $query
-     * @param array<string, int|string|array>|RequestOptions $requestOptions
+     * @param string                                              $className
+     * @param string                                              $query
+     * @param array<string, bool|int|string|array>|RequestOptions $requestOptions
      *
      * @return array<int, object>
      *
@@ -112,9 +112,9 @@ class NullSearchService implements SearchService
     }
 
     /**
-     * @param string                                         $className
-     * @param string                                         $query
-     * @param array<string, int|string|array>|RequestOptions $requestOptions
+     * @param string                                              $className
+     * @param string                                              $query
+     * @param array<string, bool|int|string|array>|RequestOptions $requestOptions
      *
      * @return array<string, int|string|bool|array>
      *
@@ -136,9 +136,9 @@ class NullSearchService implements SearchService
     }
 
     /**
-     * @param string                                         $className
-     * @param string                                         $query
-     * @param array<string, int|string|array>|RequestOptions $requestOptions
+     * @param string                                              $className
+     * @param string                                              $query
+     * @param array<string, bool|int|string|array>|RequestOptions $requestOptions
      *
      * @return int
      *
