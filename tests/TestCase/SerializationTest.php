@@ -9,6 +9,7 @@ use Algolia\SearchBundle\SearchableEntity;
 use Algolia\SearchBundle\TestApp\Entity\Comment;
 use Algolia\SearchBundle\TestApp\Entity\Post;
 use Algolia\SearchBundle\TestApp\Entity\Tag;
+use Symfony\Component\Serializer\Normalizer\CustomNormalizer;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Serializer;
 
@@ -28,8 +29,8 @@ class SerializationTest extends BaseTest
         }, $normalizers);
 
         $this->assertContains('ObjectNormalizer', end($classes));
-        $this->assertContains('CustomNormalizer', $classes[1]);
-        $this->assertEquals(CommentNormalizer::class, $classes[0]);
+        $this->assertContains(CustomNormalizer::class, $classes);
+        $this->assertContains(CommentNormalizer::class, $classes);
         $this->assertGreaterThan(3, count($classes));
     }
 
