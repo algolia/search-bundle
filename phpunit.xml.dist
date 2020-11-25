@@ -5,7 +5,7 @@
         <env name="APP_ENV" value="test" />
         <env name="APP_DEBUG" value="false" />
         <env name="ALGOLIA_PREFIX" value="sf_phpunit_" />
-        <env name="TRAVIS_JOB_NUMBER" value="" />
+        <env name="CIRCLE_BUILD_NUM" value="" />
         <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled" />
     </php>
     <testsuites>

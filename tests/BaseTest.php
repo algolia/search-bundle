@@ -21,7 +21,7 @@ class BaseTest extends KernelTestCase
          */
         if (class_exists('\PHPUnit_Runner_Version')) {
             $_ENV['ALGOLIA_PREFIX']    = getenv('ALGOLIA_PREFIX');
-            $_ENV['TRAVIS_JOB_NUMBER'] = getenv('TRAVIS_JOB_NUMBER');
+            $_ENV['CIRCLE_BUILD_NUM']  = getenv('CIRCLE_BUILD_NUM');
         }
     }
 

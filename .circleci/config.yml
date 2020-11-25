@@ -1,0 +1,95 @@
+# PHP CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-php/ for more details
+#
+version: 2.1
+
+executors:
+  php-docker: # declares a reusable executor
+    parameters:
+      version:
+        description: "PHP version tag"
+        type: string
+    docker:
+        - image: circleci/php:<<parameters.version>>
+
+jobs:
+  test:
+    parameters:
+      version:
+        description: "PHP version tag"
+        type: string
+
+    executor:
+      name: php-docker
+      version: <<parameters.version>>
+
+    steps:
+      - checkout
+
+      - run: sudo apt update
+      - run: sudo docker-php-ext-install zip
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - composer-deps-<<parameters.version>>-{{ checksum "composer.json" }}
+            # fallback to using the latest cache if no exact match is found
+            #- composer-deps-
+
+      - run:
+          name: Install dependencies
+          command: COMPOSER_MEMORY_LIMIT=-1 composer install -n --prefer-dist
+
+      - save_cache:
+          key: composer-deps-<<parameters.version>>-{{ checksum "composer.json" }}
+          paths:
+            - ./vendor
+
+      - run:
+          name: Get API Key Dealer client
+          command: wget https://alg.li/algolia-keys && chmod +x algolia-keys
+
+      - run:
+          name: Run static analysis
+          command: if [[ <<parameters.version>> > "7.3" ]]; then composer test:install && composer test:types; fi
+
+      - run:
+          name: Check code styles
+          command: if [[ <<parameters.version>> > "7.3" ]]; then composer test:lint; fi
+
+      # Run tests with phpunit
+      #
+      # If the PR is open by an Algolia, we run all the tests
+      # with the keys in the env variables
+      # If the PR was open from a fork (community PR)
+      # we get API keys from the API key dealer https://alg.li/api-key-dealer
+      - run:
+          name: Run tests
+          command: |
+            export CI_BUILD_NUM=$CIRCLE_BUILD_NUM
+            export COMPOSER_PROCESS_TIMEOUT=900
+            if [ -z ${CIRCLE_PR_REPONAME+x} ]
+            then
+               composer test:unit
+            else
+              export CI_PROJ_USERNAME=$CIRCLE_PROJECT_USERNAME
+              export CI_PROJ_REPONAME=$CIRCLE_PROJECT_REPONAME
+
+              eval $(./algolia-keys export)
+              composer test:unit
+            fi
+
+      - run:
+          name: Check coverage
+          command: |
+            if (( $(echo "<<parameters.version>> >= 7.2" |bc -l) )); then php coverage-checker.php clover.xml 100; fi
+            if (( $(echo "<<parameters.version>> < 7.2" |bc -l) )); then php coverage-checker.php clover.xml 100; fi
+
+workflows:
+  workflow:
+    jobs:
+      - test:
+          matrix:
+            parameters:
+              version: ['5.6', '7.0', '7.1', '7.2', '7.3', '7.4', 'latest']
