@@ -76,8 +76,7 @@ jobs:
               export CI_PROJ_USERNAME=$CIRCLE_PROJECT_USERNAME
               export CI_PROJ_REPONAME=$CIRCLE_PROJECT_REPONAME
 
-              eval $(./algolia-keys export)
-              composer test:unit
+              eval $(./algolia-keys export) && composer test:unit
             fi
 
       - run:
