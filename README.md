@@ -10,7 +10,7 @@
   </h4>
 
   <p align="center">
-    <a href="https://travis-ci.org/algolia/search-bundle"><img src="https://travis-ci.org/algolia/search-bundle.svg?branch=master" alt="Build Status"></a>
+    <a href="https://circleci.com/gh/algolia/search-bundle"><img src="https://circleci.com/gh/algolia/search-bundle.svg?style=shield" alt="CircleCI" /></a>
     <a href="https://packagist.org/packages/algolia/search-bundle"><img src="https://poser.pugx.org/algolia/search-bundle/downloads" alt="Total Downloads"></a>
     <a href="https://packagist.org/packages/algolia/search-bundle"><img src="https://poser.pugx.org/algolia/search-bundle/v/stable" alt="Latest Version"></a>
     <a href="https://packagist.org/packages/algolia/search-bundle"><img src="https://poser.pugx.org/algolia/search-bundle/license" alt="License"></a>
