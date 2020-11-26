@@ -24,7 +24,7 @@ $ brew cask install virtualbox
 
 You may need to enter your password and authorize the application in your `System Settings` > `Security & Privacy`.
 
-Create now a new machine, set it up as default and connect your shell to it (here we use zsh. The commands should anyway be displayed in each steps' output)
+Create a new machine, set it up as default and connect your shell to it.
 
 ```
 $ docker-machine create --driver virtualbox default
@@ -32,7 +32,7 @@ $ docker-machine env default
 $ eval "$(docker-machine env default)"
 ```
 
-Now you're all setup to use our provided Docker image!
+Now you're all set to use our Docker image!
 
 ## Build the image
 
@@ -42,7 +42,7 @@ docker build -t algolia-search-bundle .
 
 ## Run the image
 
-You need to provide few environment variables at runtime to be able to run the [Common Test Suite](https://github.com/algolia/algoliasearch-client-specs/tree/master/common-test-suite).
+You need to provide a few environment variables at runtime in order to run the [Common Test Suite](https://github.com/algolia/algoliasearch-client-specs/tree/master/common-test-suite).
 You can set them up directly in the command:
 
 ```bash
@@ -59,7 +59,7 @@ docker run -it --rm --env ALGOLIA_APP_ID \
 
 Once your container is running, any changes you make in your IDE are directly reflected in the container.
 
-Manually install composer dependencies once inside the container
+The first time you start the container, you have to manually install the composer dependencies.
 ```shell script
 composer update
 ```
