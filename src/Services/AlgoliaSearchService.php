@@ -8,8 +8,8 @@ use Algolia\SearchBundle\Entity\Aggregator;
 use Algolia\SearchBundle\Responses\SearchServiceResponse;
 use Algolia\SearchBundle\SearchableEntity;
 use Algolia\SearchBundle\SearchService;
-use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\Common\Util\ClassUtils;
+use Algolia\SearchBundle\Util\ClassInfo;
+use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
@@ -91,7 +91,7 @@ final class AlgoliaSearchService implements SearchService
     public function isSearchable($className)
     {
         if (is_object($className)) {
-            $className = ClassUtils::getClass($className);
+            $className = ClassInfo::getClass($className);
         }
 
         return in_array($className, $this->searchableEntities, true);
@@ -277,7 +277,7 @@ final class AlgoliaSearchService implements SearchService
      */
     public function shouldBeIndexed($entity)
     {
-        $className    = ClassUtils::getClass($entity);
+        $className    = ClassInfo::getClass($entity);
         $propertyPath = $this->indexIfMapping[$className];
 
         if ($propertyPath !== null) {
@@ -404,7 +404,7 @@ final class AlgoliaSearchService implements SearchService
         foreach (array_chunk($entities, $this->configuration['batchSize']) as $chunk) {
             $searchableEntitiesChunk = [];
             foreach ($chunk as $entity) {
-                $entityClassName = ClassUtils::getClass($entity);
+                $entityClassName = ClassInfo::getClass($entity);
 
                 $searchableEntitiesChunk[] = new SearchableEntity(
                     $this->searchableAs($entityClassName),
@@ -433,7 +433,7 @@ final class AlgoliaSearchService implements SearchService
         $aggregators = [];
 
         foreach ($entities as $entity) {
-            $entityClassName = ClassUtils::getClass($entity);
+            $entityClassName = ClassInfo::getClass($entity);
             if (array_key_exists($entityClassName, $this->entitiesAggregators)) {
                 foreach ($this->entitiesAggregators[$entityClassName] as $aggregator) {
                     $aggregators[] = new $aggregator($entity, $objectManager->getClassMetadata($entityClassName)->getIdentifierValues($entity));

@@ -5,7 +5,7 @@ namespace Algolia\SearchBundle\Services;
 use Algolia\AlgoliaSearch\RequestOptions\RequestOptions;
 use Algolia\AlgoliaSearch\Response\NullResponse;
 use Algolia\SearchBundle\SearchService;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 
 /**
  * This class aims to be used in dev or testing environments. It may

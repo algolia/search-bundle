@@ -12,7 +12,9 @@
     "require": {
         "php": "^5.6 || ^7.0",
         "algolia/algoliasearch-client-php": "^2.5",
-        "doctrine/common": "^2.5",
+        "doctrine/event-manager": "^1.1",
+        "symfony/doctrine-bridge": "^3.4 || ^4.0 || ^5.0",
+        "doctrine/persistence": "^2.1",
         "symfony/filesystem": "^3.4 || ^4.0 || ^5.0",
         "symfony/property-access": "^3.4 || ^4.0 || ^5.0",
         "symfony/serializer": "^3.4 || ^4.0 || ^5.0"
@@ -36,7 +38,6 @@
         "jms/serializer-bundle": "^2.3 || ^3.0",
         "ocramius/proxy-manager": "*",
         "phpunit/phpunit": "^5.7.21 || ^6.4 || ^7.0",
-        "symfony/doctrine-bridge": "^3.4 || ^4.0 || ^5.0",
         "symfony/framework-bundle": "^3.4 || ^4.0 || ^5.0",
         "symfony/phpunit-bridge": "^3.4 || ^4.0 || ^5.0",
         "symfony/proxy-manager-bridge": "*",
