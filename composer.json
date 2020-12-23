@@ -57,7 +57,7 @@
         "test:update": "composer update -d tests/QualityTools/",
         "lint": "php-cs-fixer fix -v",
         "test:types": "tests/QualityTools/vendor/bin/phpstan analyse --ansi",
-        "test:unit": "phpunit --colors=always --verbose",
+        "test:unit": "XDEBUG_MODE=coverage phpunit --colors=always --verbose",
         "test:lint": "php-cs-fixer fix -v --dry-run",
         "test": [
             "@test:lint",
