@@ -48,15 +48,18 @@ jobs:
 
       - run:
           name: Get API Key Dealer client
-          command: wget https://alg.li/algolia-keys && chmod +x algolia-keys
+          command: |
+            if [ -z "ALGOLIA_ADMIN_KEY_MCM" ]; then
+              curl -s https://algoliasearch-client-keygen.herokuapp.com | sh >> $BASH_ENV
+            fi
 
       - run:
           name: Run static analysis
-          command: if [[ <<parameters.version>> > "7.3" ]]; then composer test:install && composer test:types; fi
+          command: if [[ <<parameters.version>> > "7.3" && <<parameters.version>> < "8.0" ]]; then composer test:install && composer test:types; fi
 
       - run:
           name: Check code styles
-          command: if [[ <<parameters.version>> > "7.3" ]]; then composer test:lint; fi
+          command: if [[ <<parameters.version>> > "7.3" && <<parameters.version>> < "8.0" ]]; then composer test:lint; fi
 
       # Run tests with phpunit
       #
@@ -69,15 +72,7 @@ jobs:
           command: |
             export CI_BUILD_NUM=$CIRCLE_BUILD_NUM
             export COMPOSER_PROCESS_TIMEOUT=900
-            if [ -z ${CIRCLE_PR_REPONAME+x} ]
-            then
-               composer test:unit
-            else
-              export CI_PROJ_USERNAME=$CIRCLE_PROJECT_USERNAME
-              export CI_PROJ_REPONAME=$CIRCLE_PROJECT_REPONAME
-
-              eval $(./algolia-keys export) && composer test:unit
-            fi
+            composer test:unit
 
       - run:
           name: Check coverage
@@ -91,4 +86,4 @@ workflows:
       - test:
           matrix:
             parameters:
-              version: ['5.6', '7.0', '7.1', '7.2', '7.3', '7.4', 'latest']
+              version: ['5.6', '7.0', '7.1', '7.2', '7.3', '7.4']
