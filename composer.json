@@ -58,6 +58,7 @@
         "lint": "php-cs-fixer fix -v",
         "test:types": "tests/QualityTools/vendor/bin/phpstan analyse --ansi",
         "test:unit": "XDEBUG_MODE=coverage phpunit --colors=always --verbose",
+        "test:community": "XDEBUG_MODE=coverage phpunit --colors=always --verbose --exclude-group=internal",
         "test:lint": "php-cs-fixer fix -v --dry-run",
         "test": [
             "@test:lint",

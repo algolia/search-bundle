@@ -46,12 +46,12 @@ jobs:
           paths:
             - ./vendor
 
-      - run:
-          name: Get API Key Dealer client
-          command: |
-            if [ -z "ALGOLIA_ADMIN_KEY_MCM" ]; then
-              curl -s https://algoliasearch-client-keygen.herokuapp.com | sh >> $BASH_ENV
-            fi
+#      - run:
+#          name: Get API Key Dealer client
+#          command: |
+#            if [ -z "$CIRCLE_PR_REPONAME" ]; then
+#              curl -s https://algoliasearch-client-keygen.herokuapp.com | sh >> $BASH_ENV
+#            fi
 
       - run:
           name: Run static analysis
