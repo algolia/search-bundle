@@ -91,7 +91,6 @@ class SettingsTest extends BaseTest
     }
 
     /**
-     * @group internal
      * @depends testBackup
      */
     public function testPush()
@@ -121,7 +120,6 @@ class SettingsTest extends BaseTest
     }
 
     /**
-     * @group internal
      * @depends testBackupWithoutIndices
      */
     public function testPushWithoutIndices()
