@@ -10,7 +10,7 @@
     ],
     "prefer-stable": true,
     "require": {
-        "php": "^5.6 || ^7.0",
+        "php": "^7.1",
         "algolia/algoliasearch-client-php": "^2.5",
         "doctrine/event-manager": "^1.1",
         "doctrine/persistence": "^2.1",
