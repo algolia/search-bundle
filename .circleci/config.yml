@@ -46,10 +46,11 @@ jobs:
           paths:
             - ./vendor
 
+      # CIRCLE_PR_REPONAME indicates an external contributor PR
       - run:
           name: Get API Key Dealer client
           command: |
-            if [ -z "ALGOLIA_ADMIN_KEY_MCM" ]; then
+            if [ "$CIRCLE_PR_REPONAME" ]; then
               curl -s https://algoliasearch-client-keygen.herokuapp.com | sh >> $BASH_ENV
             fi
 
@@ -70,7 +71,6 @@ jobs:
       - run:
           name: Run tests
           command: |
-            export CI_BUILD_NUM=$CIRCLE_BUILD_NUM
             export COMPOSER_PROCESS_TIMEOUT=900
             composer test:unit
 

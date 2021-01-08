@@ -32,6 +32,9 @@ class SettingsTest extends BaseTest
         $this->get('search.service')->delete(Post::class)->wait();
     }
 
+    /**
+     * @group internal
+     */
     public function testBackup()
     {
         $this->rrmdir($this->get('search.service')->getConfiguration()['settingsDirectory']);
@@ -55,6 +58,9 @@ class SettingsTest extends BaseTest
         $this->assertEquals($settingsToUpdate['maxValuesPerFacet'], $savedSettings['maxValuesPerFacet']);
     }
 
+    /**
+     * @group internal
+     */
     public function testBackupWithoutIndices()
     {
         $this->rrmdir($this->get('search.service')->getConfiguration()['settingsDirectory']);
