@@ -76,9 +76,7 @@ jobs:
 
       - run:
           name: Check coverage
-          command: |
-            if (( $(echo "<<parameters.version>> >= 7.2" |bc -l) )); then php coverage-checker.php clover.xml 100; fi
-            if (( $(echo "<<parameters.version>> < 7.2" |bc -l) )); then php coverage-checker.php clover.xml 100; fi
+          command: php coverage-checker.php clover.xml 100
 
 workflows:
   workflow:
