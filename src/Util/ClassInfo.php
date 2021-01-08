@@ -52,6 +52,9 @@ final class ClassInfo
         );
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     private function __construct()
     {
     }
