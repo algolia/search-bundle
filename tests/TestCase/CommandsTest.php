@@ -88,22 +88,13 @@ class CommandsTest extends BaseTest
 
     public function testSearchImportAggregator()
     {
-        $now = new \DateTime();
-        $this->connection->insert($this->indexName, [
-            'title'        => 'Test',
-            'content'      => 'Test content',
-            'published_at' => $now->format('Y-m-d H:i:s'),
-        ]);
-        $this->connection->insert($this->indexName, [
-            'title'        => 'Test2',
-            'content'      => 'Test content2',
-            'published_at' => $now->format('Y-m-d H:i:s'),
-        ]);
-        $this->connection->insert($this->indexName, [
-            'title'        => 'Test3',
-            'content'      => 'Test content3',
-            'published_at' => $now->format('Y-m-d H:i:s'),
-        ]);
+        for ($i = 1; $i <= 2; $i++) {
+            $this->om->persist($comment = $this->createComment());
+            $this->om->persist($comment->getPost());
+            $this->om->persist($this->createImage());
+        }
+
+        $this->om->flush();
 
         $command       = $this->application->find('search:import');
         $commandTester = new CommandTester($command);
@@ -117,7 +108,8 @@ class CommandsTest extends BaseTest
         $this->assertContains('Done!', $output);
 
         $iteration      = 0;
-        $expectedResult = 3;
+        $expectedResult = 6;
+
         do {
             $searchPost = $this->searchService->rawSearch(ContentAggregator::class);
             sleep(1);

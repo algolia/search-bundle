@@ -59,7 +59,7 @@ class BaseTest extends KernelTestCase
     {
         $comment = new Comment();
         $comment->setContent('Comment content');
-        $comment->setPost(new Post(['title' => 'What a post!']));
+        $comment->setPost(new Post(['title' => 'What a post!', 'content' => 'my content']));
 
         if (!is_null($id)) {
             $comment->setId($id);
