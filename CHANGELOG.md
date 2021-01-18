@@ -6,7 +6,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 # Release Notes
 
-## [Unreleased](https://github.com/algolia/search-bundle/compare/4.1.1...master)
+## [Unreleased](https://github.com/algolia/search-bundle/compare/4.1.2...master)
+
+## [v4.1.2](https://github.com/algolia/search-bundle/compare/4.1.1...4.1.2)
+
+### Fixed
+- Import for aggregated models ([#350](https://github.com/algolia/search-bundle/pull/350))
 
 
 ## [v4.1.1](https://github.com/algolia/search-bundle/compare/4.1.0...4.1.1)
