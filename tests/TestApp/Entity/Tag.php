@@ -35,11 +35,11 @@ class Tag implements NormalizableInterface
 
     public function __construct(array $attributes = [])
     {
-        $this->id          = isset($attributes['id']) ? $attributes['id'] : null;
-        $this->name        = isset($attributes['name']) ? $attributes['name'] : 'This is a tag';
-        $this->count       = isset($attributes['count']) ? $attributes['count'] : 0;
-        $this->public      = isset($attributes['public']) ? $attributes['public'] : true;
-        $this->publishedAt = isset($attributes['publishedAt']) ? $attributes['publishedAt'] : new \DateTime();
+        $this->id          = $attributes['id'] ?? null;
+        $this->name        = $attributes['name'] ?? 'This is a tag';
+        $this->count       = $attributes['count'] ?? 0;
+        $this->public      = $attributes['public'] ?? true;
+        $this->publishedAt = $attributes['publishedAt'] ?? new \DateTime();
     }
 
     public function isPublic()

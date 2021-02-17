@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class ContentAggregator extends Aggregator
 {
-    public function getIsVisible()
+    public function getIsVisible(): bool
     {
         if ($this->entity instanceof Post) {
             return $this->entity->getTitle() !== 'Foo';
@@ -19,7 +19,7 @@ class ContentAggregator extends Aggregator
         return true;
     }
 
-    public static function getEntities()
+    public static function getEntities(): array
     {
         return [
             Post::class,

@@ -15,7 +15,7 @@ use Symfony\Component\Serializer\Serializer;
 
 class SerializationTest extends BaseTest
 {
-    public function testSerializerHasRequiredNormalizers()
+    public function testSerializerHasRequiredNormalizers(): void
     {
         $serializer = $this->get('serializer');
 
@@ -24,17 +24,17 @@ class SerializationTest extends BaseTest
         $normalizersProperty->setAccessible(true);
         $normalizers = $normalizersProperty->getValue($serializer);
 
-        $classes = array_map(function ($value) {
+        $classes = array_map(static function ($value) {
             return get_class($value);
         }, $normalizers);
 
-        $this->assertContains('ObjectNormalizer', end($classes));
-        $this->assertContains(CustomNormalizer::class, $classes);
-        $this->assertContains(CommentNormalizer::class, $classes);
-        $this->assertGreaterThan(3, count($classes));
+        self::assertStringContainsString('ObjectNormalizer', end($classes));
+        self::assertContains(CustomNormalizer::class, $classes);
+        self::assertContains(CommentNormalizer::class, $classes);
+        self::assertGreaterThan(3, count($classes));
     }
 
-    public function testSimpleEntityToSearchableArray()
+    public function testSimpleEntityToSearchableArray(): void
     {
         $datetime       = new \DateTime();
         $dateSerializer = new Serializer([new DateTimeNormalizer()]);
@@ -75,10 +75,10 @@ class SerializationTest extends BaseTest
             ],
         ];
 
-        $this->assertEquals($expected, $searchablePost->getSearchableArray());
+        self::assertEquals($expected, $searchablePost->getSearchableArray());
     }
 
-    public function testEntityWithAnnotationsToSearchableArray()
+    public function testEntityWithAnnotationsToSearchableArray(): void
     {
         $datetime       = new \DateTime();
         $dateSerializer = new Serializer([new DateTimeNormalizer()]);
@@ -112,10 +112,10 @@ class SerializationTest extends BaseTest
             'publishedAt' => $serializedDateTime,
         ];
 
-        $this->assertEquals($expected, $searchablePost->getSearchableArray());
+        self::assertEquals($expected, $searchablePost->getSearchableArray());
     }
 
-    public function testNormalizableEntityToSearchableArray()
+    public function testNormalizableEntityToSearchableArray(): void
     {
         $datetime       = new \DateTime();
         $dateSerializer = new Serializer([new DateTimeNormalizer()]);
@@ -144,10 +144,10 @@ class SerializationTest extends BaseTest
             'publishedAt' => $serializedDateTime,
         ];
 
-        $this->assertEquals($expected, $searchableTag->getSearchableArray());
+        self::assertEquals($expected, $searchableTag->getSearchableArray());
     }
 
-    public function testDedicatedNormalizer()
+    public function testDedicatedNormalizer(): void
     {
         $comment = new Comment([
             'id'      => 99,
@@ -166,10 +166,10 @@ class SerializationTest extends BaseTest
             'post_title' => 'Another super post',
         ];
 
-        $this->assertEquals($expected, $searchableComment->getSearchableArray());
+        self::assertEquals($expected, $searchableComment->getSearchableArray());
     }
 
-    public function testSimpleEntityWithJMSSerializer()
+    public function testSimpleEntityWithJMSSerializer(): void
     {
         $datetime = new \DateTime();
         // The format is defined in the framework configuration (see tests/config/config.yml)
@@ -209,6 +209,6 @@ class SerializationTest extends BaseTest
             ],
         ];
 
-        $this->assertEquals($expected, $searchablePost->getSearchableArray());
+        self::assertEquals($expected, $searchablePost->getSearchableArray());
     }
 }

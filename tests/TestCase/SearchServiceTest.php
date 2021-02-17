@@ -16,36 +16,36 @@ class SearchServiceTest extends BaseTest
     protected $searchService;
     protected $entityManager;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->searchService  = $this->get('search.service');
         $this->entityManager  = $this->get('doctrine')->getManager();
     }
 
-    public function cleanUp()
+    public function cleanUp(): void
     {
         $this->searchService->delete(Post::class)->wait();
         $this->searchService->delete(Comment::class)->wait();
         $this->searchService->delete(ContentAggregator::class)->wait();
     }
 
-    public function testIsSearchableMethod()
+    public function testIsSearchableMethod(): void
     {
-        $this->assertTrue($this->searchService->isSearchable(Post::class));
-        $this->assertTrue($this->searchService->isSearchable(Comment::class));
-        $this->assertFalse($this->searchService->isSearchable(BaseTest::class));
-        $this->assertFalse($this->searchService->isSearchable(Image::class));
-        $this->assertTrue($this->searchService->isSearchable(ContentAggregator::class));
-        $this->assertTrue($this->searchService->isSearchable(Tag::class));
-        $this->assertTrue($this->searchService->isSearchable(Link::class));
+        self::assertTrue($this->searchService->isSearchable(Post::class));
+        self::assertTrue($this->searchService->isSearchable(Comment::class));
+        self::assertFalse($this->searchService->isSearchable(BaseTest::class));
+        self::assertFalse($this->searchService->isSearchable(Image::class));
+        self::assertTrue($this->searchService->isSearchable(ContentAggregator::class));
+        self::assertTrue($this->searchService->isSearchable(Tag::class));
+        self::assertTrue($this->searchService->isSearchable(Link::class));
         $this->cleanUp();
     }
 
-    public function testGetSearchableEntities()
+    public function testGetSearchableEntities(): void
     {
         $result = $this->searchService->getSearchables();
-        $this->assertEquals([
+        self::assertEquals([
             Post::class,
             Comment::class,
             ContentAggregator::class,
@@ -55,18 +55,16 @@ class SearchServiceTest extends BaseTest
         $this->cleanUp();
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testExceptionIfNoId()
+    public function testExceptionIfNoId(): void
     {
+        $this->expectException(\Exception::class);
         $this->entityManager = $this->get('doctrine')->getManager();
 
         $this->searchService->index($this->entityManager, new Post());
         $this->cleanUp();
     }
 
-    public function testIndexedDataAreSearchable()
+    public function testIndexedDataAreSearchable(): void
     {
         $posts = [];
         for ($i = 0; $i < 3; $i++) {
@@ -85,29 +83,29 @@ class SearchServiceTest extends BaseTest
 
         // RawSearch
         $searchPost = $this->searchService->rawSearch(Post::class);
-        $this->assertCount(4, $searchPost['hits']);
+        self::assertCount(4, $searchPost['hits']);
         $searchPost = $this->searchService->rawSearch(Post::class, '', [
             'page'        => 0,
             'hitsPerPage' => 1,
         ]);
-        $this->assertCount(1, $searchPost['hits']);
+        self::assertCount(1, $searchPost['hits']);
 
         $searchPostEmpty = $this->searchService->rawSearch(Post::class, 'with no result');
-        $this->assertCount(0, $searchPostEmpty['hits']);
+        self::assertCount(0, $searchPostEmpty['hits']);
 
         $searchComment = $this->searchService->rawSearch(Comment::class);
-        $this->assertCount(1, $searchComment['hits']);
+        self::assertCount(1, $searchComment['hits']);
 
         $searchPost = $this->searchService->rawSearch(ContentAggregator::class, 'test');
-        $this->assertCount(4, $searchPost['hits']);
+        self::assertCount(4, $searchPost['hits']);
 
         $searchPost = $this->searchService->rawSearch(ContentAggregator::class, 'Comment content');
-        $this->assertCount(1, $searchPost['hits']);
+        self::assertCount(1, $searchPost['hits']);
 
         // Count
-        $this->assertEquals(4, $this->searchService->count(Post::class, 'test'));
-        $this->assertEquals(1, $this->searchService->count(Comment::class, 'content'));
-        $this->assertEquals(6, $this->searchService->count(ContentAggregator::class));
+        self::assertEquals(4, $this->searchService->count(Post::class, 'test'));
+        self::assertEquals(1, $this->searchService->count(Comment::class, 'content'));
+        self::assertEquals(6, $this->searchService->count(ContentAggregator::class));
 
         // Cleanup
         $this->searchService->delete(Post::class);
@@ -116,7 +114,7 @@ class SearchServiceTest extends BaseTest
         $this->cleanUp();
     }
 
-    public function testIndexedDataCanBeRemoved()
+    public function testIndexedDataCanBeRemoved(): void
     {
         $posts = [];
         for ($i = 0; $i < 3; $i++) {
@@ -136,31 +134,31 @@ class SearchServiceTest extends BaseTest
         $this->searchService->remove($this->entityManager, end($posts))->wait();
 
         // Expects 2 posts and 1 comment.
-        $this->assertEquals(2, $this->searchService->count(Post::class));
-        $this->assertEquals(1, $this->searchService->count(Comment::class));
+        self::assertEquals(2, $this->searchService->count(Post::class));
+        self::assertEquals(1, $this->searchService->count(Comment::class));
 
         // The content aggregator expects 2 + 1 + 1.
-        $this->assertEquals(4, $this->searchService->count(ContentAggregator::class));
+        self::assertEquals(4, $this->searchService->count(ContentAggregator::class));
 
         // Remove the only comment that exists.
         $this->searchService->remove($this->entityManager, $comment)->wait();
 
         // Expects 2 posts and 0 comments.
-        $this->assertEquals(2, $this->searchService->count(Post::class));
-        $this->assertEquals(0, $this->searchService->count(Comment::class));
+        self::assertEquals(2, $this->searchService->count(Post::class));
+        self::assertEquals(0, $this->searchService->count(Comment::class));
 
         // The content aggregator expects 2 + 0 + 1.
-        $this->assertEquals(3, $this->searchService->count(ContentAggregator::class));
+        self::assertEquals(3, $this->searchService->count(ContentAggregator::class));
 
         // Remove the only image that exists.
         $this->searchService->remove($this->entityManager, $image)->wait();
 
         // The content aggregator expects 2 + 0 + 0.
-        $this->assertEquals(2, $this->searchService->count(ContentAggregator::class));
+        self::assertEquals(2, $this->searchService->count(ContentAggregator::class));
         $this->cleanUp();
     }
 
-    public function testRawSearchRawContent()
+    public function testRawSearchRawContent(): void
     {
         $postIndexed = $this->createPost(10);
         $postIndexed->setTitle('Foo Bar');
@@ -169,15 +167,15 @@ class SearchServiceTest extends BaseTest
 
         // Using entity.
         $results = $this->searchService->rawSearch(Post::class, 'Foo Bar');
-        $this->assertEquals($results['hits'][0]['title'], $postIndexed->getTitle());
+        self::assertEquals($results['hits'][0]['title'], $postIndexed->getTitle());
 
         // Using aggregator.
         $results = $this->searchService->rawSearch(ContentAggregator::class, 'Foo Bar');
-        $this->assertEquals($results['hits'][0]['title'], $postIndexed->getTitle());
+        self::assertEquals($results['hits'][0]['title'], $postIndexed->getTitle());
         $this->cleanUp();
     }
 
-    public function testIndexIfCondition()
+    public function testIndexIfCondition(): void
     {
         $posts = [];
         for ($i = 0; $i < 3; $i++) {
@@ -193,15 +191,13 @@ class SearchServiceTest extends BaseTest
         $this->searchService->index($this->entityManager, $posts)->wait();
 
         // The content aggregator expects 3 ( not 4, because of the index_if condition ).
-        $this->assertEquals(3, $this->searchService->count(ContentAggregator::class));
+        self::assertEquals(3, $this->searchService->count(ContentAggregator::class));
         $this->cleanUp();
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testClearUnsearchableEntity()
+    public function testClearUnsearchableEntity(): void
     {
+        $this->expectException(\Exception::class);
         $image = $this->createSearchableImage();
 
         $this->searchService->index($this->entityManager, [$image]);
@@ -209,10 +205,10 @@ class SearchServiceTest extends BaseTest
         $this->cleanUp();
     }
 
-    public function testShouldNotBeIndexed()
+    public function testShouldNotBeIndexed(): void
     {
         $link = new Link();
-        $this->assertFalse($this->searchService->shouldBeIndexed($link));
+        self::assertFalse($this->searchService->shouldBeIndexed($link));
         $this->cleanUp();
     }
 }

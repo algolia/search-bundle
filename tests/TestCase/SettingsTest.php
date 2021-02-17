@@ -17,7 +17,7 @@ class SettingsTest extends BaseTest
     private $configIndexes;
     private $indexName;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -27,7 +27,7 @@ class SettingsTest extends BaseTest
         $this->indexName       = 'posts';
     }
 
-    public function cleanUp()
+    public function cleanUp(): void
     {
         $this->get('search.service')->delete(Post::class)->wait();
     }
@@ -35,7 +35,7 @@ class SettingsTest extends BaseTest
     /**
      * @group internal
      */
-    public function testBackup()
+    public function testBackup(): void
     {
         $this->rrmdir($this->get('search.service')->getConfiguration()['settingsDirectory']);
         $settingsToUpdate = [
@@ -47,21 +47,21 @@ class SettingsTest extends BaseTest
 
         $message = $this->settingsManager->backup(['indices' => [$this->indexName]]);
 
-        $this->assertContains('Saved settings for', $message[0]);
-        $this->assertFileExists($this->getFileName($this->indexName, 'settings'));
+        self::assertStringContainsString('Saved settings for', $message[0]);
+        self::assertFileExists($this->getFileName($this->indexName, 'settings'));
 
         $savedSettings = json_decode(file_get_contents(
             $this->getFileName($this->indexName, 'settings')
         ), true);
 
-        $this->assertEquals($settingsToUpdate['hitsPerPage'], $savedSettings['hitsPerPage']);
-        $this->assertEquals($settingsToUpdate['maxValuesPerFacet'], $savedSettings['maxValuesPerFacet']);
+        self::assertEquals($settingsToUpdate['hitsPerPage'], $savedSettings['hitsPerPage']);
+        self::assertEquals($settingsToUpdate['maxValuesPerFacet'], $savedSettings['maxValuesPerFacet']);
     }
 
     /**
      * @group internal
      */
-    public function testBackupWithoutIndices()
+    public function testBackupWithoutIndices(): void
     {
         $this->rrmdir($this->get('search.service')->getConfiguration()['settingsDirectory']);
         $settingsToUpdate = [
@@ -76,24 +76,24 @@ class SettingsTest extends BaseTest
 
         $message = $this->settingsManager->backup(['indices' => []]);
 
-        $this->assertContains('Saved settings for', $message[0]);
+        self::assertStringContainsString('Saved settings for', $message[0]);
 
         foreach ($this->configIndexes as $indexName => $configIndex) {
-            $this->assertFileExists($this->getFileName($this->indexName, 'settings'));
+            self::assertFileExists($this->getFileName($this->indexName, 'settings'));
 
             $savedSettings = json_decode(file_get_contents(
                 $this->getFileName($indexName, 'settings')
             ), true);
 
-            $this->assertEquals($settingsToUpdate['hitsPerPage'], $savedSettings['hitsPerPage']);
-            $this->assertEquals($settingsToUpdate['maxValuesPerFacet'], $savedSettings['maxValuesPerFacet']);
+            self::assertEquals($settingsToUpdate['hitsPerPage'], $savedSettings['hitsPerPage']);
+            self::assertEquals($settingsToUpdate['maxValuesPerFacet'], $savedSettings['maxValuesPerFacet']);
         }
     }
 
     /**
      * @depends testBackup
      */
-    public function testPush()
+    public function testPush(): void
     {
         $settingsToUpdate = [
             'hitsPerPage'       => 12,
@@ -104,7 +104,7 @@ class SettingsTest extends BaseTest
 
         $message = $this->settingsManager->push(['indices' => [$this->indexName]]);
 
-        $this->assertContains('Pushed settings for', $message[0]);
+        self::assertStringContainsString('Pushed settings for', $message[0]);
 
         $savedSettings = json_decode(file_get_contents(
             $this->getFileName($this->indexName, 'settings')
@@ -113,8 +113,8 @@ class SettingsTest extends BaseTest
         for ($i = 0; $i < 5; $i++) {
             sleep(1);
             $settings = $index->getSettings();
-            if (12 != $settings['hitsPerPage']) {
-                $this->assertEquals($savedSettings, $settings);
+            if (12 !== $settings['hitsPerPage']) {
+                self::assertEquals($savedSettings, $settings);
             }
         }
     }
@@ -122,7 +122,7 @@ class SettingsTest extends BaseTest
     /**
      * @depends testBackupWithoutIndices
      */
-    public function testPushWithoutIndices()
+    public function testPushWithoutIndices(): void
     {
         $settingsToUpdate = [
             'hitsPerPage'       => 12,
@@ -136,7 +136,7 @@ class SettingsTest extends BaseTest
 
         $message = $this->settingsManager->push(['indices' => []]);
 
-        $this->assertContains('Pushed settings for', $message[0]);
+        self::assertStringContainsString('Pushed settings for', $message[0]);
 
         foreach ($this->configIndexes as $indexName => $configIndex) {
             $savedSettings = json_decode(file_get_contents(
@@ -146,8 +146,8 @@ class SettingsTest extends BaseTest
             for ($i = 0; $i < 5; $i++) {
                 sleep(1);
                 $settings = $index->getSettings();
-                if (12 != $settings['hitsPerPage']) {
-                    $this->assertEquals($savedSettings, $settings);
+                if (12 !== $settings['hitsPerPage']) {
+                    self::assertEquals($savedSettings, $settings);
                 }
             }
         }
@@ -157,14 +157,14 @@ class SettingsTest extends BaseTest
     /**
      * @see https://www.php.net/rmdir
      */
-    private function rrmdir($dir)
+    private function rrmdir(string $dir): void
     {
         if (is_dir($dir)) {
             $objects = scandir($dir);
             foreach ($objects as $object) {
-                if ($object != '.' && $object != '..') {
+                if ($object !== '.' && $object !== '..') {
                     if (is_dir($dir . '/' . $object)) {
-                        rrmdir($dir . '/' . $object);
+                        $this->rrmdir($dir . '/' . $object);
                     } else {
                         unlink($dir . '/' . $object);
                     }

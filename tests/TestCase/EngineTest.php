@@ -10,7 +10,7 @@ class EngineTest extends BaseTest
 {
     protected $engine;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -29,7 +29,7 @@ class EngineTest extends BaseTest
      *
      * @group legacy
      */
-    public function testIndexing()
+    public function testIndexing(): void
     {
         $searchablePost = $this->createSearchablePost();
 
@@ -40,22 +40,22 @@ class EngineTest extends BaseTest
         $result = $this->engine->index($searchablePost, [
             'autoGenerateObjectIDIfNotExist' => true,
         ]);
-        $this->assertArrayHasKey($searchablePost->getIndexName(), $result);
-        $this->assertEquals(1, $result[$searchablePost->getIndexName()]->count());
+        self::assertArrayHasKey($searchablePost->getIndexName(), $result);
+        self::assertEquals(1, $result[$searchablePost->getIndexName()]->count());
 
         // Remove
         $result = $this->engine->remove($searchablePost, [
             'X-Forwarded-For' => '0.0.0.0',
         ]);
-        $this->assertArrayHasKey($searchablePost->getIndexName(), $result);
-        $this->assertEquals(1, $result[$searchablePost->getIndexName()]->count());
+        self::assertArrayHasKey($searchablePost->getIndexName(), $result);
+        self::assertEquals(1, $result[$searchablePost->getIndexName()]->count());
 
         // Update
         $result = $this->engine->index($searchablePost, [
             'createIfNotExists' => true,
         ]);
-        $this->assertArrayHasKey($searchablePost->getIndexName(), $result);
-        $this->assertEquals(1, $result[$searchablePost->getIndexName()]->count());
+        self::assertArrayHasKey($searchablePost->getIndexName(), $result);
+        self::assertEquals(1, $result[$searchablePost->getIndexName()]->count());
         foreach ($result as $indexName => $response) {
             $response->wait();
         }
@@ -68,11 +68,11 @@ class EngineTest extends BaseTest
                 'title',
             ],
         ]);
-        $this->assertArrayHasKey('hits', $result);
-        $this->assertArrayHasKey('nbHits', $result);
-        $this->assertArrayHasKey('page', $result);
-        $this->assertArrayHasKey('title', $result['hits'][0]);
-        $this->assertArrayNotHasKey('content', $result['hits'][0]);
+        self::assertArrayHasKey('hits', $result);
+        self::assertArrayHasKey('nbHits', $result);
+        self::assertArrayHasKey('page', $result);
+        self::assertArrayHasKey('title', $result['hits'][0]);
+        self::assertArrayNotHasKey('content', $result['hits'][0]);
 
         // Search IDs
         $result = $this->engine->searchIds('This should not have results', $searchablePost->getIndexName(), [
@@ -82,24 +82,24 @@ class EngineTest extends BaseTest
                 'title',
             ],
         ]);
-        $this->assertEmpty($result);
+        self::assertEmpty($result);
 
         // Count
         $result = $this->engine->count('', $searchablePost->getIndexName(), ['tagFilters' => 'test']);
-        $this->assertEquals(0, $result);
+        self::assertEquals(0, $result);
         $result = $this->engine->count('This should not have results', $searchablePost->getIndexName(), []);
-        $this->assertEquals(0, $result);
+        self::assertEquals(0, $result);
 
         // Cleanup
         $result = $this->engine->clear($searchablePost->getIndexName(), []);
-        $this->assertInstanceOf(IndexingResponse::class, $result);
+        self::assertInstanceOf(IndexingResponse::class, $result);
 
         // Delete index
         $result = $this->engine->delete($searchablePost->getIndexName(), []);
-        $this->assertInstanceOf(IndexingResponse::class, $result);
+        self::assertInstanceOf(IndexingResponse::class, $result);
     }
 
-    public function testIndexingEmptyEntity()
+    public function testIndexingEmptyEntity(): void
     {
         $searchableImage = $this->createSearchableImage();
         $requestOptions  = [];
@@ -109,21 +109,21 @@ class EngineTest extends BaseTest
 
         // Index
         $result = $this->engine->index($searchableImage, $requestOptions);
-        $this->assertEmpty($result);
+        self::assertEmpty($result);
 
         // Remove
         $result = $this->engine->remove($searchableImage, $requestOptions);
-        $this->assertEmpty($result);
+        self::assertEmpty($result);
 
         // Update
         $result = $this->engine->index($searchableImage, $requestOptions);
-        $this->assertEmpty($result);
+        self::assertEmpty($result);
 
         // Search
         try {
             $this->engine->search('query', $searchableImage->getIndexName(), $requestOptions);
         } catch (\Exception $e) {
-            $this->assertInstanceOf('Algolia\AlgoliaSearch\Exceptions\NotFoundException', $e);
+            self::assertInstanceOf('Algolia\AlgoliaSearch\Exceptions\NotFoundException', $e);
         }
     }
 }

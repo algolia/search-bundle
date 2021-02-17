@@ -10,7 +10,7 @@ class EntityProxyTest extends BaseTest
 {
     private static $values = [];
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         // Unset env variables to make sure Algolia
         // Credentials are only required when the
@@ -31,7 +31,7 @@ class EntityProxyTest extends BaseTest
         unset($_SERVER['ALGOLIA_API_KEY']);
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         putenv('ALGOLIA_APP_ID=' . self::$values['env_id']);
         putenv('ALGOLIA_API_KEY=' . self::$values['env_key']);
@@ -39,18 +39,18 @@ class EntityProxyTest extends BaseTest
         $_SERVER = self::$values['_server'];
     }
 
-    public function testEntityIsNotProxied()
+    public function testEntityIsNotProxied(): void
     {
         $comment = new Comment();
-        $this->assertEquals('Algolia\\SearchBundle\\TestApp\\Entity\\Comment', ClassInfo::getClass($comment));
+        self::assertEquals('Algolia\\SearchBundle\\TestApp\\Entity\\Comment', ClassInfo::getClass($comment));
     }
 
-    public function testEntityIsProxied()
+    public function testEntityIsProxied(): void
     {
         $factory = new \ProxyManager\Factory\NullObjectFactory();
         $proxy   = $factory->createProxy(\Algolia\SearchBundle\TestApp\Entity\Comment::class);
 
-        $this->assertStringStartsWith('ProxyManagerGeneratedProxy\\__PM__\\Algolia\\SearchBundle\\TestApp\\Entity\\Comment', get_class($proxy));
-        $this->assertEquals('Algolia\\SearchBundle\\TestApp\\Entity\\Comment', ClassInfo::getClass($proxy));
+        self::assertStringStartsWith('ProxyManagerGeneratedProxy\\__PM__\\Algolia\\SearchBundle\\TestApp\\Entity\\Comment', get_class($proxy));
+        self::assertEquals('Algolia\\SearchBundle\\TestApp\\Entity\\Comment', ClassInfo::getClass($proxy));
     }
 }

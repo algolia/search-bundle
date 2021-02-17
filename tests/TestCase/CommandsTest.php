@@ -21,7 +21,7 @@ class CommandsTest extends BaseTest
     protected $platform;
     protected $index;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->searchService = $this->get('search.service');
@@ -41,14 +41,14 @@ class CommandsTest extends BaseTest
         $this->refreshDb($this->application);
     }
 
-    public function cleanUp()
+    public function cleanUp(): void
     {
         $this->searchService->delete(Post::class)->wait();
         $this->searchService->delete(Comment::class)->wait();
         $this->searchService->delete(ContentAggregator::class)->wait();
     }
 
-    public function testSearchClearUnknownIndex()
+    public function testSearchClearUnknownIndex(): void
     {
         $unknownIndexName = 'test';
 
@@ -61,18 +61,18 @@ class CommandsTest extends BaseTest
 
         // Checks output and ensure it failed
         $output = $commandTester->getDisplay();
-        $this->assertContains('No index named ' . $unknownIndexName, $output);
+        self::assertStringContainsString('No index named ' . $unknownIndexName, $output);
         $this->cleanUp();
     }
 
-    public function testSearchClear()
+    public function testSearchClear(): void
     {
         $this->om = $this->get('doctrine')->getManager();
         $this->searchService->index($this->om, $this->createPost(10))->wait();
 
         // Checks that post was created and indexed
         $searchPost = $this->searchService->rawSearch(Post::class);
-        $this->assertCount(1, $searchPost['hits']);
+        self::assertCount(1, $searchPost['hits']);
 
         $command       = $this->application->find('search:clear');
         $commandTester = new CommandTester($command);
@@ -82,11 +82,11 @@ class CommandsTest extends BaseTest
 
         // Checks output
         $output = $commandTester->getDisplay();
-        $this->assertContains('Cleared posts', $output);
+        self::assertStringContainsString('Cleared posts', $output);
         $this->cleanUp();
     }
 
-    public function testSearchImportAggregator()
+    public function testSearchImportAggregator(): void
     {
         $now = new \DateTime();
         $this->connection->insert($this->indexName, [
@@ -114,7 +114,7 @@ class CommandsTest extends BaseTest
 
         // Checks output
         $output = $commandTester->getDisplay();
-        $this->assertContains('Done!', $output);
+        self::assertStringContainsString('Done!', $output);
 
         $iteration      = 0;
         $expectedResult = 3;
@@ -126,7 +126,7 @@ class CommandsTest extends BaseTest
 
         // Ensure posts were imported into contents index
         $searchPost = $this->searchService->rawSearch(ContentAggregator::class);
-        $this->assertCount($expectedResult, $searchPost['hits']);
+        self::assertCount($expectedResult, $searchPost['hits']);
         // clearup table
         $this->connection->executeUpdate($this->platform->getTruncateTableSQL($this->indexName, true));
         $this->cleanUp();
@@ -135,7 +135,7 @@ class CommandsTest extends BaseTest
     /**
      * @testWith [true, false]
      */
-    public function testSearchImport($isAtomic)
+    public function testSearchImport($isAtomic): void
     {
         $now = new \DateTime();
         $this->connection->insert($this->indexName, [
@@ -164,7 +164,7 @@ class CommandsTest extends BaseTest
 
         // Checks output
         $output = $commandTester->getDisplay();
-        $this->assertContains('Done!', $output);
+        self::assertStringContainsString('Done!', $output);
 
         // Ensure posts were imported
         $iteration      = 0;
@@ -175,13 +175,13 @@ class CommandsTest extends BaseTest
             $iteration++;
         } while (count($searchPost['hits']) !== $expectedResult || $iteration < 10);
 
-        $this->assertCount($expectedResult, $searchPost['hits']);
+        self::assertCount($expectedResult, $searchPost['hits']);
         // clearup table
         $this->connection->executeUpdate($this->platform->getTruncateTableSQL($this->indexName, true));
         $this->cleanUp();
     }
 
-    public function testSearchSettingsBackupCommand()
+    public function testSearchSettingsBackupCommand(): void
     {
         $settingsToUpdate = [
             'hitsPerPage'       => 51,
@@ -197,16 +197,16 @@ class CommandsTest extends BaseTest
 
         // Checks output
         $output = $commandTester->getDisplay();
-        $this->assertContains('Saved settings', $output);
+        self::assertStringContainsString('Saved settings', $output);
 
         $settingsFile = $this->getFileName($this->indexName, 'settings');
 
         $settingsFileContent = json_decode(file_get_contents($settingsFile), true);
-        $this->assertContains($settingsToUpdate['hitsPerPage'], $settingsFileContent);
-        $this->assertContains($settingsToUpdate['maxValuesPerFacet'], $settingsFileContent);
+        self::assertStringContainsString($settingsToUpdate['hitsPerPage'], $settingsFileContent['hitsPerPage']);
+        self::assertStringContainsString($settingsToUpdate['maxValuesPerFacet'], $settingsFileContent['maxValuesPerFacet']);
     }
 
-    public function testSearchSettingsPushCommand()
+    public function testSearchSettingsPushCommand(): void
     {
         $settingsToUpdate = [
             'hitsPerPage'       => 50,
@@ -217,8 +217,8 @@ class CommandsTest extends BaseTest
         $settingsFile = $this->getFileName($this->indexName, 'settings');
 
         $settingsFileContent = json_decode(file_get_contents($settingsFile), true);
-        $this->assertNotEquals($settings['hitsPerPage'], $settingsFileContent['hitsPerPage']);
-        $this->assertNotEquals($settings['maxValuesPerFacet'], $settingsFileContent['maxValuesPerFacet']);
+        self::assertNotEquals($settings['hitsPerPage'], $settingsFileContent['hitsPerPage']);
+        self::assertNotEquals($settings['maxValuesPerFacet'], $settingsFileContent['maxValuesPerFacet']);
 
         $command       = $this->application->find('search:settings:push');
         $commandTester = new CommandTester($command);
@@ -229,7 +229,7 @@ class CommandsTest extends BaseTest
 
         // Checks output
         $output = $commandTester->getDisplay();
-        $this->assertContains('Pushed settings', $output);
+        self::assertStringContainsString('Pushed settings', $output);
 
         // check if the settings were imported
         $iteration = 0;
@@ -239,8 +239,8 @@ class CommandsTest extends BaseTest
             $iteration++;
         } while ($newSettings['hitsPerPage'] !== $settingsFileContent['hitsPerPage'] || $iteration < 10);
 
-        $this->assertEquals($newSettings['hitsPerPage'], $settingsFileContent['hitsPerPage']);
-        $this->assertEquals($newSettings['maxValuesPerFacet'], $settingsFileContent['maxValuesPerFacet']);
+        self::assertEquals($newSettings['hitsPerPage'], $settingsFileContent['hitsPerPage']);
+        self::assertEquals($newSettings['maxValuesPerFacet'], $settingsFileContent['maxValuesPerFacet']);
         $this->cleanUp();
     }
 }

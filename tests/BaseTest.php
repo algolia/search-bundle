@@ -11,31 +11,16 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 
 class BaseTest extends KernelTestCase
 {
-    public static function setUpBeforeClass()
+    public function setUp(): void
     {
-        /*
-         * Older version of PHPUnit (<6.0) load
-         * env variables differently, we override them
-         * here to make sure they're coming from the
-         * env rather than the XML config
-         */
-        if (class_exists('\PHPUnit_Runner_Version')) {
-            $_ENV['ALGOLIA_PREFIX']    = getenv('ALGOLIA_PREFIX');
-            $_ENV['CIRCLE_BUILD_NUM']  = getenv('CIRCLE_BUILD_NUM');
-        }
+        self::bootKernel();
     }
 
-    public function setUp()
-    {
-        $this->bootKernel();
-    }
-
-    protected function createPost($id = null)
+    protected function createPost($id = null): Post
     {
         $post = new Post();
         $post->setTitle('Test');
         $post->setContent('Test content');
-
         if (!is_null($id)) {
             $post->setId($id);
         }
@@ -43,9 +28,9 @@ class BaseTest extends KernelTestCase
         return $post;
     }
 
-    protected function createSearchablePost()
+    protected function createSearchablePost(): SearchableEntity
     {
-        $post = $this->createPost(rand(100, 300));
+        $post = $this->createPost(random_int(100, 300));
 
         return new SearchableEntity(
             $this->getPrefix() . 'posts',
@@ -55,7 +40,7 @@ class BaseTest extends KernelTestCase
         );
     }
 
-    protected function createComment($id = null)
+    protected function createComment($id = null): Comment
     {
         $comment = new Comment();
         $comment->setContent('Comment content');
@@ -68,7 +53,7 @@ class BaseTest extends KernelTestCase
         return $comment;
     }
 
-    protected function createImage($id = null)
+    protected function createImage($id = null): Image
     {
         $image = new Image();
 
@@ -79,9 +64,9 @@ class BaseTest extends KernelTestCase
         return $image;
     }
 
-    protected function createSearchableImage()
+    protected function createSearchableImage(): SearchableEntity
     {
-        $image = $this->createImage(rand(100, 300));
+        $image = $this->createImage(random_int(100, 300));
 
         return new SearchableEntity(
             $this->getPrefix() . 'image',
@@ -91,17 +76,17 @@ class BaseTest extends KernelTestCase
         );
     }
 
-    protected function getPrefix()
+    protected function getPrefix(): ?string
     {
         return $this->get('search.service')->getConfiguration()['prefix'];
     }
 
-    protected function get($id)
+    protected function get($id): ?object
     {
         return self::$kernel->getContainer()->get($id);
     }
 
-    protected function refreshDb($application)
+    protected function refreshDb($application): void
     {
         $inputs = [
             new ArrayInput([
@@ -122,12 +107,17 @@ class BaseTest extends KernelTestCase
         }
     }
 
-    protected function getFileName($indexName, $type)
+    protected function getFileName($indexName, $type): string
     {
-        return sprintf('%s/%s-%s.json', $this->get('search.service')->getConfiguration()['settingsDirectory'], $indexName, $type);
+        return sprintf(
+            '%s/%s-%s.json',
+            $this->get('search.service')->getConfiguration()['settingsDirectory'],
+            $indexName,
+            $type
+        );
     }
 
-    protected function getDefaultConfig()
+    protected function getDefaultConfig(): array
     {
         return [
             'hitsPerPage'       => 20,

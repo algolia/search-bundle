@@ -59,10 +59,10 @@ class Post
 
     public function __construct(array $attributes = [])
     {
-        $this->id          = isset($attributes['id']) ? $attributes['id'] : null;
-        $this->title       = isset($attributes['title']) ? $attributes['title'] : null;
-        $this->content     = isset($attributes['content']) ? $attributes['content'] : null;
-        $this->publishedAt = isset($attributes['publishedAt']) ? $attributes['publishedAt'] : new \DateTime();
+        $this->id          = $attributes['id'] ?? null;
+        $this->title       = $attributes['title'] ?? null;
+        $this->content     = $attributes['content'] ?? null;
+        $this->publishedAt = $attributes['publishedAt'] ?? new \DateTime();
         $this->comments    = isset($attributes['comments']) ? new ArrayCollection($attributes['comments']) : new ArrayCollection();
     }
 
