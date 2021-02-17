@@ -116,10 +116,10 @@ EOT
                     }
 
                     $page++;
-                    $repository->clear();
+                    $manager->clear();
                 } while (count($entities) >= $config['batchSize']);
 
-                $repository->clear();
+                $manager->clear();
             }
 
             if ($shouldDoAtomicReindex && isset($indexName)) {
