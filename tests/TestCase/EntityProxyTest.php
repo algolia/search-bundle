@@ -58,12 +58,26 @@ class EntityProxyTest extends BaseTest
         self::assertEquals('Algolia\\SearchBundle\\TestApp\\Entity\\Comment', ClassInfo::getClass($comment));
     }
 
-    public function testEntityIsProxied(): void
+    public function testEntityIsProxiedWithOPM(): void
     {
         $factory = new \ProxyManager\Factory\NullObjectFactory();
         $proxy   = $factory->createProxy(\Algolia\SearchBundle\TestApp\Entity\Comment::class);
 
         self::assertStringStartsWith('ProxyManagerGeneratedProxy\\__PM__\\Algolia\\SearchBundle\\TestApp\\Entity\\Comment', get_class($proxy));
+        self::assertEquals('Algolia\\SearchBundle\\TestApp\\Entity\\Comment', ClassInfo::getClass($proxy));
+    }
+
+    public function testEntityIsProxiedWithDP(): void
+    {
+        /** @var \Doctrine\ORM\EntityManagerInterface $entityManager */
+        $entityManager = $this->get('doctrine')->getManager();
+
+        $metadata = $entityManager->getClassMetadata(\Algolia\SearchBundle\TestApp\Entity\Comment::class);
+        $entityManager->getProxyFactory()->generateProxyClasses([$metadata]);
+
+        $proxy = $entityManager->getProxyFactory()->getProxy($metadata->getName(), ['id' => 1]);
+
+        self::assertStringStartsWith('Proxies\\__CG__\Algolia\\SearchBundle\\TestApp\\Entity\\Comment', get_class($proxy));
         self::assertEquals('Algolia\\SearchBundle\\TestApp\\Entity\\Comment', ClassInfo::getClass($proxy));
     }
 }
