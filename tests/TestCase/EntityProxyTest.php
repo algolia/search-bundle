@@ -19,9 +19,16 @@ class EntityProxyTest extends BaseTest
         self::$values = [
             'env_id'  => getenv('ALGOLIA_APP_ID'),
             'env_key' => getenv('ALGOLIA_API_KEY'),
-            '_env'    => $_ENV,
-            '_server' => $_SERVER,
         ];
+
+        foreach (['id' => 'ALGOLIA_APP_ID', 'key' => 'ALGOLIA_API_KEY'] as $key => $item) {
+            if (isset($_ENV[$item])) {
+                self::$values['_env_' . $key] = $_ENV[$item];
+            }
+            if (isset($_SERVER[$item])) {
+                self::$values['_server_' . $key] = $_SERVER[$item];
+            }
+        }
 
         putenv('ALGOLIA_APP_ID');
         putenv('ALGOLIA_API_KEY');
@@ -35,8 +42,14 @@ class EntityProxyTest extends BaseTest
     {
         putenv('ALGOLIA_APP_ID=' . self::$values['env_id']);
         putenv('ALGOLIA_API_KEY=' . self::$values['env_key']);
-        $_ENV    = self::$values['_env'];
-        $_SERVER = self::$values['_server'];
+        foreach (['id' => 'ALGOLIA_APP_ID', 'key' => 'ALGOLIA_API_KEY'] as $key => $item) {
+            if (isset(self::$values['_env_' . $key])) {
+                $_ENV[$item] = self::$values['_env_' . $key];
+            }
+            if (isset(self::$values['_server_' . $key])) {
+                $_SERVER[$item] = self::$values['_server_' . $key];
+            }
+        }
     }
 
     public function testEntityIsNotProxied(): void
