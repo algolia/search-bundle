@@ -13,7 +13,7 @@ class Kernel extends HttpKernel
      *
      * @return BundleInterface[] An array of bundle instances
      */
-    public function registerBundles()
+    public function registerBundles(): array
     {
         return [
             new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
@@ -28,7 +28,7 @@ class Kernel extends HttpKernel
      *
      * @param LoaderInterface $loader A LoaderInterface instance
      */
-    public function registerContainerConfiguration(LoaderInterface $loader)
+    public function registerContainerConfiguration(LoaderInterface $loader): void
     {
         $loader->load(__DIR__ . '/config/config.yml');
 

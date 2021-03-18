@@ -10,6 +10,7 @@ use Algolia\SearchBundle\TestApp\Entity\EmptyAggregator;
 use Algolia\SearchBundle\TestApp\Entity\Post;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 class AggregatorTest extends BaseTest
 {
@@ -18,7 +19,7 @@ class AggregatorTest extends BaseTest
      */
     protected $entityManager;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -28,27 +29,27 @@ class AggregatorTest extends BaseTest
         $this->entityManager  = $this->get('doctrine')->getManager();
     }
 
-    public function testGetEntities()
+    public function testGetEntities(): void
     {
         $entities = EmptyAggregator::getEntities();
 
-        $this->assertEquals([], $entities);
+        self::assertEquals([], $entities);
     }
 
-    public function testGetEntityClassFromObjectID()
+    public function testGetEntityClassFromObjectID(): void
     {
         $this->expectException(EntityNotFoundInObjectID::class);
         EmptyAggregator::getEntityClassFromObjectID('test');
     }
 
-    public function testConstructor()
+    public function testConstructor(): void
     {
         $this->expectException(InvalidEntityForAggregator::class);
         $post                = new Post();
         $compositeAggregator = new ContentAggregator($post, ['objectId', 'url']);
     }
 
-    public function testAggregatorProxyClass()
+    public function testAggregatorProxyClass(): void
     {
         $post = new Post([
             'id'      => 1,
@@ -64,10 +65,11 @@ class AggregatorTest extends BaseTest
         $proxy             = $this->entityManager->getProxyFactory()->getProxy($postMetadata->getName(), ['id' => 1]);
         $contentAggregator = new ContentAggregator($proxy, ['objectId']);
 
+        /** @var NormalizerInterface $serializer */
         $serializer = $this->get('serializer');
 
         $serializedData = $contentAggregator->normalize($serializer);
-        $this->assertNotEmpty($serializedData);
-        $this->assertEquals('Algolia\SearchBundle\TestApp\Entity\Post::objectId', $serializedData['objectID']);
+        self::assertNotEmpty($serializedData);
+        self::assertEquals('Algolia\SearchBundle\TestApp\Entity\Post::objectId', $serializedData['objectID']);
     }
 }

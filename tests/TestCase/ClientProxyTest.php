@@ -4,12 +4,13 @@ namespace Algolia\SearchBundle\TestCase;
 
 use Algolia\SearchBundle\BaseTest;
 use ProxyManager\Proxy\ProxyInterface;
+use Symfony\Component\DependencyInjection\Exception\EnvNotFoundException;
 
 class ClientProxyTest extends BaseTest
 {
     private static $values = [];
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         // Unset env variables to make sure Algolia
         // Credentials are only required when the
@@ -30,7 +31,7 @@ class ClientProxyTest extends BaseTest
         unset($_SERVER['ALGOLIA_API_KEY']);
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         putenv('ALGOLIA_APP_ID=' . self::$values['env_id']);
         putenv('ALGOLIA_API_KEY=' . self::$values['env_key']);
@@ -38,18 +39,16 @@ class ClientProxyTest extends BaseTest
         $_SERVER = self::$values['_server'];
     }
 
-    public function testClientIsProxied()
+    public function testClientIsProxied(): void
     {
         $interfaces = class_implements($this->get('search.client'));
 
-        $this->assertTrue(in_array(ProxyInterface::class, $interfaces));
+        self::assertContains(ProxyInterface::class, $interfaces);
     }
 
-    /**
-     * @expectedException \Symfony\Component\DependencyInjection\Exception\EnvNotFoundException
-     */
-    public function testProxiedClientFailIfNoEnvVarsFound()
+    public function testProxiedClientFailIfNoEnvVarsFound(): void
     {
+        $this->expectException(EnvNotFoundException::class);
         $this->get('search.client')->listIndices();
     }
 }

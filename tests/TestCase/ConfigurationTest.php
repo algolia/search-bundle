@@ -13,7 +13,7 @@ class ConfigurationTest extends BaseTest
      * @param mixed $inputConfig
      * @param mixed $expectedConfig
      */
-    public function testConfigurationTree($inputConfig, $expectedConfig)
+    public function testConfigurationTree($inputConfig, $expectedConfig): void
     {
         $configuration = new Configuration();
 
@@ -22,10 +22,10 @@ class ConfigurationTest extends BaseTest
         $normalizedConfig = $node->normalize($inputConfig);
         $finalizedConfig  = $node->finalize($normalizedConfig);
 
-        $this->assertEquals($expectedConfig, $finalizedConfig);
+        self::assertEquals($expectedConfig, $finalizedConfig);
     }
 
-    public function dataTestConfigurationTree()
+    public function dataTestConfigurationTree(): array
     {
         return [
             'test empty config for default value' => [
@@ -60,7 +60,12 @@ class ConfigurationTest extends BaseTest
                     'prefix'  => 'sf_',
                     'indices' => [
                         ['name' => 'posts', 'class' => 'App\Entity\Post', 'index_if' => null],
-                        ['name' => 'tags', 'class' => 'App\Entity\Tag', 'enable_serializer_groups' => true, 'index_if' => null],
+                        [
+                            'name'                     => 'tags',
+                            'class'                    => 'App\Entity\Tag',
+                            'enable_serializer_groups' => true,
+                            'index_if'                 => null,
+                        ],
                     ],
                 ], [
                     'prefix'                   => 'sf_',

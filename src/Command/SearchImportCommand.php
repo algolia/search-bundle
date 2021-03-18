@@ -5,7 +5,7 @@ namespace Algolia\SearchBundle\Command;
 use Algolia\AlgoliaSearch\SearchClient;
 use Algolia\SearchBundle\Entity\Aggregator;
 use Algolia\SearchBundle\SearchService;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;

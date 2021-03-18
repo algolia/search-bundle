@@ -25,8 +25,8 @@ class Image
 
     public function __construct(array $attributes = [])
     {
-        $this->id  = isset($attributes['id']) ? $attributes['id'] : null;
-        $this->url = isset($attributes['url']) ? $attributes['url'] : '/wp-content/uploads/flamingo.jpg';
+        $this->id  = $attributes['id'] ?? null;
+        $this->url = $attributes['url'] ?? '/wp-content/uploads/flamingo.jpg';
     }
 
     public function getId()

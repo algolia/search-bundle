@@ -3,7 +3,7 @@
 namespace Algolia\SearchBundle;
 
 use Algolia\AlgoliaSearch\RequestOptions\RequestOptions;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 
 interface SearchService
 {

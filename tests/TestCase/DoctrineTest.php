@@ -14,7 +14,7 @@ class DoctrineTest extends BaseTest
     /** @var \Algolia\SearchBundle\Services\AlgoliaSearchService */
     protected $searchService;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -28,14 +28,14 @@ class DoctrineTest extends BaseTest
         $index->setSettings($this->getDefaultConfig())->wait();
     }
 
-    public function cleanUp()
+    public function cleanUp(): void
     {
         $this->searchService->delete(Post::class)->wait();
         $this->searchService->delete(Comment::class)->wait();
         $this->searchService->delete(Tag::class)->wait();
     }
 
-    public function testDoctrineEventManagement()
+    public function testDoctrineEventManagement(): void
     {
         $em = $this->get('doctrine')->getManager();
         for ($i = 0; $i < 5; $i++) {
@@ -52,30 +52,30 @@ class DoctrineTest extends BaseTest
             $iteration++;
         } while ($count !== $expectedCount || $iteration === 10);
 
-        $this->assertEquals($expectedCount, $count);
+        self::assertEquals($expectedCount, $count);
 
         $raw = $this->searchService->rawSearch(Post::class);
-        $this->assertArrayHasKey('query', $raw);
-        $this->assertArrayHasKey('nbHits', $raw);
-        $this->assertArrayHasKey('page', $raw);
-        $this->assertTrue(is_array($raw['hits']));
+        self::assertArrayHasKey('query', $raw);
+        self::assertArrayHasKey('nbHits', $raw);
+        self::assertArrayHasKey('page', $raw);
+        self::assertIsArray($raw['hits']);
 
         $posts = $this->searchService->search($em, Post::class);
-        $this->assertTrue(is_array($posts));
+        self::assertIsArray($posts);
         foreach ($posts as $p) {
-            $this->assertInstanceOf(Post::class, $p);
+            self::assertInstanceOf(Post::class, $p);
         }
 
         $posts = $this->searchService->search($em, ContentAggregator::class);
         foreach ($posts as $p) {
-            $this->assertInstanceOf(Post::class, $p);
+            self::assertInstanceOf(Post::class, $p);
         }
 
         $postToUpdate = $posts[4];
         $postToUpdate->setTitle('New Title');
         $em->flush();
         $posts = $this->searchService->search($em, ContentAggregator::class);
-        $this->assertEquals($posts[4]->getTitle(), 'New Title');
+        self::assertEquals('New Title', $posts[4]->getTitle());
 
         $em->remove($posts[0]);
 
@@ -87,26 +87,26 @@ class DoctrineTest extends BaseTest
             $iteration++;
         } while ($count !== $expectedCount || $iteration === 10);
 
-        $this->assertEquals($count, $expectedCount);
+        self::assertEquals($count, $expectedCount);
         $this->cleanUp();
     }
 
-    public function testIndexIfFeature()
+    public function testIndexIfFeature(): void
     {
         $tags = [
             new Tag(['id' => 1, 'name' => 'Tag #1']),
             new Tag(['id' => 2, 'name' => 'Tag #2']),
-            new Tag(['id' => rand(10, 42), 'name' => 'Tag #3', 'public' => false]),
+            new Tag(['id' => random_int(10, 42), 'name' => 'Tag #3', 'public' => false]),
         ];
         $em = $this->get('doctrine')->getManager();
 
         $this->searchService->index($em, $tags)->wait();
 
-        $this->assertEquals(2, $this->searchService->count(Tag::class));
+        self::assertEquals(2, $this->searchService->count(Tag::class));
 
         $this->searchService->index($em, $tags[2]->setPublic(true))->wait();
 
-        $this->assertEquals(3, $this->searchService->count(Tag::class));
+        self::assertEquals(3, $this->searchService->count(Tag::class));
         $this->cleanUp();
     }
 }
