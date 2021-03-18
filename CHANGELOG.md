@@ -6,7 +6,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 # Release Notes
 
-## [Unreleased](https://github.com/algolia/search-bundle/compare/4.1.2...master)
+## [Unreleased](https://github.com/algolia/search-bundle/compare/5.0.0...master)
+
+## [v5.0.0](https://github.com/algolia/search-bundle/compare/4.1.2...5.0.0)
+### Breaking Changes
+- Update Doctrine components and add Symfony 5.2 support ([#355](https://github.com/algolia/search-bundle/pull/355))
+- Drops support for PHP < 7.2
+
 
 ## [v4.1.2](https://github.com/algolia/search-bundle/compare/4.1.1...4.1.2)
 

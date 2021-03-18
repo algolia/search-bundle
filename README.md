@@ -35,6 +35,8 @@
  * **Flexible**: All methods take optional `$requestOptions` to let you handle your data as you wish
  * **Dev-friendly**: Auto-completion and type-hinting thanks to an exhaustive documentation
 
+Algolia SearchBundle supports PHP > 7.1
+
 ## 💡 Getting Started
 
 First, install Algolia Search Bundle Integration via the composer package manager:
