@@ -11,7 +11,7 @@
     "prefer-stable": true,
     "require": {
         "php": "^7.2 || ^8.0",
-        "algolia/algoliasearch-client-php": "^2.5",
+        "algolia/algoliasearch-client-php": "^3.0",
         "doctrine/event-manager": "^1.1",
         "doctrine/persistence": "^2.1",
         "symfony/filesystem": "^3.4 || ^4.0 || ^5.0",
