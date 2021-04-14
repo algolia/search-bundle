@@ -10,3 +10,4 @@ clover.xml
 /tests/QualityTools/.idea/
 /tests/QualityTools/composer.lock
 .phpunit.result.cache
+phpunit.xml.dist.bak
