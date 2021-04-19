@@ -6,9 +6,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 # Release Notes
 
-## [Unreleased](https://github.com/algolia/search-bundle/compare/5.0.0...master)
+## [Unreleased](https://github.com/algolia/search-bundle/compare/5.1.0...master)
+
+## [v5.1.0](https://github.com/algolia/search-bundle/compare/5.0.0...5.1.0)
+
+### Changed
+- Update the Algolia API client version ([#360](https://github.com/algolia/search-bundle/pull/360))
 
 ## [v5.0.0](https://github.com/algolia/search-bundle/compare/4.1.2...5.0.0)
+
 ### Breaking Changes
 - Update Doctrine components and add Symfony 5.2 support ([#355](https://github.com/algolia/search-bundle/pull/355))
 - Drops support for PHP < 7.2
