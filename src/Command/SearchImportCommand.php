@@ -90,6 +90,7 @@ EOT
                 $this->searchClient->copyIndex($sourceIndexName, $temporaryIndexName, ['scope' => ['settings', 'synonyms', 'rules']]);
             }
 
+            $allResponses = [];
             foreach (is_subclass_of($entityClassName, Aggregator::class) ? $entityClassName::getEntities() : [$entityClassName] as $entityClass) {
                 $manager    = $this->managerRegistry->getManagerForClass($entityClass);
                 $repository = $manager->getRepository($entityClass);
@@ -103,7 +104,9 @@ EOT
                         $config['batchSize'] * $page
                     );
 
-                    $responses = $this->formatIndexingResponse($indexingService->index($manager, $entities));
+                    $response = $indexingService->index($manager, $entities);
+                    $allResponses[] = $response;
+                    $responses = $this->formatIndexingResponse($response);
 
                     foreach ($responses as $indexName => $numberOfRecords) {
                         $output->writeln(sprintf(
@@ -123,6 +126,10 @@ EOT
             }
 
             if ($shouldDoAtomicReindex && isset($indexName)) {
+                $output->writeln("Waiting for indexing tasks to finalize\n");
+                foreach ($allResponses as $response) {
+                    $response->wait();
+                }
                 $output->writeln("Moving <info>$indexName</info> -> <comment>$sourceIndexName</comment>\n");
                 $this->searchClient->moveIndex($indexName, $sourceIndexName);
             }
