@@ -31,8 +31,9 @@ abstract class IndexCommand extends Command
     {
         $entities   = [];
         $indexNames = [];
+        $indexList  = $input->getOption('indices');
 
-        if ($indexList = $input->getOption('indices')) {
+        if ((bool) $indexList) {
             $indexNames = explode(',', $indexList);
         }
 

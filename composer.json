@@ -35,15 +35,15 @@
         "ext-json": "*",
         "doctrine/doctrine-bundle": "^1.8 || ^2.0",
         "doctrine/orm": "^2.5",
+        "friendsofphp/php-cs-fixer": "^2.15",
         "jms/serializer-bundle": "^3.0",
-        "ocramius/proxy-manager": "*",
+        "friendsofphp/proxy-manager-lts": "*",
         "phpunit/phpunit": "^8.5 || ^9.0",
+        "roave/security-advisories": "dev-master",
         "symfony/framework-bundle": "^3.4 || ^4.0 || ^5.0",
         "symfony/phpunit-bridge": "^3.4 || ^4.0 || ^5.0",
         "symfony/proxy-manager-bridge": "*",
-        "symfony/yaml": "^3.4 || ^4.0 || ^5.0",
-        "friendsofphp/php-cs-fixer": "^2.15",
-        "roave/security-advisories": "dev-master"
+        "symfony/yaml": "^3.4 || ^4.0 || ^5.0"
     },
     "extra": {
         "branch-alias": {
