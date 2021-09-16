@@ -104,9 +104,9 @@ EOT
                         $config['batchSize'] * $page
                     );
 
-                    $response = $indexingService->index($manager, $entities);
+                    $response       = $indexingService->index($manager, $entities);
                     $allResponses[] = $response;
-                    $responses = $this->formatIndexingResponse($response);
+                    $responses      = $this->formatIndexingResponse($response);
 
                     foreach ($responses as $indexName => $numberOfRecords) {
                         $output->writeln(sprintf(
