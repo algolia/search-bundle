@@ -28,7 +28,7 @@ jobs:
       - checkout
 
       - run: sudo apt-get update
-      - run: sudo apt-get install -y php<<parameters.version>>-zip
+      - run: sudo apt-get install -y php<<parameters.version>>-zip libpq-dev php<<parameters.version>>-pgsql
 
       # Download and cache dependencies
       - restore_cache:
