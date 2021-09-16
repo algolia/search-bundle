@@ -37,7 +37,6 @@
         "doctrine/orm": "^2.5",
         "friendsofphp/php-cs-fixer": "^2.15",
         "jms/serializer-bundle": "^3.0",
-        "laminas/laminas-zendframework-bridge": "^1.4",
         "friendsofphp/proxy-manager-lts": "*",
         "phpunit/phpunit": "^8.5 || ^9.0",
         "roave/security-advisories": "dev-master",
