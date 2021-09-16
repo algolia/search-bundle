@@ -26,7 +26,9 @@ abstract class SearchSettingsCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if ($indexList = $input->getOption('indices')) {
+        $indexList = $input->getOption('indices');
+
+        if ((bool) $indexList) {
             $indexList = explode(',', $indexList);
         }
 

@@ -72,7 +72,7 @@ EOT
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $shouldDoAtomicReindex = $input->getOption('atomic');
+        $shouldDoAtomicReindex = (bool) $input->getOption('atomic');
         $entitiesToIndex       = $this->getEntitiesFromArgs($input, $output);
         $config                = $this->searchService->getConfiguration();
         $indexingService       = ($shouldDoAtomicReindex ? $this->searchServiceForAtomicReindex : $this->searchService);
