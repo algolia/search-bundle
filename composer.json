@@ -14,9 +14,9 @@
         "algolia/algoliasearch-client-php": "^3.0",
         "doctrine/event-manager": "^1.1",
         "doctrine/persistence": "^2.1",
-        "symfony/filesystem": "^4.0 || ^5.0",
-        "symfony/property-access": "^4.0 || ^5.0",
-        "symfony/serializer": "^4.0 || ^5.0"
+        "symfony/filesystem": "^3.4 || ^4.0 || ^5.0",
+        "symfony/property-access": "^3.4 || ^4.0 || ^5.0",
+        "symfony/serializer": "^3.4 || ^4.0 || ^5.0"
     },
     "autoload": {
         "psr-4": {
@@ -38,10 +38,10 @@
         "jms/serializer-bundle": "^3.0",
         "ocramius/proxy-manager": "*",
         "phpunit/phpunit": "^8.5 || ^9.0",
-        "symfony/framework-bundle": "^4.0 || ^5.0",
-        "symfony/phpunit-bridge": "^4.0 || ^5.0",
-        "symfony/proxy-manager-bridge": "*",
-        "symfony/yaml": "^4.0 || ^5.0",
+        "symfony/framework-bundle": "^3.5 || ^4.0 || ^5.0",
+        "symfony/phpunit-bridge": "^3.5 || ^4.0 || ^5.0",
+        "symfony/proxy-manager-bridge": "^4.0",
+        "symfony/yaml": "^3.5 || ^4.0 || ^5.0",
         "friendsofphp/php-cs-fixer": "^2.15",
         "roave/security-advisories": "dev-master"
     },
