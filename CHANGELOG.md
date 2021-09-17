@@ -6,7 +6,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 # Release Notes
 
-## [Unreleased](https://github.com/algolia/search-bundle/compare/5.1.0...master)
+## [Unreleased](https://github.com/algolia/search-bundle/compare/5.1.1...master)
+
+## [v5.1.1](https://github.com/algolia/search-bundle/compare/5.1.0...5.1.1)
+
+### Fixed
+- Wait for tasks to finish before performing `moveIndex` when doing an atomic reindex ([#362](https://github.com/algolia/search-bundle/pull/362))
 
 ## [v5.1.0](https://github.com/algolia/search-bundle/compare/5.0.0...5.1.0)
 
