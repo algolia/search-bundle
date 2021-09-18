@@ -8,7 +8,7 @@ use Symfony\Component\Filesystem\Filesystem;
 /**
  * @internal
  */
-final class SettingsManager
+class SettingsManager
 {
     /**
      * @var SearchClient
