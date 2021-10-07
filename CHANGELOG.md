@@ -6,7 +6,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 # Release Notes
 
-## [Unreleased](https://github.com/algolia/search-bundle/compare/5.1.1...master)
+## [Unreleased](https://github.com/algolia/search-bundle/compare/5.1.2...master)
+
+## [v5.1.2](https://github.com/algolia/search-bundle/compare/5.1.1...5.1.2)
+
+### Fixed
+- Made the `SettingsManager` class non-final ([#365](https://github.com/algolia/search-bundle/pull/365))
 
 ## [v5.1.1](https://github.com/algolia/search-bundle/compare/5.1.0...5.1.1)
 
