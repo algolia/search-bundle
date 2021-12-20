@@ -70,7 +70,7 @@ EOT
             );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $shouldDoAtomicReindex = (bool) $input->getOption('atomic');
         $entitiesToIndex       = $this->getEntitiesFromArgs($input, $output);
