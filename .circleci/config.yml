@@ -29,7 +29,7 @@ jobs:
 
       - run:
           name: Add PHP8 APT repository
-          command: if [[ <<parameters.version>> > "7.4" ]]; then sudo add-apt-repository ppa:ondrej/php; fi
+          command: sudo add-apt-repository ppa:ondrej/php
       - run: sudo apt-get update
       - run: sudo apt-get install -y php<<parameters.version>>-zip php<<parameters.version>>-sqlite3
 
@@ -59,11 +59,11 @@ jobs:
 
       - run:
           name: Run static analysis
-          command: if [[ <<parameters.version>> > "7.3" && <<parameters.version>> < "8.0" ]]; then composer test:install && composer test:types; fi
+          command: if [[ <<parameters.version>> < "8.1" ]]; then composer test:install && composer test:types; fi
 
       - run:
           name: Check code styles
-          command: if [[ <<parameters.version>> > "7.3" && <<parameters.version>> < "8.0" ]]; then composer test:lint; fi
+          command: if [[ <<parameters.version>> < "8.1" ]]; then composer test:lint; fi
 
       # Run tests with phpunit
       #
@@ -83,4 +83,4 @@ workflows:
       - test:
           matrix:
             parameters:
-              version: ['7.2', '7.3', '7.4', '8.0']
+              version: ['8.0', '8.1']
