@@ -98,7 +98,7 @@ abstract class Aggregator implements NormalizableInterface
      *
      * @return array|string|int|float|bool
      */
-    public function normalize(NormalizerInterface $normalizer, string $format = null, array $context = []) : array|string|int|float|bool
+    public function normalize(NormalizerInterface $normalizer, string $format = null, array $context = []): array|string|int|float|bool
     {
         return array_merge(['objectID' => $this->objectID], $normalizer->normalize($this->entity, $format, $context));
     }
