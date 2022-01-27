@@ -33,7 +33,7 @@ final class SearchClearCommand extends IndexCommand
             );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $indexToClear = $this->getEntitiesFromArgs($input, $output);
 

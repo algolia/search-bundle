@@ -10,13 +10,13 @@
     ],
     "prefer-stable": true,
     "require": {
-        "php": "^7.2 || ^8.0",
+        "php": ">= 8.0.2",
         "algolia/algoliasearch-client-php": "^3.0",
         "doctrine/event-manager": "^1.1",
         "doctrine/persistence": "^2.1",
-        "symfony/filesystem": "^3.4 || ^4.0 || ^5.0",
-        "symfony/property-access": "^3.4 || ^4.0 || ^5.0",
-        "symfony/serializer": "^3.4 || ^4.0 || ^5.0"
+        "symfony/filesystem": "^5.0 || ^6.0",
+        "symfony/property-access": "^5.0 || ^6.0",
+        "symfony/serializer": "^5.0 || ^6.0"
     },
     "autoload": {
         "psr-4": {
@@ -40,10 +40,10 @@
         "friendsofphp/proxy-manager-lts": "*",
         "phpunit/phpunit": "^8.5 || ^9.0",
         "roave/security-advisories": "dev-master",
-        "symfony/framework-bundle": "^3.4 || ^4.0 || ^5.0",
-        "symfony/phpunit-bridge": "^3.4 || ^4.0 || ^5.0",
+        "symfony/framework-bundle": "^5.0 || ^6.0",
+        "symfony/phpunit-bridge": "^5.0 || ^6.0",
         "symfony/proxy-manager-bridge": "*",
-        "symfony/yaml": "^3.4 || ^4.0 || ^5.0"
+        "symfony/yaml": "^5.0 || ^6.0"
     },
     "extra": {
         "branch-alias": {
@@ -59,7 +59,7 @@
         "lint": "php-cs-fixer fix -v",
         "test:types": "tests/QualityTools/vendor/bin/phpstan analyse --ansi",
         "test:unit": "XDEBUG_MODE=coverage phpunit --colors=always --verbose",
-        "test:lint": "php-cs-fixer fix -v --dry-run",
+        "test:lint": "PHP_CS_FIXER_IGNORE_ENV=true php-cs-fixer fix -v --dry-run",
         "test": [
             "@test:lint",
             "@test:unit"

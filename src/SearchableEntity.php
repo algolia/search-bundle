@@ -69,7 +69,7 @@ final class SearchableEntity
     }
 
     /**
-     * @return array<string, int|string|array>
+     * @return array<string, int|string|array>|void
      *
      * @throws \Symfony\Component\Serializer\Exception\ExceptionInterface
      */

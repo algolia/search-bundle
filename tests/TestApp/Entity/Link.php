@@ -37,7 +37,7 @@ class Link implements NormalizableInterface
         return false;
     }
 
-    public function normalize(NormalizerInterface $normalizer, $format = null, array $context = [])
+    public function normalize(NormalizerInterface $normalizer, $format = null, array $context = []): array|string|int|float|bool
     {
         if (Searchable::NORMALIZATION_FORMAT === $format) {
             return [

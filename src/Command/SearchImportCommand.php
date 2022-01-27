@@ -70,7 +70,7 @@ EOT
             );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $shouldDoAtomicReindex = (bool) $input->getOption('atomic');
         $entitiesToIndex       = $this->getEntitiesFromArgs($input, $output);
@@ -120,7 +120,7 @@ EOT
 
                     $page++;
                     $manager->clear();
-                } while (count($entities) >= $config['batchSize']);
+                } while (count($entities) >= (int) $config['batchSize']);
 
                 $manager->clear();
             }
