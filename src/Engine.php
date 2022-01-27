@@ -52,9 +52,10 @@ final class Engine
                 $data[$indexName] = [];
             }
 
-            $data[$indexName][] = $searchableArray + [
-                'objectID' => $entity->getId(),
-            ];
+            $data[$indexName][] = array_merge(
+                ['objectID' => $entity->getId()],
+                $searchableArray
+            );
         }
 
         $result = [];

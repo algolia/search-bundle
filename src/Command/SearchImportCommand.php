@@ -120,7 +120,7 @@ EOT
 
                     $page++;
                     $manager->clear();
-                } while (count($entities) >= $config['batchSize']);
+                } while (count($entities) >= (int) $config['batchSize']);
 
                 $manager->clear();
             }

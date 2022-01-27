@@ -8,8 +8,12 @@ parameters:
     paths:
         - src
     ignoreErrors:
-        - '#In (method|function).*type-hinted.*More info#'
-        - '#In (method|function).*return type can be added..*More info#'
+        - '#Anonymous function should have native return typehint "*".#'
+        - '#Language construct isset\(\) should not be used.#'
+        - '#Class "Algolia\\SearchBundle\\.*" is not allowed to extend ".*".#'
+        - '#Method Algolia\\SearchBundle\\.*\(\) is not final, but since the containing class is abstract, it should be.#'
+        - '#File is missing a "declare\(strict_types=1\)" declaration.#'
+        - '#Method Algolia\\SearchBundle\\DependencyInjection\\AlgoliaSearchExtension::load\(\) has a parameter .* with a type declaration of Symfony\\Component\\DependencyInjection\\ContainerBuilder, but containers should not be injected.#'
         - '#(Method|Function|Constructor).*has parameter.*with.*default value.#'
         - '#Class Symfony\\Component\\Config\\Definition\\Builder\\TreeBuilder constructor#'
         - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\TreeBuilder::root\(\).#'

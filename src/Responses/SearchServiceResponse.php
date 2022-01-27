@@ -39,7 +39,7 @@ final class SearchServiceResponse extends AbstractResponse implements \Iterator
     /**
      * @return void
      */
-    public function rewind()
+    public function rewind() : void
     {
         $this->position = 0;
     }
@@ -47,7 +47,7 @@ final class SearchServiceResponse extends AbstractResponse implements \Iterator
     /**
      * @return array<string, AbstractResponse>
      */
-    public function current()
+    public function current() : array
     {
         return $this->apiResponse[$this->key()];
     }
@@ -55,7 +55,7 @@ final class SearchServiceResponse extends AbstractResponse implements \Iterator
     /**
      * @return int
      */
-    public function key()
+    public function key() : int
     {
         return $this->position;
     }
@@ -63,7 +63,7 @@ final class SearchServiceResponse extends AbstractResponse implements \Iterator
     /**
      * @return void
      */
-    public function next()
+    public function next() : void
     {
         $this->position++;
     }
@@ -71,7 +71,7 @@ final class SearchServiceResponse extends AbstractResponse implements \Iterator
     /**
      * @return bool
      */
-    public function valid()
+    public function valid() : bool
     {
         return array_key_exists($this->position, $this->apiResponse);
     }
