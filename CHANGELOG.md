@@ -8,6 +8,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased](https://github.com/algolia/search-bundle/compare/5.1.2...master)
 
+## [v6.0.0](https://github.com/algolia/search-bundle/compare/5.1.2...6.0.0)
+
+### Changed
+- Added support for Symfony 6 ([#366](https://github.com/algolia/search-bundle/pull/366)). This means support for Symfony v4 is dropped in this new version, as well as PHP <8.0.2.
+
 ## [v5.1.2](https://github.com/algolia/search-bundle/compare/5.1.1...5.1.2)
 
 ### Fixed
