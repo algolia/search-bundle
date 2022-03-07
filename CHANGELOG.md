@@ -8,6 +8,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased](https://github.com/algolia/search-bundle/compare/5.1.2...master)
 
+## [v5.2.1](https://github.com/algolia/search-bundle/compare/5.1.2...5.2.1)
+### Fixed
+- Issue with accidentally published version. Versioning will continue from 5.2.1 (see issue [#367](https://github.com/algolia/search-bundle/issues/367)).
+
 ## [v5.1.2](https://github.com/algolia/search-bundle/compare/5.1.1...5.1.2)
 
 ### Fixed
