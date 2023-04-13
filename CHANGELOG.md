@@ -6,7 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 # Release Notes
 
-## [Unreleased](https://github.com/algolia/search-bundle/compare/5.1.2...master)
+## [Unreleased](https://github.com/algolia/search-bundle/compare/6.0.1...master)
+
+## [v6.0.1](https://github.com/algolia/search-bundle/compare/6.0.0...6.0.1)
+### Changed
+- Loosened version restriction for `doctrine/persistence` ([#370](https://github.com/algolia/search-bundle/pull/370))
 
 ## [v6.0.0](https://github.com/algolia/search-bundle/compare/5.1.2...6.0.0)
 
