@@ -2,26 +2,25 @@
 
 namespace Algolia\SearchBundle\Command;
 
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
 /**
  * @internal
  */
+#[AsCommand(
+    name: 'search:settings:backup',
+    description: 'Backup search engine settings into your project'
+)]
 final class SearchSettingsBackupCommand extends SearchSettingsCommand
 {
-    /**
-     * @var string
-     */
-    protected static $defaultName = 'search:settings:backup';
-
     /**
      * @return void
      */
     protected function configure()
     {
         $this
-            ->setDescription('Backup search engine settings into your project')
             ->addOption('indices', 'i', InputOption::VALUE_OPTIONAL, 'Comma-separated list of index names')
             ->addArgument(
                 'extra',

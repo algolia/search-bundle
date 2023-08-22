@@ -3,6 +3,7 @@
 namespace Algolia\SearchBundle\Command;
 
 use Algolia\AlgoliaSearch\Response\IndexingResponse;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -11,20 +12,18 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * @internal
  */
+#[AsCommand(
+    name: 'search:clear',
+    description: 'Clear index (remove all data but keep index and settings)'
+)]
 final class SearchClearCommand extends IndexCommand
 {
-    /**
-     * @var string
-     */
-    protected static $defaultName = 'search:clear';
-
     /**
      * @return void
      */
     protected function configure()
     {
         $this
-            ->setDescription('Clear index (remove all data but keep index and settings)')
             ->addOption('indices', 'i', InputOption::VALUE_OPTIONAL, 'Comma-separated list of index names')
             ->addArgument(
                 'extra',
