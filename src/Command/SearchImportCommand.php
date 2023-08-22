@@ -6,6 +6,7 @@ use Algolia\AlgoliaSearch\SearchClient;
 use Algolia\SearchBundle\Entity\Aggregator;
 use Algolia\SearchBundle\SearchService;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -14,13 +15,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * @internal
  */
+#[AsCommand(
+    name: 'search:import',
+    description: 'Import given entity into search engine'
+)]
 final class SearchImportCommand extends IndexCommand
 {
-    /**
-     * @var string
-     */
-    protected static $defaultName = 'search:import';
-
     /**
      * @var SearchService
      */
@@ -55,7 +55,6 @@ final class SearchImportCommand extends IndexCommand
     protected function configure()
     {
         $this
-            ->setDescription('Import given entity into search engine')
             ->addOption('indices', 'i', InputOption::VALUE_OPTIONAL, 'Comma-separated list of index names')
             ->addOption('atomic', null, InputOption::VALUE_NONE, <<<EOT
 If set, command replaces all records in an index without any downtime. It pushes a new set of objects and removes all previous ones.
