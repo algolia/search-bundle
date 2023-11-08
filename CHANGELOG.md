@@ -7,6 +7,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 # Release Notes
 
 ## [Unreleased](https://github.com/algolia/search-bundle/compare/6.0.1...master)
+### Added
+- Automatically backup replicas settings
 
 ## [v6.0.1](https://github.com/algolia/search-bundle/compare/6.0.0...6.0.1)
 ### Changed
