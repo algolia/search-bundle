@@ -88,18 +88,36 @@ class SettingsManager
         $output  = [];
 
         foreach ($indices as $indexName) {
-            $filename = $this->getFileName($indexName, 'settings');
-
-            if (is_readable($filename)) {
-                $index    = $this->algolia->initIndex($indexName);
-                $settings = json_decode(file_get_contents($filename), true);
-                $index->setSettings($settings);
-
-                $output[] = "Pushed settings for <info>$indexName</info>";
-            }
+            $this->pushIndice($indexName, $output);
         }
 
         return $output;
+    }
+
+    private function pushIndice($indexName, &$output): void
+    {
+        $filename = $this->getFileName($indexName, 'settings');
+
+        if (is_readable($filename)) {
+            $index    = $this->algolia->initIndex($indexName);
+            $settings = json_decode(file_get_contents($filename), true);
+
+            if (array_key_exists('replicas', $settings)) {
+                foreach ( $settings['replicas'] as &$replica ) {
+                    $replica = $this->config['prefix'] . $replica;
+
+                    $this->pushIndice($replica, $output);
+                }
+            }
+
+            if (array_key_exists('primary', $settings)) {
+                $settings['primary'] = $this->config['prefix'] . $settings['primary'];
+            }
+
+            $index->setSettings($settings);
+
+            $output[] = "Pushed settings for <info>$indexName</info>";
+        }
     }
 
     /**
