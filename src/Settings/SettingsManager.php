@@ -45,16 +45,36 @@ class SettingsManager
         }
 
         foreach ($indices as $indexName) {
-            $index    = $this->algolia->initIndex($indexName);
-            $settings = $index->getSettings();
-            $filename = $this->getFileName($indexName, 'settings');
-
-            $fs->dumpFile($filename, json_encode($settings, JSON_PRETTY_PRINT));
-
-            $output[] = "Saved settings for <info>$indexName</info> in $filename";
+            $this->backupIndice($indexName, $fs, $output);
         }
 
         return $output;
+    }
+
+    private function backupIndice($indexName, $fs, &$output): void
+    {
+        $index    = $this->algolia->initIndex($indexName);
+        $settings = $index->getSettings();
+
+        // Handle replicas
+        if (array_key_exists('replicas', $settings)) {
+            foreach($settings['replicas'] as &$replica) {
+                // Backup replica settings
+                $this->backupIndice($replica, $fs, $output);
+
+                $replica = $this->removePrefixFromIndexName($replica);
+            }
+        }
+
+        if (array_key_exists('primary', $settings)) {
+            $settings['primary'] = $this->removePrefixFromIndexName($settings['primary']);
+        }
+
+        $filename = $this->getFileName($indexName, 'settings');
+
+        $fs->dumpFile($filename, json_encode($settings, JSON_PRETTY_PRINT));
+
+        $output[] = "Saved settings for <info>$indexName</info> in $filename";
     }
 
     /**
