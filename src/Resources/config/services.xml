@@ -12,11 +12,9 @@
             <argument key="$searchServiceForAtomicReindex" type="service" id="search.service_for_atomic_reindex" />
         </service>
 
-        <service id="search.search_indexer_subscriber" class="Algolia\SearchBundle\EventListener\SearchIndexerSubscriber" public="true">
+        <service id="search.search_indexer_listener" class="Algolia\SearchBundle\EventListener\SearchIndexerListener" public="true">
             <argument type="service" id="search.service" />
             <argument type="collection" /> <!-- doctrine subscribed events -->
-            <tag name="doctrine.event_subscriber" />
-            <tag name="doctrine_mongodb.odm.event_subscriber" />
         </service>
 
         <service id="search.client" class="Algolia\AlgoliaSearch\SearchClient" public="true" lazy="true">

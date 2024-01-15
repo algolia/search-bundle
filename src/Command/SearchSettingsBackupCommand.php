@@ -8,13 +8,9 @@ use Symfony\Component\Console\Input\InputOption;
 /**
  * @internal
  */
+#[AsCommand(name: 'search:settings:backup')]
 final class SearchSettingsBackupCommand extends SearchSettingsCommand
 {
-    /**
-     * @var string
-     */
-    protected static $defaultName = 'search:settings:backup';
-
     /**
      * @return void
      */
