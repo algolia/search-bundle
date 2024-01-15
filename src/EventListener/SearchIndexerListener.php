@@ -3,39 +3,24 @@
 namespace Algolia\SearchBundle\EventListener;
 
 use Algolia\SearchBundle\SearchService;
+use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\Common\EventSubscriber;
+use Doctrine\ORM\Events;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 
-/**
- * @internal
- */
-final class SearchIndexerSubscriber implements EventSubscriber
+#[AsDoctrineListener(event: Events::postUpdate)]
+#[AsDoctrineListener(event: Events::postPersist)]
+#[AsDoctrineListener(event: Events::preRemove)]
+final class SearchIndexerListener
 {
     /**
      * @var SearchService
      */
     private $searchService;
 
-    /**
-     * @var array<int, string>
-     */
-    private $subscribedEvents;
-
-    /**
-     * @param array<int, string> $subscribedEvents
-     */
-    public function __construct(SearchService $searchService, $subscribedEvents)
+    public function __construct(SearchService $searchService)
     {
         $this->searchService     = $searchService;
-        $this->subscribedEvents  = $subscribedEvents;
-    }
-
-    /**
-     * @return array<int, string>
-     */
-    public function getSubscribedEvents()
-    {
-        return $this->subscribedEvents;
     }
 
     /**
