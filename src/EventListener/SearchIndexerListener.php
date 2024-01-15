@@ -20,7 +20,7 @@ final class SearchIndexerListener
 
     public function __construct(SearchService $searchService)
     {
-        $this->searchService     = $searchService;
+        $this->searchService = $searchService;
     }
 
     /**
