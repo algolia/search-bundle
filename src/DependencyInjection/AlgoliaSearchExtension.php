@@ -54,9 +54,9 @@ final class AlgoliaSearchExtension extends Extension
         $config['settingsDirectory'] = $rootDir . $config['settingsDirectory'];
 
         if (count($doctrineSubscribedEvents = $config['doctrineSubscribedEvents']) > 0) {
-            $container->getDefinition('search.search_indexer_subscriber')->setArgument(1, $doctrineSubscribedEvents);
+            $container->getDefinition('search.search_indexer_listener')->setArgument(1, $doctrineSubscribedEvents);
         } else {
-            $container->removeDefinition('search.search_indexer_subscriber');
+            $container->removeDefinition('search.search_indexer_listener');
         }
 
         $engineDefinition = new Definition(
