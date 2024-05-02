@@ -9,6 +9,7 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
  * @ORM\Entity
+ *
  * @ORM\Table(name="tags")
  */
 class Tag implements NormalizableInterface
@@ -17,12 +18,14 @@ class Tag implements NormalizableInterface
      * @var int
      *
      * @ORM\Id
+     *
      * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
      * @ORM\Id
+     *
      * @ORM\Column(type="string")
      */
     private $name;

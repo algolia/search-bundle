@@ -8,6 +8,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity
+ *
  * @ORM\Table(name="posts")
  */
 class Post
@@ -16,7 +17,9 @@ class Post
      * @var int
      *
      * @ORM\Id
+     *
      * @ORM\GeneratedValue
+     *
      * @ORM\Column(type="integer")
      *
      * @Groups({"searchable"})
@@ -53,6 +56,7 @@ class Post
      *      mappedBy="post",
      *      orphanRemoval=true
      * )
+     *
      * @ORM\OrderBy({"publishedAt": "DESC"})
      */
     private $comments;

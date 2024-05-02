@@ -2,7 +2,6 @@
 
 namespace Algolia\SearchBundle\DependencyInjection;
 
-use function method_exists;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -15,12 +14,9 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  */
 final class Configuration implements ConfigurationInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function getConfigTreeBuilder(): TreeBuilder
     {
-        if (method_exists(TreeBuilder::class, 'getRootNode')) {
+        if (\method_exists(TreeBuilder::class, 'getRootNode')) {
             $treeBuilder = new TreeBuilder('algolia_search');
             $rootNode    = $treeBuilder->getRootNode();
         } else {
