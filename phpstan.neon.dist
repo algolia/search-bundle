@@ -19,3 +19,4 @@ parameters:
         - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\TreeBuilder::root\(\).#'
         - '#Class Algolia\\SearchBundle\\Services\\NullSearchService is neither abstract nor final.#'
         - '#Class Algolia\\SearchBundle\\Settings\\SettingsManager is neither abstract nor final.#'
+        - '#Method Algolia\\SearchBundle\\Model\\Aggregator::normalize\(\) has parameter $format with a nullable type declaration.#'
