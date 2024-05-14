@@ -45,7 +45,7 @@ jobs:
 
       - run:
           name: Install dependencies
-          command: COMPOSER_MEMORY_LIMIT=-1 composer require "symfony/framework-bundle=<<parameters.symfony>>" --n --prefer-dist
+          command: COMPOSER_MEMORY_LIMIT=-1 composer require "symfony/framework-bundle=<<parameters.symfony>>" -n --prefer-dist
 
       - save_cache:
           key: composer-deps-<<parameters.version>>-{{ checksum "composer.json" }}
