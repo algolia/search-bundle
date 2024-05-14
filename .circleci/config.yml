@@ -19,6 +19,9 @@ jobs:
       version:
         description: "PHP version tag"
         type: string
+      symfony:
+        description: "Symfony framework version tag"
+        type: string
 
     executor:
       name: php-docker
