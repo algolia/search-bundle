@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity
  */
+#[ORM\Entity]
 class Image
 {
     /**
@@ -18,6 +19,9 @@ class Image
      *
      * @ORM\Column(type="integer")
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column('id', 'integer')]
     private $id;
 
     /**

@@ -11,6 +11,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *
  * @ORM\Table(name="posts")
  */
+#[ORM\Entity]
+#[ORM\Table('posts')]
 class Post
 {
     /**
@@ -25,6 +27,10 @@ class Post
      * @Groups({"searchable"})
      * ^ Note that Groups work on private properties
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column('id', 'integer')]
+    #[Groups('searchable')]
     private $id;
 
     /**

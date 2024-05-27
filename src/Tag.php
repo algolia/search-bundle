@@ -1,8 +1,7 @@
 <?php
 
-namespace Algolia\SearchBundle\TestApp\Entity;
+namespace Algolia\SearchBundle;
 
-use Algolia\SearchBundle\Searchable;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Normalizer\NormalizableInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
@@ -12,6 +11,8 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
  *
  * @ORM\Table(name="tags")
  */
+#[ORM\Entity]
+#[ORM\Table('tags')]
 class Tag implements NormalizableInterface
 {
     /**
@@ -28,6 +29,9 @@ class Tag implements NormalizableInterface
      *
      * @ORM\Column(type="string")
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column('name', 'string')]
     private $name;
 
     private $count;

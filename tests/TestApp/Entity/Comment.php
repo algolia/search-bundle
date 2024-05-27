@@ -9,6 +9,8 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="comments")
  */
+#[ORM\Entity]
+#[ORM\Table('comments')]
 class Comment
 {
     /**
@@ -20,6 +22,9 @@ class Comment
      *
      * @ORM\Column(type="integer")
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column('id', 'integer')]
     private $id;
 
     /**

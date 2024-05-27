@@ -12,6 +12,8 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
  *
  * @ORM\Table(name="links")
  */
+#[ORM\Entity]
+#[ORM\Table('links')]
 class Link implements NormalizableInterface
 {
     /**
@@ -21,6 +23,7 @@ class Link implements NormalizableInterface
      *
      * @ORM\Column(type="integer")
      */
+    #[ORM\Id]
     private $id;
 
     private $name;

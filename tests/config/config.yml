@@ -14,7 +14,7 @@ doctrine:
         mappings:
             App:
                 is_bundle: false
-                type: annotation
+                type: attribute
                 dir: '%kernel.project_dir%/tests/TestApp/Entity'
                 prefix: 'Algolia\SearchBundle\TestApp\Entity'
                 alias: App

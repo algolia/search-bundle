@@ -13,3 +13,6 @@ services:
         class: Algolia\SearchBundle\Normalizer\CommentNormalizer
         tags: [serializer.normalizer]
 #        priority: -88
+
+    serializer:
+        public: true

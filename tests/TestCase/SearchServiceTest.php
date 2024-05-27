@@ -3,12 +3,12 @@
 namespace Algolia\SearchBundle\TestCase;
 
 use Algolia\SearchBundle\BaseTest;
+use Algolia\SearchBundle\Tag;
 use Algolia\SearchBundle\TestApp\Entity\Comment;
 use Algolia\SearchBundle\TestApp\Entity\ContentAggregator;
 use Algolia\SearchBundle\TestApp\Entity\Image;
 use Algolia\SearchBundle\TestApp\Entity\Link;
 use Algolia\SearchBundle\TestApp\Entity\Post;
-use Algolia\SearchBundle\TestApp\Entity\Tag;
 
 class SearchServiceTest extends BaseTest
 {

@@ -3,10 +3,10 @@
 namespace Algolia\SearchBundle\TestCase;
 
 use Algolia\SearchBundle\BaseTest;
+use Algolia\SearchBundle\Tag;
 use Algolia\SearchBundle\TestApp\Entity\Comment;
 use Algolia\SearchBundle\TestApp\Entity\ContentAggregator;
 use Algolia\SearchBundle\TestApp\Entity\Post;
-use Algolia\SearchBundle\TestApp\Entity\Tag;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 
 class DoctrineTest extends BaseTest
