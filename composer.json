@@ -10,14 +10,14 @@
     ],
     "prefer-stable": true,
     "require": {
-        "php": ">= 8.0.2",
+        "php": ">= 8.2",
         "algolia/algoliasearch-client-php": "^3.0",
         "doctrine/annotations": "^2.0",
-        "doctrine/event-manager": "^1.1",
+        "doctrine/event-manager": "^1.1 || ^2.0",
         "doctrine/persistence": "^2.1 || ^3.0",
-        "symfony/filesystem": "^6.0 || ^7.0",
-        "symfony/property-access": "^6.0 || ^7.0",
-        "symfony/serializer": "^6.0 || ^7.0"
+        "symfony/filesystem": "^7.0",
+        "symfony/property-access": "^7.0",
+        "symfony/serializer": "^7.0"
     },
     "autoload": {
         "psr-4": {
@@ -41,10 +41,10 @@
         "friendsofphp/proxy-manager-lts": "*",
         "phpunit/phpunit": "^8.5 || ^9.0",
         "roave/security-advisories": "dev-master",
-        "symfony/framework-bundle": "^6.0 || ^7.0",
-        "symfony/phpunit-bridge": "^6.0 || ^7.0",
+        "symfony/framework-bundle": "^7.0",
+        "symfony/phpunit-bridge": "^7.0",
         "symfony/proxy-manager-bridge": "*",
-        "symfony/yaml": "^6.0 || ^7.0"
+        "symfony/yaml": "^7.0"
     },
     "extra": {
         "branch-alias": {

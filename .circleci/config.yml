@@ -86,10 +86,5 @@ workflows:
       - test:
           matrix:
             parameters:
-              version: ['8.0', '8.1', '8.2']
-              symfony: ['^6.0']
-      - test:
-          matrix:
-            parameters:
               version: ['8.2']
               symfony: ['^7.0']
