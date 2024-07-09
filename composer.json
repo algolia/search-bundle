@@ -58,7 +58,7 @@
         "test:install": "composer install -d tests/QualityTools/",
         "test:update": "composer update -d tests/QualityTools/",
         "lint": "php-cs-fixer fix -v",
-        "test:types": "tests/QualityTools/vendor/bin/phpstan analyse --ansi",
+        "test:types": "tests/QualityTools/vendor/bin/phpstan analyse -c phpstan.neon.dist --ansi --memory-limit=-1",
         "test:unit": "XDEBUG_MODE=coverage phpunit --colors=always --verbose",
         "test:lint": "PHP_CS_FIXER_IGNORE_ENV=true php-cs-fixer fix -v --dry-run",
         "test": [

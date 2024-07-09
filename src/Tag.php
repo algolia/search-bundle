@@ -63,13 +63,11 @@ class Tag implements NormalizableInterface
 
     public function normalize(NormalizerInterface $normalizer, $format = null, array $context = []): array|string|int|float|bool
     {
-        if (Searchable::NORMALIZATION_FORMAT === $format) {
-            return [
-                'id'          => $this->id,
-                'name'        => 'this test is correct',
-                'count'       => 10,
-                'publishedAt' => $normalizer->normalize($this->publishedAt),
-            ];
-        }
+        return [
+            'id'          => $this->id,
+            'name'        => 'this test is correct',
+            'count'       => 10,
+            'publishedAt' => $normalizer->normalize($this->publishedAt),
+        ];
     }
 }
