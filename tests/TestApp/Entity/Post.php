@@ -38,6 +38,7 @@ class Post
      *
      * @ORM\Column(type="string")
      */
+    #[Orm\Column(type: 'string')]
     private $title;
 
     /**
@@ -45,6 +46,7 @@ class Post
      *
      * @ORM\Column(type="text")
      */
+    #[Orm\Column(type: 'text')]
     private $content;
 
     /**
@@ -52,6 +54,7 @@ class Post
      *
      * @ORM\Column(type="datetime")
      */
+    #[Orm\Column(type: 'datetime')]
     private $publishedAt;
 
     /**

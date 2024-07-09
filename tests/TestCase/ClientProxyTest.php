@@ -5,6 +5,7 @@ namespace Algolia\SearchBundle\TestCase;
 use Algolia\SearchBundle\BaseTest;
 use ProxyManager\Proxy\ProxyInterface;
 use Symfony\Component\DependencyInjection\Exception\EnvNotFoundException;
+use Symfony\Component\VarExporter\LazyObjectInterface;
 
 class ClientProxyTest extends BaseTest
 {
@@ -42,8 +43,8 @@ class ClientProxyTest extends BaseTest
     public function testClientIsProxied(): void
     {
         $interfaces = class_implements($this->get('search.client'));
-
-        self::assertContains(ProxyInterface::class, $interfaces);
+        
+        self::assertContains(LazyObjectInterface::class, $interfaces);
     }
 
     public function testProxiedClientFailIfNoEnvVarsFound(): void
