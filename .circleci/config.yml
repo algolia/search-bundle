@@ -76,6 +76,7 @@ jobs:
       # we get API keys from the API key dealer https://alg.li/api-key-dealer
       - run:
           name: Run tests
+          no_output_timeout: 15m
           command: |
             export COMPOSER_PROCESS_TIMEOUT=900
             composer test:unit
