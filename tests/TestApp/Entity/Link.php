@@ -18,12 +18,10 @@ class Link implements NormalizableInterface
 {
     /**
      * @var int
-     *
-     * @ORM\Id
-     *
-     * @ORM\Column(type="integer")
      */
     #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column('id', 'integer')]
     private $id;
 
     private $name;
