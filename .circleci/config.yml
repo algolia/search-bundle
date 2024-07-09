@@ -62,11 +62,11 @@ jobs:
 
       - run:
           name: Run static analysis
-          command: if [[ <<parameters.version>> < "8.1" ]]; then composer test:install && composer test:types; fi
+          command: if [[ <<parameters.version>> < "8.3" ]]; then composer test:install && composer test:types; fi
 
       - run:
           name: Check code styles
-          command: if [[ <<parameters.version>> < "8.1" ]]; then composer test:lint; fi
+          command: if [[ <<parameters.version>> < "8.3" ]]; then composer test:lint; fi
 
       # Run tests with phpunit
       #
@@ -86,5 +86,5 @@ workflows:
       - test:
           matrix:
             parameters:
-              version: ['8.2']
+              version: ['8.2', '8.3']
               symfony: ['^7.0']
