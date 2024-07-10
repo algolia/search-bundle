@@ -6,22 +6,15 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Normalizer\NormalizableInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-/**
- * @ORM\Entity
- *
- * @ORM\Table(name="tags")
- */
 #[ORM\Entity]
 #[ORM\Table('tags')]
 class Tag implements NormalizableInterface
 {
     /**
      * @var int
-     *
-     * @ORM\Id
-     *
-     * @ORM\Column(type="integer")
      */
+    #[ORM\Id]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
     /**
@@ -29,8 +22,6 @@ class Tag implements NormalizableInterface
      *
      * @ORM\Column(type="string")
      */
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
     #[ORM\Column('name', 'string')]
     private $name;
 

@@ -6,11 +6,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity
- *
- * @ORM\Table(name="posts")
- */
 #[ORM\Entity]
 #[ORM\Table('posts')]
 class Post
@@ -68,9 +63,6 @@ class Post
         $this->id = $id;
     }
 
-    /**
-     * @Groups({"searchable"})
-     */
     #[Groups(['searchable'])]
     public function getTitle()
     {
@@ -92,9 +84,6 @@ class Post
         $this->content = $content;
     }
 
-    /**
-     * @Groups({"searchable"})
-     */
     #[Groups(['searchable'])]
     public function getPublishedAt()
     {

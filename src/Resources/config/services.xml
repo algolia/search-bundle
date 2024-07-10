@@ -15,10 +15,15 @@
         <service id="search.search_indexer_subscriber" class="Algolia\SearchBundle\EventListener\SearchIndexerSubscriber" public="true">
             <argument type="service" id="search.service" />
             <argument type="collection" /> <!-- doctrine subscribed events -->
-            <tag name="doctrine.event_subscriber" event="postUpdate" connection="default"/>
-            <tag name="doctrine.event_subscriber" event="postPersist" connection="default"/>
-            <tag name="doctrine.event_subscriber" event="preRemove" connection="default"/>
-            <tag name="doctrine_mongodb.odm.event_subscriber" />
+            <tag name="doctrine.event_listener"
+                 event="postPersist"
+                 connection="default"/>
+            <tag name="doctrine.event_listener"
+                 event="postUpdate"
+                 connection="default"/>
+            <tag name="doctrine.event_listener"
+                 event="preRemove"
+                 connection="default"/>
         </service>
 
         <service id="search.client" class="Algolia\AlgoliaSearch\SearchClient" public="true" lazy="true">
