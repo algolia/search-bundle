@@ -5,6 +5,7 @@ namespace Algolia\SearchBundle\DependencyInjection;
 use Algolia\SearchBundle\Engine;
 use Algolia\SearchBundle\Services\AlgoliaSearchService;
 use Algolia\SearchBundle\Settings\SettingsManager;
+use Symfony\Bridge\Doctrine\ContainerAwareEventManager;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -52,9 +53,9 @@ final class AlgoliaSearchExtension extends Extension
         $config['settingsDirectory'] = $rootDir . $config['settingsDirectory'];
 
         if (count($doctrineSubscribedEvents = $config['doctrineSubscribedEvents']) > 0) {
-            $container->getDefinition('search.search_indexer_listener')->setArgument(1, $doctrineSubscribedEvents);
+            $container->getDefinition('search.search_indexer_subscriber')->setArgument(1, $doctrineSubscribedEvents);
         } else {
-            $container->removeDefinition('search.search_indexer_listener');
+            $container->removeDefinition('search.search_indexer_subscriber');
         }
 
         $engineDefinition = new Definition(

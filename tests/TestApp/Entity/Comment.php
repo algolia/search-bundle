@@ -34,6 +34,8 @@ class Comment
      *
      * @ORM\JoinColumn(nullable=false)
      */
+    #[ORM\ManyToOne(targetEntity: Post::class, inversedBy: 'comments')]
+    #[ORM\JoinColumn(nullable: false)]
     private $post;
 
     /**
@@ -46,13 +48,13 @@ class Comment
      *     maxMessage="comment.too_long"
      * )
      */
+    #[ORM\Column(type: 'text')]
     private $content;
 
     /**
      * @var \DateTime
-     *
-     * @ORM\Column(type="datetime")
      */
+    #[ORM\Column(type: 'datetime')]
     private $publishedAt;
 
     public function __construct(array $attributes = [])

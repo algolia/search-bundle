@@ -83,7 +83,7 @@ class BaseTest extends KernelTestCase
 
     protected function get($id): ?object
     {
-        return self::$kernel->getContainer()->get($id);
+        return static::getContainer()->get($id);
     }
 
     protected function refreshDb($application): void

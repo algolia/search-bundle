@@ -3,10 +3,10 @@
 namespace Algolia\SearchBundle\TestCase;
 
 use Algolia\SearchBundle\BaseTest;
-use Algolia\SearchBundle\Tag;
 use Algolia\SearchBundle\TestApp\Entity\Comment;
 use Algolia\SearchBundle\TestApp\Entity\ContentAggregator;
 use Algolia\SearchBundle\TestApp\Entity\Post;
+use Algolia\SearchBundle\TestApp\Entity\Tag;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 
 class DoctrineTest extends BaseTest
@@ -50,7 +50,7 @@ class DoctrineTest extends BaseTest
             $count = $this->searchService->count(Post::class);
             sleep(1);
             $iteration++;
-        } while ($count !== $expectedCount || $iteration === 10);
+        } while ($count !== $expectedCount && $iteration <= 10);
 
         self::assertEquals($expectedCount, $count);
 
@@ -85,7 +85,7 @@ class DoctrineTest extends BaseTest
             $count = $this->searchService->count(Post::class);
             sleep(1);
             $iteration++;
-        } while ($count !== $expectedCount || $iteration === 10);
+        } while ($count !== $expectedCount && $iteration <= 10);
 
         self::assertEquals($count, $expectedCount);
         $this->cleanUp();

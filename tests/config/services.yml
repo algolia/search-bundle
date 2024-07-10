@@ -1,6 +1,6 @@
 services:
-    search.search_indexer_listener:
-        class: Algolia\SearchBundle\EventListener\SearchIndexerListener
+    search.search_indexer_subscriber:
+        class: Algolia\SearchBundle\EventListener\SearchIndexerSubscriber
         public: true
         arguments:
             - '@search.service'
@@ -8,6 +8,9 @@ services:
             # test environment (look at AlgoliaSearchExtension.php)
             # So the service is redefined here
             - ['postPersist', 'postUpdate', 'preRemove']
+        tags:
+            - name: "doctrine.event_subscriber"
+            - name: "doctrine_mongodb.odm.event_subscriber"
 
     serializer.commentnormalizer:
         class: Algolia\SearchBundle\Normalizer\CommentNormalizer

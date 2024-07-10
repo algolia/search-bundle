@@ -34,7 +34,7 @@
     },
     "require-dev": {
         "ext-json": "*",
-        "doctrine/doctrine-bundle": "^1.8 || ^2.0",
+        "doctrine/doctrine-bundle": "^2.12",
         "doctrine/orm": "^2.5",
         "friendsofphp/php-cs-fixer": "^v3.54.0",
         "jms/serializer-bundle": "^5.4.0",

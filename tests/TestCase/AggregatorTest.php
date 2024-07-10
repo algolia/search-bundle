@@ -10,9 +10,6 @@ use Algolia\SearchBundle\TestApp\Entity\EmptyAggregator;
 use Algolia\SearchBundle\TestApp\Entity\Post;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Serializer;
 
 class AggregatorTest extends BaseTest
 {
@@ -67,7 +64,8 @@ class AggregatorTest extends BaseTest
         $proxy             = $this->entityManager->getProxyFactory()->getProxy($postMetadata->getName(), ['id' => 1]);
         $contentAggregator = new ContentAggregator($proxy, ['objectId']);
 
-        $serializer = new Serializer([new ObjectNormalizer()], [new JsonEncoder()]);
+        /** @var NormalizerInterface $serializer */
+        $serializer = $this->get('serializer');
 
         $serializedData = $contentAggregator->normalize($serializer);
         self::assertNotEmpty($serializedData);

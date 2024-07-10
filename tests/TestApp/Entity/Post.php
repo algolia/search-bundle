@@ -17,57 +17,36 @@ class Post
 {
     /**
      * @var int
-     *
-     * @ORM\Id
-     *
-     * @ORM\GeneratedValue
-     *
-     * @ORM\Column(type="integer")
-     *
-     * @Groups({"searchable"})
-     * ^ Note that Groups work on private properties
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column('id', 'integer')]
-    #[Groups('searchable')]
+    #[Groups(['searchable'])]
     private $id;
 
     /**
      * @var string
-     *
-     * @ORM\Column(type="string")
      */
     #[ORM\Column(type: 'string')]
     private $title;
 
     /**
      * @var string
-     *
-     * @ORM\Column(type="text")
      */
     #[ORM\Column(type: 'text')]
     private $content;
 
     /**
      * @var \DateTime
-     *
-     * @ORM\Column(type="datetime")
      */
     #[ORM\Column(type: 'datetime')]
     private $publishedAt;
 
     /**
      * @var Comment[]|ArrayCollection
-     *
-     * @ORM\OneToMany(
-     *      targetEntity="Comment",
-     *      mappedBy="post",
-     *      orphanRemoval=true
-     * )
-     *
-     * @ORM\OrderBy({"publishedAt": "DESC"})
      */
+    #[ORM\OneToMany(mappedBy: 'post', targetEntity: 'Comment', orphanRemoval: true)]
+    #[ORM\OrderBy(['publishedAt' => 'DESC'])]
     private $comments;
 
     public function __construct(array $attributes = [])
@@ -92,6 +71,7 @@ class Post
     /**
      * @Groups({"searchable"})
      */
+    #[Groups(['searchable'])]
     public function getTitle()
     {
         return $this->title;
@@ -115,6 +95,7 @@ class Post
     /**
      * @Groups({"searchable"})
      */
+    #[Groups(['searchable'])]
     public function getPublishedAt()
     {
         return $this->publishedAt;

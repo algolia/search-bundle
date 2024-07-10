@@ -22,6 +22,6 @@ class CommentNormalizer implements NormalizerInterface
 
     public function getSupportedTypes(?string $format): array
     {
-        return [Comment::class];
+        return [Comment::class => true];
     }
 }
