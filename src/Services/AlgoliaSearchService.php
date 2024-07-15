@@ -51,7 +51,7 @@ final class AlgoliaSearchService implements SearchService
     private $classToIndexMapping;
 
     /**
-     * @var array<string, boolean>
+     * @var array<string, bool>
      */
     private $classToSerializerGroupMapping;
 
@@ -60,13 +60,9 @@ final class AlgoliaSearchService implements SearchService
      */
     private $indexIfMapping;
 
-    /**
-     * @var mixed
-     */
     private $normalizer;
 
     /**
-     * @param mixed                           $normalizer
      * @param array<string, array|int|string> $configuration
      */
     public function __construct($normalizer, Engine $engine, array $configuration)

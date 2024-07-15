@@ -10,13 +10,13 @@
     ],
     "prefer-stable": true,
     "require": {
-        "php": ">= 8.0.2",
+        "php": ">= 8.2",
         "algolia/algoliasearch-client-php": "^3.0",
-        "doctrine/event-manager": "^1.1",
+        "doctrine/event-manager": "^1.1 || ^2.0",
         "doctrine/persistence": "^2.1 || ^3.0",
-        "symfony/filesystem": "^5.0 || ^6.0",
-        "symfony/property-access": "^5.0 || ^6.0",
-        "symfony/serializer": "^5.0 || ^6.0"
+        "symfony/filesystem": "^7.0",
+        "symfony/property-access": "^7.0",
+        "symfony/serializer": "^7.0"
     },
     "autoload": {
         "psr-4": {
@@ -33,17 +33,17 @@
     },
     "require-dev": {
         "ext-json": "*",
-        "doctrine/doctrine-bundle": "^1.8 || ^2.0",
+        "doctrine/doctrine-bundle": "^2.12",
         "doctrine/orm": "^2.5",
-        "friendsofphp/php-cs-fixer": "^2.15",
-        "jms/serializer-bundle": "^3.0",
+        "friendsofphp/php-cs-fixer": "^v3.54.0",
+        "jms/serializer-bundle": "^5.4.0",
         "friendsofphp/proxy-manager-lts": "*",
         "phpunit/phpunit": "^8.5 || ^9.0",
         "roave/security-advisories": "dev-master",
-        "symfony/framework-bundle": "^5.0 || ^6.0",
-        "symfony/phpunit-bridge": "^5.0 || ^6.0",
+        "symfony/framework-bundle": "^7.0",
+        "symfony/phpunit-bridge": "^7.0",
         "symfony/proxy-manager-bridge": "*",
-        "symfony/yaml": "^5.0 || ^6.0"
+        "symfony/yaml": "^7.0"
     },
     "extra": {
         "branch-alias": {
@@ -57,7 +57,7 @@
         "test:install": "composer install -d tests/QualityTools/",
         "test:update": "composer update -d tests/QualityTools/",
         "lint": "php-cs-fixer fix -v",
-        "test:types": "tests/QualityTools/vendor/bin/phpstan analyse --ansi",
+        "test:types": "tests/QualityTools/vendor/bin/phpstan analyse -c phpstan.neon.dist --ansi --memory-limit=-1",
         "test:unit": "XDEBUG_MODE=coverage phpunit --colors=always --verbose",
         "test:lint": "PHP_CS_FIXER_IGNORE_ENV=true php-cs-fixer fix -v --dry-run",
         "test": [

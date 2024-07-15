@@ -61,7 +61,7 @@ class EntityProxyTest extends BaseTest
     public function testEntityIsProxiedWithOPM(): void
     {
         $factory = new \ProxyManager\Factory\NullObjectFactory();
-        $proxy   = $factory->createProxy(\Algolia\SearchBundle\TestApp\Entity\Comment::class);
+        $proxy   = $factory->createProxy(Comment::class);
 
         self::assertStringStartsWith('ProxyManagerGeneratedProxy\\__PM__\\Algolia\\SearchBundle\\TestApp\\Entity\\Comment', get_class($proxy));
         self::assertEquals('Algolia\\SearchBundle\\TestApp\\Entity\\Comment', ClassInfo::getClass($proxy));
@@ -72,7 +72,7 @@ class EntityProxyTest extends BaseTest
         /** @var \Doctrine\ORM\EntityManagerInterface $entityManager */
         $entityManager = $this->get('doctrine')->getManager();
 
-        $metadata = $entityManager->getClassMetadata(\Algolia\SearchBundle\TestApp\Entity\Comment::class);
+        $metadata = $entityManager->getClassMetadata(Comment::class);
         $entityManager->getProxyFactory()->generateProxyClasses([$metadata]);
 
         $proxy = $entityManager->getProxyFactory()->getProxy($metadata->getName(), ['id' => 1]);

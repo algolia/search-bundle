@@ -7,18 +7,16 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Normalizer\NormalizableInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-/**
- * @ORM\Entity
- * @ORM\Table(name="links")
- */
+#[ORM\Entity]
+#[ORM\Table('links')]
 class Link implements NormalizableInterface
 {
     /**
      * @var int
-     *
-     * @ORM\Id
-     * @ORM\Column(type="integer")
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column('id', 'integer')]
     private $id;
 
     private $name;

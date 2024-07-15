@@ -19,6 +19,9 @@ jobs:
       version:
         description: "PHP version tag"
         type: string
+      symfony:
+        description: "Symfony framework version tag"
+        type: string
 
     executor:
       name: php-docker
@@ -42,7 +45,7 @@ jobs:
 
       - run:
           name: Install dependencies
-          command: COMPOSER_MEMORY_LIMIT=-1 composer install -n --prefer-dist
+          command: COMPOSER_MEMORY_LIMIT=-1 composer require "symfony/framework-bundle=<<parameters.symfony>>" -n --prefer-dist
 
       - save_cache:
           key: composer-deps-<<parameters.version>>-{{ checksum "composer.json" }}
@@ -59,11 +62,11 @@ jobs:
 
       - run:
           name: Run static analysis
-          command: if [[ <<parameters.version>> < "8.1" ]]; then composer test:install && composer test:types; fi
+          command: if [[ <<parameters.version>> < "8.3" ]]; then composer test:install && composer test:types; fi
 
       - run:
           name: Check code styles
-          command: if [[ <<parameters.version>> < "8.1" ]]; then composer test:lint; fi
+          command: if [[ <<parameters.version>> < "8.3" ]]; then composer test:lint; fi
 
       # Run tests with phpunit
       #
@@ -73,6 +76,7 @@ jobs:
       # we get API keys from the API key dealer https://alg.li/api-key-dealer
       - run:
           name: Run tests
+          no_output_timeout: 15m
           command: |
             export COMPOSER_PROCESS_TIMEOUT=900
             composer test:unit
@@ -83,4 +87,5 @@ workflows:
       - test:
           matrix:
             parameters:
-              version: ['8.0', '8.1']
+              version: ['8.2', '8.3']
+              symfony: ['^7.0']

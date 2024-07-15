@@ -50,7 +50,7 @@ class DoctrineTest extends BaseTest
             $count = $this->searchService->count(Post::class);
             sleep(1);
             $iteration++;
-        } while ($count !== $expectedCount || $iteration === 10);
+        } while ($count !== $expectedCount && $iteration <= 10);
 
         self::assertEquals($expectedCount, $count);
 
@@ -85,7 +85,7 @@ class DoctrineTest extends BaseTest
             $count = $this->searchService->count(Post::class);
             sleep(1);
             $iteration++;
-        } while ($count !== $expectedCount || $iteration === 10);
+        } while ($count !== $expectedCount && $iteration <= 10);
 
         self::assertEquals($count, $expectedCount);
         $this->cleanUp();

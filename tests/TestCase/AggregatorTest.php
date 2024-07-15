@@ -10,7 +10,6 @@ use Algolia\SearchBundle\TestApp\Entity\EmptyAggregator;
 use Algolia\SearchBundle\TestApp\Entity\Post;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 class AggregatorTest extends BaseTest
 {

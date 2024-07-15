@@ -6,6 +6,7 @@ use Algolia\AlgoliaSearch\SearchClient;
 use Algolia\SearchBundle\Entity\Aggregator;
 use Algolia\SearchBundle\SearchService;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -14,13 +15,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * @internal
  */
+#[AsCommand(name: 'search:import')]
 final class SearchImportCommand extends IndexCommand
 {
-    /**
-     * @var string
-     */
-    protected static $defaultName = 'search:import';
-
     /**
      * @var SearchService
      */
