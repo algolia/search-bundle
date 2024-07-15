@@ -6,7 +6,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 # Release Notes
 
-## [Unreleased](https://github.com/algolia/search-bundle/compare/6.0.1...master)
+## [Unreleased](https://github.com/algolia/search-bundle/compare/7.0.0...master)
+
+## [v7.0.0](https://github.com/algolia/search-bundle/compare/6.0.1...7.0.0)
+
+### Changed
+- Added support for Symfony 7 ([#381](https://github.com/algolia/search-bundle/pull/381)). This means support for older Symfony versions is dropped in this new version, and PHP >= 8.2 is required.
 
 ## [v6.0.1](https://github.com/algolia/search-bundle/compare/6.0.0...6.0.1)
 ### Changed

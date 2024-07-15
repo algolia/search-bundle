@@ -24,6 +24,7 @@
             <tag name="doctrine.event_listener"
                  event="preRemove"
                  connection="default"/>
+            <tag name="doctrine_mongodb.odm.event_subscriber" />
         </service>
 
         <service id="search.client" class="Algolia\AlgoliaSearch\SearchClient" public="true" lazy="true">
