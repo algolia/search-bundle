@@ -89,10 +89,10 @@ class CommandsTest extends BaseTest
     private function polyfillExecuteStatement(string $statement, array $params = []): void
     {
         if (method_exists($this->connection, 'executeStatement')) {
-            //doctrine/orm ^3.0
+            // doctrine/orm ^3.0
             $this->connection->executeStatement($statement, $params);
         } else {
-            //doctrine/orm ^2.5
+            // doctrine/orm ^2.5
             $this->connection->executeUpdate($statement, $params);
         }
     }
