@@ -2,6 +2,7 @@
 /tests/cache/
 /composer.lock
 .php_cs.cache
+.php-cs-fixer.cache
 /var/
 .idea
 clover.xml

@@ -187,7 +187,7 @@ final class Engine
      * @param string                                         $indexName
      * @param array<string, int|string|array>|RequestOptions $requestOptions
      *
-     * @return array<string, int|string|array>
+     * @return array<int, mixed>
      *
      * @throws \Algolia\AlgoliaSearch\Exceptions\AlgoliaException
      */

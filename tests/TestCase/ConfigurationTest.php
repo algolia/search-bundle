@@ -9,9 +9,6 @@ class ConfigurationTest extends BaseTest
 {
     /**
      * @dataProvider dataTestConfigurationTree
-     *
-     * @param mixed $inputConfig
-     * @param mixed $expectedConfig
      */
     public function testConfigurationTree($inputConfig, $expectedConfig): void
     {

@@ -5,8 +5,6 @@ namespace Algolia\SearchBundle\DependencyInjection;
 use Algolia\SearchBundle\Engine;
 use Algolia\SearchBundle\Services\AlgoliaSearchService;
 use Algolia\SearchBundle\Settings\SettingsManager;
-use Exception;
-use InvalidArgumentException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -27,7 +25,7 @@ final class AlgoliaSearchExtension extends Extension
     /**
      * @return void
      *
-     * @throws InvalidArgumentException|Exception
+     * @throws \InvalidArgumentException|\Exception
      */
     public function load(array $configs, ContainerBuilder $container)
     {

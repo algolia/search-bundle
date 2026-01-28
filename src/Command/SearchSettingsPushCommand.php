@@ -2,19 +2,16 @@
 
 namespace Algolia\SearchBundle\Command;
 
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
 /**
  * @internal
  */
+#[AsCommand(name: 'search:settings:push')]
 final class SearchSettingsPushCommand extends SearchSettingsCommand
 {
-    /**
-     * @var string
-     */
-    protected static $defaultName = 'search:settings:push';
-
     /**
      * @return void
      */
