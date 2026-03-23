@@ -17,7 +17,7 @@
     <env name="APP_ENV" value="test"/>
     <env name="APP_DEBUG" value="false"/>
     <env name="ALGOLIA_PREFIX" value="sf_phpunit_"/>
-    <env name="CIRCLE_BUILD_NUM" value=""/>
+    <env name="GITHUB_RUN_NUMBER" value=""/>
     <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled"/>
   </php>
   <testsuites>
