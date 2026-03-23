@@ -37,7 +37,7 @@ final class SearchImportCommand extends IndexCommand
         SearchService $searchService,
         SearchService $searchServiceForAtomicReindex,
         ManagerRegistry $managerRegistry,
-        SearchClient $searchClient
+        SearchClient $searchClient,
     ) {
         parent::__construct($searchService);
 
