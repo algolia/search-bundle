@@ -38,11 +38,9 @@ jobs:
         run: COMPOSER_MEMORY_LIMIT=-1 composer require "symfony/framework-bundle=${{ matrix.symfony }}" -n --prefer-dist
 
       - name: Run static analysis
-        if: matrix.php < '8.3'
         run: composer test:install && composer test:types
 
       - name: Check code styles
-        if: matrix.php < '8.3'
         run: composer test:lint
 
       - name: Run tests
