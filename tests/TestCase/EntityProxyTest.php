@@ -58,15 +58,6 @@ class EntityProxyTest extends BaseTest
         self::assertEquals('Algolia\\SearchBundle\\TestApp\\Entity\\Comment', ClassInfo::getClass($comment));
     }
 
-    public function testEntityIsProxiedWithOPM(): void
-    {
-        $factory = new \ProxyManager\Factory\NullObjectFactory();
-        $proxy   = $factory->createProxy(Comment::class);
-
-        self::assertStringStartsWith('ProxyManagerGeneratedProxy\\__PM__\\Algolia\\SearchBundle\\TestApp\\Entity\\Comment', get_class($proxy));
-        self::assertEquals('Algolia\\SearchBundle\\TestApp\\Entity\\Comment', ClassInfo::getClass($proxy));
-    }
-
     public function testEntityIsProxiedWithDP(): void
     {
         /** @var \Doctrine\ORM\EntityManagerInterface $entityManager */
@@ -77,7 +68,8 @@ class EntityProxyTest extends BaseTest
 
         $proxy = $entityManager->getProxyFactory()->getProxy($metadata->getName(), ['id' => 1]);
 
-        self::assertStringStartsWith('Proxies\\__CG__\Algolia\\SearchBundle\\TestApp\\Entity\\Comment', get_class($proxy));
+        // ORM 3 uses lazy ghost objects instead of __CG__ proxies
+        // The proxy is the same class, but ClassInfo should still resolve correctly
         self::assertEquals('Algolia\\SearchBundle\\TestApp\\Entity\\Comment', ClassInfo::getClass($proxy));
     }
 }

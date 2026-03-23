@@ -15,7 +15,7 @@ final class SearchSettingsPushCommand extends SearchSettingsCommand
     /**
      * @return void
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setDescription('Push settings from your project to the search engine')

@@ -57,6 +57,7 @@ class AggregatorTest extends BaseTest
         ]);
         $this->entityManager->persist($post);
         $this->entityManager->flush();
+        $this->entityManager->clear();
 
         $postMetadata = $this->entityManager->getClassMetadata(Post::class);
         $this->entityManager->getProxyFactory()->generateProxyClasses([$postMetadata], null);

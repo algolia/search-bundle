@@ -49,7 +49,7 @@ final class SearchImportCommand extends IndexCommand
     /**
      * @return void
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setDescription('Import given entity into search engine')

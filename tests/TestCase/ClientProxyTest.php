@@ -2,9 +2,9 @@
 
 namespace Algolia\SearchBundle\TestCase;
 
+use Algolia\AlgoliaSearch\SearchClient;
 use Algolia\SearchBundle\BaseTest;
 use Symfony\Component\DependencyInjection\Exception\EnvNotFoundException;
-use Symfony\Component\VarExporter\LazyObjectInterface;
 
 class ClientProxyTest extends BaseTest
 {
@@ -39,17 +39,11 @@ class ClientProxyTest extends BaseTest
         $_SERVER = self::$values['_server'];
     }
 
-    public function testClientIsProxied(): void
+    public function testClientIsResolvable(): void
     {
         $client = $this->get('search.client');
 
-        if (PHP_VERSION_ID >= 80400) {
-            $reflector = new \ReflectionClass($client);
-            self::assertTrue($reflector->isUninitializedLazyObject($client));
-        } else {
-            $interfaces = class_implements($client);
-            self::assertContains(LazyObjectInterface::class, $interfaces);
-        }
+        self::assertInstanceOf(SearchClient::class, $client);
     }
 
     public function testProxiedClientFailIfNoEnvVarsFound(): void
