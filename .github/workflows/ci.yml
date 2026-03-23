@@ -33,6 +33,8 @@ jobs:
         with:
           path: vendor
           key: composer-deps-${{ matrix.php }}-${{ hashFiles('composer.json') }}
+          restore-keys: |
+            composer-deps-${{ matrix.php }}-
 
       - name: Install dependencies
         run: COMPOSER_MEMORY_LIMIT=-1 composer require "symfony/framework-bundle=${{ matrix.symfony }}" -n --prefer-dist
