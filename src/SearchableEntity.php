@@ -101,7 +101,7 @@ final class SearchableEntity
             throw new Exception('Entity has no primary key');
         }
 
-        if (1 == count($ids)) {
+        if (1 === count($ids)) {
             $this->id = reset($ids);
         } else {
             $objectID = '';
