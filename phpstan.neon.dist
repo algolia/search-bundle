@@ -7,7 +7,6 @@ parameters:
     paths:
         - src
     ignoreErrors:
-        - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeParentInterface::\w+\(\)#'
         - '#Language construct isset\(\) should not be used.#'
         - '#Class "Algolia\\SearchBundle\\.*" is not allowed to extend ".*".#'
         - '#Method Algolia\\SearchBundle\\.*\(\) is not final, but since the containing class is abstract, it should be.#'
