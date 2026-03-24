@@ -41,6 +41,9 @@
         <!-- CustomNormalizer is not registered by framework-bundle -->
         <service id="custom_normalizer" class="Symfony\Component\Serializer\Normalizer\CustomNormalizer" public="false">
             <tag name="serializer.normalizer" priority="-800" />
+            <call method="setSerializer">
+                <argument type="service" id="serializer" />
+            </call>
         </service>
 
     </services>
