@@ -41,9 +41,15 @@ class ClientProxyTest extends BaseTest
 
     public function testClientIsProxied(): void
     {
-        $interfaces = class_implements($this->get('search.client'));
+        $client = $this->get('search.client');
 
-        self::assertContains(LazyObjectInterface::class, $interfaces);
+        if (PHP_VERSION_ID >= 80400) {
+            $reflector = new \ReflectionClass($client);
+            self::assertTrue($reflector->isUninitializedLazyObject($client));
+        } else {
+            $interfaces = class_implements($client);
+            self::assertContains(LazyObjectInterface::class, $interfaces);
+        }
     }
 
     public function testProxiedClientFailIfNoEnvVarsFound(): void
