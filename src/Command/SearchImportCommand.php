@@ -46,9 +46,6 @@ final class SearchImportCommand extends IndexCommand
         $this->searchClient                  = $searchClient;
     }
 
-    /**
-     * @return void
-     */
     protected function configure(): void
     {
         $this

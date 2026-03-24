@@ -12,9 +12,6 @@ use Symfony\Component\Console\Input\InputOption;
 #[AsCommand(name: 'search:settings:push')]
 final class SearchSettingsPushCommand extends SearchSettingsCommand
 {
-    /**
-     * @return void
-     */
     protected function configure(): void
     {
         $this

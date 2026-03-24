@@ -15,9 +15,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 #[AsCommand(name: 'search:clear')]
 final class SearchClearCommand extends IndexCommand
 {
-    /**
-     * @return void
-     */
     protected function configure(): void
     {
         $this
