@@ -1,7 +1,6 @@
 includes:
     - tests/QualityTools/vendor/phpstan/phpstan-strict-rules/rules.neon
-    - tests/QualityTools/vendor/localheinz/phpstan-rules/rules.neon
-    - tests/QualityTools/vendor/thecodingmachine/phpstan-strict-rules/phpstan-strict-rules.neon
+    - tests/QualityTools/vendor/ergebnis/phpstan-rules/rules.neon
 
 parameters:
     level: 3
@@ -14,8 +13,6 @@ parameters:
         - '#File is missing a "declare\(strict_types=1\)" declaration.#'
         - '#Method Algolia\\SearchBundle\\DependencyInjection\\AlgoliaSearchExtension::load\(\) has a parameter .* with a type declaration of Symfony\\Component\\DependencyInjection\\ContainerBuilder, but containers should not be injected.#'
         - '#(Method|Function|Constructor).*has parameter.*with.*default value.#'
-        - '#Class Symfony\\Component\\Config\\Definition\\Builder\\TreeBuilder constructor#'
-        - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\TreeBuilder::root\(\).#'
         - '#Class Algolia\\SearchBundle\\Services\\NullSearchService is neither abstract nor final.#'
         - '#Class Algolia\\SearchBundle\\Settings\\SettingsManager is neither abstract nor final.#'
         - '#Class Algolia\\SearchBundle\\EventListener\\SearchIndexerSubscriber is neither abstract nor final.#'

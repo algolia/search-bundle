@@ -13,10 +13,7 @@ final class AlgoliaSearchBundle extends Bundle
      */
     public const VERSION = '7.0.0';
 
-    /**
-     * @return void
-     */
-    public function boot()
+    public function boot(): void
     {
         parent::boot();
 

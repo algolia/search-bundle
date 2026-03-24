@@ -16,15 +16,8 @@ final class Configuration implements ConfigurationInterface
 {
     public function getConfigTreeBuilder(): TreeBuilder
     {
-        if (\method_exists(TreeBuilder::class, 'getRootNode')) {
-            $treeBuilder = new TreeBuilder('algolia_search');
-            $rootNode    = $treeBuilder->getRootNode();
-        } else {
-            // @codeCoverageIgnoreStart
-            $treeBuilder = new TreeBuilder();
-            $rootNode    = $treeBuilder->root('algolia_search');
-            // @codeCoverageIgnoreEnd
-        }
+        $treeBuilder = new TreeBuilder('algolia_search');
+        $rootNode    = $treeBuilder->getRootNode();
 
         $rootNode
             ->children()
