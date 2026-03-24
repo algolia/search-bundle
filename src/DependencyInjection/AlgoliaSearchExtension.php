@@ -7,6 +7,7 @@ use Algolia\SearchBundle\Services\AlgoliaSearchService;
 use Algolia\SearchBundle\Settings\SettingsManager;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\DependencyInjection\Reference;
@@ -70,8 +71,10 @@ final class AlgoliaSearchExtension extends Extension
                 new Reference($config['serializer']),
                 $engineDefinition,
                 $config,
+                new Reference('logger', ContainerInterface::IGNORE_ON_INVALID_REFERENCE),
             ]
         ));
+        $searchServiceDefinition->addTag('monolog.logger', ['channel' => 'algolia']);
 
         $searchServiceDefinitionForAtomicReindex = (clone $searchServiceDefinition);
         $searchServiceDefinitionForAtomicReindex->replaceArgument(

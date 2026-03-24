@@ -17,3 +17,4 @@ parameters:
         - '#Class Algolia\\SearchBundle\\Settings\\SettingsManager is neither abstract nor final.#'
         - '#Class Algolia\\SearchBundle\\EventListener\\SearchIndexerSubscriber is neither abstract nor final.#'
         - '#Method Algolia\\SearchBundle\\Model\\Aggregator::normalize\(\) has parameter .* with a nullable type declaration.#'
+        - '#Method Algolia\\SearchBundle\\.*::__construct\(\) has parameter \$logger with a nullable type declaration.#'

@@ -2,6 +2,7 @@
 
 namespace Algolia\SearchBundle\Services;
 
+use Algolia\AlgoliaSearch\Algolia;
 use Algolia\AlgoliaSearch\RequestOptions\RequestOptions;
 use Algolia\SearchBundle\Engine;
 use Algolia\SearchBundle\Entity\Aggregator;
@@ -10,6 +11,8 @@ use Algolia\SearchBundle\SearchableEntity;
 use Algolia\SearchBundle\SearchService;
 use Algolia\SearchBundle\Util\ClassInfo;
 use Doctrine\Persistence\ObjectManager;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
@@ -62,15 +65,19 @@ final class AlgoliaSearchService implements SearchService
 
     private $normalizer;
 
+    private LoggerInterface $logger;
+
     /**
      * @param array<string, array|int|string> $configuration
      */
-    public function __construct($normalizer, Engine $engine, array $configuration)
+    public function __construct($normalizer, Engine $engine, array $configuration, ?LoggerInterface $logger = null)
     {
         $this->normalizer       = $normalizer;
         $this->engine           = $engine;
         $this->configuration    = $configuration;
         $this->propertyAccessor = PropertyAccess::createPropertyAccessor();
+        $this->logger           = $logger ?? new NullLogger();
+        Algolia::setLogger($this->logger);
 
         $this->setSearchableEntities();
         $this->setAggregatorsAndEntitiesAggregators();

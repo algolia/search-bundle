@@ -2,6 +2,7 @@
 
 namespace Algolia\SearchBundle\TestCase;
 
+use Algolia\AlgoliaSearch\Algolia;
 use Algolia\SearchBundle\BaseTest;
 use Algolia\SearchBundle\TestApp\Entity\Comment;
 use Algolia\SearchBundle\TestApp\Entity\ContentAggregator;
@@ -9,6 +10,9 @@ use Algolia\SearchBundle\TestApp\Entity\Image;
 use Algolia\SearchBundle\TestApp\Entity\Link;
 use Algolia\SearchBundle\TestApp\Entity\Post;
 use Algolia\SearchBundle\TestApp\Entity\Tag;
+use PHPUnit\Framework\Constraint\IsType;
+use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 
 class SearchServiceTest extends BaseTest
 {
@@ -209,6 +213,28 @@ class SearchServiceTest extends BaseTest
     {
         $link = new Link();
         self::assertFalse($this->searchService->shouldBeIndexed($link));
+        $this->cleanUp();
+    }
+
+    public function testUseLogger(): void
+    {
+        $logger = $this->createMock(LoggerInterface::class);
+
+        self::ensureKernelShutdown();
+        self::getContainer()->set('monolog.logger.algolia', $logger);
+        $this->searchService = $this->get('search.service');
+
+        $this->assertSame($logger, Algolia::getLogger());
+        $logger
+            ->expects($this->atLeastOnce())
+            ->method('log')
+            ->with(
+                LogLevel::DEBUG,
+                new IsType('string'),
+                new IsType('array')
+            )
+        ;
+
         $this->cleanUp();
     }
 }

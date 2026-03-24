@@ -42,6 +42,7 @@
         "phpunit/phpunit": "^8.5 || ^9.0",
         "roave/security-advisories": "dev-master",
         "symfony/framework-bundle": "^7.0",
+        "symfony/monolog-bundle": "^3.10",
         "symfony/phpunit-bridge": "^7.0",
         "symfony/proxy-manager-bridge": "*",
         "symfony/yaml": "^7.0"
