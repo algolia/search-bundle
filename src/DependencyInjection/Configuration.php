@@ -20,7 +20,7 @@ final class Configuration implements ConfigurationInterface
         $rootNode = $treeBuilder->getRootNode();
 
         $rootNode
-            ->children() // @phpstan-ignore method.notFound
+            ->children()
                 ->scalarNode('prefix')
                     ->defaultValue(null)
                 ->end()
