@@ -32,7 +32,7 @@ class Kernel extends HttpKernel
     {
         $loader->load(__DIR__ . '/config/config.yml');
 
-        $loader->load(__DIR__ . '/../src/Resources/config/services.xml');
+        $loader->load(__DIR__ . '/../src/Resources/config/services.yaml');
 
         $loader->load(__DIR__ . '/config/algolia_search.yml');
 

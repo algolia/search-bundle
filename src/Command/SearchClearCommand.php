@@ -15,10 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 #[AsCommand(name: 'search:clear')]
 final class SearchClearCommand extends IndexCommand
 {
-    /**
-     * @return void
-     */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setDescription('Clear index (remove all data but keep index and settings)')

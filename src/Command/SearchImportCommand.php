@@ -46,10 +46,7 @@ final class SearchImportCommand extends IndexCommand
         $this->searchClient                  = $searchClient;
     }
 
-    /**
-     * @return void
-     */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setDescription('Import given entity into search engine')

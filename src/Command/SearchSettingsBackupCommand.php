@@ -12,10 +12,7 @@ use Symfony\Component\Console\Input\InputOption;
 #[AsCommand(name: 'search:settings:backup')]
 final class SearchSettingsBackupCommand extends SearchSettingsCommand
 {
-    /**
-     * @return void
-     */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setDescription('Backup search engine settings into your project')

@@ -120,7 +120,7 @@ class CommandsTest extends BaseTest
         $searchPost = $this->searchService->rawSearch(ContentAggregator::class);
         self::assertCount($expectedResult, $searchPost['hits']);
         // clearup table
-        $this->connection->executeUpdate($this->platform->getTruncateTableSQL($this->indexName, true));
+        $this->connection->executeStatement($this->platform->getTruncateTableSQL($this->indexName, true));
         $this->cleanUp();
     }
 
@@ -169,7 +169,7 @@ class CommandsTest extends BaseTest
 
         self::assertCount($expectedResult, $searchPost['hits']);
         // clearup table
-        $this->connection->executeUpdate($this->platform->getTruncateTableSQL($this->indexName, true));
+        $this->connection->executeStatement($this->platform->getTruncateTableSQL($this->indexName, true));
         $this->cleanUp();
     }
 
