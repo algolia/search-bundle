@@ -103,8 +103,6 @@ to get matching results and then will create a doctrine collection. The data are
 pulled from the database (that's why you need to pass the Doctrine Manager).
 
 ```php
-use Doctrine\ORM\EntityManagerInterface;
-
 $posts = $this->searchService->search($entityManager, Post::class, 'query');
 ```
 
