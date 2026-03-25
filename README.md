@@ -10,7 +10,7 @@
   </h4>
 
   <p align="center">
-    <a href="https://circleci.com/gh/algolia/search-bundle"><img src="https://circleci.com/gh/algolia/search-bundle.svg?style=shield" alt="CircleCI" /></a>
+    <a href="https://github.com/algolia/search-bundle/actions/workflows/ci.yml"><img src="https://github.com/algolia/search-bundle/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
     <a href="https://packagist.org/packages/algolia/search-bundle"><img src="https://poser.pugx.org/algolia/search-bundle/downloads" alt="Total Downloads"></a>
     <a href="https://packagist.org/packages/algolia/search-bundle"><img src="https://poser.pugx.org/algolia/search-bundle/v/stable" alt="Latest Version"></a>
     <a href="https://packagist.org/packages/algolia/search-bundle"><img src="https://poser.pugx.org/algolia/search-bundle/license" alt="License"></a>
@@ -31,11 +31,11 @@
 ## ✨ Features
 
  * **Simple**: You can get started with only 5 lines of YAML
- * **Robust**: It benefits from all the new features of our PHP Client v2, like the [`wait()`](/doc/api-reference/api-methods/wait-task/) method
+ * **Robust**: It benefits from all the features of our PHP Client v3, like the [`wait()`](/doc/api-reference/api-methods/wait-task/) method
  * **Flexible**: All methods take optional `$requestOptions` to let you handle your data as you wish
  * **Dev-friendly**: Auto-completion and type-hinting thanks to an exhaustive documentation
 
-Algolia SearchBundle supports PHP > 7.1
+Algolia SearchBundle requires PHP >= 8.2 and supports Symfony 7 and 8.
 
 ## 💡 Getting Started
 
@@ -103,9 +103,9 @@ to get matching results and then will create a doctrine collection. The data are
 pulled from the database (that's why you need to pass the Doctrine Manager).
 
 ```php
-$em = $this->getDoctrine()->getManagerForClass(Post::class);
+use Doctrine\ORM\EntityManagerInterface;
 
-$posts = $this->searchService->search($em, Post::class, 'query');
+$posts = $this->searchService->search($entityManager, Post::class, 'query');
 ```
 
 For full documentation, visit the **[Algolia Symfony Search Bundle](https://www.algolia.com/doc/framework-integration/symfony/getting-started/)**.
@@ -120,4 +120,4 @@ If you want to contribute to this project without installing all its dependencie
 
 ## 📄 License
 
-Algolia Symfony Search Bundle is an open-sourced software licensed under the [MIT license](LICENSE.md).
+Algolia Symfony Search Bundle is an open-sourced software licensed under the [MIT license](LICENSE).
