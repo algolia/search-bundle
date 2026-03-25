@@ -6,7 +6,21 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 # Release Notes
 
-## [Unreleased](https://github.com/algolia/search-bundle/compare/7.0.0...master)
+## [Unreleased](https://github.com/algolia/search-bundle/compare/8.0.0...master)
+
+## [v8.0.0](https://github.com/algolia/search-bundle/compare/7.0.0...8.0.0)
+
+### Added
+- Added support for Symfony 8 ([#393](https://github.com/algolia/search-bundle/pull/393))
+- Added support for Doctrine ORM 3, Doctrine Bundle 3, and Doctrine Persistence 4
+
+### Changed
+- Migrated service configuration from XML to YAML
+- Replaced deprecated `Symfony\Component\HttpKernel\DependencyInjection\Extension` with `Symfony\Component\DependencyInjection\Extension\Extension`
+- Replaced deprecated `Symfony\Component\Serializer\Annotation\Groups` with `Symfony\Component\Serializer\Attribute\Groups`
+
+### Removed
+- Removed `friendsofphp/proxy-manager-lts` and `symfony/proxy-manager-bridge` dependencies (Symfony uses native lazy ghost objects since 6.2)
 
 ## [v7.0.0](https://github.com/algolia/search-bundle/compare/6.0.1...7.0.0)
 
