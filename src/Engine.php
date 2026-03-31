@@ -3,6 +3,7 @@
 namespace Algolia\SearchBundle;
 
 use Algolia\AlgoliaSearch\Api\SearchClient;
+use Algolia\SearchBundle\Responses\EngineResponse;
 use Algolia\SearchBundle\Responses\NullResponse;
 
 /**
@@ -129,9 +130,8 @@ final class Engine
     {
         if ($this->client->indexExists($indexName)) {
             $response = $this->client->clearObjects($indexName, $requestOptions);
-            $this->client->waitForTask($indexName, $response['taskID']);
 
-            return $response;
+            return new EngineResponse($this->client, $indexName, $response['taskID']);
         }
 
         return new NullResponse();
@@ -153,9 +153,8 @@ final class Engine
     {
         if ($this->client->indexExists($indexName)) {
             $response = $this->client->deleteIndex($indexName, $requestOptions);
-            $this->client->waitForTask($indexName, $response['taskID']);
 
-            return $response;
+            return new EngineResponse($this->client, $indexName, $response['taskID']);
         }
 
         return new NullResponse();
@@ -179,7 +178,7 @@ final class Engine
             is_array($requestOptions) ? $requestOptions : []
         );
 
-        return $this->client->searchSingleIndex($indexName, $searchParams);
+        return $this->client->searchSingleIndex($indexName, $searchParams, $requestOptions);
     }
 
     /**
