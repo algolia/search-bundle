@@ -81,11 +81,12 @@ EOT
             if ($shouldDoAtomicReindex) {
                 $temporaryIndexName = $this->searchServiceForAtomicReindex->searchableAs($entityClassName);
                 $output->writeln("Creating temporary index <info>$temporaryIndexName</info>");
-                $this->searchClient->operationIndex($sourceIndexName, [
+                $copyResponse = $this->searchClient->operationIndex($sourceIndexName, [
                     'operation'   => 'copy',
                     'destination' => $temporaryIndexName,
                     'scope'       => ['settings', 'synonyms', 'rules'],
                 ]);
+                $this->searchClient->waitForTask($sourceIndexName, $copyResponse['taskID']);
             }
 
             $allResponses = [];

@@ -66,7 +66,7 @@ final class Engine
 
         $result = [];
         foreach ($data as $indexName => $objects) {
-            $result[$indexName] = $this->client->saveObjects($indexName, $objects);
+            $result[$indexName] = $this->client->saveObjects($indexName, $objects, false, 1000, $requestOptions);
         }
 
         return $result;
@@ -107,7 +107,7 @@ final class Engine
 
         $result = [];
         foreach ($data as $indexName => $objects) {
-            $result[$indexName] = $this->client->deleteObjects($indexName, $objects);
+            $result[$indexName] = $this->client->deleteObjects($indexName, $objects, false, 1000, $requestOptions);
         }
 
         return $result;
@@ -128,7 +128,7 @@ final class Engine
     public function clear($indexName, $requestOptions)
     {
         if ($this->client->indexExists($indexName)) {
-            $response = $this->client->clearObjects($indexName);
+            $response = $this->client->clearObjects($indexName, $requestOptions);
             $this->client->waitForTask($indexName, $response['taskID']);
 
             return $response;
@@ -152,7 +152,7 @@ final class Engine
     public function delete($indexName, $requestOptions)
     {
         if ($this->client->indexExists($indexName)) {
-            $response = $this->client->deleteIndex($indexName);
+            $response = $this->client->deleteIndex($indexName, $requestOptions);
             $this->client->waitForTask($indexName, $response['taskID']);
 
             return $response;
@@ -197,7 +197,12 @@ final class Engine
     {
         $result = $this->search($query, $indexName, $requestOptions);
 
-        return array_column($result['hits'], 'objectID');
+        $ids = [];
+        foreach ($result['hits'] as $hit) {
+            $ids[] = $hit['objectID'];
+        }
+
+        return $ids;
     }
 
     /**
