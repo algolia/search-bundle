@@ -119,10 +119,8 @@ final class AlgoliaSearchService implements SearchService
     }
 
     /**
-     * @param object|array<int, object>                           $searchables
+     * @param object|array<int, object>            $searchables
      * @param array<string, bool|int|string|array> $requestOptions
-     *
-     * @return mixed
      */
     public function index(ObjectManager $objectManager, $searchables, $requestOptions = [])
     {
@@ -151,10 +149,8 @@ final class AlgoliaSearchService implements SearchService
     }
 
     /**
-     * @param object|array<int, object>                           $searchables
+     * @param object|array<int, object>            $searchables
      * @param array<string, bool|int|string|array> $requestOptions
-     *
-     * @return mixed
      */
     public function remove(ObjectManager $objectManager, $searchables, $requestOptions = [])
     {
@@ -171,10 +167,8 @@ final class AlgoliaSearchService implements SearchService
     }
 
     /**
-     * @param string                                              $className
+     * @param string                               $className
      * @param array<string, bool|int|string|array> $requestOptions
-     *
-     * @return mixed
      */
     public function clear($className, $requestOptions = [])
     {
@@ -184,10 +178,8 @@ final class AlgoliaSearchService implements SearchService
     }
 
     /**
-     * @param string                                              $className
+     * @param string                               $className
      * @param array<string, bool|int|string|array> $requestOptions
-     *
-     * @return mixed
      */
     public function delete($className, $requestOptions = [])
     {
@@ -197,8 +189,8 @@ final class AlgoliaSearchService implements SearchService
     }
 
     /**
-     * @param string                                              $className
-     * @param string                                              $query
+     * @param string                               $className
+     * @param string                               $query
      * @param array<string, bool|int|string|array> $requestOptions
      *
      * @return array<int, object>
@@ -234,8 +226,8 @@ final class AlgoliaSearchService implements SearchService
     }
 
     /**
-     * @param string                                              $className
-     * @param string                                              $query
+     * @param string                               $className
+     * @param string                               $query
      * @param array<string, bool|int|string|array> $requestOptions
      *
      * @return array<string, int|string|bool|array>
@@ -250,8 +242,8 @@ final class AlgoliaSearchService implements SearchService
     }
 
     /**
-     * @param string                                              $className
-     * @param string                                              $query
+     * @param string                               $className
+     * @param string                               $query
      * @param array<string, bool|int|string|array> $requestOptions
      *
      * @return int
@@ -390,8 +382,6 @@ final class AlgoliaSearchService implements SearchService
      *
      * @param array<int, object> $entities
      * @param callable           $operation
-     *
-     * @return mixed
      */
     private function makeSearchServiceResponseFrom(ObjectManager $objectManager, array $entities, $operation)
     {

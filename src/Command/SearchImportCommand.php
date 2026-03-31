@@ -82,9 +82,9 @@ EOT
                 $temporaryIndexName = $this->searchServiceForAtomicReindex->searchableAs($entityClassName);
                 $output->writeln("Creating temporary index <info>$temporaryIndexName</info>");
                 $this->searchClient->operationIndex($sourceIndexName, [
-                    'operation' => 'copy',
+                    'operation'   => 'copy',
                     'destination' => $temporaryIndexName,
-                    'scope' => ['settings', 'synonyms', 'rules'],
+                    'scope'       => ['settings', 'synonyms', 'rules'],
                 ]);
             }
 
@@ -130,7 +130,7 @@ EOT
                 }
                 $output->writeln("Moving <info>$indexName</info> -> <comment>$sourceIndexName</comment>\n");
                 $this->searchClient->operationIndex($indexName, [
-                    'operation' => 'move',
+                    'operation'   => 'move',
                     'destination' => $sourceIndexName,
                 ]);
             }

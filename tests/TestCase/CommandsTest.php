@@ -31,12 +31,12 @@ class CommandsTest extends BaseTest
         $this->indexName     = 'posts';
 
         $fullIndexName = $this->getPrefix() . $this->indexName;
-        $response = $this->client->setSettings($fullIndexName, $this->getDefaultConfig());
+        $response      = $this->client->setSettings($fullIndexName, $this->getDefaultConfig());
         $this->client->waitForTask($fullIndexName, $response['taskID']);
 
         $contentsIndexName = 'contents';
         $fullContentsName  = $this->getPrefix() . $contentsIndexName;
-        $response = $this->client->setSettings($fullContentsName, $this->getDefaultConfig());
+        $response          = $this->client->setSettings($fullContentsName, $this->getDefaultConfig());
         $this->client->waitForTask($fullContentsName, $response['taskID']);
 
         $this->application = new Application(self::$kernel);
@@ -182,7 +182,7 @@ class CommandsTest extends BaseTest
             'maxValuesPerFacet' => 99,
         ];
         $fullIndexName = $this->getPrefix() . $this->indexName;
-        $response = $this->client->setSettings($fullIndexName, $settingsToUpdate);
+        $response      = $this->client->setSettings($fullIndexName, $settingsToUpdate);
         $this->client->waitForTask($fullIndexName, $response['taskID']);
         $command       = $this->application->find('search:settings:backup');
         $commandTester = new CommandTester($command);
@@ -209,7 +209,7 @@ class CommandsTest extends BaseTest
             'maxValuesPerFacet' => 100,
         ];
         $fullIndexName = $this->getPrefix() . $this->indexName;
-        $response = $this->client->setSettings($fullIndexName, $settingsToUpdate);
+        $response      = $this->client->setSettings($fullIndexName, $settingsToUpdate);
         $this->client->waitForTask($fullIndexName, $response['taskID']);
         $settings     = $this->client->getSettings($fullIndexName);
         $settingsFile = $this->getFileName($this->indexName, 'settings');

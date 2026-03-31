@@ -21,7 +21,7 @@ class SerializationTest extends BaseTest
 
         $refl                = new \ReflectionClass($serializer);
         $normalizersProperty = $refl->getProperty('normalizers');
-        $normalizers = $normalizersProperty->getValue($serializer);
+        $normalizers         = $normalizersProperty->getValue($serializer);
 
         $classes = array_map(static function ($value) {
             return get_class($value);

@@ -33,40 +33,32 @@ interface SearchService
     public function searchableAs($className);
 
     /**
-     * @param object|array<int, object>                           $searchables
+     * @param object|array<int, object>            $searchables
      * @param array<string, int|string|bool|array> $requestOptions
-     *
-     * @return mixed
      */
     public function index(ObjectManager $objectManager, $searchables, $requestOptions = []);
 
     /**
-     * @param object|array<int, object>                           $searchables
+     * @param object|array<int, object>            $searchables
      * @param array<string, int|string|bool|array> $requestOptions
-     *
-     * @return mixed
      */
     public function remove(ObjectManager $objectManager, $searchables, $requestOptions = []);
 
     /**
-     * @param string                                              $className
+     * @param string                               $className
      * @param array<string, int|string|bool|array> $requestOptions
-     *
-     * @return mixed
      */
     public function clear($className, $requestOptions = []);
 
     /**
-     * @param string                                              $className
+     * @param string                               $className
      * @param array<string, int|string|bool|array> $requestOptions
-     *
-     * @return mixed
      */
     public function delete($className, $requestOptions = []);
 
     /**
-     * @param string                                              $className
-     * @param string                                              $query
+     * @param string                               $className
+     * @param string                               $query
      * @param array<string, int|string|bool|array> $requestOptions
      *
      * @return array<int, object>
@@ -76,8 +68,8 @@ interface SearchService
     public function search(ObjectManager $objectManager, $className, $query = '', $requestOptions = []);
 
     /**
-     * @param string                                              $className
-     * @param string                                              $query
+     * @param string                               $className
+     * @param string                               $query
      * @param array<string, int|string|bool|array> $requestOptions
      *
      * @return array<string, int|string|bool|array>
@@ -87,8 +79,8 @@ interface SearchService
     public function rawSearch($className, $query = '', $requestOptions = []);
 
     /**
-     * @param string                                              $className
-     * @param string                                              $query
+     * @param string                               $className
+     * @param string                               $query
      * @param array<string, int|string|array|bool> $requestOptions
      *
      * @return int

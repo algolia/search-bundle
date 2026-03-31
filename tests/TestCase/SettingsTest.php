@@ -43,7 +43,7 @@ class SettingsTest extends BaseTest
             'maxValuesPerFacet' => 99,
         ];
         $fullIndexName = $this->getPrefix() . $this->indexName;
-        $response = $this->client->setSettings($fullIndexName, $settingsToUpdate);
+        $response      = $this->client->setSettings($fullIndexName, $settingsToUpdate);
         $this->client->waitForTask($fullIndexName, $response['taskID']);
 
         $message = $this->settingsManager->backup(['indices' => [$this->indexName]]);
@@ -72,7 +72,7 @@ class SettingsTest extends BaseTest
 
         foreach ($this->configIndexes as $indexName => $configIndex) {
             $fullIndexName = $this->getPrefix() . $indexName;
-            $response = $this->client->setSettings($fullIndexName, $settingsToUpdate);
+            $response      = $this->client->setSettings($fullIndexName, $settingsToUpdate);
             $this->client->waitForTask($fullIndexName, $response['taskID']);
         }
 
@@ -102,7 +102,7 @@ class SettingsTest extends BaseTest
             'maxValuesPerFacet' => 100,
         ];
         $fullIndexName = $this->getPrefix() . $this->indexName;
-        $response = $this->client->setSettings($fullIndexName, $settingsToUpdate);
+        $response      = $this->client->setSettings($fullIndexName, $settingsToUpdate);
         $this->client->waitForTask($fullIndexName, $response['taskID']);
 
         $message = $this->settingsManager->push(['indices' => [$this->indexName]]);
@@ -135,7 +135,7 @@ class SettingsTest extends BaseTest
 
         foreach ($this->configIndexes as $indexName => $configIndex) {
             $fullIndexName = $this->getPrefix() . $indexName;
-            $response = $this->client->setSettings($fullIndexName, $settingsToUpdate);
+            $response      = $this->client->setSettings($fullIndexName, $settingsToUpdate);
             $this->client->waitForTask($fullIndexName, $response['taskID']);
         }
 

@@ -24,7 +24,7 @@ final class SearchServiceResponse implements \Iterator
      */
     public function __construct(SearchClient $client, $apiResponse)
     {
-        $this->client = $client;
+        $this->client      = $client;
         $this->apiResponse = $apiResponse;
     }
 
