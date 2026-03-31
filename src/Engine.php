@@ -173,12 +173,20 @@ final class Engine
      */
     public function search($query, $indexName, $requestOptions)
     {
-        $searchParams = array_merge(
-            ['query' => $query],
-            is_array($requestOptions) ? $requestOptions : []
-        );
+        $httpOptionKeys = ['headers', 'queryParameters', 'body', 'readTimeout', 'writeTimeout', 'connectTimeout'];
 
-        return $this->client->searchSingleIndex($indexName, $searchParams, $requestOptions);
+        $searchParams = ['query' => $query];
+        $httpOptions = [];
+
+        foreach ($requestOptions as $key => $value) {
+            if (in_array($key, $httpOptionKeys, true)) {
+                $httpOptions[$key] = $value;
+            } else {
+                $searchParams[$key] = $value;
+            }
+        }
+
+        return $this->client->searchSingleIndex($indexName, $searchParams, $httpOptions);
     }
 
     /**
