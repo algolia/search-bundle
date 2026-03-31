@@ -176,7 +176,7 @@ final class Engine
         $httpOptionKeys = ['headers', 'queryParameters', 'body', 'readTimeout', 'writeTimeout', 'connectTimeout'];
 
         $searchParams = ['query' => $query];
-        $httpOptions = [];
+        $httpOptions  = [];
 
         foreach ($requestOptions as $key => $value) {
             if (in_array($key, $httpOptionKeys, true)) {
