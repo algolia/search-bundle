@@ -31,9 +31,9 @@ class DoctrineTest extends BaseTest
 
     public function cleanUp(): void
     {
-        $this->searchService->delete(Post::class);
-        $this->searchService->delete(Comment::class);
-        $this->searchService->delete(Tag::class);
+        $this->searchService->delete(Post::class)->wait();
+        $this->searchService->delete(Comment::class)->wait();
+        $this->searchService->delete(Tag::class)->wait();
     }
 
     public function testDoctrineEventManagement(): void

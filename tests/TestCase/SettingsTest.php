@@ -29,7 +29,7 @@ class SettingsTest extends BaseTest
 
     public function cleanUp(): void
     {
-        $this->get('search.service')->delete(Post::class);
+        $this->get('search.service')->delete(Post::class)->wait();
     }
 
     /**

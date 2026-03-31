@@ -25,9 +25,9 @@ class SearchServiceTest extends BaseTest
 
     public function cleanUp(): void
     {
-        $this->searchService->delete(Post::class);
-        $this->searchService->delete(Comment::class);
-        $this->searchService->delete(ContentAggregator::class);
+        $this->searchService->delete(Post::class)->wait();
+        $this->searchService->delete(Comment::class)->wait();
+        $this->searchService->delete(ContentAggregator::class)->wait();
     }
 
     public function testIsSearchableMethod(): void
@@ -108,9 +108,9 @@ class SearchServiceTest extends BaseTest
         self::assertEquals(6, $this->searchService->count(ContentAggregator::class));
 
         // Cleanup
-        $this->searchService->delete(Post::class);
-        $this->searchService->delete(Comment::class);
-        $this->searchService->delete(ContentAggregator::class);
+        $this->searchService->delete(Post::class)->wait();
+        $this->searchService->delete(Comment::class)->wait();
+        $this->searchService->delete(ContentAggregator::class)->wait();
         $this->cleanUp();
     }
 
