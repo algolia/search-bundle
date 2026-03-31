@@ -2,7 +2,7 @@
 
 namespace Algolia\SearchBundle\TestCase;
 
-use Algolia\AlgoliaSearch\SearchClient;
+use Algolia\AlgoliaSearch\Api\SearchClient;
 use Algolia\SearchBundle\BaseTest;
 use Symfony\Component\DependencyInjection\Exception\EnvNotFoundException;
 

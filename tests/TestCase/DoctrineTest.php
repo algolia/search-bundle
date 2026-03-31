@@ -24,15 +24,16 @@ class DoctrineTest extends BaseTest
 
         $client        = $this->get('search.client');
         $indexName     = 'posts';
-        $index         = $client->initIndex($this->getPrefix() . $indexName);
-        $index->setSettings($this->getDefaultConfig())->wait();
+        $fullIndexName = $this->getPrefix() . $indexName;
+        $response      = $client->setSettings($fullIndexName, $this->getDefaultConfig());
+        $client->waitForTask($fullIndexName, $response['taskID']);
     }
 
     public function cleanUp(): void
     {
-        $this->searchService->delete(Post::class)->wait();
-        $this->searchService->delete(Comment::class)->wait();
-        $this->searchService->delete(Tag::class)->wait();
+        $this->searchService->delete(Post::class);
+        $this->searchService->delete(Comment::class);
+        $this->searchService->delete(Tag::class);
     }
 
     public function testDoctrineEventManagement(): void

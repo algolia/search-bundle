@@ -2,10 +2,8 @@
 
 namespace Algolia\SearchBundle;
 
-use Algolia\AlgoliaSearch\RequestOptions\RequestOptions;
-use Algolia\AlgoliaSearch\Response\BatchIndexingResponse;
-use Algolia\AlgoliaSearch\Response\NullResponse;
-use Algolia\AlgoliaSearch\SearchClient;
+use Algolia\AlgoliaSearch\Api\SearchClient;
+use Algolia\SearchBundle\Responses\NullResponse;
 
 /**
  * @internal
@@ -21,15 +19,23 @@ final class Engine
     }
 
     /**
+     * @return SearchClient
+     */
+    public function getClient()
+    {
+        return $this->client;
+    }
+
+    /**
      * Add new objects to an index.
      *
      * This method allows you to create records on your index by sending one or more objects.
      * Each object contains a set of attributes and values, which represents a full record on an index.
      *
-     * @param array<int, SearchableEntity>                   $searchableEntities
-     * @param array<string, int|string|array>|RequestOptions $requestOptions
+     * @param array<int, SearchableEntity> $searchableEntities
+     * @param array<string, int|string|array> $requestOptions
      *
-     * @return array<string, BatchIndexingResponse>
+     * @return array<string, array>
      *
      * @throws \Algolia\AlgoliaSearch\Exceptions\AlgoliaException
      */
@@ -59,13 +65,8 @@ final class Engine
         }
 
         $result = [];
-        if (!array_key_exists('autoGenerateObjectIDIfNotExist', $requestOptions)) {
-            $requestOptions['autoGenerateObjectIDIfNotExist'] = true;
-        }
         foreach ($data as $indexName => $objects) {
-            $result[$indexName] = $this->client
-                ->initIndex($indexName)
-                ->saveObjects($objects, $requestOptions);
+            $result[$indexName] = $this->client->saveObjects($indexName, $objects);
         }
 
         return $result;
@@ -76,10 +77,10 @@ final class Engine
      *
      * This method enables you to remove one or more objects from an index.
      *
-     * @param array<int, SearchableEntity>                   $searchableEntities
-     * @param array<string, int|string|array>|RequestOptions $requestOptions
+     * @param array<int, SearchableEntity> $searchableEntities
+     * @param array<string, int|string|array> $requestOptions
      *
-     * @return array<string, BatchIndexingResponse>
+     * @return array<string, array>
      *
      * @throws \Algolia\AlgoliaSearch\Exceptions\AlgoliaException
      */
@@ -106,9 +107,7 @@ final class Engine
 
         $result = [];
         foreach ($data as $indexName => $objects) {
-            $result[$indexName] = $this->client
-                ->initIndex($indexName)
-                ->deleteObjects($objects, $requestOptions);
+            $result[$indexName] = $this->client->deleteObjects($indexName, $objects);
         }
 
         return $result;
@@ -117,23 +116,24 @@ final class Engine
     /**
      * Clear the records of an index without affecting its settings.
      *
-     * This method enables you to delete an index’s contents (records) without
+     * This method enables you to delete an index's contents (records) without
      * removing any settings, rules and synonyms.
      *
      * If you want to remove the entire index and not just its records, use the
      * delete method instead.
      *
-     * @param string                                         $indexName
-     * @param array<string, int|string|array>|RequestOptions $requestOptions
+     * @param string $indexName
+     * @param array<string, int|string|array> $requestOptions
      *
-     * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
+     * @return mixed
      */
     public function clear($indexName, $requestOptions)
     {
-        $index = $this->client->initIndex($indexName);
+        if ($this->client->indexExists($indexName)) {
+            $response = $this->client->clearObjects($indexName);
+            $this->client->waitForTask($indexName, $response['taskID']);
 
-        if ($index->exists($requestOptions)) {
-            return $index->clearObjects($requestOptions);
+            return $response;
         }
 
         return new NullResponse();
@@ -146,19 +146,20 @@ final class Engine
      * removes its metadata and configured settings (like searchable attributes or custom ranking).
      *
      * If the index has replicas, they will be preserved but will no longer be
-     * linked to their primary index. Instead, they’ll become independent indices.
+     * linked to their primary index. Instead, they'll become independent indices.
      *
-     * @param string                                         $indexName
-     * @param array<string, int|string|array>|RequestOptions $requestOptions
+     * @param string $indexName
+     * @param array<string, int|string|array> $requestOptions
      *
-     * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
+     * @return mixed
      */
     public function delete($indexName, $requestOptions)
     {
-        $index = $this->client->initIndex($indexName);
+        if ($this->client->indexExists($indexName)) {
+            $response = $this->client->deleteIndex($indexName);
+            $this->client->waitForTask($indexName, $response['taskID']);
 
-        if ($index->exists($requestOptions)) {
-            return $index->delete($requestOptions);
+            return $response;
         }
 
         return new NullResponse();
@@ -167,9 +168,9 @@ final class Engine
     /**
      * Method used for querying an index.
      *
-     * @param string                                         $query
-     * @param string                                         $indexName
-     * @param array<string, int|string|array>|RequestOptions $requestOptions
+     * @param string $query
+     * @param string $indexName
+     * @param array<string, int|string|array> $requestOptions
      *
      * @return array<string, int|string|array>
      *
@@ -177,15 +178,20 @@ final class Engine
      */
     public function search($query, $indexName, $requestOptions)
     {
-        return $this->client->initIndex($indexName)->search($query, $requestOptions);
+        $searchParams = array_merge(
+            ['query' => $query],
+            is_array($requestOptions) ? $requestOptions : []
+        );
+
+        return $this->client->searchSingleIndex($indexName, $searchParams);
     }
 
     /**
      * Search the index and returns the objectIDs.
      *
-     * @param string                                         $query
-     * @param string                                         $indexName
-     * @param array<string, int|string|array>|RequestOptions $requestOptions
+     * @param string $query
+     * @param string $indexName
+     * @param array<string, int|string|array> $requestOptions
      *
      * @return array<int, mixed>
      *
@@ -195,15 +201,17 @@ final class Engine
     {
         $result = $this->search($query, $indexName, $requestOptions);
 
-        return array_column($result['hits'], 'objectID');
+        return array_map(function ($hit) {
+            return $hit['objectID'];
+        }, $result['hits']);
     }
 
     /**
      * Search the index and returns the number of results.
      *
-     * @param string                                         $query
-     * @param string                                         $indexName
-     * @param array<string, int|string|array>|RequestOptions $requestOptions
+     * @param string $query
+     * @param string $indexName
+     * @param array<string, int|string|array> $requestOptions
      *
      * @return int
      *
@@ -211,7 +219,7 @@ final class Engine
      */
     public function count($query, $indexName, $requestOptions)
     {
-        $results = $this->client->initIndex($indexName)->search($query, $requestOptions);
+        $results = $this->search($query, $indexName, $requestOptions);
 
         return (int) $results['nbHits'];
     }

@@ -2,7 +2,6 @@
 
 namespace Algolia\SearchBundle;
 
-use Algolia\AlgoliaSearch\RequestOptions\RequestOptions;
 use Doctrine\Persistence\ObjectManager;
 
 interface SearchService
@@ -35,40 +34,40 @@ interface SearchService
 
     /**
      * @param object|array<int, object>                           $searchables
-     * @param array<string, int|string|bool|array>|RequestOptions $requestOptions
+     * @param array<string, int|string|bool|array> $requestOptions
      *
-     * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
+     * @return mixed
      */
     public function index(ObjectManager $objectManager, $searchables, $requestOptions = []);
 
     /**
      * @param object|array<int, object>                           $searchables
-     * @param array<string, int|string|bool|array>|RequestOptions $requestOptions
+     * @param array<string, int|string|bool|array> $requestOptions
      *
-     * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
+     * @return mixed
      */
     public function remove(ObjectManager $objectManager, $searchables, $requestOptions = []);
 
     /**
      * @param string                                              $className
-     * @param array<string, int|string|bool|array>|RequestOptions $requestOptions
+     * @param array<string, int|string|bool|array> $requestOptions
      *
-     * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
+     * @return mixed
      */
     public function clear($className, $requestOptions = []);
 
     /**
      * @param string                                              $className
-     * @param array<string, int|string|bool|array>|RequestOptions $requestOptions
+     * @param array<string, int|string|bool|array> $requestOptions
      *
-     * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
+     * @return mixed
      */
     public function delete($className, $requestOptions = []);
 
     /**
      * @param string                                              $className
      * @param string                                              $query
-     * @param array<string, int|string|bool|array>|RequestOptions $requestOptions
+     * @param array<string, int|string|bool|array> $requestOptions
      *
      * @return array<int, object>
      *
@@ -79,7 +78,7 @@ interface SearchService
     /**
      * @param string                                              $className
      * @param string                                              $query
-     * @param array<string, int|string|bool|array>|RequestOptions $requestOptions
+     * @param array<string, int|string|bool|array> $requestOptions
      *
      * @return array<string, int|string|bool|array>
      *
@@ -90,7 +89,7 @@ interface SearchService
     /**
      * @param string                                              $className
      * @param string                                              $query
-     * @param array<string, int|string|array|bool>|RequestOptions $requestOptions
+     * @param array<string, int|string|array|bool> $requestOptions
      *
      * @return int
      *

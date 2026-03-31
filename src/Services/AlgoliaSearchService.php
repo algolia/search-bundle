@@ -2,7 +2,6 @@
 
 namespace Algolia\SearchBundle\Services;
 
-use Algolia\AlgoliaSearch\RequestOptions\RequestOptions;
 use Algolia\SearchBundle\Engine;
 use Algolia\SearchBundle\Entity\Aggregator;
 use Algolia\SearchBundle\Responses\SearchServiceResponse;
@@ -121,9 +120,9 @@ final class AlgoliaSearchService implements SearchService
 
     /**
      * @param object|array<int, object>                           $searchables
-     * @param array<string, bool|int|string|array>|RequestOptions $requestOptions
+     * @param array<string, bool|int|string|array> $requestOptions
      *
-     * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
+     * @return mixed
      */
     public function index(ObjectManager $objectManager, $searchables, $requestOptions = [])
     {
@@ -153,9 +152,9 @@ final class AlgoliaSearchService implements SearchService
 
     /**
      * @param object|array<int, object>                           $searchables
-     * @param array<string, bool|int|string|array>|RequestOptions $requestOptions
+     * @param array<string, bool|int|string|array> $requestOptions
      *
-     * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
+     * @return mixed
      */
     public function remove(ObjectManager $objectManager, $searchables, $requestOptions = [])
     {
@@ -173,9 +172,9 @@ final class AlgoliaSearchService implements SearchService
 
     /**
      * @param string                                              $className
-     * @param array<string, bool|int|string|array>|RequestOptions $requestOptions
+     * @param array<string, bool|int|string|array> $requestOptions
      *
-     * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
+     * @return mixed
      */
     public function clear($className, $requestOptions = [])
     {
@@ -186,9 +185,9 @@ final class AlgoliaSearchService implements SearchService
 
     /**
      * @param string                                              $className
-     * @param array<string, bool|int|string|array>|RequestOptions $requestOptions
+     * @param array<string, bool|int|string|array> $requestOptions
      *
-     * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
+     * @return mixed
      */
     public function delete($className, $requestOptions = [])
     {
@@ -200,7 +199,7 @@ final class AlgoliaSearchService implements SearchService
     /**
      * @param string                                              $className
      * @param string                                              $query
-     * @param array<string, bool|int|string|array>|RequestOptions $requestOptions
+     * @param array<string, bool|int|string|array> $requestOptions
      *
      * @return array<int, object>
      *
@@ -237,7 +236,7 @@ final class AlgoliaSearchService implements SearchService
     /**
      * @param string                                              $className
      * @param string                                              $query
-     * @param array<string, bool|int|string|array>|RequestOptions $requestOptions
+     * @param array<string, bool|int|string|array> $requestOptions
      *
      * @return array<string, int|string|bool|array>
      *
@@ -253,7 +252,7 @@ final class AlgoliaSearchService implements SearchService
     /**
      * @param string                                              $className
      * @param string                                              $query
-     * @param array<string, bool|int|string|array>|RequestOptions $requestOptions
+     * @param array<string, bool|int|string|array> $requestOptions
      *
      * @return int
      *
@@ -392,7 +391,7 @@ final class AlgoliaSearchService implements SearchService
      * @param array<int, object> $entities
      * @param callable           $operation
      *
-     * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
+     * @return mixed
      */
     private function makeSearchServiceResponseFrom(ObjectManager $objectManager, array $entities, $operation)
     {
@@ -414,7 +413,7 @@ final class AlgoliaSearchService implements SearchService
             $batch[] = $operation($searchableEntitiesChunk);
         }
 
-        return new SearchServiceResponse($batch);
+        return new SearchServiceResponse($this->engine->getClient(), $batch);
     }
 
     /**

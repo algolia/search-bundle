@@ -2,7 +2,7 @@
 
 namespace Algolia\SearchBundle\Command;
 
-use Algolia\AlgoliaSearch\SearchClient;
+use Algolia\AlgoliaSearch\Api\SearchClient;
 use Algolia\SearchBundle\Entity\Aggregator;
 use Algolia\SearchBundle\SearchService;
 use Doctrine\Persistence\ManagerRegistry;
@@ -81,7 +81,11 @@ EOT
             if ($shouldDoAtomicReindex) {
                 $temporaryIndexName = $this->searchServiceForAtomicReindex->searchableAs($entityClassName);
                 $output->writeln("Creating temporary index <info>$temporaryIndexName</info>");
-                $this->searchClient->copyIndex($sourceIndexName, $temporaryIndexName, ['scope' => ['settings', 'synonyms', 'rules']]);
+                $this->searchClient->operationIndex($sourceIndexName, [
+                    'operation' => 'copy',
+                    'destination' => $temporaryIndexName,
+                    'scope' => ['settings', 'synonyms', 'rules'],
+                ]);
             }
 
             $allResponses = [];
@@ -125,7 +129,10 @@ EOT
                     $response->wait();
                 }
                 $output->writeln("Moving <info>$indexName</info> -> <comment>$sourceIndexName</comment>\n");
-                $this->searchClient->moveIndex($indexName, $sourceIndexName);
+                $this->searchClient->operationIndex($indexName, [
+                    'operation' => 'move',
+                    'destination' => $sourceIndexName,
+                ]);
             }
         }
 
@@ -149,7 +156,9 @@ EOT
                     $formattedResponse[$indexName] = 0;
                 }
 
-                $formattedResponse[$indexName] += count($apiResponse->current()['objectIDs']);
+                foreach ($apiResponse as $batchResponse) {
+                    $formattedResponse[$indexName] += count($batchResponse['objectIDs']);
+                }
             }
         }
 

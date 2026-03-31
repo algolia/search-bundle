@@ -2,8 +2,8 @@
 
 namespace Algolia\SearchBundle\TestCase;
 
-use Algolia\AlgoliaSearch\Response\IndexingResponse;
 use Algolia\SearchBundle\BaseTest;
+use Algolia\SearchBundle\Responses\NullResponse;
 use Algolia\SearchBundle\Engine;
 
 class EngineTest extends BaseTest
@@ -41,23 +41,25 @@ class EngineTest extends BaseTest
             'autoGenerateObjectIDIfNotExist' => true,
         ]);
         self::assertArrayHasKey($searchablePost->getIndexName(), $result);
-        self::assertEquals(1, $result[$searchablePost->getIndexName()]->count());
+        self::assertCount(1, $result[$searchablePost->getIndexName()][0]['objectIDs']);
 
         // Remove
         $result = $this->engine->remove($searchablePost, [
             'X-Forwarded-For' => '0.0.0.0',
         ]);
         self::assertArrayHasKey($searchablePost->getIndexName(), $result);
-        self::assertEquals(1, $result[$searchablePost->getIndexName()]->count());
+        self::assertCount(1, $result[$searchablePost->getIndexName()][0]['objectIDs']);
 
         // Update
         $result = $this->engine->index($searchablePost, [
             'createIfNotExists' => true,
         ]);
         self::assertArrayHasKey($searchablePost->getIndexName(), $result);
-        self::assertEquals(1, $result[$searchablePost->getIndexName()]->count());
-        foreach ($result as $indexName => $response) {
-            $response->wait();
+        self::assertCount(1, $result[$searchablePost->getIndexName()][0]['objectIDs']);
+        foreach ($result as $indexName => $responses) {
+            foreach ($responses as $response) {
+                $this->get('search.client')->waitForTask($indexName, $response['taskID']);
+            }
         }
 
         // Search
@@ -92,11 +94,11 @@ class EngineTest extends BaseTest
 
         // Cleanup
         $result = $this->engine->clear($searchablePost->getIndexName(), []);
-        self::assertInstanceOf(IndexingResponse::class, $result);
+        self::assertNotInstanceOf(NullResponse::class, $result);
 
         // Delete index
         $result = $this->engine->delete($searchablePost->getIndexName(), []);
-        self::assertInstanceOf(IndexingResponse::class, $result);
+        self::assertNotInstanceOf(NullResponse::class, $result);
     }
 
     public function testIndexingEmptyEntity(): void
