@@ -197,9 +197,7 @@ final class Engine
     {
         $result = $this->search($query, $indexName, $requestOptions);
 
-        return array_map(function ($hit) {
-            return $hit['objectID'];
-        }, $result['hits']);
+        return array_column($result['hits'], 'objectID');
     }
 
     /**
