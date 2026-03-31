@@ -17,7 +17,7 @@ final class AlgoliaSearchBundle extends Bundle
     {
         parent::boot();
 
-        AlgoliaAgent::addAlgoliaAgent('SearchClient', 'Symfony Search Bundle', self::VERSION);
-        AlgoliaAgent::addAlgoliaAgent('SearchClient', 'Symfony', SfKernel::VERSION);
+        AlgoliaAgent::addAlgoliaAgent('Search', 'Symfony Search Bundle', self::VERSION);
+        AlgoliaAgent::addAlgoliaAgent('Search', 'Symfony', SfKernel::VERSION);
     }
 }
