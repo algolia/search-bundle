@@ -124,7 +124,7 @@ EOT
                 $manager->clear();
             }
 
-            if ($shouldDoAtomicReindex && isset($temporaryIndexName)) {
+            if ($shouldDoAtomicReindex) {
                 $output->writeln("Waiting for indexing tasks to finalize\n");
                 foreach ($allResponses as $response) {
                     $response->wait();
