@@ -6,13 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 # Release Notes
 
-## [v8.1.0](https://github.com/algolia/search-bundle/compare/8.0.0...8.1.0)
-
-### Breaking Changes
-- **Upgraded Algolia PHP API client from v3 to v4**
-- `SearchClient` namespace changed from `Algolia\AlgoliaSearch\SearchClient` to `Algolia\AlgoliaSearch\Api\SearchClient` — update any type-hints, autowiring, and DI configuration
-- `$requestOptions` flat keys (e.g. custom HTTP headers as top-level keys) are no longer interpreted — use the structured format (`['headers' => [...]]`)
-
 ## [v8.0.0](https://github.com/algolia/search-bundle/compare/7.0.0...8.0.0)
 
 ### Added
