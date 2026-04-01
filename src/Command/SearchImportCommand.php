@@ -124,13 +124,13 @@ EOT
                 $manager->clear();
             }
 
-            if ($shouldDoAtomicReindex && isset($indexName)) {
+            if ($shouldDoAtomicReindex && isset($temporaryIndexName)) {
                 $output->writeln("Waiting for indexing tasks to finalize\n");
                 foreach ($allResponses as $response) {
                     $response->wait();
                 }
-                $output->writeln("Moving <info>$indexName</info> -> <comment>$sourceIndexName</comment>\n");
-                $this->searchClient->operationIndex($indexName, [
+                $output->writeln("Moving <info>$temporaryIndexName</info> -> <comment>$sourceIndexName</comment>\n");
+                $this->searchClient->operationIndex($temporaryIndexName, [
                     'operation'   => 'move',
                     'destination' => $sourceIndexName,
                 ]);
