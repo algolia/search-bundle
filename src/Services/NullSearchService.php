@@ -2,6 +2,7 @@
 
 namespace Algolia\SearchBundle\Services;
 
+use Algolia\AlgoliaSearch\RequestOptions\RequestOptions;
 use Algolia\SearchBundle\Responses\NullResponse;
 use Algolia\SearchBundle\SearchService;
 use Doctrine\Persistence\ObjectManager;
@@ -51,8 +52,8 @@ class NullSearchService implements SearchService
     }
 
     /**
-     * @param object|array<int, object>            $searchables
-     * @param array<string, bool|int|string|array> $requestOptions
+     * @param object|array<int, object>                           $searchables
+     * @param array<string, bool|int|string|array>|RequestOptions $requestOptions
      */
     public function index(ObjectManager $objectManager, $searchables, $requestOptions = [])
     {
@@ -60,8 +61,8 @@ class NullSearchService implements SearchService
     }
 
     /**
-     * @param object|array<int, object>            $searchables
-     * @param array<string, bool|int|string|array> $requestOptions
+     * @param object|array<int, object>                           $searchables
+     * @param array<string, bool|int|string|array>|RequestOptions $requestOptions
      */
     public function remove(ObjectManager $objectManager, $searchables, $requestOptions = [])
     {
@@ -69,8 +70,8 @@ class NullSearchService implements SearchService
     }
 
     /**
-     * @param string                               $className
-     * @param array<string, bool|int|string|array> $requestOptions
+     * @param string                                              $className
+     * @param array<string, bool|int|string|array>|RequestOptions $requestOptions
      */
     public function clear($className, $requestOptions = [])
     {
@@ -78,8 +79,8 @@ class NullSearchService implements SearchService
     }
 
     /**
-     * @param string                               $className
-     * @param array<string, bool|int|string|array> $requestOptions
+     * @param string                                              $className
+     * @param array<string, bool|int|string|array>|RequestOptions $requestOptions
      */
     public function delete($className, $requestOptions = [])
     {
@@ -87,9 +88,9 @@ class NullSearchService implements SearchService
     }
 
     /**
-     * @param string                               $className
-     * @param string                               $query
-     * @param array<string, bool|int|string|array> $requestOptions
+     * @param string                                              $className
+     * @param string                                              $query
+     * @param array<string, bool|int|string|array>|RequestOptions $requestOptions
      *
      * @return array<int, object>
      *
@@ -103,9 +104,9 @@ class NullSearchService implements SearchService
     }
 
     /**
-     * @param string                               $className
-     * @param string                               $query
-     * @param array<string, bool|int|string|array> $requestOptions
+     * @param string                                              $className
+     * @param string                                              $query
+     * @param array<string, bool|int|string|array>|RequestOptions $requestOptions
      *
      * @return array<string, int|string|bool|array>
      *
@@ -127,9 +128,9 @@ class NullSearchService implements SearchService
     }
 
     /**
-     * @param string                               $className
-     * @param string                               $query
-     * @param array<string, bool|int|string|array> $requestOptions
+     * @param string                                              $className
+     * @param string                                              $query
+     * @param array<string, bool|int|string|array>|RequestOptions $requestOptions
      *
      * @return int
      *

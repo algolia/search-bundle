@@ -3,6 +3,7 @@
 namespace Algolia\SearchBundle;
 
 use Algolia\AlgoliaSearch\Api\SearchClient;
+use Algolia\AlgoliaSearch\RequestOptions\RequestOptions;
 use Algolia\SearchBundle\Responses\EngineResponse;
 use Algolia\SearchBundle\Responses\NullResponse;
 
@@ -33,8 +34,8 @@ final class Engine
      * This method allows you to create records on your index by sending one or more objects.
      * Each object contains a set of attributes and values, which represents a full record on an index.
      *
-     * @param array<int, SearchableEntity>    $searchableEntities
-     * @param array<string, int|string|array> $requestOptions
+     * @param array<int, SearchableEntity>                   $searchableEntities
+     * @param array<string, int|string|array>|RequestOptions $requestOptions
      *
      * @return array<string, array>
      *
@@ -78,8 +79,8 @@ final class Engine
      *
      * This method enables you to remove one or more objects from an index.
      *
-     * @param array<int, SearchableEntity>    $searchableEntities
-     * @param array<string, int|string|array> $requestOptions
+     * @param array<int, SearchableEntity>                   $searchableEntities
+     * @param array<string, int|string|array>|RequestOptions $requestOptions
      *
      * @return array<string, array>
      *
@@ -123,8 +124,8 @@ final class Engine
      * If you want to remove the entire index and not just its records, use the
      * delete method instead.
      *
-     * @param string                          $indexName
-     * @param array<string, int|string|array> $requestOptions
+     * @param string                                         $indexName
+     * @param array<string, int|string|array>|RequestOptions $requestOptions
      */
     public function clear($indexName, $requestOptions)
     {
@@ -146,8 +147,8 @@ final class Engine
      * If the index has replicas, they will be preserved but will no longer be
      * linked to their primary index. Instead, they'll become independent indices.
      *
-     * @param string                          $indexName
-     * @param array<string, int|string|array> $requestOptions
+     * @param string                                         $indexName
+     * @param array<string, int|string|array>|RequestOptions $requestOptions
      */
     public function delete($indexName, $requestOptions)
     {
@@ -163,9 +164,9 @@ final class Engine
     /**
      * Method used for querying an index.
      *
-     * @param string                          $query
-     * @param string                          $indexName
-     * @param array<string, int|string|array> $requestOptions
+     * @param string                                         $query
+     * @param string                                         $indexName
+     * @param array<string, int|string|array>|RequestOptions $requestOptions
      *
      * @return array<string, int|string|array>
      *
@@ -192,9 +193,9 @@ final class Engine
     /**
      * Search the index and returns the objectIDs.
      *
-     * @param string                          $query
-     * @param string                          $indexName
-     * @param array<string, int|string|array> $requestOptions
+     * @param string                                         $query
+     * @param string                                         $indexName
+     * @param array<string, int|string|array>|RequestOptions $requestOptions
      *
      * @return array<int, mixed>
      *
@@ -215,9 +216,9 @@ final class Engine
     /**
      * Search the index and returns the number of results.
      *
-     * @param string                          $query
-     * @param string                          $indexName
-     * @param array<string, int|string|array> $requestOptions
+     * @param string                                         $query
+     * @param string                                         $indexName
+     * @param array<string, int|string|array>|RequestOptions $requestOptions
      *
      * @return int
      *
