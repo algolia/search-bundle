@@ -2,6 +2,7 @@
 
 namespace Algolia\SearchBundle\TestCase;
 
+use Algolia\AlgoliaSearch\RequestOptions\RequestOptions;
 use Algolia\SearchBundle\BaseTest;
 use Algolia\SearchBundle\Engine;
 use Algolia\SearchBundle\Responses\NullResponse;
@@ -98,6 +99,98 @@ class EngineTest extends BaseTest
 
         // Delete index
         $result = $this->engine->delete($searchablePost->getIndexName(), []);
+        self::assertNotInstanceOf(NullResponse::class, $result);
+    }
+
+    /**
+     * Same as testIndexing but passes RequestOptions objects instead of arrays.
+     * Verifies that RequestOptions work identically to plain arrays across
+     * all Engine methods (index, remove, search, searchIds, count, clear, delete).
+     *
+     * @group legacy
+     */
+    public function testIndexingWithRequestOptions(): void
+    {
+        $searchablePost = $this->createSearchablePost();
+        $indexName      = $searchablePost->getIndexName();
+
+        // Delete index in case there is already something
+        $this->engine->delete($indexName, new RequestOptions([
+            'headers'     => [], 'queryParameters' => [], 'body' => [],
+            'readTimeout' => 30, 'writeTimeout' => 30, 'connectTimeout' => 5,
+        ]));
+
+        // Index
+        $result = $this->engine->index($searchablePost, new RequestOptions([
+            'headers'     => [], 'queryParameters' => [], 'body' => [],
+            'readTimeout' => 30, 'writeTimeout' => 30, 'connectTimeout' => 5,
+        ]));
+        self::assertArrayHasKey($indexName, $result);
+        self::assertCount(1, $result[$indexName][0]['objectIDs']);
+
+        // Remove
+        $result = $this->engine->remove($searchablePost, new RequestOptions([
+            'headers'     => [], 'queryParameters' => [], 'body' => [],
+            'readTimeout' => 30, 'writeTimeout' => 30, 'connectTimeout' => 5,
+        ]));
+        self::assertArrayHasKey($indexName, $result);
+        self::assertCount(1, $result[$indexName][0]['objectIDs']);
+
+        // Re-index for search tests
+        $result = $this->engine->index($searchablePost, new RequestOptions([
+            'headers'     => [], 'queryParameters' => [], 'body' => [],
+            'readTimeout' => 30, 'writeTimeout' => 30, 'connectTimeout' => 5,
+        ]));
+        self::assertArrayHasKey($indexName, $result);
+        foreach ($result as $name => $responses) {
+            foreach ($responses as $response) {
+                $this->get('search.client')->waitForTask($name, $response['taskID']);
+            }
+        }
+
+        // Search — verify search params in body are forwarded correctly
+        $result = $this->engine->search('Test', $indexName, new RequestOptions([
+            'headers'      => [], 'queryParameters' => [], 'readTimeout' => 30,
+            'writeTimeout' => 30, 'connectTimeout' => 5,
+            'body'         => [
+                'page'                 => 0,
+                'hitsPerPage'          => 1,
+                'attributesToRetrieve' => ['title'],
+            ],
+        ]));
+        self::assertArrayHasKey('hits', $result);
+        self::assertCount(1, $result['hits']);
+        self::assertEquals(0, $result['page']);
+        self::assertEquals(1, $result['hitsPerPage']);
+        self::assertArrayHasKey('title', $result['hits'][0]);
+        self::assertArrayNotHasKey('content', $result['hits'][0]);
+
+        // Search IDs
+        $result = $this->engine->searchIds('This should not have results', $indexName, new RequestOptions([
+            'headers'     => [], 'queryParameters' => [], 'body' => ['page' => 1, 'hitsPerPage' => 20],
+            'readTimeout' => 30, 'writeTimeout' => 30, 'connectTimeout' => 5,
+        ]));
+        self::assertEmpty($result);
+
+        // Count
+        $result = $this->engine->count('Test', $indexName, new RequestOptions([
+            'headers'     => [], 'queryParameters' => [], 'body' => [],
+            'readTimeout' => 30, 'writeTimeout' => 30, 'connectTimeout' => 5,
+        ]));
+        self::assertEquals(1, $result);
+
+        // Clear
+        $result = $this->engine->clear($indexName, new RequestOptions([
+            'headers'     => [], 'queryParameters' => [], 'body' => [],
+            'readTimeout' => 30, 'writeTimeout' => 30, 'connectTimeout' => 5,
+        ]));
+        self::assertNotInstanceOf(NullResponse::class, $result);
+
+        // Delete
+        $result = $this->engine->delete($indexName, new RequestOptions([
+            'headers'     => [], 'queryParameters' => [], 'body' => [],
+            'readTimeout' => 30, 'writeTimeout' => 30, 'connectTimeout' => 5,
+        ]));
         self::assertNotInstanceOf(NullResponse::class, $result);
     }
 

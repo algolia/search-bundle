@@ -80,9 +80,9 @@ interface SearchService
     public function rawSearch($className, $query = '', $requestOptions = []);
 
     /**
-     * @param string                               $className
-     * @param string                               $query
-     * @param array<string, int|string|array|bool> $requestOptions
+     * @param string                                              $className
+     * @param string                                              $query
+     * @param array<string, int|string|array|bool>|RequestOptions $requestOptions
      *
      * @return int
      *
