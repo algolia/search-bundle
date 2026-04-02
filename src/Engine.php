@@ -178,7 +178,9 @@ final class Engine
         $httpOptions  = [];
 
         if ($requestOptions instanceof RequestOptions) {
-            $searchParams = array_merge($searchParams, $requestOptions->getBody());
+            $searchParams   = array_merge($searchParams, $requestOptions->getBody());
+            $requestOptions = clone $requestOptions;
+            $requestOptions->setBody([]);
 
             return $this->client->searchSingleIndex($indexName, $searchParams, $requestOptions);
         }
