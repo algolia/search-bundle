@@ -31,7 +31,7 @@
 ## ✨ Features
 
  * **Simple**: You can get started with only 5 lines of YAML
- * **Robust**: It benefits from all the features of our PHP Client v3, like the [`wait()`](/doc/api-reference/api-methods/wait-task/) method
+ * **Robust**: Built on top of our [PHP Client v4](https://github.com/algolia/algoliasearch-client-php), with waitable responses out of the box
  * **Flexible**: All methods take optional `$requestOptions` to let you handle your data as you wish
  * **Dev-friendly**: Auto-completion and type-hinting thanks to an exhaustive documentation
 

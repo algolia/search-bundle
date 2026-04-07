@@ -11,7 +11,7 @@ final class AlgoliaSearchBundle extends Bundle
     /**
      * Holds the bundle version.
      */
-    public const VERSION = '8.0.0';
+    public const VERSION = '8.1.0';
 
     public function boot(): void
     {

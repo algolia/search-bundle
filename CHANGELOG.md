@@ -6,6 +6,21 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 # Release Notes
 
+## [v8.1.0](https://github.com/algolia/search-bundle/compare/8.0.0...8.1.0)
+
+### Breaking Changes
+- **Algolia PHP SDK upgraded from v3 to v4** — this changes several user-facing APIs ([#395](https://github.com/algolia/search-bundle/pull/395))
+- `SearchClient` moved from `Algolia\AlgoliaSearch\SearchClient` to `Algolia\AlgoliaSearch\Api\SearchClient` — update any direct type-hints or service references
+- `$requestOptions` no longer auto-detects flat HTTP headers — wrap headers under the `headers` key (e.g. `['headers' => ['X-Forwarded-For' => '0.0.0.0']]`)
+- `SearchServiceResponse::wait()` no longer accepts parameters — call `->wait()` with no arguments
+- `SearchServiceResponse` no longer extends `Algolia\AlgoliaSearch\Response\AbstractResponse` — use `Algolia\SearchBundle\Responses\SearchServiceResponse` for type-hints and `instanceof` checks
+
+### Changed
+- Upgraded underlying Algolia PHP API Client from v3 to v4 ([#395](https://github.com/algolia/search-bundle/pull/395))
+- Bundle response types (`EngineResponse`, `NullResponse`) are now provided by the bundle under `Algolia\SearchBundle\Responses\` instead of the SDK
+
+See [UPGRADE-8.1.md](UPGRADE-8.1.md) for a detailed migration guide.
+
 ## [v8.0.0](https://github.com/algolia/search-bundle/compare/7.0.0...8.0.0)
 
 ### Added
