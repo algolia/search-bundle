@@ -122,8 +122,6 @@ final class AlgoliaSearchService implements SearchService
     /**
      * @param object|array<int, object>                           $searchables
      * @param array<string, bool|int|string|array>|RequestOptions $requestOptions
-     *
-     * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
      */
     public function index(ObjectManager $objectManager, $searchables, $requestOptions = [])
     {
@@ -154,8 +152,6 @@ final class AlgoliaSearchService implements SearchService
     /**
      * @param object|array<int, object>                           $searchables
      * @param array<string, bool|int|string|array>|RequestOptions $requestOptions
-     *
-     * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
      */
     public function remove(ObjectManager $objectManager, $searchables, $requestOptions = [])
     {
@@ -174,8 +170,6 @@ final class AlgoliaSearchService implements SearchService
     /**
      * @param string                                              $className
      * @param array<string, bool|int|string|array>|RequestOptions $requestOptions
-     *
-     * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
      */
     public function clear($className, $requestOptions = [])
     {
@@ -187,8 +181,6 @@ final class AlgoliaSearchService implements SearchService
     /**
      * @param string                                              $className
      * @param array<string, bool|int|string|array>|RequestOptions $requestOptions
-     *
-     * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
      */
     public function delete($className, $requestOptions = [])
     {
@@ -391,8 +383,6 @@ final class AlgoliaSearchService implements SearchService
      *
      * @param array<int, object> $entities
      * @param callable           $operation
-     *
-     * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
      */
     private function makeSearchServiceResponseFrom(ObjectManager $objectManager, array $entities, $operation)
     {
@@ -414,7 +404,7 @@ final class AlgoliaSearchService implements SearchService
             $batch[] = $operation($searchableEntitiesChunk);
         }
 
-        return new SearchServiceResponse($batch);
+        return new SearchServiceResponse($this->engine->getClient(), $batch);
     }
 
     /**

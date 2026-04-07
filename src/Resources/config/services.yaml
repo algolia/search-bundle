@@ -23,15 +23,15 @@ services:
             - { name: doctrine_mongodb.odm.event_subscriber }
 
     search.client:
-        class: Algolia\AlgoliaSearch\SearchClient
+        class: Algolia\AlgoliaSearch\Api\SearchClient
         public: true
         lazy: true
-        factory: ['Algolia\AlgoliaSearch\SearchClient', 'create']
+        factory: ['Algolia\AlgoliaSearch\Api\SearchClient', 'create']
         arguments:
             $appId: '%env(ALGOLIA_APP_ID)%'
             $apiKey: '%env(ALGOLIA_API_KEY)%'
 
-    Algolia\AlgoliaSearch\SearchClient:
+    Algolia\AlgoliaSearch\Api\SearchClient:
         alias: search.client
 
     Algolia\SearchBundle\SearchService:

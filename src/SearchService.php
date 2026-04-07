@@ -36,32 +36,24 @@ interface SearchService
     /**
      * @param object|array<int, object>                           $searchables
      * @param array<string, int|string|bool|array>|RequestOptions $requestOptions
-     *
-     * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
      */
     public function index(ObjectManager $objectManager, $searchables, $requestOptions = []);
 
     /**
      * @param object|array<int, object>                           $searchables
      * @param array<string, int|string|bool|array>|RequestOptions $requestOptions
-     *
-     * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
      */
     public function remove(ObjectManager $objectManager, $searchables, $requestOptions = []);
 
     /**
      * @param string                                              $className
      * @param array<string, int|string|bool|array>|RequestOptions $requestOptions
-     *
-     * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
      */
     public function clear($className, $requestOptions = []);
 
     /**
      * @param string                                              $className
      * @param array<string, int|string|bool|array>|RequestOptions $requestOptions
-     *
-     * @return \Algolia\AlgoliaSearch\Response\AbstractResponse
      */
     public function delete($className, $requestOptions = []);
 

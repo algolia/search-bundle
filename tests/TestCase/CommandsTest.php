@@ -19,7 +19,6 @@ class CommandsTest extends BaseTest
     protected $application;
     protected $indexName;
     protected $platform;
-    protected $index;
 
     public function setUp(): void
     {
@@ -30,12 +29,15 @@ class CommandsTest extends BaseTest
         $this->connection    = $this->get('doctrine')->getConnection();
         $this->platform      = $this->connection->getDatabasePlatform();
         $this->indexName     = 'posts';
-        $this->index         = $this->client->initIndex($this->getPrefix() . $this->indexName);
-        $this->index->setSettings($this->getDefaultConfig())->wait();
+
+        $fullIndexName = $this->getPrefix() . $this->indexName;
+        $response      = $this->client->setSettings($fullIndexName, $this->getDefaultConfig());
+        $this->client->waitForTask($fullIndexName, $response['taskID']);
 
         $contentsIndexName = 'contents';
-        $contentsIndex     = $this->client->initIndex($this->getPrefix() . $contentsIndexName);
-        $contentsIndex->setSettings($this->getDefaultConfig())->wait();
+        $fullContentsName  = $this->getPrefix() . $contentsIndexName;
+        $response          = $this->client->setSettings($fullContentsName, $this->getDefaultConfig());
+        $this->client->waitForTask($fullContentsName, $response['taskID']);
 
         $this->application = new Application(self::$kernel);
         $this->refreshDb($this->application);
@@ -179,7 +181,9 @@ class CommandsTest extends BaseTest
             'hitsPerPage'       => 51,
             'maxValuesPerFacet' => 99,
         ];
-        $this->index->setSettings($settingsToUpdate)->wait();
+        $fullIndexName = $this->getPrefix() . $this->indexName;
+        $response      = $this->client->setSettings($fullIndexName, $settingsToUpdate);
+        $this->client->waitForTask($fullIndexName, $response['taskID']);
         $command       = $this->application->find('search:settings:backup');
         $commandTester = new CommandTester($command);
         $commandTester->execute([
@@ -204,8 +208,10 @@ class CommandsTest extends BaseTest
             'hitsPerPage'       => 50,
             'maxValuesPerFacet' => 100,
         ];
-        $this->index->setSettings($settingsToUpdate)->wait();
-        $settings     = $this->index->getSettings();
+        $fullIndexName = $this->getPrefix() . $this->indexName;
+        $response      = $this->client->setSettings($fullIndexName, $settingsToUpdate);
+        $this->client->waitForTask($fullIndexName, $response['taskID']);
+        $settings     = $this->client->getSettings($fullIndexName);
         $settingsFile = $this->getFileName($this->indexName, 'settings');
 
         $settingsFileContent = json_decode(file_get_contents($settingsFile), true);
@@ -226,7 +232,7 @@ class CommandsTest extends BaseTest
         // check if the settings were imported
         $iteration = 0;
         do {
-            $newSettings = $this->index->getSettings();
+            $newSettings = $this->client->getSettings($fullIndexName);
             sleep(1);
             $iteration++;
         } while ($newSettings['hitsPerPage'] !== $settingsFileContent['hitsPerPage'] || $iteration < 10);

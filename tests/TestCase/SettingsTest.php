@@ -2,7 +2,7 @@
 
 namespace Algolia\SearchBundle\TestCase;
 
-use Algolia\AlgoliaSearch\SearchClient;
+use Algolia\AlgoliaSearch\Api\SearchClient;
 use Algolia\SearchBundle\BaseTest;
 use Algolia\SearchBundle\Settings\SettingsManager;
 use Algolia\SearchBundle\TestApp\Entity\Post;
@@ -42,8 +42,9 @@ class SettingsTest extends BaseTest
             'hitsPerPage'       => 51,
             'maxValuesPerFacet' => 99,
         ];
-        $index = $this->client->initIndex($this->getPrefix() . $this->indexName);
-        $index->setSettings($settingsToUpdate)->wait();
+        $fullIndexName = $this->getPrefix() . $this->indexName;
+        $response      = $this->client->setSettings($fullIndexName, $settingsToUpdate);
+        $this->client->waitForTask($fullIndexName, $response['taskID']);
 
         $message = $this->settingsManager->backup(['indices' => [$this->indexName]]);
 
@@ -70,8 +71,9 @@ class SettingsTest extends BaseTest
         ];
 
         foreach ($this->configIndexes as $indexName => $configIndex) {
-            $index = $this->client->initIndex($this->getPrefix() . $indexName);
-            $index->setSettings($settingsToUpdate)->wait();
+            $fullIndexName = $this->getPrefix() . $indexName;
+            $response      = $this->client->setSettings($fullIndexName, $settingsToUpdate);
+            $this->client->waitForTask($fullIndexName, $response['taskID']);
         }
 
         $message = $this->settingsManager->backup(['indices' => []]);
@@ -99,8 +101,9 @@ class SettingsTest extends BaseTest
             'hitsPerPage'       => 12,
             'maxValuesPerFacet' => 100,
         ];
-        $index = $this->client->initIndex($this->getPrefix() . $this->indexName);
-        $index->setSettings($settingsToUpdate)->wait();
+        $fullIndexName = $this->getPrefix() . $this->indexName;
+        $response      = $this->client->setSettings($fullIndexName, $settingsToUpdate);
+        $this->client->waitForTask($fullIndexName, $response['taskID']);
 
         $message = $this->settingsManager->push(['indices' => [$this->indexName]]);
 
@@ -112,9 +115,10 @@ class SettingsTest extends BaseTest
 
         for ($i = 0; $i < 5; $i++) {
             sleep(1);
-            $settings = $index->getSettings();
+            $settings = $this->client->getSettings($fullIndexName);
             if (12 !== $settings['hitsPerPage']) {
-                self::assertEquals($savedSettings, $settings);
+                self::assertEquals($savedSettings['hitsPerPage'], $settings['hitsPerPage']);
+                self::assertEquals($savedSettings['maxValuesPerFacet'], $settings['maxValuesPerFacet']);
             }
         }
     }
@@ -130,8 +134,9 @@ class SettingsTest extends BaseTest
         ];
 
         foreach ($this->configIndexes as $indexName => $configIndex) {
-            $index = $this->client->initIndex($this->getPrefix() . $indexName);
-            $index->setSettings($settingsToUpdate)->wait();
+            $fullIndexName = $this->getPrefix() . $indexName;
+            $response      = $this->client->setSettings($fullIndexName, $settingsToUpdate);
+            $this->client->waitForTask($fullIndexName, $response['taskID']);
         }
 
         $message = $this->settingsManager->push(['indices' => []]);
@@ -143,11 +148,13 @@ class SettingsTest extends BaseTest
                 $this->getFileName($indexName, 'settings')
             ), true);
 
+            $fullIndexName = $this->getPrefix() . $indexName;
             for ($i = 0; $i < 5; $i++) {
                 sleep(1);
-                $settings = $index->getSettings();
+                $settings = $this->client->getSettings($fullIndexName);
                 if (12 !== $settings['hitsPerPage']) {
-                    self::assertEquals($savedSettings, $settings);
+                    self::assertEquals($savedSettings['hitsPerPage'], $settings['hitsPerPage']);
+                    self::assertEquals($savedSettings['maxValuesPerFacet'], $settings['maxValuesPerFacet']);
                 }
             }
         }

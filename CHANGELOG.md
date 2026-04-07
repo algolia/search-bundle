@@ -6,8 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 # Release Notes
 
-## [Unreleased](https://github.com/algolia/search-bundle/compare/8.0.0...master)
-
 ## [v8.0.0](https://github.com/algolia/search-bundle/compare/7.0.0...8.0.0)
 
 ### Added

@@ -2,9 +2,9 @@
 
 namespace Algolia\SearchBundle\Responses;
 
-use Algolia\AlgoliaSearch\Response\AbstractResponse;
+use Algolia\AlgoliaSearch\Api\SearchClient;
 
-final class SearchServiceResponse extends AbstractResponse implements \Iterator
+final class SearchServiceResponse implements \Iterator
 {
     /**
      * @var int Stores the current traversal position. An iterator may have a
@@ -13,25 +13,31 @@ final class SearchServiceResponse extends AbstractResponse implements \Iterator
      */
     private $position = 0;
 
+    /** @var SearchClient */
+    private $client;
+
+    /** @var array */
+    private $apiResponse;
+
     /**
-     * @param array<int, array<string, AbstractResponse>> $apiResponse
+     * @param array<int, array<string, array>> $apiResponse
      */
-    public function __construct($apiResponse)
+    public function __construct(SearchClient $client, $apiResponse)
     {
+        $this->client      = $client;
         $this->apiResponse = $apiResponse;
     }
 
     /**
-     * @param array<string, int|string|array>|mixed $requestOptions
-     *
      * @return void
      */
-    public function wait($requestOptions = [])
+    public function wait()
     {
         foreach ($this->apiResponse as $chunk) {
-            foreach ($chunk as $indexName => $apiResponse) {
-                /* @var $apiResponse AbstractResponse */
-                $apiResponse->wait($requestOptions);
+            foreach ($chunk as $indexName => $batchResponses) {
+                foreach ($batchResponses as $batchResponse) {
+                    $this->client->waitForTask($indexName, $batchResponse['taskID']);
+                }
             }
         }
     }
@@ -42,7 +48,7 @@ final class SearchServiceResponse extends AbstractResponse implements \Iterator
     }
 
     /**
-     * @return array<string, AbstractResponse>
+     * @return array<string, array>
      */
     public function current(): array
     {
