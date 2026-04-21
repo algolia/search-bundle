@@ -1,0 +1,35 @@
+name: Cleanup test indexes
+
+on:
+  schedule:
+    - cron: '0 3 * * 0'
+  workflow_dispatch:
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    env:
+      APP_ID: ${{ secrets.ALGOLIA_APP_ID }}
+      API_KEY: ${{ secrets.ALGOLIA_API_KEY }}
+    steps:
+      - name: Delete sf_phpunit_* indexes
+        run: |
+          set -euo pipefail
+
+          auth=(-H "X-Algolia-Application-Id: $APP_ID" -H "X-Algolia-API-Key: $API_KEY")
+          host="https://${APP_ID}.algolia.net"
+
+          names=$(curl -sSf "${auth[@]}" "$host/1/indexes" \
+            | jq -r '.items[].name | select(startswith("sf_phpunit_"))')
+
+          if [ -z "$names" ]; then
+            echo "Nothing to delete."
+            exit 0
+          fi
+
+          echo "Deleting $(echo "$names" | wc -l) indexes..."
+          while IFS= read -r name; do
+            encoded=$(jq -rn --arg v "$name" '$v|@uri')
+            curl -sSf -X DELETE "${auth[@]}" "$host/1/indexes/$encoded" > /dev/null
+            echo "  $name"
+          done <<< "$names"
