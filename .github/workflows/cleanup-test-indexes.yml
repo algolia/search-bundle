@@ -1,0 +1,21 @@
+name: Cleanup test indexes
+
+on:
+  schedule:
+    - cron: '0 3 * * 0'
+  workflow_dispatch:
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm install algoliasearch@^5 --no-save
+      - name: Delete sf_phpunit_* indexes
+        env:
+          APP_ID: ${{ secrets.ALGOLIA_APP_ID }}
+          API_KEY: ${{ secrets.ALGOLIA_API_KEY }}
+        run: node .github/scripts/cleanup-test-indexes.js
