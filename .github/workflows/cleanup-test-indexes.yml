@@ -12,7 +12,7 @@ jobs:
       APP_ID: ${{ secrets.ALGOLIA_APP_ID }}
       API_KEY: ${{ secrets.ALGOLIA_API_KEY }}
     steps:
-      - name: Delete sf_phpunit_* indexes
+      - name: Delete sf_phpunit_* indexes (including atomic-reindex temps)
         run: |
           set -euo pipefail
 
@@ -20,7 +20,7 @@ jobs:
           host="https://${APP_ID}.algolia.net"
 
           names=$(curl -sSf "${auth[@]}" "$host/1/indexes" \
-            | jq -r '.items[].name | select(startswith("sf_phpunit_"))')
+            | jq -r '.items[].name | select(contains("sf_phpunit_"))')
 
           if [ -z "$names" ]; then
             echo "Nothing to delete."
