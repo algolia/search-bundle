@@ -1,0 +1,10 @@
+{
+  "name": "search-bundle-ci-scripts",
+  "private": true,
+  "dependencies": {
+    "algoliasearch": "^5"
+  },
+  "devDependencies": {
+    "@types/node": "^24"
+  }
+}

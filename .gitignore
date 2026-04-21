@@ -12,3 +12,5 @@ clover.xml
 /tests/QualityTools/composer.lock
 .phpunit.result.cache
 phpunit.xml.dist.bak
+/.github/scripts/node_modules/
+/.github/scripts/package-lock.json
